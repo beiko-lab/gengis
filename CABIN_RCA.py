@@ -54,8 +54,16 @@ class CABIN_RCA:
 		
 		self.graphicalElementIds = []
 
-	### Run the reference condition analysis. Since this was initially written as an R script, most of the R code is simply preserved intact, with RPy used to pass data into and out of the original script. ###
-	def Run_RCA(self, colToPlot = None):
+	def create_rca_model(self):
+		'''Creates a RCA model'''
+		#1)Get "cal" data
+		#2)process and create RCA model
+		#3)Save model to disk
+		pass
+
+	### Run the reference condition analysis. Since this was initially written as an R script, most of the R code is simply preserved intact, with RPy used to pass data into and out of the original script. ###		
+	def Run_RCA(self,colToPlot = None):
+		'''Runs test data against the given RCA model'''
 
 		### Get the layer data ###
 		locs = GenGIS.layerTree.GetLocationSetLayer(0).GetAllActiveLocationLayers()
@@ -187,98 +195,23 @@ class CABIN_RCA:
 		############################################ RCA R CODE ################################################
 			
 		r('''
-			require(vegan) # vegan 1.17-4
-			require(cluster)
-		''')
+                #location of R library
+		infile <- paste(hDir,"rca_functions.r",sep="")
+		source(infile)
 
-		############;
-		# STEP 1 -- INITIAL SETUP -- Input and organize the biological and predictor data;
-		# The exact code for step is very particular for each data set, but similar operations will need;
-		# to be done on every data set;
-		# Data setup below is one example that was used for building the Atlantic Canada model.
-		###############################;
-		r('''
-		#data transformation
-		log.trans.cal <- log(cal_HAB_FRAME[4]+1,10) # log transformation of continuous numerical variables
-		arcsinesqroot.trans.cal <- asin(sqrt(cal_HAB_FRAME[1:3])) # arcsinesqroot transformation of % variables
-		predcal <- cbind(log.trans.cal,arcsinesqroot.trans.cal)
-		log.trans.val <- log(val_HAB_FRAME[4]+1,10) # log transformation of continuos numerical variables
-		arcsinesqroot.trans.val <- asin(sqrt(val_HAB_FRAME[1:3])) # arcsinesqroot transformation of % variables
-		predval <- cbind(log.trans.val,arcsinesqroot.trans.val)
+                #location of RCA model
+                model<-paste(hDir,"atlantic_rca_model.RData",sep="")
 
-		biolcal <- decostand(cal_SP_FRAME, "total") # Selection and transformation of biological variables for the calibration dataset: relative abundance data
-		biolcal.pa <- decostand(cal_SP_FRAME,"pa") # Selection and transformation of biological variables for the calibration dataset: presence-absence data
-		biolval <- decostand(val_SP_FRAME, "total") # Selection and transformation of biological variables for the validation dataset: relative abundance data
-		biolval.pa <- decostand(val_SP_FRAME, "pa") # Selection and transformation of biological variables for the validation dataset: presence-absence data
+                #names of output files to write results to
+		outfile <- paste(hDir,"OE_test_GG.csv",sep="")
+                outfile_ra <- paste(hDir,"OE_test_GG_ra.csv",sep="")
 
-		########################################; Import and process Test site data
-		#data transformation
-		log.trans.test <- log(test_HAB_FRAME[4]+1,10) # log transformation of continuous numerical variables
-		arcsinesqroot.trans.test <- asin(sqrt(test_HAB_FRAME[1:3])) # arcsinesqroot transformation of % variables
-		predtest <- cbind(log.trans.test,arcsinesqroot.trans.test)
-		bioltest <- decostand(test_SP_FRAME, "total") # Selection and transformation of biological variables for the test dataset: relative abundance data
-		bioltest.pa <- decostand(test_SP_FRAME,"pa") # Selection and transformation of biological variables for the test dataset: presence-absence data
-		########################################;
+                rca_results<-run_test_rca(test_HAB_FRAME,test_SP_FRAME,outfile,outfile_ra,model)
 
-		# Data alignment control
-		# colnames(cal)==colnames(val);
-		#row.names(biolcal)==row.names(predcal);
-		#row.names(biolval)==row.names(predval);
-		#colnames(biolcal)==colnames(biolval);
-		#colnames(predcal)==colnames(predval);
-		''')
-		###########################
-		
-		#########################;
-		# STEP 2 -- Dissimilarity computation and clustering of calibration sites;
-		r('''
-		braycurtis <- vegdist(biolcal, method="bray") # Bray-Curtis dissimilarity for relative abundance data
-		clustering <- agnes(braycurtis, diss=TRUE, method = "average") # clustering using agnes average function
-		grps <-cutree(as.hclust(clustering), k=3)  # group definition as per Armanini et al. 2011
-
-		preds.final<-c("clim_Trange", "geo_intr", "geo_sed", "geo_sedvol")  # predictor selected using best-subset DFA approach: see Armanini et al., 2011
-		
-		''')
-		################################
-		
-		################################
-		#STEP 4 - Finalize calculations of final, chosen predictive model;
-		r('''
-		# To specify the entire final model, you need to store/export 5 things:
-		# 4.1) The site-by-taxa matrix of observed presence/absence at calibration sites (bugcal.pa, already available);
-		# 4.2) Specify the vector of final group membership assignments at calibration sites(grps.final);
-		  grps.final<-grps
-		# 4.3) Specify the final selected predictor variables (preds.final) - already done in step 3.5;
-		# 4.4) Calculate the matrix(grpmns) of mean values of the preds.final variables for the final calibration site groups ;
-		 datmat<-as.matrix(predcal[,preds.final])
-		 grpmns<-apply(datmat,2,function(x)tapply(x,grps.final,mean));
-		# 4.5) Calculate the inverse pooled covariance matrix(covpinv) of the preds.final variables at the calibration sites;
-		 #First, calculate a list of covariance matrices for each group;
-		  covlist<-lapply(split.data.frame(datmat,grps.final),cov);
-		  #pooled cov matrix is weighted average of group matrices, weighted by group size. Johnson & Wichern, 11-64;
-		  grpsiz<-table(grps.final);
-		  ngrps<-length(grpsiz);
-		  npreds<-length(preds.final);
-		 #zero out an initial matrix for pooled covariance;
-		 covpool<-matrix(rep(0,npreds*npreds),nrow=npreds,dimnames=dimnames(covlist[[1]]));
-		 #weighted sum of covariance matrices;
-		 for(i in 1:ngrps){covpool<-covpool+(grpsiz[i]-1)*covlist[[i]]};
-		 covpool<-covpool/(sum(grpsiz)-ngrps);#renormalize;
-		 covpinv<-solve(covpool); #inverse of pooled cov matrix;
-		''')
-
-		#Step 5 - Perform prediction with final model;
-		r('''
-		infile = paste(hDir,"model.predict.v4.1.r",sep="")
-		source(infile);
-		OE.assess.test<-model.predict.v4.1(bugcal.pa=biolcal.pa,grps.final,preds.final, grpmns,covpinv,prednew=predtest,bugnew=bioltest.pa,Pc=0.5)  ;
-		OE.assess.test$OE.scores;
-		outfile = paste(hDir,"OE_test_GG.csv",sep="")
-		write.csv(OE.assess.test$OE.scores, file=outfile)
-		''')
+                ''')
 
 		if colToPlot:
-			toPlot = list(r("OE.assess.test$OE.scores$" + colToPlot))
+			toPlot = list(r("rca_results$OE.assess.test$OE.scores$" + colToPlot))
 			self.ViewportPlot(toPlot,testLocs)
 			
 	def clearLines(self):
