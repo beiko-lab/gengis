@@ -286,14 +286,14 @@ H.cal.grp1 <- mean(diversity(subset(bugcal.ra, grps.final == 1)))
 H.cal.grp2 <- mean(diversity(subset(bugcal.ra, grps.final == 2)))
 H.cal.grp3 <- mean(diversity(subset(bugcal.ra, grps.final == 3)))
 w.avg.grps.metrics.H <- cbind(H.cal.grp1, H.cal.grp2,H.cal.grp3)
-print(w.avg.grps.metrics.H)
+#print(w.avg.grps.metrics.H)
 
 ## Simpson
 S.cal.grp1 <- mean(diversity(subset(bugcal.ra, grps.final == 1), "simpson"))
 S.cal.grp2 <- mean(diversity(subset(bugcal.ra, grps.final == 2), "simpson"))
 S.cal.grp3 <- mean(diversity(subset(bugcal.ra, grps.final == 3), "simpson"))
 w.avg.grps.metrics.S <- cbind(S.cal.grp1, S.cal.grp2,S.cal.grp3)
-print(w.avg.grps.metrics.S)
+#print(w.avg.grps.metrics.S)
 
 ## Species richness (S)
 T.cal.grp1 <- specnumber(subset(bugcal.ra, grps.final==1))
@@ -305,13 +305,13 @@ J.cal.grp1 <- mean(H.cal.grp1/log(T.cal.grp1))
 J.cal.grp2 <- mean(H.cal.grp2/log(T.cal.grp2))
 J.cal.grp3 <- mean(H.cal.grp3/log(T.cal.grp3))
 w.avg.grps.metrics.J <- cbind(J.cal.grp1, J.cal.grp2,J.cal.grp3)
-print(w.avg.grps.metrics.J)
+#print(w.avg.grps.metrics.J)
 
 D.cal.grp1 <- mean(1-(apply(subset(bugcal.ra, grps.final == 1),1,max)))
 D.cal.grp2 <- mean(1-(apply(subset(bugcal.ra, grps.final == 2),1,max)))
 D.cal.grp3 <- mean(1-(apply(subset(bugcal.ra, grps.final == 3),1,max)))
 w.avg.grps.metrics.D <- cbind(D.cal.grp1, D.cal.grp2,D.cal.grp3)
-print(w.avg.grps.metrics.D)
+#print(w.avg.grps.metrics.D)
 
 
 
@@ -511,25 +511,26 @@ OE.final<-data.frame(O=OE.stats$OBS,E=OE.stats$E.prd,
                     row.names=row.names(bugnew.pa));
 ###########;
 #print some summary statistics of O/E to wrap up;
-print(' ',quote=F)
-print('Statistics of O/E for new samples',quote=F);
-print(' ',quote=F)
-  c1<-mean(OE.final$OoverE); c2<-mean(OE.final$OoverE.null);
-  s1<-sqrt(var(OE.final$OoverE)); s2<-sqrt(var(OE.final$OoverE.null));
-print(' Mean(O/E) and SD(O/E), from predictive model: ',quote=F)
-print( c(c1,s1),digits=3);
-print(' ',quote=F)
-print(' Mean(O/E) and SD(O/E), from null model: ',quote=F)
-print( c(c2,s2),digits=3);
+#print(' ',quote=F)
+#print('Statistics of O/E for new samples',quote=F);
+#print(' ',quote=F)
+#  c1<-mean(OE.final$OoverE); c2<-mean(OE.final$OoverE.null);
+#  s1<-sqrt(var(OE.final$OoverE)); s2<-sqrt(var(OE.final$OoverE.null));
+#print(' Mean(O/E) and SD(O/E), from predictive model: ',quote=F)
+#print( c(c1,s1),digits=3);
+#print(' ',quote=F)
+#print(' Mean(O/E) and SD(O/E), from null model: ',quote=F)
+#print( c(c2,s2),digits=3);
 #print outlier count;
-print(' ',quote=F)
-print('Counts of OK (=0) and outlier (=1) samples, assessed at P=0.01 level of chi-square',quote=F);
-print(table(OE.final[,'outlier.01']));
-print(' ',quote=F)
-print('Predictions complete', quote=F);
+#print(' ',quote=F)
+#print('Counts of OK (=0) and outlier (=1) samples, assessed at P=0.01 level of chi-square',quote=F);
+#print(table(OE.final[,'outlier.01']));
+#print(' ',quote=F)
+#print('Predictions complete', quote=F);
+
 #function output is a list containing OE.final, matrix of predicted capture probs, and predicted group membership probs;
-list(OE.scores=OE.final,Capture.Probs=site.pred.dfa,Group.Occurrence.Probs=grpprobs);
- }; #model.predict.v4.1;
+list(OE.scores=OE.final,Capture.Probs=site.pred.dfa,Group.Occurrence.Probs=grpprobs)
+} #model.predict.v4.1;
 
 
 example_run_test_rca<-function(){
