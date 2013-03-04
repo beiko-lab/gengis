@@ -22,12 +22,12 @@ class RCA( RCALayout ):
 			self.Close()
 			return
 		
-		# populate Group combo box with location column names
-		locationSetLayer = GenGIS.layerTree.GetLocationSetLayer(0)
-		numericFields = locationSetLayer.GetController().GetMetadataFields()
-		for field in numericFields:
-			self.cboGroup.Append(field) 
-		self.cboGroup.SetSelection(0)
+		# populate Metric combo box (cboMetric) 
+		#Diversity measure choices
+		metric_choices=("Richness","Shannon","Simpson","Pielou")
+		for field in metric_choices:
+			self.cboMetric.Append(field) 
+		self.cboMetric.SetSelection(0)
 		
 		# populate Diversity and Count combo boxes with sequence column names
 		sequenceLayer = GenGIS.layerTree.GetSequenceLayer(0)
@@ -40,8 +40,8 @@ class RCA( RCALayout ):
 		self.cboCount.SetSelection(0)
 			
 	def OnRun( self, event ):
-		rca = CABIN_RCA(self.cboGroup.GetStringSelection(), self.cboDiversity.GetStringSelection(), self.cboCount.GetStringSelection())
-		rca.Run_RCA("OoverE")
+		rca = CABIN_RCA(self.cboDiversity.GetStringSelection(), self.cboCount.GetStringSelection())
+		rca.Run_RCA(self.cboMetric.GetStringSelection())
 		
 	def OnOK( self, event ):
 		self.Close()

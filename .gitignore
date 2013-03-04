@@ -1,5 +1,5 @@
 .svn
 extra*
-.pyc
+*.pyc
 OE_test_GG.csv
 OE_test_GG_ra.csv

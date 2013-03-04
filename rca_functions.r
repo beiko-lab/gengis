@@ -281,12 +281,14 @@ if(outlier.flag$dismin[i]>crit.05)outlier.flag[i,'outlier.05']<-1;
 if(outlier.flag$dismin[i]>crit.01)outlier.flag[i,'outlier.01']<-1;
         }; #finish sample loop;
 
+## Shannon
 H.cal.grp1 <- mean(diversity(subset(bugcal.ra, grps.final == 1)))
 H.cal.grp2 <- mean(diversity(subset(bugcal.ra, grps.final == 2)))
 H.cal.grp3 <- mean(diversity(subset(bugcal.ra, grps.final == 3)))
 w.avg.grps.metrics.H <- cbind(H.cal.grp1, H.cal.grp2,H.cal.grp3)
 print(w.avg.grps.metrics.H)
 
+## Simpson
 S.cal.grp1 <- mean(diversity(subset(bugcal.ra, grps.final == 1), "simpson"))
 S.cal.grp2 <- mean(diversity(subset(bugcal.ra, grps.final == 2), "simpson"))
 S.cal.grp3 <- mean(diversity(subset(bugcal.ra, grps.final == 3), "simpson"))

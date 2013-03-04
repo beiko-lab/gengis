@@ -47,8 +47,8 @@ RCA_Example.Run_RCA("OoverE")
 class CABIN_RCA:
 
 	### Initialize the data structure. setCol is the name of the group column (e.g., 'cal','val','test'), spCol is the name of the column in the sequence file that has diversity data, and countCol is the column that has count information.
-	def __init__(self, setCol, spCol, countCol):
-		self.setLabel = setCol
+	def __init__(self, spCol, countCol):
+		#self.setLabel = setCol
 		self.speciesLabel = spCol
 		self.countField = countCol
 		
@@ -67,69 +67,57 @@ class CABIN_RCA:
 
 		### Get the layer data ###
 		locs = GenGIS.layerTree.GetLocationSetLayer(0).GetAllActiveLocationLayers()
-		testLocs = []
 		
-		### Get the label types ###
-		labelsToCreate = set()
-		for locX in locs:
-			labelsToCreate.add(locX.GetController().GetData()[self.setLabel])
+		
 		
 		#################################### ENVIRONMENTAL DATA #####################################
 		envFields = ["geo_sed", "geo_intr", "geo_sedvol", "clim_Trange"]
 		
 		### Hash of hashes to store the env field data
 		envValues = {}
-		for lab in labelsToCreate:
-			envValues[lab] = {}
 			
 		### Iterate through the environmental data and build dictionary of values
-		for loc in locs:
-		
-			### Create the entry for this location
-			locType = loc.GetController().GetData()[self.setLabel]
-			if locType == "test":
-				testLocs.append(loc)
-			
+		for loc in locs:			
+
 			siteID = loc.GetController().GetData()["Site ID"]
-			envValues[locType][siteID] = {}
+			envValues[siteID] = {}
 			
 			### Add values for each environmental value
 			for envField in envFields:
 				data = loc.GetController().GetData()[envField]
-				envValues[locType][siteID][envField] = data
+				envValues[siteID][envField] = data
 				
 		### Build habitat data frame for each subset of samples
-		for labDo in labelsToCreate:
 			
-			### The list of names ###
-			PyNameList = envValues[labDo].keys()
-			numExamples = len(PyNameList)
+		### The list of names ###
+		PyNameList = envValues.keys()
+	       	numExamples = len(PyNameList)
 			
-			RnameList = r["c"](robjects.StrVector(PyNameList))
-			RenvList = r["c"](robjects.StrVector(envFields))
-			Rdims = r["list"](RnameList,RenvList)
+		RnameList = r["c"](robjects.StrVector(PyNameList))
+		RenvList = r["c"](robjects.StrVector(envFields))
+		Rdims = r["list"](RnameList,RenvList)
 			
-			RvarName = str(labDo + "_HAB_NAME")
-			robjects.globalEnv[RvarName] = RnameList
+		RvarName = str("test_HAB_NAME")
+		robjects.globalEnv[RvarName] = RnameList
 			
-			### The habitat value matrix ###
-			PyHabList = []
-			for addName in PyNameList:
-				for addEnv in envFields:
-					if addEnv in envValues[labDo][addName].keys():
-						PyHabList.append(float(envValues[labDo][addName][addEnv]))
-					else:
-						PyHabList.append(0.0)
+		### The habitat value matrix ###
+		PyHabList = []
+		for addName in PyNameList:
+			for addEnv in envFields:
+				if addEnv in envValues[addName].keys():
+					PyHabList.append(float(envValues[addName][addEnv]))
+				else:
+					PyHabList.append(0.0)
 			
-			### Create the matrix and send it to R ###
-			RhabList = r["c"](robjects.FloatVector(PyHabList))
-			RhabMatrix = r.matrix(RhabList, nrow = numExamples, byrow = True, dimnames = Rdims)
-			RhabName = str(labDo + "_HAB_MATR")
-			robjects.globalEnv[RhabName] = RhabMatrix
+		### Create the matrix and send it to R ###
+		RhabList = r["c"](robjects.FloatVector(PyHabList))
+		RhabMatrix = r.matrix(RhabList, nrow = numExamples, byrow = True, dimnames = Rdims)
+		RhabName = str("test_HAB_MATR")
+		robjects.globalEnv[RhabName] = RhabMatrix
 			
-			### Create the data frame in R ###
-			RhabFrName = str(labDo + "_HAB_FRAME")
-			r(RhabFrName + " = data.frame(" + RhabName + ")")
+		### Create the data frame in R ###
+		RhabFrName = str("test_HAB_FRAME")
+		r(RhabFrName + " = data.frame(" + RhabName + ")")
 		
 		###################################### SEQUENCE DATA ########################################
 		
@@ -142,55 +130,54 @@ class CABIN_RCA:
 		
 		### Hash of hashes to store the species count data
 		speciesCounts = {}
-		for lab in labelsToCreate:
-			speciesCounts[lab] = {}
+		#for lab in labelsToCreate:
+		#	speciesCounts[lab] = {}
 			
 		### Iterate through the sequence data and build the dictionary of counts
 		for loc in locs:
 			
 			### Create the entry for this location
-			locType = loc.GetController().GetData()[self.setLabel]
 			siteID = loc.GetController().GetData()["Site ID"]
-			speciesCounts[locType][siteID] = {}
+			speciesCounts[siteID] = {}
 			
 			### Add values for each observed species
 			seqLayers = loc.GetAllActiveSequenceLayers()
 			for seqLayer in seqLayers:
 				data = seqLayer.GetController().GetData()
-				speciesCounts[locType][siteID][data[self.speciesLabel]] = data[self.countField]
+				speciesCounts[siteID][data[self.speciesLabel]] = data[self.countField]
 		
+
 		### Build species data frame for each subset of samples
-		for labDo in labelsToCreate:
 			
-			### The list of names ###
-			PyNameList = speciesCounts[labDo].keys()
-			numExamples = len(PyNameList)
+		### The list of names ###
+	       	PyNameList = speciesCounts.keys()
+	       	numExamples = len(PyNameList)
 			
-			RnameList = r["c"](robjects.StrVector(PyNameList))
-			RspList = r["c"](robjects.StrVector(list(speciesList)))
-			Rdims = r["list"](RnameList,RspList)
+		RnameList = r["c"](robjects.StrVector(PyNameList))
+		RspList = r["c"](robjects.StrVector(list(speciesList)))
+		Rdims = r["list"](RnameList,RspList)
 			
-			RvarName = str(labDo + "_SP_NAME")
-			robjects.globalEnv[RvarName] = RnameList
+		RvarName = str("test_SP_NAME")
+		robjects.globalEnv[RvarName] = RnameList
 			
-			### The biodiversity matrix ###
-			PyDivList = []
-			for addName in PyNameList:
-				for addSpecies in speciesList:
-					if addSpecies in speciesCounts[labDo][addName].keys():
-						PyDivList.append(float(speciesCounts[labDo][addName][addSpecies]))
-					else:
-						PyDivList.append(0.0)
+		### The biodiversity matrix ###
+		PyDivList = []
+		for addName in PyNameList:
+			for addSpecies in speciesList:
+				if addSpecies in speciesCounts[addName].keys():
+					PyDivList.append(float(speciesCounts[addName][addSpecies]))
+				else:
+					PyDivList.append(0.0)
 			
-			### Create the matrix and send it to R ###
-			RdivList = r["c"](robjects.FloatVector(PyDivList))
-			RdivMatrix = r.matrix(RdivList, nrow = numExamples, byrow = True, dimnames = Rdims)
-			RmatName = str(labDo + "_SP_MATR")
-			robjects.globalEnv[RmatName] = RdivMatrix
+		### Create the matrix and send it to R ###
+		RdivList = r["c"](robjects.FloatVector(PyDivList))
+		RdivMatrix = r.matrix(RdivList, nrow = numExamples, byrow = True, dimnames = Rdims)
+		RmatName = str("test_SP_MATR")
+		robjects.globalEnv[RmatName] = RdivMatrix
 			
-			### Create the data frame in R ###
-			RfrName = str(labDo + "_SP_FRAME")
-			r(RfrName + " = data.frame(" + RmatName + ")")
+		### Create the data frame in R ###
+		RfrName = str("test_SP_FRAME")
+		r(RfrName + " = data.frame(" + RmatName + ")")
 
 		############################################ RCA R CODE ################################################
 			
@@ -210,16 +197,32 @@ class CABIN_RCA:
 
                 ''')
 
+		#import pdb; pdb.set_trace()
+
+		#map simple diversity name to real name in R output
+		diversity_map={'Richness':'OE.assess.test$OE.scores$OoverE',
+			       'Shannon':'OE.assess.test.ra$OE.scores$OoverE.H',
+			       'Simpson':'OE.assess.test.ra$OE.scores$OoverE.S',
+			       'Pielou':'OE.assess.test.ra$OE.scores$OoverE.J'}
+
+		#Save the results in a python dict
+		self.results ={}
+		for metric in diversity_map.keys():
+			self.results[metric]=list(r("rca_results$" + diversity_map[metric]))
+			
+		self.locs=locs
+
 		if colToPlot:
-			toPlot = list(r("rca_results$OE.assess.test$OE.scores$" + colToPlot))
-			self.ViewportPlot(toPlot,testLocs)
+			self.ViewportPlot(colToPlot)
 			
 	def clearLines(self):
 		for id in self.graphicalElementIds:
 			GenGIS.graphics.RemoveLine(id)
 		GenGIS.viewport.Refresh()
 		
-	def ViewportPlot(self,data,locations):
+	def ViewportPlot(self,metric):
+		locations=self.locs
+		data=self.results[metric]
 
 		print "Running ViewportPlot..."
 		terrainController = GenGIS.layerTree.GetMapLayer(0).GetController()

@@ -1,13 +1,14 @@
 # -*- coding: utf-8 -*- 
 
 ###########################################################################
-## Python code generated with wxFormBuilder (version Sep  8 2010)
+## Python code generated with wxFormBuilder (version Oct  8 2012)
 ## http://www.wxformbuilder.org/
 ##
 ## PLEASE DO "NOT" EDIT THIS FILE!
 ###########################################################################
 
 import wx
+import wx.xrc
 
 ###########################################################################
 ## Class RCALayout
@@ -27,16 +28,7 @@ class RCALayout ( wx.Frame ):
 		fgSizer1.SetFlexibleDirection( wx.BOTH )
 		fgSizer1.SetNonFlexibleGrowMode( wx.FLEX_GROWMODE_SPECIFIED )
 		
-		self.m_staticText1 = wx.StaticText( self, wx.ID_ANY, u"Group Column:", wx.DefaultPosition, wx.DefaultSize, 0 )
-		self.m_staticText1.Wrap( -1 )
-		fgSizer1.Add( self.m_staticText1, 0, wx.ALIGN_CENTER_VERTICAL|wx.ALL, 5 )
-		
-		cboGroupChoices = []
-		self.cboGroup = wx.Choice( self, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, cboGroupChoices, 0 )
-		self.cboGroup.SetSelection( 0 )
-		fgSizer1.Add( self.cboGroup, 0, wx.ALL, 5 )
-		
-		self.m_staticText2 = wx.StaticText( self, wx.ID_ANY, u"Diversity Data Column:", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_staticText2 = wx.StaticText( self, wx.ID_ANY, u"Taxa Names:", wx.DefaultPosition, wx.DefaultSize, 0 )
 		self.m_staticText2.Wrap( -1 )
 		fgSizer1.Add( self.m_staticText2, 0, wx.ALIGN_CENTER_VERTICAL|wx.ALL, 5 )
 		
@@ -45,7 +37,7 @@ class RCALayout ( wx.Frame ):
 		self.cboDiversity.SetSelection( 0 )
 		fgSizer1.Add( self.cboDiversity, 0, wx.ALL, 5 )
 		
-		self.m_staticText3 = wx.StaticText( self, wx.ID_ANY, u"Count Column:", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_staticText3 = wx.StaticText( self, wx.ID_ANY, u"Taxa Counts:", wx.DefaultPosition, wx.DefaultSize, 0 )
 		self.m_staticText3.Wrap( -1 )
 		fgSizer1.Add( self.m_staticText3, 0, wx.ALIGN_CENTER_VERTICAL|wx.ALL, 5 )
 		
@@ -54,11 +46,21 @@ class RCALayout ( wx.Frame ):
 		self.cboCount.SetSelection( 0 )
 		fgSizer1.Add( self.cboCount, 0, wx.ALL, 5 )
 		
+		self.m_staticText1 = wx.StaticText( self, wx.ID_ANY, u"Diversity Measure:", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_staticText1.Wrap( -1 )
+		fgSizer1.Add( self.m_staticText1, 0, wx.ALIGN_CENTER_VERTICAL|wx.ALL, 5 )
+		
+		cboMetricChoices = []
+		self.cboMetric = wx.Choice( self, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, cboMetricChoices, 0 )
+		self.cboMetric.SetSelection( 0 )
+		fgSizer1.Add( self.cboMetric, 0, wx.ALL, 5 )
+		
 		
 		fgSizer1.AddSpacer( ( 0, 0), 1, wx.EXPAND, 5 )
 		
 		self.btnRun = wx.Button( self, wx.ID_ANY, u"Run", wx.DefaultPosition, wx.DefaultSize, 0 )
 		fgSizer1.Add( self.btnRun, 1, wx.ALL|wx.EXPAND, 5 )
+		
 		
 		bSizer1.Add( fgSizer1, 1, wx.EXPAND, 5 )
 		
@@ -70,7 +72,9 @@ class RCALayout ( wx.Frame ):
 		self.btOK = wx.Button( self, wx.ID_ANY, u"OK", wx.DefaultPosition, wx.DefaultSize, 0 )
 		bSizer3.Add( self.btOK, 0, wx.ALL, 5 )
 		
+		
 		bSizer1.Add( bSizer3, 0, wx.EXPAND, 5 )
+		
 		
 		self.SetSizer( bSizer1 )
 		self.Layout()
