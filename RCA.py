@@ -32,16 +32,35 @@ class RCA( RCALayout ):
 		# populate Diversity and Count combo boxes with sequence column names
 		sequenceLayer = GenGIS.layerTree.GetSequenceLayer(0)
 		seqMetadataFields = sequenceLayer.GetController().GetMetadataFields()
-		for field in sorted(seqMetadataFields):
+		for field in seqMetadataFields:
 			self.cboDiversity.Append(field)
 			self.cboCount.Append(field)
 		
-		self.cboDiversity.SetSelection(0)
-		self.cboCount.SetSelection(0)
+		#try and set intelligent default choices for combo boxes
+		good_diversity_choice = "Label"
+		if good_diversity_choice in seqMetadataFields:
+			self.cboDiversity.SetSelection(seqMetadataFields.index(good_diversity_choice))
+		else:
+			self.cboDiversity.SetSelection(0)
+
+		good_count_choice = "Count"
+		if good_count_choice in seqMetadataFields:
+			self.cboCount.SetSelection(seqMetadataFields.index(good_count_choice))
+		else:
+			self.cboCount.SetSelection(0)
 			
 	def OnRun( self, event ):
 		rca = CABIN_RCA(self.cboDiversity.GetStringSelection(), self.cboCount.GetStringSelection())
 		rca.Run_RCA(self.cboMetric.GetStringSelection())
+		self.rca=rca
 		
+	def OnUpdate(self, event):		
+		try:
+		        #Update the viewport using the metric selected by user
+			self.rca.ViewportPlot(self.cboMetric.GetStringSelection())
+		except AttributeError:
+			wx.MessageBox("Please 'Run' this plugin before attempting to update the plot!")
+			return
+
 	def OnOK( self, event ):
 		self.Close()

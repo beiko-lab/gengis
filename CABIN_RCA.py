@@ -224,7 +224,7 @@ class CABIN_RCA:
 		locations=self.locs
 		data=self.results[metric]
 
-		print "Running ViewportPlot..."
+		print "\nGenerating plot using diversity measure: " + metric
 		terrainController = GenGIS.layerTree.GetMapLayer(0).GetController()
 		
 		# desired plot attributes
@@ -253,7 +253,7 @@ class CABIN_RCA:
 
 		# plot data
 		self.graphicalElementIds = []
-		for i in xrange(0, len(locations)):
+		for i in xrange(0, len(locations)):			
 			locLayer = locations[i]
 			geoCoord = GenGIS.GeoCoord(locLayer.GetController().GetLongitude(), locLayer.GetController().GetLatitude())
 			pos = GenGIS.Point3D()
