@@ -180,6 +180,7 @@ class CABIN_RCA:
 		r(RfrName + " = data.frame(" + RmatName + ")")
 
 		############################################ RCA R CODE ################################################
+		#import pdb; pdb.set_trace()
 			
 		r('''
                 #location of R library
@@ -189,26 +190,20 @@ class CABIN_RCA:
                 #location of RCA model
                 model<-paste(hDir,"atlantic_rca_model.RData",sep="")
 
-                #names of output files to write results to
+                #Run the analysis
+                rca_results<-run_test_rca(test_HAB_FRAME,test_SP_FRAME,model)
+                
+                #output results to file
 		outfile <- paste(hDir,"OE_test_GG.csv",sep="")
-                outfile_ra <- paste(hDir,"OE_test_GG_ra.csv",sep="")
-
-                rca_results<-run_test_rca(test_HAB_FRAME,test_SP_FRAME,outfile,outfile_ra,model)
+                write.csv(rca_results,file=outfile, row.names=FALSE)
 
                 ''')
-
-		#import pdb; pdb.set_trace()
-
-		#map simple diversity name to real name in R output
-		diversity_map={'Richness':'OE.assess.test$OE.scores$OoverE',
-			       'Shannon':'OE.assess.test.ra$OE.scores$OoverE.H',
-			       'Simpson':'OE.assess.test.ra$OE.scores$OoverE.S',
-			       'Pielou':'OE.assess.test.ra$OE.scores$OoverE.J'}
+		diversity_measures=['Richness','Shannon','Simpson','Pielou','Berger_Parker']
 
 		#Save the results in a python dict
 		self.results ={}
-		for metric in diversity_map.keys():
-			self.results[metric]=list(r("rca_results$" + diversity_map[metric]))
+		for metric in diversity_measures:
+			self.results[metric]=list(r("rca_results$" + metric))
 			
 		self.locs=locs
 
@@ -255,12 +250,13 @@ class CABIN_RCA:
 		self.graphicalElementIds = []
 		for i in xrange(0, len(locations)):			
 			locLayer = locations[i]
+			site_id = locLayer.GetController().GetData()["Site ID"]
 			geoCoord = GenGIS.GeoCoord(locLayer.GetController().GetLongitude(), locLayer.GetController().GetLatitude())
 			pos = GenGIS.Point3D()
 			terrainController.GeoToGrid(geoCoord, pos)
 
 			colourMap = GenGIS.colourMapManager.GetColourMap('Diverging (Red-White)')
-			print str(i) + "   " + str(data[i])
+			print site_id + "   " + str(data[i])
 			colour = colourMap.GetInterpolatedColour(min(data[i],1.0), minValue, maxValue)
 			
 			endPos = GenGIS.Point3D(pos.x, scaleFactor * abs(data[i]), pos.z)

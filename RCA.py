@@ -24,7 +24,7 @@ class RCA( RCALayout ):
 		
 		# populate Metric combo box (cboMetric) 
 		#Diversity measure choices
-		metric_choices=("Richness","Shannon","Simpson","Pielou")
+		metric_choices=("Richness","Shannon","Simpson","Pielou","Berger_Parker")
 		for field in metric_choices:
 			self.cboMetric.Append(field) 
 		self.cboMetric.SetSelection(0)
@@ -63,4 +63,7 @@ class RCA( RCALayout ):
 			return
 
 	def OnOK( self, event ):
+		self.Close()
+
+	def onSaveFile( self, event ):
 		self.Close()

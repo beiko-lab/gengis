@@ -24,7 +24,7 @@ save_cal<-function(hab_data_file='cal_hab.csv',sp_data_file='cal_sp.csv',rca_mod
 }
 
 ##Runs test data and compares it to the saved RCA model
-run_test_rca<-function(hab_data,sp_data,outfile_pa,outfile_ra,rca_model='atlantic_rca_model.RData'){
+run_test_rca<-function(hab_data,sp_data,rca_model='atlantic_rca_model.RData'){
 
   #load "cal" RCA model object
   load(rca_model)
@@ -40,14 +40,15 @@ run_test_rca<-function(hab_data,sp_data,outfile_pa,outfile_ra,rca_model='atlanti
   OE.assess.test.ra<-model.predict.v4.2(bugcal.pa=cal$bugcal.pa,cal$grps.final,cal$preds.final, cal$grpmns,cal$covpinv,
                                         prednew=test$predtest,bugnew.pa=test$bioltest.pa,Pc=0.5,bugcal.ra=cal$bugcal,bugnew.ra=test$bioltest)
   
-  #Output presence/absence RCA to file
-  write.csv(OE.assess.test$OE.scores, file=outfile_pa)
-        	
-  write.csv(OE.assess.test.ra$OE.scores, file=outfile_ra)
+  #Combine and simplify results
+  summary_results<-list(site_ids=row.names(OE.assess.test$OE.scores),
+                        Richness=OE.assess.test$OE.scores$OoverE,
+                        Shannon=OE.assess.test.ra$OE.scores$OoverE.H,
+                        Simpson=OE.assess.test.ra$OE.scores$OoverE.S,
+                        Pielou=OE.assess.test.ra$OE.scores$OoverE.J,
+                        Berger_Parker=OE.assess.test.ra$OE.scores$OoverE.D)
 
-  #return the two RCA runs
-  list(OE.assess.test=OE.assess.test,OE.assess.test.ra=OE.assess.test.ra)
-
+  return(summary_results)
 }
 
 ##This can probably be removed
@@ -544,7 +545,9 @@ example_run_test_rca<-function(){
 
   sp_data<-data[7:ncol(data)]
 
-  run_test_rca(hab_data,sp_data,'test_rca_out_pa.txt','test_rca_out_ra.txt')
+  results<-run_test_rca(hab_data,sp_data)
+  
+  write.csv(results,file='test_rca_out.csv', row.names=FALSE)
 
 
 }
@@ -562,3 +565,4 @@ example_run_test_rca<-function(){
 
 ##use test data to run rca model
 #example_run_test_rca()
+\
