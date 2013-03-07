@@ -63,7 +63,13 @@ class RCA( RCALayout ):
 			return
 
 	def OnOK( self, event ):
-		self.Close()
+		self.OnClose(event)
+
+	def OnClose( self, event ):
+		if getattr(self,'rca'):
+			self.rca.clearLines()
+			del self.rca		
+		self.Destroy()
 
 	def onSaveFile( self, event ):
 		try:
