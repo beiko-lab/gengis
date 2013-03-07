@@ -1,11 +1,11 @@
 def name():
-	return "Reference Condition Approach"
+	return "Reference Condition Analysis"
 	
 def version():
 	return "Version 1.0"
 
 def description():
-	return "Perform a Reference Condition Approach (RCA) analysis."
+	return "Perform a Reference Condition Analysis (RCA)."
 	
 def authors():
 	return "Morgan Langille and Rob Beiko"
