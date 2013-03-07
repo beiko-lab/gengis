@@ -198,7 +198,7 @@ class CABIN_RCA:
                 write.csv(rca_results,file=outfile, row.names=FALSE)
 
                 ''')
-		diversity_measures=['Richness','Shannon','Simpson','Pielou','Berger_Parker']
+		diversity_measures=['site_ids','Richness','Shannon','Simpson','Pielou','Berger_Parker']
 
 		#Save the results in a python dict
 		self.results ={}
@@ -215,6 +215,18 @@ class CABIN_RCA:
 			GenGIS.graphics.RemoveLine(id)
 		GenGIS.viewport.Refresh()
 		
+	def SaveResults(self,filepath):
+               	f = open(filepath,'w')
+		#write header
+		measures=['site_ids','Richness','Shannon','Simpson','Pielou','Berger_Parker']
+		f.write(",".join(measures)+"\n")
+		#write data
+		for i in range(len(self.locs)):
+			row = [self.results[metric][i] for metric in measures]
+			f.write(",".join(map(str,row))+"\n")
+                f.close()
+		
+
 	def ViewportPlot(self,metric):
 		locations=self.locs
 		data=self.results[metric]

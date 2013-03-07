@@ -17,7 +17,7 @@ import wx.xrc
 class RCALayout ( wx.Frame ):
 	
 	def __init__( self, parent ):
-		wx.Frame.__init__ ( self, parent, id = wx.ID_ANY, title = u"Reference Condition Approach", pos = wx.DefaultPosition, size = wx.Size( 303,260 ), style = wx.DEFAULT_FRAME_STYLE|wx.TAB_TRAVERSAL )
+		wx.Frame.__init__ ( self, parent, id = wx.ID_ANY, title = u"Reference Condition Analysis", pos = wx.DefaultPosition, size = wx.Size( 303,260 ), style = wx.DEFAULT_FRAME_STYLE|wx.TAB_TRAVERSAL )
 		
 		self.SetSizeHintsSz( wx.DefaultSize, wx.DefaultSize )
 		self.SetBackgroundColour( wx.SystemSettings.GetColour( wx.SYS_COLOUR_BTNFACE ) )
@@ -28,7 +28,7 @@ class RCALayout ( wx.Frame ):
 		fgSizer1.SetFlexibleDirection( wx.BOTH )
 		fgSizer1.SetNonFlexibleGrowMode( wx.FLEX_GROWMODE_SPECIFIED )
 		
-		self.m_staticText2 = wx.StaticText( self, wx.ID_ANY, u"Taxa Names:", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_staticText2 = wx.StaticText( self, wx.ID_ANY, u"Taxon Names:", wx.DefaultPosition, wx.DefaultSize, 0 )
 		self.m_staticText2.Wrap( -1 )
 		fgSizer1.Add( self.m_staticText2, 0, wx.ALIGN_CENTER_VERTICAL|wx.ALL, 5 )
 		
@@ -37,7 +37,7 @@ class RCALayout ( wx.Frame ):
 		self.cboDiversity.SetSelection( 0 )
 		fgSizer1.Add( self.cboDiversity, 0, wx.ALL, 5 )
 		
-		self.m_staticText3 = wx.StaticText( self, wx.ID_ANY, u"Taxa Counts:", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_staticText3 = wx.StaticText( self, wx.ID_ANY, u"Taxon Counts:", wx.DefaultPosition, wx.DefaultSize, 0 )
 		self.m_staticText3.Wrap( -1 )
 		fgSizer1.Add( self.m_staticText3, 0, wx.ALIGN_CENTER_VERTICAL|wx.ALL, 5 )
 		
@@ -61,11 +61,11 @@ class RCALayout ( wx.Frame ):
 		self.btnUpdate = wx.Button( self, wx.ID_ANY, u"Update Plot", wx.DefaultPosition, wx.DefaultSize, 0 )
 		fgSizer1.Add( self.btnUpdate, 0, wx.ALL, 5 )
 		
-		self.m_staticText4 = wx.StaticText( self, wx.ID_ANY, u"Save Results:", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_staticText4 = wx.StaticText( self, wx.ID_ANY, u"Save Results:", wx.Point( -1,-1 ), wx.DefaultSize, 0 )
 		self.m_staticText4.Wrap( -1 )
 		fgSizer1.Add( self.m_staticText4, 0, wx.ALL, 5 )
 		
-		self.filePicker = wx.FilePickerCtrl( self, wx.ID_ANY, u"rca_results.csv", u"Save file as", u"*.*", wx.DefaultPosition, wx.DefaultSize, wx.FLP_SAVE )
+		self.filePicker = wx.FilePickerCtrl( self, wx.ID_ANY, u"rca_results.csv", u"Save file as", u"*.csv", wx.DefaultPosition, wx.DefaultSize, wx.FLP_OVERWRITE_PROMPT|wx.FLP_SAVE )
 		fgSizer1.Add( self.filePicker, 0, wx.ALL, 5 )
 		
 		

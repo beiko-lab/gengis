@@ -66,4 +66,9 @@ class RCA( RCALayout ):
 		self.Close()
 
 	def onSaveFile( self, event ):
-		self.Close()
+		try:
+			self.rca.SaveResults(self.filePicker.GetPath())
+		except AttributeError:
+			wx.MessageBox("Please 'Run' this plugin before attempting to save the results!")
+			return
+	
