@@ -231,6 +231,9 @@ class CABIN_RCA:
 		locations=self.locs
 		data=self.results[metric]
 
+		#Remove any previously plotted lines
+		self.clearLines()
+
 		print "\nGenerating plot using diversity measure: " + metric
 		terrainController = GenGIS.layerTree.GetMapLayer(0).GetController()
 		
