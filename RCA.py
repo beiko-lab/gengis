@@ -66,7 +66,7 @@ class RCA( RCALayout ):
 		self.OnClose(event)
 
 	def OnClose( self, event ):
-		if getattr(self,'rca'):
+		if hasattr(self,'rca'):
 			self.rca.clearLines()
 			del self.rca		
 		self.Destroy()
