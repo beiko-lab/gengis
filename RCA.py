@@ -50,6 +50,9 @@ class RCA( RCALayout ):
 			self.cboCount.SetSelection(0)
 			
 	def OnRun( self, event ):
+		if hasattr(self,'rca'):
+                        self.rca.clearLines()
+                        del self.rca
 		rca = CABIN_RCA(self.cboDiversity.GetStringSelection(), self.cboCount.GetStringSelection())
 		rca.Run_RCA(self.cboMetric.GetStringSelection())
 		self.rca=rca
