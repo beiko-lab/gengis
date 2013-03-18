@@ -1,0 +1,11 @@
+Setting up the environment:
+
+	Download and install Inno Setup from
+	http://www.jrsoftware.org/isinfo.php
+
+Generating the GenGIS Installation File
+
+	- Open up GenGIS.iss using Inno Setup Compiler
+	- from the 'Run' menu, select 'Run' (or hit F9)
+	- The output file should be located in the
+	  win32\InnoInstaller\Setup SVN directory

@@ -1,0 +1,11 @@
+Captions:
+	[[Image:V108_Console.png|frame|none|The GenGIS console.]]
+	
+Captions (centered image):
+	[[Image:V108_Console.png|frame|center|The GenGIS console.]]
+
+Frameless:
+	[[Image:GUI_Overview_Mashup.jpg|frameless|720px|center|Overview of GenGIS graphical user interface.]]
+
+Thumbnails:
+	[[Image:V108_StudyProperties_General.png | thumb | center ]]

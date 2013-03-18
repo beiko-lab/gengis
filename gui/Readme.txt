@@ -1,0 +1,1 @@
+These files can be compiled with wxFormBuilder (http://wxformbuilder.org/).

@@ -1,0 +1,92 @@
+###############################################################################
+# Name: ed_mpane.py                                                           #
+# Purpose: Main panel containing notebook and command bar.                    #
+# Author: Cody Precord <cprecord@editra.org>                                  #
+# Copyright: (c) 2008 Cody Precord <staff@editra.org>                         #
+# License: wxWindows License                                                  #
+###############################################################################
+
+"""
+This module provides the L{MainPanel} component. That contains the editors main
+notebook and command bar. 
+
+@summary: Main Panel
+
+"""
+
+__author__ = "Cody Precord <cprecord@editra.org>"
+__svnid__ = "$Id: ed_mpane.py 57383 2008-12-17 03:41:44Z CJP $"
+__revision__ = "$Revision: 57383 $"
+
+#-----------------------------------------------------------------------------#
+# Imports
+import wx
+
+# Editra Libraries
+import ed_glob
+import ed_pages
+import ed_cmdbar
+import eclib.ctrlbox as ctrlbox
+
+#-----------------------------------------------------------------------------#
+
+class MainPanel(ctrlbox.ControlBox):
+    """Main panel view
+    @todo: Add interface for registering additional commandbars.
+
+    """
+    def __init__(self, parent):
+        """Initialize the panel"""
+        ctrlbox.ControlBox.__init__(self, parent)
+
+        # Attributes
+        self.nb = ed_pages.EdPages(self, wx.ID_ANY)
+        self._search = None
+        self._line = None
+        self._cmd = None
+
+        # Layout
+        self.SetWindow(self.nb)
+
+    def HideCommandBar(self):
+        """Hide the command bar"""
+        self.GetControlBar(wx.BOTTOM).Hide()
+        self.Layout()
+
+    def InitCommandBar(self):
+        """Initialize the commandbar"""
+        if self._search is None:
+            self._search = ed_cmdbar.SearchBar(self)
+            self.SetControlBar(self._search, wx.BOTTOM)
+
+    def ShowCommandControl(self, ctrlid):
+        """Change the mode of the commandbar
+        @param ctrlid: CommandBar control id
+
+        """
+        bar = None
+        if ctrlid == ed_glob.ID_QUICK_FIND:
+            bar = self.ReplaceControlBar(self._search, wx.BOTTOM)
+        elif ctrlid == ed_glob.ID_GOTO_LINE:
+            # Lazy init
+            if self._line is None:
+                self._line = ed_cmdbar.GotoLineBar(self)
+            bar = self.ReplaceControlBar(self._line, wx.BOTTOM)
+        elif ctrlid == ed_glob.ID_COMMAND :
+            # Lazy init
+            if self._cmd is None:
+                self._cmd = ed_cmdbar.CommandEntryBar(self)
+            bar = self.ReplaceControlBar(self._cmd, wx.BOTTOM)
+        else:
+            return
+
+        if bar is not None:
+            bar.Hide()
+
+        cbar = self.GetControlBar(wx.BOTTOM)
+        if cbar is not None:
+            cbar.Show()
+            cbar.Layout()
+            cbar.SetFocus()
+
+        self.Layout()

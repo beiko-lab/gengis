@@ -1,0 +1,1 @@
+These 3rd party libraries have been stripped to reduce their size. If you wish to find out more information about any of these libraries you should download the library.

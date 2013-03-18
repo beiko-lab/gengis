@@ -1,0 +1,23 @@
+Installation is simple!
+
+If you are running Windows XP:
+
+  1  First run vcredist_x86.exe.  This will install a number of required
+     library files onto your computer.
+
+  2  Run GenGIS-Setup.exe.
+
+
+If you are running Windows Vista/7:
+
+  *  Run GenGIS-Setup.exe.
+
+
+Visit the GenGIS website for example data files and an online manual: 
+
+     http://kiwi.cs.dal.ca/GenGIS
+
+
+Thank you for trying GenGIS.  We hope you enjoy using it.
+
+     The GenGIS Team.

@@ -1,0 +1,8 @@
+//
+// Prefix header for all source files of the 'GenGIS2' target in the 'GenGIS2' project
+//
+// TIMOTHY: DO NOT REMOVE THIS FILE FROM THE GENGIS PROJECT
+
+#ifdef __OBJC__
+    #import <Cocoa/Cocoa.h>
+#endif

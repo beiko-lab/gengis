@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>LSMinimumSystemVersion</key>
+	<string>10.5.0</string>
+	<key>CFBundleDevelopmentRegion</key>
+	<string>en_CA</string>
+	<key>CFBundleExecutable</key>
+	<string>GenGIS</string>
+	<key>CFBundleInfoDictionaryVersion</key>
+	<string>6.0</string>
+	<key>CFBundlePackageType</key>
+	<string>APPL</string>
+	<key>CSResourcesFileMapped</key>
+	<true/>
+	<key>CFBundleShortVersionString</key>
+	<string>2.0.0</string>
+	<key>CFBundleName</key>
+	<string>GenGIS</string>
+	<key>CFBundleIconFile</key>
+	<string>CrazyEye.icns</string>
+	<key>CFBundleDocumentTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeExtensions</key>
+			<array>
+				<string>ggis</string>
+			</array>
+			<key>CFBundleTypeIconFile</key>
+			<string>GenGISDocumentIcon.icns</string>
+			<key>CFBundleTypeName</key>
+			<string>GenGIS Session File</string>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>LSIsAppleDefaultForType</key>
+			<true/>
+			<key>LSTypeIsPackage</key>
+			<false/>
+		</dict>
+	</array>
+</dict>
+</plist>

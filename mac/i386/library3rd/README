@@ -1,0 +1,15 @@
+Mac library3rd README:
+
+These files are the 3rd-party libraries used by GenGIS. This is not an exhaustive set: there are still numerous system libraries that are standard to the Mac OS X system that were not included here.
+
+Anything that GenGIS compiles (ie header files), directly links against (ie static and dynamic libraries), or embeds (ie dynamic libraries copied into the .app folder) are included here.
+
+The directories here are usually subsets or modifications of the originals. This is done either for preparation for embedding into GenGIS, or to reduce their size. THIS MEANS YOU CAN'T JUST UPDATE A LIBRARY BY REPLACING IT WITH A NEWER VERSION IN THIS FOLDER! You'll first need to check any changes to the directory structure, see what files were or were not included, etc.. Usually if all GenGIS uses are some .dylibs and header files, that's all that's been included. Also remember to run install_name_tool on any embedded library (run otool -L on the library first to see what paths are used).
+
+Please note that to keep Subversion from doubling the size of these directories, they have all been tarballed (everything's still basically doubled, but it's more manageable this way). Extract each one before building the mac version of GenGIS. And remember if any of the tarballs are updated, you'll need to re-extract them!
+
+Note: rpy2 assumes that R is installed in /Library/Frameworks/R.framework/, and uses R version 2.7.
+
+Note: All the .pyo files have been removed from these libraries, so you cannot access them from Python if you're running Python with optimization (the -o flag).
+
+Note: All the .py files have been removed from these libraries (only the .pyc files were kept). This is done to reduce their size in GenGIS, but it means tracebacks will not be as verbose.

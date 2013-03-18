@@ -1,0 +1,131 @@
+###############################################################################
+# Name: synglob.py                                                            #
+# Purpose: Acts as a registration point for all supported languages.          #
+# Author: Cody Precord <cprecord@editra.org>                                  #
+# Copyright: (c) 2008 Cody Precord <staff@editra.org>                         #
+# License: wxWindows License                                                  #
+###############################################################################
+
+"""
+FILE: synglob.py
+AUTHOR: Cody Precord
+@summary: Provides configuration and basic API functionality to all the syntax
+          modules. It also acts  as a configuration file for the syntax
+          management code. When support for a new languages is added it must
+          have a registration entry in the below L{LANG_MAP} dictionary in
+          order to be loadable by the syntax module.
+
+"""
+
+__author__ = "Cody Precord <cprecord@editra.org>"
+__svnid__ = "$Id: synglob.py 57169 2008-12-07 16:25:44Z CJP $"
+__revision__ = "$Revision: 57169 $"
+
+#-----------------------------------------------------------------------------#
+# Dependencies
+import wx.stc as stc
+
+# The language identifiers and the EXT_MAP have been moved out of this
+# module in order to be independent of Editra and wx, but they are
+# still needed here...
+from synextreg import *
+
+#-----------------------------------------------------------------------------#
+
+# Maps file types to syntax definitions
+LANG_MAP = {LANG_4GL    : (ID_LANG_4GL,    stc.STC_LEX_SQL,      'progress'),
+            LANG_68K    : (ID_LANG_68K,    stc.STC_LEX_ASM,      'asm68k'),
+            LANG_ADA    : (ID_LANG_ADA,    stc.STC_LEX_ADA,      'ada'),
+            LANG_APACHE : (ID_LANG_APACHE, stc.STC_LEX_CONF,     'apache'),
+            LANG_AS     : (ID_LANG_AS,     stc.STC_LEX_CPP,      'actionscript'),
+            LANG_BASH   : (ID_LANG_BASH,   stc.STC_LEX_BASH,     'sh'),
+            LANG_BATCH  : (ID_LANG_BATCH,  stc.STC_LEX_BATCH,    'batch'),
+            LANG_BOO    : (ID_LANG_BOO,    stc.STC_LEX_PYTHON,   'boo'),
+            LANG_C      : (ID_LANG_C,      stc.STC_LEX_CPP,      'cpp'),
+            LANG_CAML   : (ID_LANG_CAML,   stc.STC_LEX_CAML,     'caml'),
+            LANG_COLDFUSION : (ID_LANG_COLDFUSION, stc.STC_LEX_HTML, 'html'),
+            LANG_CPP    : (ID_LANG_CPP,    stc.STC_LEX_CPP,      'cpp'),
+            LANG_CSH    : (ID_LANG_CSH,    stc.STC_LEX_BASH,     'sh'),
+            LANG_CSHARP : (ID_LANG_CSHARP, stc.STC_LEX_CPP,      'cpp'),
+            LANG_CSS    : (ID_LANG_CSS,    stc.STC_LEX_CSS,      'css'),
+            LANG_D      : (ID_LANG_D,      stc.STC_LEX_CPP,      'd'),
+            LANG_DIFF   : (ID_LANG_DIFF,   stc.STC_LEX_DIFF,     'diff'),
+            LANG_DJANGO : (ID_LANG_DJANGO, stc.STC_LEX_CONTAINER, 'django'),
+            LANG_DOT    : (ID_LANG_DOT,    stc.STC_LEX_CPP,      'dot'),
+            LANG_EDJE   : (ID_LANG_EDJE,   stc.STC_LEX_CPP,      'edje'),
+            LANG_EIFFEL : (ID_LANG_EIFFEL, stc.STC_LEX_EIFFEL,   'eiffel'),
+            LANG_ERLANG : (ID_LANG_ERLANG, stc.STC_LEX_ERLANG,   'erlang'),
+            LANG_ESS    : (ID_LANG_ESS,    stc.STC_LEX_CSS,      'editra_ss'),
+            LANG_F77    : (ID_LANG_F77,    stc.STC_LEX_F77,      'fortran'),
+            LANG_F95    : (ID_LANG_F95,    stc.STC_LEX_FORTRAN,  'fortran'),
+            LANG_FERITE : (ID_LANG_FERITE, stc.STC_LEX_CPP,      'ferite'),
+            LANG_FLAGSHIP: (ID_LANG_FLAGSHIP, stc.STC_LEX_FLAGSHIP, 'flagship'),
+            LANG_GUI4CLI : (ID_LANG_GUI4CLI, stc.STC_LEX_GUI4CLI, 'gui4cli'),
+            LANG_HASKELL : (ID_LANG_HASKELL, stc.STC_LEX_HASKELL, 'haskell'),
+            LANG_HAXE   : (ID_LANG_HAXE, stc.STC_LEX_CPP,        'haxe'),
+            LANG_HTML   : (ID_LANG_HTML,   stc.STC_LEX_HTML,     'html'),
+            LANG_INNO   : (ID_LANG_INNO,   stc.STC_LEX_INNOSETUP, 'inno'),
+            LANG_ISSL   : (ID_LANG_ISSL,   stc.STC_LEX_CONTAINER, 'issuelist'),
+            LANG_JAVA   : (ID_LANG_JAVA,   stc.STC_LEX_CPP,      'java'),
+            LANG_JS     : (ID_LANG_JS,     stc.STC_LEX_CPP,      'javascript'),
+            LANG_KIX    : (ID_LANG_KIX,    stc.STC_LEX_KIX,      'kix'),
+            LANG_KSH    : (ID_LANG_KSH,    stc.STC_LEX_BASH,     'sh'),
+            LANG_LATEX  : (ID_LANG_LATEX,  stc.STC_LEX_LATEX,    'latex'),
+            LANG_LISP   : (ID_LANG_LISP,   stc.STC_LEX_LISP,     'lisp'),
+            LANG_LOUT   : (ID_LANG_LOUT,   stc.STC_LEX_LOUT,     'lout'),
+            LANG_LUA    : (ID_LANG_LUA,    stc.STC_LEX_LUA,      'lua'),
+            LANG_MAKE   : (ID_LANG_MAKE,   stc.STC_LEX_MAKEFILE, 'make'),
+            LANG_MAKO   : (ID_LANG_MAKO,   stc.STC_LEX_CONTAINER, 'mako'),
+            LANG_MASM   : (ID_LANG_MASM,   stc.STC_LEX_ASM,      'masm'),
+            LANG_MATLAB : (ID_LANG_MATLAB, stc.STC_LEX_MATLAB,   'matlab'),
+            LANG_MSSQL  : (ID_LANG_MSSQL,  stc.STC_LEX_MSSQL,    'mssql'),
+            LANG_NASM   : (ID_LANG_NASM,   stc.STC_LEX_ASM,      'nasm'),
+            LANG_NEWLISP: (ID_LANG_NEWLISP, stc.STC_LEX_LISP,    'lisp'),
+            LANG_NSIS   : (ID_LANG_NSIS,   stc.STC_LEX_NSIS,     'nsis'),
+            LANG_OBJC   : (ID_LANG_OBJC,   stc.STC_LEX_CPP,      'cpp'),
+            LANG_OCTAVE : (ID_LANG_OCTAVE, stc.STC_LEX_OCTAVE,   'matlab'),
+            LANG_PASCAL : (ID_LANG_PASCAL, stc.STC_LEX_PASCAL,   'pascal'),
+            LANG_PERL   : (ID_LANG_PERL,   stc.STC_LEX_PERL,     'perl'),
+            LANG_PHP    : (ID_LANG_PHP,    stc.STC_LEX_HTML,     'php'),
+            LANG_PIKE   : (ID_LANG_PIKE,   stc.STC_LEX_CPP,      'pike'),
+            LANG_PLSQL  : (ID_LANG_PLSQL,  stc.STC_LEX_SQL,      'sql'),
+            LANG_PROPS  : (ID_LANG_PROPS,  stc.STC_LEX_PROPERTIES, 'props'),
+            LANG_PS     : (ID_LANG_PS,     stc.STC_LEX_PS,       'postscript'),
+            LANG_PYTHON : (ID_LANG_PYTHON, stc.STC_LEX_PYTHON,   'python'),
+            LANG_R      : (ID_LANG_R,      stc.STC_LEX_CONTAINER, 's'),
+            LANG_RUBY   : (ID_LANG_RUBY,   stc.STC_LEX_RUBY,     'ruby'),
+            LANG_S      : (ID_LANG_S,      stc.STC_LEX_CONTAINER, 's'),
+            LANG_SCHEME : (ID_LANG_SCHEME, stc.STC_LEX_LISP,     'lisp'),
+            LANG_SQL    : (ID_LANG_SQL,    stc.STC_LEX_SQL,      'sql'),
+            LANG_SQUIRREL : (ID_LANG_SQUIRREL, stc.STC_LEX_CPP,  'squirrel'),
+            LANG_ST     : (ID_LANG_ST,     stc.STC_LEX_SMALLTALK, 'smalltalk'),
+            LANG_SYSVERILOG : (ID_LANG_SYSVERILOG, stc.STC_LEX_VERILOG, 'verilog'),
+            LANG_TCL    : (ID_LANG_TCL,    stc.STC_LEX_TCL,      'tcl'),
+            LANG_TXT    : (ID_LANG_TXT,    stc.STC_LEX_NULL,     None),
+            LANG_VALA   : (ID_LANG_VALA,   stc.STC_LEX_CPP,      'cpp'),
+            LANG_VB     : (ID_LANG_VB,     stc.STC_LEX_VB,       'visualbasic'),
+            LANG_VBSCRIPT : (ID_LANG_VBSCRIPT, stc.STC_LEX_VBSCRIPT, 'vbscript'),
+            LANG_VERILOG: (ID_LANG_VERILOG, stc.STC_LEX_VERILOG, 'verilog'),
+            LANG_VHDL   : (ID_LANG_VHDL,   stc.STC_LEX_VHDL,     'vhdl'),
+            LANG_XML    : (ID_LANG_XML,    stc.STC_LEX_XML,      'xml'),
+            LANG_YAML   : (ID_LANG_YAML,   stc.STC_LEX_YAML,     'yaml')
+            }
+
+# Dynamically finds the language description string that matches the given
+# language id.
+# Used when manually setting lexer from a menu/dialog
+def GetDescriptionFromId(lang_id):
+    """Get the programming languages description string from the given
+    lanugage id. If no correspoding language is found the plain text
+    description is returned.
+    @param lang_id: Language Identifier ID
+    @note: requires that all languages are defined in ID_LANG_NAME, LANG_NAME
+           pairs to work properly.
+
+    """
+    rval = LANG_TXT
+    for key, val in globals().iteritems():
+        if val == lang_id and key.startswith('ID_LANG'):
+            rval = globals().get(key[3:], globals()['LANG_TXT'])
+            break
+    return rval
