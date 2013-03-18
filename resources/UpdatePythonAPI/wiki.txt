@@ -1,0 +1,548 @@
+= Global objects =
+
+* study - provides access to the Study Layer class
+* layerTree - provides access to the Layer Tree Controller class
+* viewport - provides access to the Viewport class
+* camera - provides access to the Camera class
+* mainWindow - provides access to the Main Window class
+* graphics - provides access to the Graphics class
+* colourMapManager - provides access to the Colour Map Manager class
+
+= Global functions =
+
+* SafeYield() - Yields control to pending messages in the windowing system.
+
+= Main Window class =
+
+* GetPointer() - Get pointer to GenGIS window.
+* SetSidePanelVisibility() - Set visibility of side panel.
+* SetConsoleVisibility() - Set visibility of console.
+* OpenMapFile() - Open map file.
+* OpenLocationsFile() - Open location file.
+* OpenSequenceFile() - Open sequence file.
+* OpenTreeFile() - Open tree file.
+* GetExeDir() - Get directory of GenGIS executable.
+* Quit() - Exit GenGIS.
+* Write() - Write text to the GenGIS console and the log file.
+* Warning() - Write warning message to the GenGIS console and the log file.
+* Error() - Write error message to the GenGIS console and the log file.
+* Yield() - Yield control to main window for event processing.
+
+= Graphics class =
+
+* AddLine() - Add line to viewport.
+* RemoveLine() - Remove line with a given id.
+* ClearLines() - Clear all custom lines in viewport.
+* AddMarker() - Add marker to Viewport.
+* RemoveMarker() - Remove marker with a given id.
+* ClearMarkers() - Clear all custom markers in viewport.
+* AddCylinder() - Add cylinder to viewport.
+* RemoveCylinder() - Remove cylinder with a given id.
+* ClearCylinders() - Clear all custom cylinders in viewport.
+* AddLabel() - Add label to viewport.
+* RemoveLabel() - Remove label with a given id.
+* ClearLabels() - Clear all custom labels in Viewport.
+
+= Camera class =
+
+* SetPosition() - Set position of camera.
+* GetPosition() - Get current position of camera.
+* SetHeight() - Set height of camera above terrain.
+* GetHeight() - Get height of camera above terrain.
+* SetPitch() - Set pitch of camera.
+* GetPitch() - Get pitch of camera.
+* SetYaw() - Set yaw of camera.
+* GetYaw() - Get yaw of camera.
+* ZoomDelta() - Change zoom (height) of camera by specified percentage.
+* TranslateDelta() - Translate position of camera by specified amount.
+* PitchDelta() - Change pitch of camera by specified amount.
+* YawDelta() - Change yaw of camera by specified amount.
+* ResetView() - Set camera to default position.
+* TopView() - Set camera to provide a top 'orthographic' view of the terrain
+* GetMapExtentsZoom() - Get zoom (height) of camera required to view entire map.
+* GetWindowHeight() - Get height of the viewport.
+* GetWindowWidth() - Get width of the viewport.
+
+= Map Controller class =
+
+* GetProjectionExtents() - Get lower, left and upper, right corners of map after projection.
+* GetWidth() - Get width of terrain.
+* GetHeight() - Get height of terrain.
+* IsWireFrame() - Determine if terrain is being rendered as a wireframe.
+* SetWireFrame() - Set whether terrain should be rendered as a wireframe (True) or with texturing (False).
+* GetElevation() - Get elevation at specified grid point.
+* GetExaggeratedElevation() - Get exaggerated elevation at specified grid point.
+* GetElevationMap() - Flag indicating if terrain contains elevation information.
+* GetMinElevation() - Get minimum elevation.
+* GetMaxElevation() - Get maximum elevation.
+* ProjectToTerrain() - Project screen coodinates onto terrain. 
+* ProjectToScreen() - Project 3D world coordinates to screen coordinates.
+* GeoToGrid() - Convert geographic coordinates to grid coordinates.
+* LatLongToGrid() - Convert lat/long coordinates to grid coordinates.
+* GridToGeo() - Convert grid coordinates to geographic coordinates.
+
+= Layer Tree Controller class =
+
+* GetName() - Get name of specified layer.
+* GetDescription() - Get description of specified layer.
+* SetDescription() - Set description of specified layer.
+* GetAuthours() - Get authours of specified layer.
+* SetAuthours() - Set authours of specified layer.
+* GetPath() - Get path to file of specified layer.
+* GetFilename() - Get filename of specified layer.
+* SetVisible() - Set visibility of specified layer.
+* IsVisible() - Get visibility of specified layer.
+* SetVisible() - Set visibility of specified layer.
+* GetNumStudyLayers() - Get number of study layers.
+* GetStudyLayer() - Get specified study layer.
+* GetNumMapLayers() - Get number of map layers.
+* GetMapLayer() - Get specified map layer.
+* GetNumLocationSetLayers() - Get number of location set layers.
+* GetLocationSetLayer() - Get specified location set layer.
+* GetNumLocationLayers() - Get number of location layers.
+* GetLocationLayer() - Get specified location layer.
+* GetLocationLayers() - Get all location layers.
+* GetNumSequenceLayers() - Get number of sequence layers.
+* GetSequenceLayer() - Get specified sequence layer.
+* GetSequenceLayers() - Get all sequence layers.
+* GetNumTreeLayers() - Get number of tree layers.
+* GetTreeLayer() - Get specified tree layer.
+
+= Viewport class =
+
+* Refresh() - Regenerate all graphical elements within the viewport.
+* SaveImage() - Save image of viewport.
+* GetWidth() - Width of viewport.
+* GetHeight() - Height of viewport.
+* SetBackgroundColour() - Set background colour of viewport.
+* GetBackgroundColour() - Get background colour of viewport.
+* GetLighting() - Get object controlling lighting in viewport.
+
+= Lighting class =
+
+* GetAltitude() - Get altitude (y-position) of light.
+* SetAltitude() - Set altitude (y-position) of light.
+* SetGlobalAmbient() - Set strength of global ambient light.
+* GetGlobalAmbient() - Get strength of global ambient light.
+* GetPositionX() - Get x-position of light.
+* SetPositionX() - Set x-position of light.
+* GetPositionY() - Get y-position of light.
+* SetPositionY() - Set y-position of light.
+* GetPositionZ() - Get z-position of light.
+* SetPositionZ() - Set z-position of light.
+
+= GeoTreeView class =
+
+* ProjectTree() - Project tree to specified leaf nodes.
+* RestoreTree() - Restore original tree.
+* SetLayout() - Set layout of geophylogeny.
+* GetLayout() - Get layout of geophylogeny.
+* GetLayoutLineVisibility() - Get visibility of geographic layout line.
+* SetLayoutLineVisibility() - Set visibility of geographic layout line.
+* GetLayoutLine() - Get geographic layout line.
+* SetLayoutLine() - Set geographic layout line.
+* IsLayoutLine() - Check if a layout line has been assigned to the tree.
+* IsGeographicAxis() - Check if a non-linear geographic axis has been assigned to the tree.
+* GetGeographicAxisVisibility() - Get visibility of non-linear geographic axis.
+* SetGeographicAxisVisibility() - Set visibility of non-linear geographic axis.
+* GetLeafNodeSize() - Get size of leaf nodes.
+* SetLeafNodeSize() - Set size of leaf nodes.
+* GetInternalNodeSize() - Get size of internal nodes.
+* SetInternalNodeSize() - Set size of internal nodes.
+* GetLineThickness() - Get thickness of tree branches.
+* SetLineThickness() - Set thickness of tree branches.
+* GetOrientation() - Get orientation of tree.
+* SetOrientation() - Set orientation of tree.
+* GetHeight() - Get height of tree.
+* SetHeight() - Set height of tree.
+* GetColour() - Get default colour for tree.
+* SetColour() - Set default colour for tree.
+* GetOptimizeTopology() - Check if optimal tree layout is being calcualte.
+* SetOptimizeTopology() - Set flag indicating if optimal tree layout should be calculate.
+* GetLabelVisibility() - Get visibility of leaf labels.
+* SetLabelVisibility() - Set visibility of leaf labels.
+* GetFontSize() - Get font size for leaf labels.
+* SetFontSize() - Set font size for leaf labels.
+* GetFontColour() - Get font colour for leaf labels.
+* SetFontColour() - Set font colour for leaf labels.
+* Set3dInternalDropLineStyle() - Set internal drop line style for 3D tree.
+* Get3dInternalDropLineStyle() - Get internal drop line style for 3D tree.
+* Set3dLeafDropLineStyle() - Set leaf drop line style for 3D trees.
+* Get3dLeafDropLineStyle() - Get leaf drop line style for 3D tree.
+* SetGeographyLineOffsetPercentage() - Set offset of geography line (in percentage of layout line length).
+* GetGeographyLineOffsetPercentage() - Get offset of geography line (in percentage of layout line length).
+* GetGeographyLineOffset() - Get offset of geography line (in world coordinates).
+* SetSpreadGeographyPts() - Set flag indicating if locations should be spread out evenly along the geography line.
+* SetLeafNodeBorderSize() - Set border size for leaf nodes.
+* GetLeafNodeBorderSize() - Get border size for leaf nodes.
+* SetInternalNodeBorderSize() - Set border size for internal nodes.
+* GetInternalNodeBorderSize() - Get border size for internal nodes.
+* SetGeoPtsBorderSize() - Set border size for geographic points along geography line.
+* GetGeoPtsBorderSize() - Get border size for geographic points along geography line.
+* SetBranchBorderSize() - Set border size for tree branches.
+* GetBranchBorderSize() - Get border size for tree branches.
+* SetLocationLineBorderSize() - Set border size for location lines.
+* GetLocationLineBorderSize() - Get border size for location lines.
+* SetCorrelationLineBorderSize() - Set border size for correlation lines.
+* GetCorrelationLineBorderSize() - Get border size for correlation lines.
+* SetLeafNodeBorderColour() - Set colour of leaf node borders.
+* GetLeafNodeBorderColour() - Get colour of leaf node borders.
+* SetInternalNodeBorderColour() - Set colour of internal node borders.
+* GetInternalNodeBorderColour() - Get colour of internal node borders.
+* SetGeoPtsBorderColour() - Set colour of geographic point borders.
+* GetGeoPtsBorderColour() - Get colour og geographic point borders.
+* SetLocationLineBorderColour() - Set colour of location line borders.
+* GetLocationLineBorderColour() - Get colour of location line borders.
+* SetCorrelationLineBorderColour() - Set colour of correlation line borders.
+* GetCorrelationLineBorderColour() - Get colour of correlation line borders.
+* SetBranchBorderColour() - Set colour of branch borders.
+* GetBranchBorderColour() - Get colour of branch borders.
+* SetTreeColourStyle() - Set colouring method for tree.
+* GetTreeColourStyle() - Get colouring method for tree.
+* SetReverseOrderGeographicPts() - Set whether geographic points should be reversed.
+* GetReverseOrderGeographicPts() - Check if geographic points are being reversed.
+* GetNumberOfNodes() - Get total number of nodes.
+* GetNumberOfLeaves() - Get number of leaf nodes.
+* GetDepthOfTree() - Get maximum depth of tree.
+* IsMultifurcating() - Check if tree is multifurcating.
+* GetLeafNames() - Get names of leaves.
+* SignificanceTest() - Perform Monte Carlo significance test.
+* GetNewickString() - Get Newick representation of tree.
+* PerformLinearAxesAnalysisOnRootNode() - Calculate goodness-of-fit for all linear axes.
+* SetGeographicAxisAngleOnRoot() - Set geographic layout line to the specified angle.
+
+= Layer class =
+
+* GetId() - Get id of layer
+* GetName() - Get name of layer.
+* SetName() - Set name of layer.
+* GetDescription() - Get description of layer.
+* SetDescription() - Set description of layer.
+* GetAuthours() - Get authours of layer.
+* SetAuthours() - Set authours of layer.
+* GetPath() - Get path to layer file.
+* GetFilename() - Get filename of layer.
+* GetType() - Get type of layer.
+
+= Study Layer class =
+
+* GetNumMapLayers() - Get number of map layers in this study.
+* GetMapLayer() - Get specified map layer.
+* GetAllMapLayers() - Get all maps in study.
+* GetController() - Get study controller.
+
+= Study Controller class =
+
+* GetDatum() - Get datum used by study.
+* SetDatum() - Set datum used by study (must be set before map is loaded).
+* GetProjection() - Get projection used by study.
+* SetProjection() - Set projection used by study (must be set before map is loaded).
+* IsGeographic() - Flag indicating if data is in geographic (i.e. lat/long) coordinates.
+
+= Map Layer class =
+
+* GetNumLocationSetLayers() - Get number of location set layers for this map.
+* GetLocationSetLayer() - Get specified location set layer.
+* GetAllLocationSetLayers() - Get all location set layers.
+* GetNumTreeLayers() - Get number of tree layers for this map.
+* GetTreeLayer() - Get specified tree layer.
+* GetAllTreeLayers() - Get all tree layers.
+* GetController() - Get map controller.
+
+= Tree Layer class =
+
+* GetGeoTreeView() - Get geophylogeny associated with this layer.
+* IsActive() - Get active state of layer.
+
+= Location Set Layer class =
+
+* GetNumLocationLayers() - Get number of location layers for this location set.
+* GetLocationLayer() - Get specified location layer.
+* GetAllLocationLayers() - Get all location layers.
+* GetAllActiveLocationLayers() - Get all visible location layers.
+* IsSequencesData() - Check if there is sequence data associated with at least one location.
+* GetController() - Get location set controller.
+* GetChartSet() - Get set of charts associated with this location set.
+
+= Location Set Controller class =
+
+* SetLocationVisibilities() - Propogate set visibility state to all locations.
+* SetLocationColours() - Propogate set colour state to all locations.
+* SetLocationBorders() - Propogate set border state to all locations.
+* SetLocationSizes() - Propogate set size state to all locations.
+* SetLocationShapes() - Propogate set shape state to all locations.
+* SetLocationLabels() - Propogate specified label states to all locations.
+* SetColourField() - Set field used to determine location colour.
+* GetColourField() - Get field used to determine location colour.
+* SetColourMap() - Set colour map associated with location set.
+* GetColourMap() - Get colour map associated with location set.
+* SetUniformColourFlag() - Set flag indicating if all locations should have the same colour.
+* GetUniformColourFlag() - Get flag indicating if all locations should have the same colour.
+* SetUniformColour() - Set uniform colour.
+* GetUniformColour() - Get uniform colour.
+* SetBorderSize() - Set border size.
+* GetBorderSize() - Get border size..
+* SetBorderColour() - Set border colour.
+* GetBorderColour() - Get border colour.
+* SetLocationSetVisibility() - Set visibility of location set.
+* GetLocationSetVisibility() - Get visibility of location set.
+* SetShapeField() - Set field used to determine location shape.
+* GetShapeField() - Get field used to determine location shape.
+* SetShapeMap() - Set shape map associated with location set.
+* GetShapeMap() - Get shape map associated with location set.
+* SetUniformShapeFlag() - Set flag indicating if all locations should have the same shape.
+* GetUniformShapeFlag() - Get flag indicating if all locations should have the same shape.
+* SetUniformShape() - Set uniform shape.
+* GetUniformShape() - Get uniform shape.
+* SetSizeField() - Set field used to determine location size.
+* GetSizeField() - Get field used to determine location size.
+* SetMinLocationSize() - Set min location size.
+* GetMinLocationSize() - Get min location size.
+* SetMaxLocationSize() - Set max location size.
+* GetMaxLocationSize() - Get max location size.
+* SetLabelField() - Set field used to determine location label.
+* GetLabelField() - Get field used to determine location label.
+* SetLabelColour() - Set label colour.
+* GetLabelColour() - Get label colour.
+* SetLabelSize() - Set label size.
+* GetLabelSize() - Get label size.
+* SetLabelPosition() - Set label position.
+* GetLabelPosition() - Get label position.
+* SetLabelStyle() - Set label style.
+* GetLabelStyle() - Get label style.
+* SetLabelVisibility() - Set label visibility.
+* GetLabelVisibility() - Get label visibility.
+* SetLabelBindToChart() - Set flag indicating if label is bound to chart.
+* GetLabelBindToChart() - Get flag indicating if label is bound to chart.
+* GetMetadata() - Get location metadata for the specified field (list of strings).
+* GetNumericMetadata() - Get location metadata for the specified field (list of floats).
+* GetMetadataFields() - Get fields for location metadata.
+* GetNumericMetadataFields() - Get numeric fields for location metadata.
+* AddMetadata() - Add field to location metadata.
+
+= Location Layer class =
+
+* GetNumSequenceLayers() - Get number of sequence layers for this location.
+* GetSequenceLayer() - Get specified sequence layer.
+* GetAllSequenceLayers() - Get all sequence layers.
+* GetAllActiveSequenceLayers() - Get all active sequence layers.
+* GetController() - Get location controller.
+
+= Location Controller class =
+
+* GetId() - Get id of location.
+* GetNorthing() - Get north or latitudinal position of location.
+* GetEasting() - Get east or longitudinal position of location.
+* GetLatitude() - Get north or latitudinal position of location.
+* GetLongitude() - Get east or longitudinal position of location.
+* GetData() - Get metadata associated with location.
+* GetProjection() - Get projected coordinates of location.
+* GetPosition() - Get grid coordinates of location.
+* SetColour() - Set colour of location marker.
+* GetColour() - Get colour of location marker.
+* SetSize() - Set size of location marker.
+* GetSize() - Get size of location marker.
+* SetShape() - Set shape of location marker.
+* GetShape() - Get shape of location marker.
+* SetBorderSize() - Set border size of location marker.
+* GetBorderSize() - Get border size of location marker.
+* SetActive() - Set active state of location marker.
+* IsActive() - Check if location is active.
+* SetRenderingOrder() - Set rendering order of location marker.
+* GetRenderingOrder() - Get rendering order of location marker.
+* AddData() - Add metadata to location.
+
+= Sequence Layer class =
+
+* GetController() - Get sequence controller.
+
+= Sequence Controller class =
+
+* GetSequenceId() - Get id of sequence.
+* GetSiteId() - Get id of site where sequence was sampled.
+* IsActive() - Check if sequence is active.
+* SetActive() - Set active state of sequence.
+* GetData() - Get metadata associated with sequence.
+* GetMetadataFields() - Get metadata fields.
+* GetNumericMetadataFields() - Get numeric fields for sequences.
+
+= Chart Set View class =
+
+* GetChart() - Get specified chart.
+* SetLayoutLine() - Set layout line for chart set.
+* IsLayoutLine() - Check if a layout line has been specified for the chart set.
+* GetLayoutLineVisibility() - Get visibility of layout line.
+* SetLayoutLineVisibility() - Set visibility of layout line.
+* SetLayout() - Set layout style.
+* GetLayout() - Get layout style.
+* UpdateCharts() - Update chart to reflect any changes in the underlying data (e.g., changed active sequences).
+
+= Chart View class =
+
+* GetVisibility() - Get visibility of chart.
+* SetVisibility() - Set visibility of chart.
+* GetDepth() - Get depth of chart (controls rendering order).
+* SetDepth() - Set depth of chart (controls rendering order).
+* GetWidth() - Get width or diameter of chart.
+* SetWidth() - Set width or diameter of chart.
+* GetHeight() - Get height of chart.
+* SetHeight() - Set height of chart.
+* GetBorderSize() - Get border size of chart.
+* SetBorderSize() - Set border size of chart.
+* GetWedgeBorders() - Get wedge border size.
+* SetWedgeBorders() - Set wedge border size.
+* GetSizeProportionalToSeq() - Get flag indicating if chart size should be proportional to sequence count.
+* SetSizeProportionalToSeq() - Set flag indicating if chart size should be proportional to sequence count.
+* GetMinSize() - Get minimum allowed size of chart.
+* SetMinSize() - Set minimum allowed size of chart.
+* GetMaxSize() - Get maximum allowed size of chart.
+* SetMaxSize() - Set maximum allowed size of chart.
+* GetAdjustedSize() - Get adjusted chart size based on number of sequences.
+* SetNormalizedNumSeq() - Set normalized number of sequences for this chart.
+* SetField() - Set field used to create chart.
+* GetField() - Get field used to create chart.
+* GetNames() - Get name of all category.
+* GetPercentage() - Get percentage of sequences assigned to the specified category.
+* SetChartType() - Set type of chart to generate.
+* GetChartType() - Get type of chart to generate.
+* SetAssignToOther() - Set proportion for which a category will be assigned to the 'Other' category.
+* GetAssignToOther() - Get proportion for which a category will be assigned to the 'Other' category.
+* SetCentre() - Set centre of chart.
+* GetCentre() - Get centre of chart.
+* GetLocationPos() - Get position of associated location.
+* SetScreenPos() - Set position of chart in screen coordinates.
+* GetScreenPos() - Get position of chart in screen coordinates.
+* SetLabelBindToChart() - Set flag indicating if labels should be bound to charts.
+* GetLabelBindToChart() - Get flag indicating if labels should be bound to charts.
+* SetLabel() - Set chart label.
+* GetLabel() - Get chart label.
+* UpdateChart() - Update chart to reflect any changes in the underlying data (e.g., changed active sequences).
+
+= Visual Label class =
+
+* GetText() - Get text of label.
+* GetColour() - Get colour of label font.
+* GetSize() - Get size of label font.
+* GetVisibility() - Get visibility of label.
+* GetGridPosition() - Get grid coordinates of label.
+* GetScreenPosition() - Get screen coordinates of label.
+* GetRotateLabel() - Get flag indicating if text should be rotated onto the plane.
+* GetRotateZ() - Get flag indicating if text should rotate to remain horizontal.
+* GetRenderingStyle() - Get rendering style of label.
+* SetText() - Set text of label.
+* SetColour() - Set colour of label font.
+* SetSize() - Set size of label font.
+* SetVisibility() - Set visibility of label.
+* SetGridPosition() - Set grid position of label.
+* SetScreenPosition() - Set screen position of label.
+* SetRenderingStyle() - Set rendering style of label.
+
+= Visual Marker class =
+
+* GetPosition() - Get position of marker.
+* GetShape() - Get shape of marker.
+* GetRotation() - Get rotation of marker.
+* GetDepth() - Get depth of marker.
+* GetRenderingStyle() - Get rendering style of marker.
+* GetColour() - Get colour of marker.
+* GetSize() - Get size of marker.
+* GetVisibility() - Get visibility of marker.
+* GetRenderingOrder() - Get rendering order of marker.
+* GetBorderSize() - Get border size of marker.
+* SetPosition() - Set position of marker.
+* SetShape() - Set shape of marker.
+* SetRotation() - Set rotation of marker.
+* SetDepth() - Set depth of marker.
+* SetRenderingStyle() - Set rendering style of marker.
+* SetColour() - Set colour of marker.
+* SetSize() - Set size of marker.
+* SetVisibility() - Set visibility of marker.
+* SetRenderingOrder() - Set rendering order of marker.
+* SetBorderSize() - Set border size of marker.
+
+= Visual Line class =
+
+* GetColour() - Get colour of line.
+* GetThickness() - Get thickness of line.
+* GetVisibility() - Get visibility of line.
+* GetLineStyle() - Get style of line.
+* GetStartPt() - Get start point of line.
+* GetEndPt() - Get end point of line.
+* SetColour() - Set colour of line.
+* SetThickness() - Set thickness of line.
+* SetVisibility() - Set visibility of line.
+* SetLineStyle() - Set style of line.
+* SetStartPt() - Set start point of line.
+* SetEndPt() - Set end point of line.
+* GetLine() - Get line.
+* SetLine() - Set line.
+* GetDepth() - Get depth of line (determines rendering order).
+* SetDepth() - Set depth of line (determines rendering order).
+
+= Colour class =
+
+* GetRed() - Get red channel.
+* SetRed() - Set red channel.
+* GetGreen() - Get green channel.
+* SetGreen() - Set green channel.
+* GetBlue() - Get blue channel.
+* SetBlue() - Set blue channel.
+* GetAlpha() - Get alpha channel.
+* SetAlpha() - Set alpha channel.
+* SetRGBA() - Set new colour.
+
+= Colour Map Base class =
+
+* GetColour() - Get colour at specified index.
+* GetInterpolatedColour() - Interpolate colour from colour map.
+* GetName() - Get name of colour map.
+* GetExtendedName() - Get name of colour map with either 'Continuous:' or 'Discrete:' prefixed to it.
+* GetSize() - Get size of colour map.
+* GetType() - Get type of colour map.
+
+= Discrete Colour Map class =
+
+* GetColourMap() - Get colour map with the provided name.
+* GetColourMapNames() - Get name of all colour maps.
+* GetColourMapDiscreteNames() - Get name of all discrete colour maps.
+* GetColourMapContinuousNames() - Get name of all continuous colour maps.
+
+= Point3D class =
+
+* Length() - Distance from origin to point.
+* SquaredLength() - Squared distance from origin to point.
+* Offset() - Create new point offset by the specified amount.
+* Normalize() - Normalize point (vector) to unit length.
+* Cross() - Calculate cross product between two points (vectors).
+* Dot() - Calculate dot product between two points (vectors).
+* Angle() - Calculate angle between two points (vectors).
+* x - Get x position of point.
+* y - Get y position of point.
+* z - Get z position of point.
+
+= GeoCoord class =
+
+* easting - Get easting or longitudinal position of location.
+* northing - Get northing or latitudinal position of location.
+* longitude - Get easting or longitudinal position of location.
+* latitude - Get northing or latitudinal position of location.
+
+= Line3D class =
+
+* Offset() - New line offset by the specified amount.
+* start - Start point of line.
+* end - End point of line.
+* startId - General purpose label associated with start point.
+* endId - General purpose label associated with end point.
+
+= Box2D class =
+
+* x1 - Lower, left x-coordinate of box.
+* y1 - Lower, left y-coordinate of box.
+* dx - Width of bounding box.
+* dy - Height of bounding box.
+
+= Linear Results class =
+
+* angle() - Angle of geographic layout line in degrees.
+* numCrossings() - Number of crossings which occurs for this layout lines.

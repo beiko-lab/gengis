@@ -1,0 +1,6 @@
+This directory contains a collection of developer documentation related to the GenGIS project.  
+
+Please feel free to use and update the information in this directory.
+
+Good luck!
+TM

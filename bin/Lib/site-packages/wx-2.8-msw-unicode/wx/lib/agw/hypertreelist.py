@@ -1,0 +1,3244 @@
+# --------------------------------------------------------------------------------- #
+# HYPERTREELIST wxPython IMPLEMENTATION
+# Inspired By And Heavily Based On wx.gizmos.TreeListCtrl.
+#
+# Andrea Gavana, @ 08 May 2006
+# Latest Revision: 15 Oct 2008, 17.00 GMT
+#
+#
+# TODO List
+#
+# Almost All The Features Of wx.gizmos.TreeListCtrl Are Available, And There Is
+# Practically No Limit In What Could Be Added To This Class. The First Things
+# That Comes To My Mind Are:
+#
+# 1. Add Support For 3-State CheckBoxes (Is That Really Useful?).
+#
+# 2. Try To Implement A More Flicker-Free Background Image In Cases Like
+#    Centered Or Stretched Image (Now HyperTreeList Supports Only Tiled
+#    Background Images).
+#
+# 3. Try To Mimic Windows wx.TreeCtrl Expanding/Collapsing behaviour: HyperTreeList
+#    Suddenly Expands/Collapses The Nodes On Mouse Click While The Native Control
+#    Has Some Kind Of "Smooth" Expanding/Collapsing, Like A Wave. I Don't Even
+#    Know Where To Start To Do That.
+#
+# 4. Speed Up General OnPaint Things? I Have No Idea, Here HyperTreeList Is Quite
+#    Fast, But We Should See On Slower Machines.
+#
+#
+# For All Kind Of Problems, Requests Of Enhancements And Bug Reports, Please
+# Write To Me At:
+#
+# gavana@kpo.kz
+# andrea.gavana@gmail.com
+#
+# Or, Obviously, To The wxPython Mailing List!!!
+#
+#
+# End Of Comments
+# --------------------------------------------------------------------------------- #
+
+
+"""
+Description
+===========
+
+HyperTreeList is a class that mimics the behaviour of wx.gizmos.TreeListCtrl, with
+almost the same base functionalities plus some more enhancements. This class does
+not rely on the native control, as it is a full owner-drawn tree-list control.
+
+HyperTreeList is somewhat an hybrid between CustomTreeCtrl and wx.gizmos.TreeListCtrl.
+
+In addition to the standard wx.gizmos.TreeListCtrl behaviour this class supports:
+
+* CheckBox-type items: checkboxes are easy to handle, just selected or unselected
+  state with no particular issues in handling the item's children;
+
+* RadioButton-type items: since I elected to put radiobuttons in HyperTreeList, I
+  needed some way to handle them, that made sense. So, I used the following approach:
+     - All peer-nodes that are radiobuttons will be mutually exclusive. In other words,
+       only one of a set of radiobuttons that share a common parent can be checked at
+       once. If a radiobutton node becomes checked, then all of its peer radiobuttons
+       must be unchecked.
+     - If a radiobutton node becomes unchecked, then all of its child nodes will become
+       inactive.
+
+* Hyperlink-type items: they look like an hyperlink, with the proper mouse cursor on
+  hovering.
+
+* Multiline text items.
+
+* Enabling/disabling items (together with their plain or grayed out icons).
+
+* Whatever non-toplevel widget can be attached next to a tree item.
+
+* Whatever non-toplevel widget can be attached next to a list item.
+
+* Column headers are fully customizable in terms of icons, colour, font, alignment etc...
+
+* Default selection style, gradient (horizontal/vertical) selection style and Windows
+  Vista selection style.
+
+* Customized drag and drop images built on the fly.
+
+* Setting the HyperTreeList item buttons to a personalized imagelist.
+
+* Setting the HyperTreeList check/radio item icons to a personalized imagelist.
+
+* Changing the style of the lines that connect the items (in terms of wx.Pen styles).
+
+* Using an image as a HyperTreeList background (currently only in "tile" mode).
+
+And a lot more. Check the demo for an almost complete review of the functionalities.
+
+
+Base Functionalities
+====================
+
+HyperTreeList supports all the wx.TreeCtrl styles, except:
+  - TR_EXTENDED: supports for this style is on the todo list (Am I sure of this?).
+
+Plus it has 3 more styles to handle checkbox-type items:
+  - TR_AUTO_CHECK_CHILD : automatically checks/unchecks the item children;
+  - TR_AUTO_CHECK_PARENT : automatically checks/unchecks the item parent;
+  - TR_AUTO_TOGGLE_CHILD: automatically toggles the item children.
+
+All the methods available in wx.gizmos.TreeListCtrl are also available in HyperTreeList.
+
+
+Events
+======
+
+All the events supported by wx.gizmos.TreeListCtrl are also available in HyperTreeList,
+with a few exceptions:
+
+  - EVT_TREE_GET_INFO (don't know what this means);
+  - EVT_TREE_SET_INFO (don't know what this means);
+  - EVT_TREE_ITEM_MIDDLE_CLICK (not implemented, but easy to add);
+  - EVT_TREE_STATE_IMAGE_CLICK: no need for that, look at the checking events below.
+
+Plus, HyperTreeList supports the events related to the checkbutton-type items:
+
+  - EVT_TREE_ITEM_CHECKING: an item is being checked;
+  - EVT_TREE_ITEM_CHECKED: an item has been checked.
+
+And to hyperlink-type items:
+
+  - EVT_TREE_ITEM_HYPERLINK: an hyperlink item has been clicked (this event is sent
+    after the EVT_TREE_SEL_CHANGED event).
+
+
+Supported Platforms
+===================
+
+HyperTreeList has been tested on the following platforms:
+  * Windows (Windows XP);
+
+
+Latest Revision: Andrea Gavana @ 15 Oct 2008, 22.00 GMT
+Version 0.4
+
+"""
+
+
+import wx
+import wx.gizmos
+
+from customtreectrl import CustomTreeCtrl
+from customtreectrl import DragImage, TreeEvent, GenericTreeItem
+from customtreectrl import TreeRenameTimer as TreeListRenameTimer
+
+# Version Info
+__version__ = "0.4"
+
+# --------------------------------------------------------------------------
+# Constants
+# --------------------------------------------------------------------------
+
+_NO_IMAGE = -1
+
+_DEFAULT_COL_WIDTH = 100
+_LINEHEIGHT = 10
+_LINEATROOT = 5
+_MARGIN = 2
+_MININDENT = 16
+_BTNWIDTH = 9
+_BTNHEIGHT = 9
+_EXTRA_WIDTH = 4
+_EXTRA_HEIGHT = 4
+_HEADER_OFFSET_X = 1
+_HEADER_OFFSET_Y = 1
+
+_DRAG_TIMER_TICKS = 250   # minimum drag wait time in ms
+_FIND_TIMER_TICKS = 500   # minimum find wait time in ms
+_RENAME_TIMER_TICKS = 250 # minimum rename wait time in ms
+
+# --------------------------------------------------------------------------
+# Additional HitTest style
+# --------------------------------------------------------------------------
+TREE_HITTEST_ONITEMCHECKICON  = 0x4000
+
+
+class TreeListColumnInfo(object):
+
+    def __init__(self, input="", width=_DEFAULT_COL_WIDTH, flag=wx.ALIGN_LEFT,
+                 image=-1, shown=True, colour=None, edit=False):
+
+        if type(input) == type(""):
+            self._text = input
+            self._width = width
+            self._flag = flag
+            self._image = image
+            self._selected_image = -1
+            self._shown = shown
+            self._edit = edit
+            self._font = wx.SystemSettings_GetFont(wx.SYS_DEFAULT_GUI_FONT)
+            if colour is None:
+                self._colour = wx.SystemSettings_GetColour(wx.SYS_COLOUR_WINDOWTEXT)
+                
+        else:
+    
+            self._text = input._text
+            self._width = input._width
+            self._flag = input._flag
+            self._image = input._image
+            self._selected_image = input._selected_image
+            self._shown = input._shown
+            self._edit = input._edit
+            self._colour = input._colour
+            self._font = input._font
+    
+
+    # get/set
+    def GetText(self):
+
+        return self._text
+
+    
+    def SetText(self, text):
+
+        self._text = text
+        return self
+
+
+    def GetWidth(self):
+
+        return self._width 
+
+
+    def SetWidth(self, width):
+
+        self._width = width
+        return self
+
+
+    def GetAlignment(self):
+
+        return self._flag
+
+    
+    def SetAlignment(self, flag):
+
+        self._flag = flag
+        return self 
+
+
+    def GetColour(self):
+
+        return self._colour
+
+
+    def SetColour(self, colour):
+
+        self._colour = colour
+        return self
+        
+
+    def GetImage(self):
+
+        return self._image 
+
+
+    def SetImage(self, image):
+
+        self._image = image
+        return self 
+
+
+    def GetSelectedImage(self):
+
+        return self._selected_image
+    
+
+    def SetSelectedImage(self, image):
+
+        self._selected_image = image
+        return self
+    
+
+    def IsEditable(self):
+
+        return self._edit
+
+    
+    def SetEditable(self, edit):
+        
+         self._edit = edit
+         return self 
+
+
+    def IsShown(self):
+
+        return self._shown
+
+    
+    def SetShown(self, shown):
+
+        self._shown = shown
+        return self 
+
+
+    def SetFont(self, font):
+
+        self._font = font
+        return self
+
+
+    def GetFont(self):
+
+        return self._font        
+
+
+#-----------------------------------------------------------------------------
+#  wxTreeListHeaderWindow (internal)
+#-----------------------------------------------------------------------------
+
+class TreeListHeaderWindow(wx.Window):
+
+    def __init__(self, parent, id=wx.ID_ANY, owner=None, pos=wx.DefaultPosition,
+                 size=wx.DefaultSize, style=0, name="wxtreelistctrlcolumntitles"):
+
+        wx.Window.__init__(self, parent, id, pos, size, style, name=name)
+        
+        self._owner = owner
+        self._currentCursor = wx.StockCursor(wx.CURSOR_DEFAULT)
+        self._resizeCursor = wx.StockCursor(wx.CURSOR_SIZEWE)
+        self._isDragging = False
+        self._dirty = False
+        self._total_col_width = 0
+        self._hotTrackCol = -1
+        self._columns = []
+        
+        self.Bind(wx.EVT_PAINT, self.OnPaint)
+        self.Bind(wx.EVT_MOUSE_EVENTS, self.OnMouse)
+        self.Bind(wx.EVT_SET_FOCUS, self.OnSetFocus)
+
+        self.SetBackgroundColour(wx.SystemSettings_GetColour(wx.SYS_COLOUR_BTNFACE))
+
+
+    # total width of all columns
+    def GetWidth(self):
+
+        return self._total_col_width 
+
+
+    # column manipulation
+    def GetColumnCount(self):
+
+        return len(self._columns)
+
+
+    # column information manipulation
+    def GetColumn(self, column):
+
+        if column < 0 or column >= self.GetColumnCount():
+            raise Exception("Invalid column")
+        
+        return self._columns[column]
+
+
+    def GetColumnText(self, column):
+
+        if column < 0 or column >= self.GetColumnCount():
+            raise Exception("Invalid column")
+        
+        return self._columns[column].GetText()
+
+    
+    def SetColumnText(self, column, text):
+
+        if column < 0 or column >= self.GetColumnCount():
+            raise Exception("Invalid column")
+        
+        return self._columns[column].SetText(text)
+    
+
+    def GetColumnAlignment(self, column):
+
+        if column < 0 or column >= self.GetColumnCount():
+            raise Exception("Invalid column")
+        
+        return self._columns[column].GetAlignment()
+    
+
+    def SetColumnAlignment(self, column, flag):
+
+        if column < 0 or column >= self.GetColumnCount():
+            raise Exception("Invalid column")
+        
+        return self._columns[column].SetAlignment(flag)
+    
+
+    def GetColumnWidth(self, column):
+
+        if column < 0 or column >= self.GetColumnCount():
+            raise Exception("Invalid column")
+        
+        return self._columns[column].GetWidth()
+    
+
+    def SetColumnWidth(self, column, width):
+
+        if column < 0 or column >= self.GetColumnCount():
+            raise Exception("Invalid column")
+        
+        return self._columns[column].SetWidth(width)
+
+
+    def GetColumnColour(self, column):
+
+        if column < 0 or column >= self.GetColumnCount():
+            raise Exception("Invalid column")
+        
+        return self._columns[column].GetColour()
+
+
+    def SetColumnColour(self, column, colour):
+
+        if column < 0 or column >= self.GetColumnCount():
+            raise Exception("Invalid column")
+        
+        return self._columns[column].SetColour(colour)
+
+
+    def IsColumnEditable(self, column):
+
+        if column < 0 or column >= self.GetColumnCount():
+            raise Exception("Invalid column")
+        
+        return self._columns[column].IsEditable()
+    
+
+    def IsColumnShown(self, column):
+
+        if column < 0 or column >= self.GetColumnCount():
+            raise Exception("Invalid column")
+
+        return self._columns[column].IsShown()
+    
+
+    # shift the DC origin to match the position of the main window horz
+    # scrollbar: this allows us to always use logical coords
+    def AdjustDC(self, dc):
+
+        xpix, dummy = self._owner.GetScrollPixelsPerUnit()
+        x, dummy = self._owner.GetViewStart()
+
+        # account for the horz scrollbar offset
+        dc.SetDeviceOrigin(-x * xpix, 0)
+
+
+    def OnPaint(self, event):
+
+        if wx.Platform == "__WXGTK__":
+            dc = wx.ClientDC(self)
+        else:
+            dc = wx.PaintDC(self)
+            
+        self.PrepareDC(dc)
+        self.AdjustDC(dc)
+
+        x = _HEADER_OFFSET_X
+
+        # width and height of the entire header window
+        w, h = self.GetClientSize()
+        w, dummy = self._owner.CalcUnscrolledPosition(w, 0)
+        dc.SetBackgroundMode(wx.TRANSPARENT)
+
+        numColumns = self.GetColumnCount()
+        
+        for i in xrange(numColumns):
+
+            if x >= w:
+                break
+        
+            if not self.IsColumnShown(i):
+                continue # do next column if not shown
+
+            params = wx.HeaderButtonParams()
+
+            column = self.GetColumn(i)
+            params.m_labelColour = column.GetColour()
+            params.m_labelFont = column.GetFont()
+
+            wCol = column.GetWidth()
+            flags = 0
+            rect = wx.Rect(x, 0, wCol, h)
+            x += wCol
+
+            if i == self._hotTrackCol:
+                flags |= wx.CONTROL_CURRENT
+            
+            params.m_labelText = column.GetText()
+            params.m_labelAlignment = column.GetAlignment()
+
+            image = column.GetImage()
+            imageList = self._owner.GetImageList()
+
+            if image != -1 and imageList:
+                params.m_labelBitmap = imageList.GetBitmap(image)
+
+            wx.RendererNative.Get().DrawHeaderButton(self, dc, rect, flags,
+                                                     wx.HDR_SORT_ICON_NONE, params)
+        
+        if x < w:
+            rect = wx.Rect(x, 0, w-x, h)
+            wx.RendererNative.Get().DrawHeaderButton(self, dc, rect)
+        
+
+    def DrawCurrent(self):
+
+        x1, y1 = self._currentX, 0
+        x1, y1 = self.ClientToScreen((x1, y1))
+        x2 = self._currentX-1
+        if wx.Platform == "__WXMSW__":
+            x2 += 1 # but why ????
+
+        y2 = 0
+        dummy, y2 = self._owner.GetClientSize()
+        x2, y2 = self._owner.ClientToScreen((x2, y2))
+
+        dc = wx.ScreenDC()
+        dc.SetLogicalFunction(wx.INVERT)
+        dc.SetPen(wx.Pen(wx.BLACK, 2, wx.SOLID))
+        dc.SetBrush(wx.TRANSPARENT_BRUSH)
+
+        self.AdjustDC(dc)
+        dc.DrawLine (x1, y1, x2, y2)
+        dc.SetLogicalFunction(wx.COPY)
+
+
+    def XToCol(self, x):
+
+        colLeft = 0
+        numColumns = self.GetColumnCount()
+        for col in xrange(numColumns):
+        
+            if not self.IsColumnShown(col):
+                continue 
+
+            column = self.GetColumn(col)
+
+            if x < (colLeft + column.GetWidth()):
+                 return col
+            
+            colLeft += column.GetWidth()
+        
+        return -1
+
+
+    def RefreshColLabel(self, col):
+
+        if col >= self.GetColumnCount():
+            return
+        
+        x = idx = width = 0
+        while idx <= col:
+            
+            if not self.IsColumnShown(idx):
+                continue 
+
+            column = self.GetColumn(idx)
+            x += width
+            width = column.GetWidth()
+            idx += 1
+
+        x, dummy = self._owner.CalcScrolledPosition(x, 0)
+        self.RefreshRect(wx.Rect(x, 0, width, self.GetSize().GetHeight()))
+
+        
+    def OnMouse(self, event):
+
+        # we want to work with logical coords
+        x, dummy = self._owner.CalcUnscrolledPosition(event.GetX(), 0)
+        y = event.GetY()
+
+        if event.Moving():
+        
+            col = self.XToCol(x)
+            if col != self._hotTrackCol:
+            
+                # Refresh the col header so it will be painted with hot tracking
+                # (if supported by the native renderer.)
+                self.RefreshColLabel(col)
+
+                # Also refresh the old hot header
+                if self._hotTrackCol >= 0:
+                    self.RefreshColLabel(self._hotTrackCol)
+
+                self._hotTrackCol = col
+            
+        if event.Leaving() and self._hotTrackCol >= 0:
+        
+            # Leaving the window so clear any hot tracking indicator that may be present
+            self.RefreshColLabel(self._hotTrackCol)
+            self._hotTrackCol = -1
+        
+        if self._isDragging:
+
+            self.SendListEvent(wx.wxEVT_COMMAND_LIST_COL_DRAGGING, event.GetPosition())
+
+            # we don't draw the line beyond our window, but we allow dragging it
+            # there
+            w, dummy = self.GetClientSize()
+            w, dummy = self._owner.CalcUnscrolledPosition(w, 0)
+            w -= 6
+
+            # erase the line if it was drawn
+            if self._currentX < w:
+                self.DrawCurrent()
+
+            if event.ButtonUp():
+                self._isDragging = False
+                if self.HasCapture():
+                    self.ReleaseMouse()
+                self._dirty = True
+                self.SetColumnWidth(self._column, self._currentX - self._minX)
+                self.Refresh()
+                self.SendListEvent(wx.wxEVT_COMMAND_LIST_COL_END_DRAG, event.GetPosition())
+            else:
+                self._currentX = max(self._minX + 7, x)
+
+                # draw in the new location
+                if self._currentX < w:
+                    self.DrawCurrent()
+            
+        else: # not dragging
+
+            self._minX = 0
+            hit_border = False
+
+            # end of the current column
+            xpos = 0
+
+            # find the column where this event occured
+            countCol = self.GetColumnCount()
+
+            for column in xrange(countCol):
+
+                if not self.IsColumnShown(column):
+                    continue # do next if not shown
+
+                xpos += self.GetColumnWidth(column)
+                self._column = column
+                if abs (x-xpos) < 3 and y < 22:
+                    # near the column border
+                    hit_border = True
+                    break
+                
+                if x < xpos:
+                    # inside the column
+                    break
+            
+                self._minX = xpos
+            
+            if event.LeftDown() or event.RightUp():
+                if hit_border and event.LeftDown():
+                    self._isDragging = True
+                    self.CaptureMouse()
+                    self._currentX = x
+                    self.DrawCurrent()
+                    self.SendListEvent(wx.wxEVT_COMMAND_LIST_COL_BEGIN_DRAG, event.GetPosition())
+                else: # click on a column
+                    evt = (event.LeftDown() and [wx.wxEVT_COMMAND_LIST_COL_CLICK] or [wx.wxEVT_COMMAND_LIST_COL_RIGHT_CLICK])[0]
+                    self.SendListEvent(evt, event.GetPosition())
+                
+            elif event.LeftDClick() and hit_border:
+                self.SetColumnWidth(self._column, self._owner.GetBestColumnWidth(self._column))
+                self.Refresh()
+
+            elif event.Moving():
+                
+                if hit_border:
+                    setCursor = self._currentCursor == wx.STANDARD_CURSOR
+                    self._currentCursor = self._resizeCursor
+                else:
+                    setCursor = self._currentCursor != wx.STANDARD_CURSOR
+                    self._currentCursor = wx.STANDARD_CURSOR
+                
+                if setCursor:
+                    self.SetCursor(self._currentCursor)
+    
+
+    def OnSetFocus(self, event):
+
+        self._owner.SetFocus()
+
+
+    def SendListEvent(self, evtType, pos):
+
+        parent = self.GetParent()
+        le = wx.ListEvent(evtType, parent.GetId())
+        le.SetEventObject(parent)
+        le.m_pointDrag = pos
+
+        # the position should be relative to the parent window, not
+        # this one for compatibility with MSW and common sense: the
+        # user code doesn't know anything at all about this header
+        # window, so why should it get positions relative to it?
+        le.m_pointDrag.y -= self.GetSize().y
+        le.m_col = self._column
+        parent.GetEventHandler().ProcessEvent(le)
+
+
+    def AddColumnInfo(self, colInfo):
+
+        self._columns.append(colInfo)
+        self._total_col_width += colInfo.GetWidth()
+        self._owner.AdjustMyScrollbars()
+        self._owner._dirty = True
+
+
+    def AddColumn(self, text, width=_DEFAULT_COL_WIDTH, flag=wx.ALIGN_LEFT,
+                  image=-1, shown=True, colour=None, edit=False):
+
+        colInfo = TreeListColumnInfo(text, width, flag, image, shown, colour, edit)
+        self.AddColumnInfo(colInfo)
+
+
+    def SetColumnWidth(self, column, width):
+        
+        if column < 0 or column >= self.GetColumnCount():
+            raise Exception("Invalid column")
+
+        self._total_col_width -= self._columns[column].GetWidth()
+        self._columns[column].SetWidth(width)
+        self._total_col_width += width
+        self._owner.AdjustMyScrollbars()
+        self._owner._dirty = True
+
+
+    def InsertColumn(self, before, colInfo):
+
+        if before < 0 or before >= self.GetColumnCount():
+            raise Exception("Invalid column")
+        
+        self._columns.insert(before, colInfo)
+        self._total_col_width += colInfo.GetWidth()
+        self._owner.AdjustMyScrollbars()
+        self._owner._dirty = True
+
+
+    def RemoveColumn(self, column):
+
+        if column < 0 or column >= self.GetColumnCount():
+            raise Exception("Invalid column")
+        
+        self._total_col_width -= self._columns[column].GetWidth()
+        self._columns.pop(column)
+        self._owner.AdjustMyScrollbars()
+        self._owner._dirty = True
+
+
+    def SetColumn(self, column, info):
+        
+        if column < 0 or column >= self.GetColumnCount():
+            raise Exception("Invalid column")
+        
+        w = self._columns[column].GetWidth()
+        self._columns[column] = info
+        
+        if w != info.GetWidth():
+            self._total_col_width += info.GetWidth() - w
+            self._owner.AdjustMyScrollbars()
+        
+        self._owner._dirty = True
+        
+
+# ---------------------------------------------------------------------------
+# TreeListItem
+# ---------------------------------------------------------------------------
+class TreeListItem(GenericTreeItem):
+
+    def __init__(self, mainWin, parent, text=[], ct_type=0, wnd=None, image=-1, selImage=-1, data=None):
+        """
+        Default class constructor.
+        For internal use: do not call it in your code!
+        """
+
+        self._col_images = []
+        self._owner = mainWin
+
+        # We don't know the height here yet.
+        self._text_x = 0
+        
+        GenericTreeItem.__init__(self, parent, text, ct_type, wnd, image, selImage, data)        
+ 
+        self._wnd = [None]             # are we holding a window?
+        self._hidden = False
+        
+        if wnd:
+            self.SetWindow(wnd)
+
+
+    def IsHidden(self):
+        """Returns whether the item is hidden or not."""
+
+        return self._hidden
+
+
+    def Hide(self, hide):
+
+        self._hidden = hide
+        
+    
+    def DeleteChildren(self, tree):
+        """Deletes the item children."""
+
+        for child in self._children:
+            if tree:
+                tree.SendDeleteEvent(child)
+
+            child.DeleteChildren(tree)
+            
+            if child == tree._selectItem:
+                tree._selectItem = None
+
+            # We have to destroy the associated window
+            for wnd in child._wnd:
+                if wnd:
+                    wnd.Hide()
+                    wnd.Destroy()
+                    
+            child._wnd = []
+
+            if child in tree._itemWithWindow:
+                tree._itemWithWindow.remove(child)
+                
+            del child
+        
+        self._children = []
+
+
+    def HitTest(self, point, theCtrl, flags, column, level):
+
+        # for a hidden root node, don't evaluate it, but do evaluate children
+        if not theCtrl.HasFlag(wx.TR_HIDE_ROOT) or level > 0:
+
+            # reset any previous hit infos
+            flags = 0
+            column = -1
+            header_win = theCtrl._owner.GetHeaderWindow()
+
+            # check for right of all columns (outside)
+            if point.x > header_win.GetWidth():
+                return None, flags, wx.NOT_FOUND
+
+            # evaluate if y-pos is okay
+            h = theCtrl.GetLineHeight(self)
+            
+            if point.y >= self._y and point.y <= self._y + h:
+
+                maincol = theCtrl.GetMainColumn()
+
+                # check for above/below middle
+                y_mid = self._y + h/2
+                if point.y < y_mid:
+                    flags |= wx.TREE_HITTEST_ONITEMUPPERPART
+                else:
+                    flags |= wx.TREE_HITTEST_ONITEMLOWERPART
+                
+                # check for button hit
+                if self.HasPlus() and theCtrl.HasButtons():
+                    bntX = self._x - theCtrl._btnWidth2
+                    bntY = y_mid - theCtrl._btnHeight2
+                    if ((point.x >= bntX) and (point.x <= (bntX + theCtrl._btnWidth)) and
+                        (point.y >= bntY) and (point.y <= (bntY + theCtrl._btnHeight))):
+                        flags |= wx.TREE_HITTEST_ONITEMBUTTON
+                        column = maincol
+                        return self, flags, column
+
+                # check for hit on the check icons
+                wcheck = 0
+                if theCtrl._checkWidth > 0:
+                    chkX = self._text_x - theCtrl._imgWidth - 3*_MARGIN - theCtrl._btnWidth
+                    chkY = y_mid - theCtrl._checkHeight2
+                    wcheck = theCtrl._imageListNormal.GetSize(self.GetImage())[0]
+                    if ((point.x >= chkX) and (point.x <= (chkX + theCtrl._checkWidth)) and
+                        (point.y >= chkY) and (point.y <= (chkY + theCtrl._checkHeight))):                    
+                        flags |= TREE_HITTEST_ONITEMCHECKICON
+                        return self, flags, maincol
+                    
+                # check for image hit
+                if theCtrl._imgWidth > 0:
+                    imgX = self._text_x - theCtrl._imgWidth - _MARGIN                        
+                    imgY = y_mid - theCtrl._imgHeight2
+                    if ((point.x >= imgX) and (point.x <= (imgX + theCtrl._imgWidth)) and
+                        (point.y >= imgY) and (point.y <= (imgY + theCtrl._imgHeight))):
+                        flags |= wx.TREE_HITTEST_ONITEMICON
+                        column = maincol
+                        return self, flags, column
+                    
+                # check for label hit
+                if ((point.x >= self._text_x) and (point.x <= (self._text_x + self._width))):
+                    flags |= wx.TREE_HITTEST_ONITEMLABEL
+                    column = maincol
+                    return self, flags, column
+                
+                # check for indent hit after button and image hit
+                if point.x < self._x:
+                    flags |= wx.TREE_HITTEST_ONITEMINDENT
+                    column = -1 # considered not belonging to main column
+                    return self, flags, column
+                
+                # check for right of label
+                end = 0
+                for i in xrange(maincol):
+                    end += header_win.GetColumnWidth(i)
+                    if ((point.x > (self._text_x + self._width)) and (point.x <= end)):
+                        flags |= wx.TREE_HITTEST_ONITEMRIGHT
+                        column = -1 # considered not belonging to main column
+                        return self, flags, column
+                
+                # else check for each column except main
+                x = 0
+                for j in xrange(theCtrl.GetColumnCount()):
+                    if not header_win.IsColumnShown(j):
+                        continue
+                    w = header_win.GetColumnWidth(j)
+                    if ((j != maincol) and (point.x >= x and point.x < x+w)):
+                        flags |= wx.TREE_HITTEST_ONITEMCOLUMN
+                        column = j
+                        return self, flags, column
+                    
+                    x += w
+                
+                # no special flag or column found
+                return self, flags, column
+
+            # if children not expanded, return no item
+            if not self.IsExpanded():
+                return None, flags, wx.NOT_FOUND
+        
+        # in any case evaluate children
+        for child in self._children:
+            hit, flags, column = child.HitTest(point, theCtrl, flags, column, level+1)
+            if hit:
+                return hit, flags, column
+        
+        # not found
+        return None, flags, wx.NOT_FOUND
+
+
+    def GetText(self, column=None):
+
+        column = (column is not None and [column] or [self._owner.GetMainColumn()])[0]
+        
+        if len(self._text) > 0:
+        
+            if self._owner.IsVirtual():
+                return self._owner.GetItemText(self._data, column)
+            else:
+                return self._text[column]
+        
+        return ""
+    
+
+    def GetImage(self, column=None, which=wx.TreeItemIcon_Normal):
+
+        column = (column is not None and [column] or [self._owner.GetMainColumn()])[0]
+
+        if column == self._owner.GetMainColumn():
+            return self._images[which]
+        
+        if column < len(self._col_images):
+            return self._col_images[column]
+
+        return _NO_IMAGE
+
+
+    def GetCurrentImage(self, column=None):
+        """Returns the current item image."""
+
+        column = (column is not None and [column] or [self._owner.GetMainColumn()])[0]
+
+        if column != self._owner.GetMainColumn():
+            return self.GetImage(column)
+        
+        image = GenericTreeItem.GetCurrentImage(self)
+        return image
+    
+
+    def SetText(self, column, text):
+
+        column = (column is not None and [column] or [self._owner.GetMainColumn()])[0]
+    
+        if column < len(self._text):
+            self._text[column] = text
+        elif column < self._owner.GetColumnCount():
+            howmany = self._owner.GetColumnCount()
+            for i in xrange(len(self._text)):
+                if i >= howmany:
+                    break
+                self._text.append("")
+            self._text[column] = text
+        
+
+    def SetImage(self, column, image, which):
+
+        column = (column is not None and [column] or [self._owner.GetMainColumn()])[0]
+    
+        if column == self._owner.GetMainColumn():
+            self._images[which] = image
+        elif column < len(self._col_images):
+            self._col_images[column] = image
+        elif column < self._owner.GetColumnCount():
+            howmany = self._owner.GetColumnCount()
+            for i in xrange(column+1):
+                if i >= howmany:
+                    break
+                self._col_images.append(_NO_IMAGE)
+
+            self._col_images[column] = image
+        
+    
+    def GetTextX(self):
+
+        return self._text_x
+
+    
+    def SetTextX(self, text_x):
+
+        self._text_x = text_x 
+
+
+    def SetWindow(self, wnd, column=None):
+        """Sets the window associated to the item."""
+
+        column = (column is not None and [column] or [self._owner.GetMainColumn()])[0]
+
+        if type(self._wnd) != type([]):
+            self._wnd = [self._wnd]
+
+        if column < len(self._wnd):
+            self._wnd[column] = wnd
+        elif column < self._owner.GetColumnCount():
+            howmany = self._owner.GetColumnCount()
+            for i in xrange(len(self._wnd)+1):
+                if i >= howmany:
+                    break
+                self._wnd.append(None)
+            self._wnd[column] = wnd
+
+        if self not in self._owner._itemWithWindow:
+            self._owner._itemWithWindow.append(self)
+            
+        # We have to bind the wx.EVT_SET_FOCUS for the associated window
+        # No other solution to handle the focus changing from an item in
+        # HyperTreeList and the window associated to an item
+        # Do better strategies exist?
+        wnd.Bind(wx.EVT_SET_FOCUS, self.OnSetFocus)
+        
+        # We don't show the window if the item is collapsed
+        if self._isCollapsed:
+            wnd.Show(False)
+
+        # The window is enabled only if the item is enabled                
+        wnd.Enable(self._enabled)
+        
+
+    def OnSetFocus(self, event):
+        """Handles the wx.EVT_SET_FOCUS event for the associated window."""
+
+        treectrl = self._owner
+        select = treectrl.GetSelection()
+
+        # If the window is associated to an item that currently is selected
+        # (has focus) we don't kill the focus. Otherwise we do it.
+        if select != self:
+            treectrl._hasFocus = False
+        else:
+            treectrl._hasFocus = True
+            
+        event.Skip()
+
+        
+    def GetWindow(self, column=None):
+        """Returns the window associated to the item."""
+
+        column = (column is not None and [column] or [self._owner.GetMainColumn()])[0]
+        
+        if column >= len(self._wnd):
+            return None
+
+        return self._wnd[column]        
+
+
+    def DeleteWindow(self, column=None):
+        """Deletes the window associated to the item (if any)."""
+
+        column = (column is not None and [column] or [self._owner.GetMainColumn()])[0]
+
+        if column >= len(self._wnd):
+            return
+        
+        if self._wnd[column]:
+            self._wnd[column].Destroy()
+            self._wnd[column] = None
+        
+
+    def GetWindowEnabled(self, column=None):
+        """Returns whether the associated window is enabled or not."""
+
+        column = (column is not None and [column] or [self._owner.GetMainColumn()])[0]
+
+        if not self._wnd[column]:
+            raise Exception("\nERROR: This Item Has No Window Associated At Column %s"%column)
+
+        return self._wnd[column].IsEnabled()
+
+
+    def SetWindowEnabled(self, enable=True, column=None):
+        """Sets whether the associated window is enabled or not."""
+
+        column = (column is not None and [column] or [self._owner.GetMainColumn()])[0]
+
+        if not self._wnd[column]:
+            raise Exception("\nERROR: This Item Has No Window Associated At Column %s"%column)
+
+        self._wnd[column].Enable(enable)
+
+
+    def GetWindowSize(self, column=None):
+        """Returns the associated window size."""
+
+        column = (column is not None and [column] or [self._owner.GetMainColumn()])[0]
+        
+        if not self._wnd[column]:
+            raise Exception("\nERROR: This Item Has No Window Associated At Column %s"%column)
+        
+        return self._wnd[column].GetSize()   
+
+
+#-----------------------------------------------------------------------------
+# EditTextCtrl (internal)
+#-----------------------------------------------------------------------------
+
+class EditTextCtrl(wx.TextCtrl):
+
+    def __init__(self, parent, id=wx.ID_ANY, item=None, column=None, owner=None,
+                 value="", pos=wx.DefaultPosition, size=wx.DefaultSize, style=0,
+                 validator=wx.DefaultValidator, name="edittextctrl"):
+
+        self._owner = owner
+        self._startValue = value
+        self._finished = False
+        self._itemEdited = item
+
+        column = (column is not None and [column] or [self._owner.GetMainColumn()])[0]
+        
+        self._column = column
+
+        w = self._itemEdited.GetWidth()
+        h = self._itemEdited.GetHeight()
+
+        wnd = self._itemEdited.GetWindow(column)
+        if wnd:
+            w = w - self._itemEdited.GetWindowSize(column)[0]
+            h = 0
+
+        x = item.GetX()
+
+        if column > 0:
+            x = _HEADER_OFFSET_X
+            
+        for i in xrange(column):
+            if not self._owner.GetParent()._header_win.IsColumnShown(i):
+                continue # do next column if not shown
+            
+            col = self._owner.GetParent()._header_win.GetColumn(i)
+            wCol = col.GetWidth()
+            x += wCol
+        
+        x, y = self._owner.CalcScrolledPosition(x+2, item.GetY())
+
+        image_w = image_h = wcheck = 0
+        image = item.GetCurrentImage(column)
+
+        if image != _NO_IMAGE:
+    
+            if self._owner._imageListNormal:
+                image_w, image_h = self._owner._imageListNormal.GetSize(image)
+                image_w += 2*_MARGIN
+        
+            else:
+        
+                raise Exception("\n ERROR: You Must Create An Image List To Use Images!")
+
+        if column > 0:
+            checkimage = item.GetCurrentCheckedImage()
+            if checkimage is not None:
+                wcheck, hcheck = self._owner._imageListCheck.GetSize(checkimage)
+                wcheck += 2*_MARGIN
+
+        if wnd:
+            h = max(hcheck, image_h)
+            dc = wx.ClientDC(self._owner)
+            h = max(h, dc.GetTextExtent("Aq")[1])
+            h = h + 2
+            
+        # FIXME: what are all these hardcoded 4, 8 and 11s really?
+        x += image_w + wcheck
+        w -= image_w + 2*_MARGIN + wcheck
+
+        wx.TextCtrl.__init__(self, parent, id, value, wx.Point(x, y),
+                             wx.Size(w + 15, h), style|wx.SIMPLE_BORDER, validator, name)
+        
+        if wx.Platform == "__WXMAC__":
+            self.SetFont(owner.GetFont())
+            bs = self.GetBestSize()
+            self.SetSize((-1, bs.height))
+                    
+        self.Bind(wx.EVT_CHAR, self.OnChar)
+        self.Bind(wx.EVT_KEY_UP, self.OnKeyUp)
+        self.Bind(wx.EVT_KILL_FOCUS, self.OnKillFocus)
+
+
+    def AcceptChanges(self):
+        """Accepts/refuses the changes made by the user."""
+
+        value = self.GetValue()
+
+        if value == self._startValue:
+            # nothing changed, always accept
+            # when an item remains unchanged, the owner
+            # needs to be notified that the user decided
+            # not to change the tree item label, and that
+            # the edit has been cancelled
+            self._owner.OnRenameCancelled()
+            return True
+
+        if not self._owner.OnRenameAccept(value):
+            # vetoed by the user
+            return False
+        
+        return True
+
+
+    def Finish(self):
+        """Finish editing."""
+
+        if not self._finished:
+        
+            self._finished = True
+            self._owner.SetFocusIgnoringChildren()
+            self._owner.ResetTextControl()
+        
+
+    def OnChar(self, event):
+        """Handles the wx.EVT_CHAR event for TreeTextCtrl."""
+
+        keycode = event.GetKeyCode()
+
+        if keycode == wx.WXK_RETURN:
+            self._aboutToFinish = True
+            # Notify the owner about the changes
+            self.AcceptChanges()
+            # Even if vetoed, close the control (consistent with MSW)
+            wx.CallAfter(self.Finish)
+
+        elif keycode == wx.WXK_ESCAPE:
+            self.StopEditing()
+
+        else:
+            event.Skip()
+    
+
+    def OnKeyUp(self, event):
+        """Handles the wx.EVT_KEY_UP event for TreeTextCtrl."""
+
+        if not self._finished:
+
+            # auto-grow the textctrl:
+            parentSize = self._owner.GetSize()
+            myPos = self.GetPosition()
+            mySize = self.GetSize()
+            
+            sx, sy = self.GetTextExtent(self.GetValue() + "M")
+            if myPos.x + sx > parentSize.x:
+                sx = parentSize.x - myPos.x
+            if mySize.x > sx:
+                sx = mySize.x
+                
+            self.SetSize((sx, -1))
+
+        event.Skip()
+
+
+    def OnKillFocus(self, event):
+        """Handles the wx.EVT_KILL_FOCUS event for TreeTextCtrl."""
+
+        # We must let the native text control handle focus, too, otherwise
+        # it could have problems with the cursor (e.g., in wxGTK).
+        event.Skip()
+
+
+    def StopEditing(self):
+        """Suddenly stops the editing."""
+
+        self._owner.OnRenameCancelled()
+        self.Finish()
+        
+
+    def item(self):
+        """Returns the item currently edited."""
+
+        return self._itemEdited
+
+    
+# ---------------------------------------------------------------------------
+# wxTreeListMainWindow implementation
+# ---------------------------------------------------------------------------
+
+class TreeListMainWindow(CustomTreeCtrl):
+
+    def __init__(self, parent, id = wx.ID_ANY, pos=wx.DefaultPosition, size=wx.DefaultSize,
+                 style = wx.TR_DEFAULT_STYLE, validator = wx.DefaultValidator,
+                 name="wxtreelistmainwindow"):
+
+        CustomTreeCtrl.__init__(self, parent, id, pos, size, style, 0, validator, name)
+        
+        self._shiftItem = None
+        self._editItem = None
+        self._selectItem = None
+
+        self._curColumn = -1 # no current column
+        self._owner = parent
+        self._main_column = 0
+        self._dragItem = None
+
+        self._imgWidth = self._imgWidth2 = 0
+        self._imgHeight = self._imgHeight2 = 0
+        self._btnWidth = self._btnWidth2 = 0
+        self._btnHeight = self._btnHeight2 = 0
+        self._checkWidth = self._checkWidth2 = 0
+        self._checkHeight = self._checkHeight2 = 0
+        self._windowStyle = style
+
+        # TextCtrl initial settings for editable items
+        self._renameTimer = TreeListRenameTimer(self)
+        self._left_down_selection = False
+
+        self._dragTimer = wx.Timer(self)
+        self._findTimer = wx.Timer(self)
+        
+        self.Bind(wx.EVT_PAINT, self.OnPaint)
+        self.Bind(wx.EVT_MOUSE_EVENTS, self.OnMouse)
+        self.Bind(wx.EVT_SCROLLWIN, self.OnScroll)
+
+        # Sets the focus to ourselves: this is useful if you have items
+        # with associated widgets.
+        self.SetFocus()
+
+
+    def IsVirtual(self):
+
+        return self.HasFlag(wx.gizmos.TR_VIRTUAL)
+
+
+#-----------------------------------------------------------------------------
+# functions to work with tree items
+#-----------------------------------------------------------------------------
+
+    def GetItemImage(self, item, column=None, which=wx.TreeItemIcon_Normal):
+
+        column = (column is not None and [column] or [self._main_column])[0]
+        return item.GetImage(column, which)
+
+
+    def SetItemImage(self, item, image, column=None, which=wx.TreeItemIcon_Normal):
+
+        column = (column is not None and [column] or [self._main_column])[0]
+        
+        item.SetImage(column, image, which)
+        dc = wx.ClientDC(self)
+        self.CalculateSize(item, dc)
+        self.RefreshLine(item)
+
+
+    def GetItemWindowEnabled(self, item, column=None):
+        """Returns whether the window associated to the item is enabled."""
+
+        if not item:
+            raise Exception("\nERROR: Invalid Item")
+        
+        return item.GetWindowEnabled(column)
+
+
+    def GetItemWindow(self, item, column=None):
+        """Returns the window associated to the item (if any)."""
+
+        if not item:
+            raise Exception("\nERROR: Invalid Item")
+        
+        return item.GetWindow(column)
+
+
+    def SetItemWindow(self, item, window, column=None):    
+        """Sets the window associated to the item."""
+
+        item.SetWindow(window, column)
+        if window:
+            self._hasWindows = True
+        
+
+    def SetItemWindowEnabled(self, item, enable=True, column=None):
+        """Enables/disables the window associated to the item."""
+
+        if not item:
+            raise Exception("\nERROR: Invalid Item")
+        
+        item.SetWindowEnabled(enable, column)
+
+
+# ----------------------------------------------------------------------------
+# navigation
+# ----------------------------------------------------------------------------
+
+    def IsItemVisible(self, item):
+        """Returns whether the item is visible or not."""
+
+        if not item:
+            raise Exception("\nERROR: Invalid Tree Item. ")
+
+        # An item is only visible if it's not a descendant of a collapsed item
+        parent = item.GetParent()
+
+        while parent:
+        
+            if not parent.IsExpanded():
+                return False
+            
+            parent = parent.GetParent()
+        
+        startX, startY = self.GetViewStart()
+        clientSize = self.GetClientSize()
+
+        rect = self.GetBoundingRect(item)
+        
+        if not rect:
+            return False
+        if rect.GetWidth() == 0 or rect.GetHeight() == 0:
+            return False
+        if rect.GetBottom() < 0 or rect.GetTop() > clientSize.y:
+            return False
+        if rect.GetRight() < 0 or rect.GetLeft() > clientSize.x:
+            return False
+
+        return True
+
+
+    def GetPrevChild(self, item, cookie):
+
+        if not item:
+            raise Exception("\nERROR: Invalid Tree Item. ")
+
+        children = item.GetChildren()
+
+        if cookie >= 0:
+            
+            return children[cookie], cookie-1
+        
+        else:
+        
+            # there are no more of them
+            return None, cookie
+
+
+    def GetFirstExpandedItem(self):
+
+        return self.GetNextExpanded(self.GetRootItem())
+
+
+    def GetNextExpanded(self, item):
+
+        return self.GetNext(item, False)
+
+
+    def GetPrevExpanded(self, item):
+
+        return self.GetPrev(item, False)
+
+
+    def GetFirstVisibleItem(self, fullRow):
+
+        return self.GetNextVisible(self.GetRootItem(), fullRow)
+
+
+    def GetPrevVisible(self, item, fullRow=True):
+
+        i = self.GetNext(item, False)
+        while i:
+            if self.IsItemVisible(i, fullRow):
+                return i
+            i = self.GetPrev(i, False)
+        
+        return None
+
+
+# ----------------------------------------------------------------------------
+# operations
+# ----------------------------------------------------------------------------
+
+    def DoInsertItem(self, parent, previous, text, ct_type=0, wnd=None, image=-1, selImage=-1, data=None):
+        """Actually inserts an item in the tree."""
+
+        self._dirty = True # do this first so stuff below doesn't cause flicker
+        arr = [""]*self.GetColumnCount()
+        arr[self._main_column] = text
+        
+        if not parent:
+            # should we give a warning here?
+            return self.AddRoot(text, ct_type, wnd, image, selImage, data)
+        
+        self._dirty = True     # do this first so stuff below doesn't cause flicker
+
+        item = TreeListItem(self, parent, arr, ct_type, wnd, image, selImage, data)
+        
+        if wnd is not None:
+            self._hasWindows = True
+            self._itemWithWindow.append(item)
+        
+        parent.Insert(item, previous)
+
+        return item
+
+
+    def AddRoot(self, text, ct_type=0, wnd=None, image=-1, selImage=-1, data=None):
+        """Adds a root to the HyperTreeList. Only one root must exist."""
+
+        if self._anchor:
+            raise Exception("\nERROR: Tree Can Have Only One Root")
+
+        if wnd is not None and not (self._windowStyle & wx.TR_HAS_VARIABLE_ROW_HEIGHT):
+            raise Exception("\nERROR: In Order To Append/Insert Controls You Have To Use The Style TR_HAS_VARIABLE_ROW_HEIGHT")
+
+        if text.find("\n") >= 0 and not (self._windowStyle & wx.TR_HAS_VARIABLE_ROW_HEIGHT):
+            raise Exception("\nERROR: In Order To Append/Insert A MultiLine Text You Have To Use The Style TR_HAS_VARIABLE_ROW_HEIGHT")
+
+        if ct_type < 0 or ct_type > 2:
+            raise Exception("\nERROR: Item Type Should Be 0 (Normal), 1 (CheckBox) or 2 (RadioButton). ")
+
+        self._dirty = True     # do this first so stuff below doesn't cause flicker
+        arr = [""]*self.GetColumnCount()
+        arr[self._main_column] = text
+        self._anchor = TreeListItem(self, None, arr, ct_type, wnd, image, selImage, data)
+        
+        if wnd is not None:
+            self._hasWindows = True
+            self._itemWithWindow.append(self._anchor)            
+        
+        if self.HasFlag(wx.TR_HIDE_ROOT):
+            # if root is hidden, make sure we can navigate
+            # into children
+            self._anchor.SetHasPlus()
+            self._anchor.Expand()
+            self.CalculatePositions()
+        
+        if not self.HasFlag(wx.TR_MULTIPLE):
+            self._current = self._selectItem = self._anchor
+            self._current.SetHilight(True)
+        
+        return self._anchor
+
+
+    def Delete(self, item):
+        """Delete an item."""
+
+        if not item:
+            raise Exception("\nERROR: Invalid Tree Item. ")
+        
+        self._dirty = True     # do this first so stuff below doesn't cause flicker
+
+        if self._textCtrl != None and self.IsDescendantOf(item, self._textCtrl.item()):
+            # can't delete the item being edited, cancel editing it first
+            self._textCtrl.StopEditing()
+
+        # don't stay with invalid self._shiftItem or we will crash in the next call to OnChar()
+        changeKeyCurrent = False
+        itemKey = self._shiftItem
+        
+        while itemKey:
+            if itemKey == item:  # self._shiftItem is a descendant of the item being deleted
+                changeKeyCurrent = True
+                break
+            
+            itemKey = itemKey.GetParent()
+        
+        parent = item.GetParent()
+        if parent:
+            parent.GetChildren().remove(item)  # remove by value
+        
+        if changeKeyCurrent:
+            self._shiftItem = parent
+
+        self.SendDeleteEvent(item)
+        if self._selectItem == item:
+            self._selectItem = None
+
+        # Remove the item with window
+        if item in self._itemWithWindow:
+            for wnd in item._wnd:
+                if wnd:
+                    wnd.Hide()
+                    wnd.Destroy()
+                
+            item._wnd = []
+            self._itemWithWindow.remove(item)
+            
+        item.DeleteChildren(self)
+        del item
+
+
+    # Don't leave edit or selection on a child which is about to disappear
+    def ChildrenClosing(self, item):
+        """We are about to destroy the item children."""
+
+        if self._textCtrl != None and item != self._textCtrl.item() and self.IsDescendantOf(item, self._textCtrl.item()):
+            self._textCtrl.StopEditing()
+
+        if self.IsDescendantOf(item, self._selectItem):
+            self._selectItem = item
+            
+        if item != self._current and self.IsDescendantOf(item, self._current):
+            self._current.SetHilight(False)
+            self._current = None
+
+            
+    def DeleteRoot(self): 
+
+        if self._anchor:
+
+            self._dirty = True
+            self.SendDeleteEvent(self._anchor)
+            self._current = None
+            self._selectItem = None
+            self._anchor.DeleteChildren(self)
+            del self._anchor
+            self._anchor = None
+
+
+    def DeleteAllItems(self):
+        """Delete all items in the CustomTreeCtrl."""
+
+        self.DeleteRoot()
+        
+
+    def HideWindows(self):
+        """Hides the windows associated to the items. Used internally."""
+        
+        for child in self._itemWithWindow:
+            if not self.IsItemVisible(child):
+                for column in xrange(self.GetColumnCount()):
+                    wnd = child.GetWindow(column)
+                    if wnd and wnd.IsShown():
+                        wnd.Hide()
+                
+
+    def EnableItem(self, item, enable=True, torefresh=True):
+        """Enables/disables an item."""
+
+        if not item:
+            raise Exception("\nERROR: Invalid Tree Item. ")
+        
+        if item.IsEnabled() == enable:
+            return
+
+        if not enable and item.IsSelected():
+            self.DoSelectItem(item, not self.HasFlag(wx.TR_MULTIPLE))
+
+        item.Enable(enable)
+
+        for column in xrange(self.GetColumnCount()):
+            wnd = item.GetWindow(column)
+
+            # Handles the eventual window associated to the item        
+            if wnd:
+                wnd.Enable(enable)
+        
+        if torefresh:
+            # We have to refresh the item line
+            dc = wx.ClientDC(self)
+            self.CalculateSize(item, dc)
+            self.RefreshLine(item)
+
+
+    def IsItemEnabled(self, item):
+
+        return item.IsEnabled()
+    
+
+    def GetColumnCount(self):
+
+        return self._owner.GetHeaderWindow().GetColumnCount()
+
+
+    def SetMainColumn(self, column):
+        
+        if column >= 0 and column < self.GetColumnCount():
+            self._main_column = column
+
+
+    def GetMainColumn(self):
+
+        return self._main_column
+    
+
+    def ScrollTo(self, item):
+
+        # ensure that the position of the item it calculated in any case
+        if self._dirty:
+            self.CalculatePositions()
+
+        # now scroll to the item
+        xUnit, yUnit = self.GetScrollPixelsPerUnit()
+        start_x, start_y = self.GetViewStart()
+        start_y *= yUnit
+        client_w, client_h = self.GetClientSize ()
+
+        x, y = self._anchor.GetSize (0, 0, self)
+        x = self._owner.GetHeaderWindow().GetWidth()
+        y += yUnit + 2 # one more scrollbar unit + 2 pixels
+        x_pos = self.GetScrollPos(wx.HORIZONTAL)
+
+        if item._y < start_y+3:
+            # going down, item should appear at top
+            self.SetScrollbars(xUnit, yUnit, (xUnit and [x/xUnit] or [0])[0], (yUnit and [y/yUnit] or [0])[0],
+                               x_pos, (yUnit and [item._y/yUnit] or [0])[0])
+            
+        elif item._y+self.GetLineHeight(item) > start_y+client_h:
+            # going up, item should appear at bottom
+            item._y += yUnit + 2
+            self.SetScrollbars(xUnit, yUnit, (xUnit and [x/xUnit] or [0])[0], (yUnit and [y/yUnit] or [0])[0],
+                               x_pos, (yUnit and [(item._y+self.GetLineHeight(item)-client_h)/yUnit] or [0])[0])
+        
+
+    def SetDragItem(self, item):
+
+        prevItem = self._dragItem
+        self._dragItem = item
+        if prevItem:
+            self.RefreshLine(prevItem)
+        if self._dragItem:
+            self.RefreshLine(self._dragItem)
+
+
+# ----------------------------------------------------------------------------
+# helpers
+# ----------------------------------------------------------------------------
+
+    def AdjustMyScrollbars(self):
+
+        if self._anchor:
+            xUnit, yUnit = self.GetScrollPixelsPerUnit()
+            if xUnit == 0:
+                xUnit = self.GetCharWidth()
+            if yUnit == 0:
+                yUnit = self._lineHeight
+
+            x, y = self._anchor.GetSize(0, 0, self)
+            y += yUnit + 2 # one more scrollbar unit + 2 pixels
+            x_pos = self.GetScrollPos(wx.HORIZONTAL)
+            y_pos = self.GetScrollPos(wx.VERTICAL)
+            x = self._owner.GetHeaderWindow().GetWidth() + 2
+            if x < self.GetClientSize().GetWidth():
+                x_pos = 0
+
+            self.SetScrollbars(xUnit, yUnit, x/xUnit, y/yUnit, x_pos, y_pos)
+        else:
+            self.SetScrollbars(0, 0, 0, 0)
+    
+
+    def PaintItem(self, item, dc):
+
+        attr = item.GetAttributes()
+        
+        if attr and attr.HasFont():
+            dc.SetFont(attr.GetFont())
+        elif item.IsBold():
+            dc.SetFont(self._boldFont)
+        if item.IsHyperText():
+            dc.SetFont(self.GetHyperTextFont())
+            if item.GetVisited():
+                dc.SetTextForeground(self.GetHyperTextVisitedColour())
+            else:
+                dc.SetTextForeground(self.GetHyperTextNewColour())
+
+        colText = dc.GetTextForeground()
+        
+        if item.IsSelected():
+            if (wx.Platform == "__WXMAC__" and self._hasFocus):
+                colTextHilight = wx.SystemSettings_GetColour(wx.SYS_COLOUR_HIGHLIGHTTEXT)
+            else:
+                colTextHilight = wx.SystemSettings_GetColour(wx.SYS_COLOUR_HIGHLIGHTTEXT)
+
+        else:
+            attr = item.GetAttributes()
+            if attr and attr.HasTextColour():
+                colText = attr.GetTextColour()
+            
+            if self._vistaselection:
+                colText = wx.BLACK
+                
+        total_w = self._owner.GetHeaderWindow().GetWidth()
+        total_h = self.GetLineHeight(item)
+        off_h = (self.HasFlag(wx.TR_ROW_LINES) and [1] or [0])[0]
+        off_w = (self.HasFlag(wx.TR_COLUMN_LINES) and [1] or [0])[0]
+##        clipper = wx.DCClipper(dc, 0, item.GetY(), total_w, total_h) # only within line
+
+        text_w, text_h, dummy = dc.GetMultiLineTextExtent(item.GetText(self.GetMainColumn()))
+
+        drawItemBackground = False
+        # determine background and show it
+        if attr and attr.HasBackgroundColour():
+            colBg = attr.GetBackgroundColour()
+            drawItemBackground = True
+        else:
+            colBg = self._backgroundColour
+        
+        dc.SetBrush(wx.Brush(colBg, wx.SOLID))
+        dc.SetPen(wx.TRANSPARENT_PEN)
+
+        if self.HasFlag(wx.TR_FULL_ROW_HIGHLIGHT):
+
+            itemrect = wx.Rect(0, item.GetY() + off_h, total_w-1, total_h - off_h)
+            
+            if item == self._dragItem:
+                dc.SetBrush(self._hilightBrush)
+                if wx.Platform == "__WXMAC__":
+                    dc.SetPen((item == self._dragItem) and [wx.BLACK_PEN] or [wx.TRANSPARENT_PEN])[0]
+
+                dc.SetTextForeground(colTextHilight)
+
+            elif item.IsSelected():
+
+                wnd = item.GetWindow(self._main_column)
+                wndx = 0
+                if wnd:
+                    wndx, wndy = item.GetWindowSize(self._main_column)
+
+                itemrect = wx.Rect(0, item.GetY() + off_h, total_w-1, total_h - off_h)
+                
+                if self._usegradients:
+                    if self._gradientstyle == 0:   # Horizontal
+                        self.DrawHorizontalGradient(dc, itemrect, self._hasFocus)
+                    else:                          # Vertical
+                        self.DrawVerticalGradient(dc, itemrect, self._hasFocus)
+                elif self._vistaselection:
+                    self.DrawVistaRectangle(dc, itemrect, self._hasFocus)
+                else:
+                    if wx.Platform in ["__WXGTK2__", "__WXMAC__"]:
+                        flags = wx.CONTROL_SELECTED
+                        if self._hasFocus: flags = flags | wx.CONTROL_FOCUSED
+                        wx.RendererNative.Get().DrawItemSelectionRect(self._owner, dc, itemrect, flags) 
+                    else:
+                        dc.SetBrush((self._hasFocus and [self._hilightBrush] or [self._hilightUnfocusedBrush])[0])
+                        dc.SetPen((self._hasFocus and [self._borderPen] or [wx.TRANSPARENT_PEN])[0])
+                        dc.DrawRectangleRect(itemrect)
+                
+                dc.SetTextForeground(colTextHilight)
+
+            # On GTK+ 2, drawing a 'normal' background is wrong for themes that
+            # don't allow backgrounds to be customized. Not drawing the background,
+            # except for custom item backgrounds, works for both kinds of theme.
+            elif drawItemBackground:
+
+                itemrect = wx.Rect(0, item.GetY() + off_h, total_w-1, total_h - off_h)
+                dc.SetBrush(wx.Brush(colBg, wx.SOLID))
+                dc.DrawRectangleRect(itemrect)
+                                                
+            else:
+                dc.SetTextForeground(colText)
+
+        else:
+            
+            dc.SetTextForeground(colText)
+
+        text_extraH = (total_h > text_h and [(total_h - text_h)/2] or [0])[0]
+        img_extraH = (total_h > self._imgHeight and [(total_h-self._imgHeight)/2] or [0])[0]
+        x_colstart = 0
+        
+        for i in xrange(self.GetColumnCount()):
+            if not self._owner.GetHeaderWindow().IsColumnShown(i):
+                continue
+
+            col_w = self._owner.GetHeaderWindow().GetColumnWidth(i)
+            dc.SetClippingRegion(x_colstart, item.GetY(), col_w, total_h) # only within column
+
+            image = _NO_IMAGE
+            x = image_w = wcheck = hcheck = 0
+
+            if i == self.GetMainColumn():
+                x = item.GetX() + _MARGIN
+                if self.HasButtons():
+                    x += (self._btnWidth-self._btnWidth2) + _LINEATROOT
+                else:
+                    x -= self._indent/2
+                
+                if self._imageListNormal:
+                    image = item.GetCurrentImage(i)
+                    
+                if item.GetType() != 0 and self._imageListCheck:
+                    checkimage = item.GetCurrentCheckedImage()
+                    wcheck, hcheck = self._imageListCheck.GetSize(item.GetType())
+                else:
+                    wcheck, hcheck = 0, 0
+            
+            else:
+                x = x_colstart + _MARGIN
+                image = item.GetImage(i)
+                
+            if image != _NO_IMAGE:
+                image_w = self._imgWidth + _MARGIN
+
+            # honor text alignment
+            text = item.GetText(i)
+            alignment = self._owner.GetHeaderWindow().GetColumn(i).GetAlignment()
+
+            text_w, dummy, dummy = dc.GetMultiLineTextExtent(text)
+
+            if alignment == wx.ALIGN_RIGHT:
+                w = col_w - (image_w + wcheck + text_w + off_w + _MARGIN)
+                x += (w > 0 and [w] or [0])[0]
+
+            elif alignment == wx.ALIGN_CENTER:
+                w = (col_w - (image_w + wcheck + text_w + off_w + _MARGIN))/2
+                x += (w > 0 and [w] or [0])[0]
+            
+            text_x = x + image_w + wcheck + 1
+            
+            if i == self.GetMainColumn():
+                item.SetTextX(text_x)
+
+            if not self.HasFlag(wx.TR_FULL_ROW_HIGHLIGHT):
+                dc.SetBrush((self._hasFocus and [self._hilightBrush] or [self._hilightUnfocusedBrush])[0])
+                dc.SetPen((self._hasFocus and [self._borderPen] or [wx.TRANSPARENT_PEN])[0])
+                if i == self.GetMainColumn():
+                    if item == self._dragItem:
+                        if wx.Platform == "__WXMAC__":  # don't draw rect outline if we already have the background color
+                            dc.SetPen((item == self._dragItem and [wx.BLACK_PEN] or [wx.TRANSPARENT_PEN])[0])
+
+                        dc.SetTextForeground(colTextHilight)
+                        
+                    elif item.IsSelected():
+
+                        itemrect = wx.Rect(text_x-2, item.GetY() + off_h, text_w+2*_MARGIN, total_h - off_h)
+
+                        if self._usegradients:
+                            if self._gradientstyle == 0:   # Horizontal
+                                self.DrawHorizontalGradient(dc, itemrect, self._hasFocus)
+                            else:                          # Vertical
+                                self.DrawVerticalGradient(dc, itemrect, self._hasFocus)
+                        elif self._vistaselection:
+                            self.DrawVistaRectangle(dc, itemrect, self._hasFocus)
+                        else:
+                            if wx.Platform in ["__WXGTK2__", "__WXMAC__"]:
+                                flags = wx.CONTROL_SELECTED
+                                if self._hasFocus: flags = flags | wx.CONTROL_FOCUSED
+                                wx.RendererNative.Get().DrawItemSelectionRect(self._owner, dc, itemrect, flags) 
+                            else:
+                                dc.DrawRectangleRect(itemrect)
+
+                    elif item == self._current:
+                        dc.SetPen((self._hasFocus and [wx.BLACK_PEN] or [wx.TRANSPARENT_PEN])[0])
+                    
+                    # On GTK+ 2, drawing a 'normal' background is wrong for themes that
+                    # don't allow backgrounds to be customized. Not drawing the background,
+                    # except for custom item backgrounds, works for both kinds of theme.
+                    elif drawItemBackground:
+
+                        itemrect = wx.Rect(text_x-2, item.GetY() + off_h, text_w+2*_MARGIN, total_h - off_h)
+                        dc.SetBrush(wx.Brush(colBg, wx.SOLID))
+                        dc.DrawRectangleRect(itemrect)
+
+                    else:
+                        dc.SetTextForeground(colText)
+    
+                else:
+                    dc.SetTextForeground(colText)
+                
+            if self.HasFlag(wx.TR_COLUMN_LINES):  # vertical lines between columns
+                pen = wx.Pen(wx.SystemSettings_GetColour(wx.SYS_COLOUR_3DLIGHT), 1, wx.SOLID)
+                dc.SetPen((self.GetBackgroundColour() == wx.WHITE and [pen] or [wx.WHITE_PEN])[0])
+                dc.DrawLine(x_colstart+col_w-1, item.GetY(), x_colstart+col_w-1, item.GetY()+total_h)
+            
+            dc.SetBackgroundMode(wx.TRANSPARENT)
+
+            if image != _NO_IMAGE:
+                y = item.GetY() + img_extraH
+                if wcheck:
+                    x += wcheck
+
+                if item.IsEnabled():
+                    imglist = self._imageListNormal
+                else:
+                    imglist = self._grayedImageList
+                
+                imglist.Draw(image, dc, x, y, wx.IMAGELIST_DRAW_TRANSPARENT)
+
+            if wcheck:
+                if item.IsEnabled():
+                    imglist = self._imageListCheck
+                else:
+                    imglist = self._grayedCheckList
+
+                if self.HasButtons():  # should the item show a button?
+                    btnWidth = self._btnWidth
+                else:
+                    btnWidth = -self._btnWidth
+                
+                imglist.Draw(checkimage, dc,
+                             item.GetX() + btnWidth + _MARGIN,
+                             item.GetY() + ((total_h > hcheck) and [(total_h-hcheck)/2] or [0])[0]+1,
+                             wx.IMAGELIST_DRAW_TRANSPARENT)
+
+            text_w, text_h, dummy = dc.GetMultiLineTextExtent(text)
+            text_extraH = (total_h > text_h and [(total_h - text_h)/2] or [0])[0]            
+            text_y = item.GetY() + text_extraH
+            textrect = wx.Rect(text_x, text_y, text_w, text_h)
+        
+            if not item.IsEnabled():
+                foreground = dc.GetTextForeground()
+                dc.SetTextForeground(self._disabledColour)
+                dc.DrawLabel(text, textrect)
+                dc.SetTextForeground(foreground)
+            else:
+                if wx.Platform == "__WXMAC__" and item.IsSelected() and self._hasFocus:
+                    dc.SetTextForeground(wx.WHITE)
+                dc.DrawLabel(text, textrect)
+
+            wnd = item.GetWindow(i)            
+            if wnd:
+                wndx = text_x + text_w + 2*_MARGIN
+                xa, ya = self.CalcScrolledPosition((0, item.GetY()))
+                wndx += xa
+                if item.GetHeight() > item.GetWindowSize(i)[1]:
+                    ya += (item.GetHeight() - item.GetWindowSize(i)[1])/2
+                    
+                if not wnd.IsShown():
+                    wnd.Show()
+                if wnd.GetPosition() != (wndx, ya):
+                    wnd.SetPosition((wndx, ya))                
+            
+            x_colstart += col_w
+            dc.DestroyClippingRegion()
+        
+        # restore normal font
+        dc.SetFont(self._normalFont)
+
+
+    # Now y stands for the top of the item, whereas it used to stand for middle !
+    def PaintLevel(self, item, dc, level, y, x_maincol):
+
+        if item.IsHidden():
+            return y, x_maincol
+        
+        # Handle hide root (only level 0)
+        if self.HasFlag(wx.TR_HIDE_ROOT) and level == 0:
+            for child in item.GetChildren():
+                y, x_maincol = self.PaintLevel(child, dc, 1, y, x_maincol)
+            
+            # end after expanding root
+            return y, x_maincol
+        
+        # calculate position of vertical lines
+        x = x_maincol + _MARGIN # start of column
+
+        if self.HasFlag(wx.TR_LINES_AT_ROOT):
+            x += _LINEATROOT # space for lines at root
+            
+        if self.HasButtons():
+            x += (self._btnWidth-self._btnWidth2) # half button space
+        else:
+            x += (self._indent-self._indent/2)
+        
+        if self.HasFlag(wx.TR_HIDE_ROOT):
+            x += self._indent*(level-1) # indent but not level 1
+        else:
+            x += self._indent*level # indent according to level
+        
+        # set position of vertical line
+        item.SetX(x)
+        item.SetY(y)
+
+        h = self.GetLineHeight(item)
+        y_top = y
+        y_mid = y_top + (h/2)
+        y += h
+
+        exposed_x = dc.LogicalToDeviceX(0)
+        exposed_y = dc.LogicalToDeviceY(y_top)
+
+        if self.IsExposed(exposed_x, exposed_y, 10000, h):  # 10000 = very much
+
+            if self.HasFlag(wx.TR_ROW_LINES):  # horizontal lines between rows
+                total_width = self._owner.GetHeaderWindow().GetWidth()
+                # if the background colour is white, choose a
+                # contrasting color for the lines
+                pen = wx.Pen(wx.SystemSettings_GetColour(wx.SYS_COLOUR_3DLIGHT), 1, wx.SOLID)
+                dc.SetPen((self.GetBackgroundColour() == wx.WHITE and [pen] or [wx.WHITE_PEN])[0])
+                dc.DrawLine(0, y_top, total_width, y_top)
+                dc.DrawLine(0, y_top+h, total_width, y_top+h)
+            
+            # draw item
+            self.PaintItem(item, dc)
+
+            # restore DC objects
+            dc.SetBrush(wx.WHITE_BRUSH)
+            dc.SetPen(self._dottedPen)
+
+            # clip to the column width
+            clip_width = self._owner.GetHeaderWindow().GetColumn(self._main_column).GetWidth()
+##            clipper = wx.DCClipper(dc, x_maincol, y_top, clip_width, 10000)
+
+            if not self.HasFlag(wx.TR_NO_LINES):  # connection lines
+
+                # draw the horizontal line here
+                dc.SetPen(self._dottedPen)
+                x2 = x - self._indent
+                if x2 < (x_maincol + _MARGIN):
+                    x2 = x_maincol + _MARGIN
+                x3 = x + (self._btnWidth-self._btnWidth2)
+                if self.HasButtons():
+                    if item.HasPlus():
+                        dc.DrawLine(x2, y_mid, x - self._btnWidth2, y_mid)
+                        dc.DrawLine(x3, y_mid, x3 + _LINEATROOT, y_mid)
+                    else:
+                        dc.DrawLine(x2, y_mid, x3 + _LINEATROOT, y_mid)
+                else:
+                    dc.DrawLine(x2, y_mid, x - self._indent/2, y_mid)
+                
+            if item.HasPlus() and self.HasButtons():  # should the item show a button?
+                
+                if self._imageListButtons:
+
+                    # draw the image button here
+                    image = wx.TreeItemIcon_Normal
+                    if item.IsExpanded():
+                        image = wx.TreeItemIcon_Expanded
+                    if item.IsSelected():
+                        image += wx.TreeItemIcon_Selected - wx.TreeItemIcon_Normal
+                    xx = x - self._btnWidth2 + _MARGIN
+                    yy = y_mid - self._btnHeight2
+                    dc.SetClippingRegion(xx, yy, self._btnWidth, self._btnHeight)
+                    self._imageListButtons.Draw(image, dc, xx, yy, wx.IMAGELIST_DRAW_TRANSPARENT)
+                    dc.DestroyClippingRegion()
+
+                elif self.HasFlag(wx.TR_TWIST_BUTTONS):
+
+                    # draw the twisty button here
+                    dc.SetPen(wx.BLACK_PEN)
+                    dc.SetBrush(self._hilightBrush)
+                    button = [wx.Point() for j in xrange(3)]
+                    if item.IsExpanded():
+                        button[0].x = x - (self._btnWidth2+1)
+                        button[0].y = y_mid - (self._btnHeight/3)
+                        button[1].x = x + (self._btnWidth2+1)
+                        button[1].y = button[0].y
+                        button[2].x = x
+                        button[2].y = button[0].y + (self._btnHeight2+1)
+                    else:
+                        button[0].x = x - (self._btnWidth/3)
+                        button[0].y = y_mid - (self._btnHeight2+1)
+                        button[1].x = button[0].x
+                        button[1].y = y_mid + (self._btnHeight2+1)
+                        button[2].x = button[0].x + (self._btnWidth2+1)
+                        button[2].y = y_mid
+                    
+                    dc.DrawPolygon(button)
+
+                else: # if (HasFlag(wxTR_HAS_BUTTONS))
+
+                    rect = wx.Rect(x-self._btnWidth2, y_mid-self._btnHeight2, self._btnWidth, self._btnHeight)
+                    flag = (item.IsExpanded() and [wx.CONTROL_EXPANDED] or [0])[0]
+                    wx.RendererNative.GetDefault().DrawTreeItemButton(self, dc, rect, flag)        
+
+        # restore DC objects
+        dc.SetBrush(wx.WHITE_BRUSH)
+        dc.SetPen(self._dottedPen)
+        dc.SetTextForeground(wx.BLACK)
+
+        if item.IsExpanded():
+            # clip to the column width
+            clip_width = self._owner.GetHeaderWindow().GetColumn(self._main_column).GetWidth()
+
+            # process lower levels
+            if self._imgWidth > 0:
+                oldY = y_mid + self._imgHeight2
+            else:
+                oldY = y_mid + h/2
+            
+            for child in item.GetChildren():
+
+                y2 = y + h/2
+                y, x_maincol = self.PaintLevel(child, dc, level+1, y, x_maincol)
+
+                # draw vertical line
+##                clipper = wx.DCClipper(dc, x_maincol, y_top, clip_width, 10000)
+                if not self.HasFlag(wx.TR_NO_LINES):
+                    x = item.GetX()
+                    dc.DrawLine(x, oldY, x, y2)
+                    oldY = y2
+
+        return y, x_maincol        
+
+
+# ----------------------------------------------------------------------------
+# wxWindows callbacks
+# ----------------------------------------------------------------------------
+
+    def OnPaint(self, event):
+
+        dc = wx.PaintDC(self)
+        self.PrepareDC(dc)
+
+        if not self._anchor or self.GetColumnCount() <= 0:
+            return
+
+        # calculate button size
+        if self._imageListButtons:
+            self._btnWidth, self._btnHeight = self._imageListButtons.GetSize(0)
+        elif self.HasButtons():
+            self._btnWidth = _BTNWIDTH
+            self._btnHeight = _BTNHEIGHT
+        
+        self._btnWidth2 = self._btnWidth/2
+        self._btnHeight2 = self._btnHeight/2
+
+        # calculate image size
+        if self._imageListNormal:
+            self._imgWidth, self._imgHeight = self._imageListNormal.GetSize(0)
+        
+        self._imgWidth2 = self._imgWidth/2
+        self._imgHeight2 = self._imgHeight/2
+
+        if self._imageListCheck:
+            self._checkWidth, self._checkHeight = self._imageListCheck.GetSize(0)
+
+        self._checkWidth2 = self._checkWidth/2
+        self._checkHeight2 = self._checkHeight/2
+            
+        # calculate indent size
+        if self._imageListButtons:
+            self._indent = max(_MININDENT, self._btnWidth + _MARGIN)
+        elif self.HasButtons():
+            self._indent = max(_MININDENT, self._btnWidth + _LINEATROOT)
+        
+        # set default values
+        dc.SetFont(self._normalFont)
+        dc.SetPen(self._dottedPen)
+
+        # calculate column start and paint
+        x_maincol = 0
+        for i in xrange(self.GetMainColumn()):
+            if not self._owner.GetHeaderWindow().IsColumnShown(i):
+                continue
+            x_maincol += self._owner.GetHeaderWindow().GetColumnWidth(i)
+        
+        y, x_maincol = self.PaintLevel(self._anchor, dc, 0, 0, x_maincol)
+
+
+    def HitTest(self, point, flags=0):
+
+        w, h = self.GetSize()
+        column = -1
+
+        if point.x <0:
+            flags |= wx.TREE_HITTEST_TOLEFT
+        if point.x > w:
+            flags |= wx.TREE_HITTEST_TORIGHT
+        if point.y < 0:
+            flags |= wx.TREE_HITTEST_ABOVE
+        if point.y > h:
+            flags |= wx.TREE_HITTEST_BELOW
+        if flags:
+            return None, flags, column
+
+        if not self._anchor:
+            flags = wx.TREE_HITTEST_NOWHERE
+            column = -1
+            return None, flags, column
+        
+        hit, flags, column = self._anchor.HitTest(self.CalcUnscrolledPosition(point), self, flags, column, 0)
+        if not hit:
+            flags = wx.TREE_HITTEST_NOWHERE
+            column = -1
+            return None, flags, column
+        
+        return hit, flags, column
+
+
+    def EditLabel(self, item, column=None):
+
+        if not item:
+            return
+
+        column = (column is not None and [column] or [self._main_column])[0]
+
+        if column < 0 or column >= self.GetColumnCount():
+            return
+
+        self._editItem = item
+
+        te = TreeEvent(wx.wxEVT_COMMAND_TREE_BEGIN_LABEL_EDIT, self._owner.GetId())
+        te.SetItem(self._editItem)
+        te.SetInt(column)
+        te.SetEventObject(self._owner)
+        self._owner.GetEventHandler().ProcessEvent(te)
+
+        if not te.IsAllowed():
+            return
+
+        # ensure that the position of the item it calculated in any case
+        if self._dirty:
+            self.CalculatePositions()
+
+        header_win = self._owner.GetHeaderWindow()
+        alignment = header_win.GetColumnAlignment(column)
+        if alignment == wx.ALIGN_LEFT:
+            style = wx.TE_LEFT
+        elif alignment == wx.ALIGN_RIGHT:
+            style = wx.TE_RIGHT
+        elif alignment == wx.ALIGN_CENTER:
+            style = wx.TE_CENTER
+            
+        if self._textCtrl != None and item != self._textCtrl.item():
+            self._textCtrl.StopEditing()
+            
+        self._textCtrl = EditTextCtrl(self, -1, self._editItem, column,
+                                      self, self._editItem.GetText(column),
+                                      style=style|wx.TE_PROCESS_ENTER)
+        self._textCtrl.SetFocus()
+
+
+    def OnRenameTimer(self):
+
+        self.EditLabel(self._current, self._curColumn)
+
+
+    def OnRenameAccept(self, value):
+
+        # TODO if the validator fails this causes a crash
+        le = TreeEvent(wx.wxEVT_COMMAND_TREE_END_LABEL_EDIT, self._owner.GetId())
+        le.SetItem(self._editItem)
+        le.SetEventObject(self._owner)
+        le.SetLabel(value)
+        le._editCancelled = False
+        self._owner.GetEventHandler().ProcessEvent(le)
+
+        if not le.IsAllowed():
+            return
+
+        if self._curColumn == -1:
+            self._curColumn = 0
+           
+        self.SetItemText(self._editItem, value, self._curColumn)
+
+
+    def OnRenameCancelled(self):
+        """
+        Called by TreeTextCtrl, to cancel the changes and to send the
+        EVT_TREE_END_LABEL_EDIT event.
+        """
+
+        # let owner know that the edit was cancelled
+        le = TreeEvent(wx.wxEVT_COMMAND_TREE_END_LABEL_EDIT, self._owner.GetId())
+        le.SetItem(self._editItem)
+        le.SetEventObject(self._owner)
+        le.SetLabel("")
+        le._editCancelled = True
+
+        self._owner.GetEventHandler().ProcessEvent(le)
+
+    
+    def OnMouse(self, event):
+        
+        if not self._anchor:
+            return
+
+        # we process left mouse up event (enables in-place edit), right down
+        # (pass to the user code), left dbl click (activate item) and
+        # dragging/moving events for items drag-and-drop
+        if not (event.LeftDown() or event.LeftUp() or event.RightDown() or \
+                event.RightUp() or event.LeftDClick() or event.Dragging() or \
+                event.GetWheelRotation() != 0 or event.Moving()):
+            self._owner.GetEventHandler().ProcessEvent(event)
+            return
+        
+
+        # set focus if window clicked
+        if event.LeftDown() or event.RightDown():
+            self._hasFocus = True
+            self.SetFocusIgnoringChildren()
+
+        # determine event
+        p = wx.Point(event.GetX(), event.GetY())
+        flags = 0
+        item, flags, column = self._anchor.HitTest(self.CalcUnscrolledPosition(p), self, flags, self._curColumn, 0)
+
+        underMouse = item
+        underMouseChanged = underMouse != self._underMouse
+
+        if underMouse and (flags & wx.TREE_HITTEST_ONITEM) and not event.LeftIsDown() and \
+           not self._isDragging and (not self._renameTimer or not self._renameTimer.IsRunning()):
+            underMouse = underMouse
+        else:
+            underMouse = None
+
+        if underMouse != self._underMouse:
+            if self._underMouse:
+                # unhighlight old item
+                self._underMouse = None
+             
+            self._underMouse = underMouse
+
+        # Determines what item we are hovering over and need a tooltip for
+        hoverItem = item
+
+        if (event.LeftDown() or event.LeftUp() or event.RightDown() or \
+            event.RightUp() or event.LeftDClick() or event.Dragging()):
+            if self._textCtrl != None and item != self._textCtrl.item():
+                self._textCtrl.StopEditing()
+
+        # We do not want a tooltip if we are dragging, or if the rename timer is running
+        if underMouseChanged and not self._isDragging and (not self._renameTimer or not self._renameTimer.IsRunning()):
+            
+            if hoverItem is not None:
+                # Ask the tree control what tooltip (if any) should be shown
+                hevent = TreeEvent(wx.wxEVT_COMMAND_TREE_ITEM_GETTOOLTIP, self.GetId())
+                hevent.SetItem(hoverItem)
+                hevent.SetEventObject(self)
+
+                if self.GetEventHandler().ProcessEvent(hevent) and hevent.IsAllowed():
+                    self.SetToolTip(hevent._label)
+
+                if hoverItem.IsHyperText() and (flags & wx.TREE_HITTEST_ONITEMLABEL) and hoverItem.IsEnabled():
+                    self.SetCursor(wx.StockCursor(wx.CURSOR_HAND))
+                    self._isonhyperlink = True
+                else:
+                    if self._isonhyperlink:
+                        self.SetCursor(wx.StockCursor(wx.CURSOR_ARROW))
+                        self._isonhyperlink = False
+                        
+        # we only process dragging here
+        if event.Dragging():
+            
+            if self._isDragging:
+                if not self._dragImage:
+                    # Create the custom draw image from the icons and the text of the item                    
+                    self._dragImage = DragImage(self, self._current)
+                    self._dragImage.BeginDrag(wx.Point(0,0), self)
+                    self._dragImage.Show()
+
+                self._dragImage.Move(self.CalcScrolledPosition(p))
+
+                if self._countDrag == 0 and item:
+                    self._oldItem = self._current
+                    self._oldSelection = self._current
+
+                if item != self._dropTarget:
+                        
+                    # unhighlight the previous drop target
+                    if self._dropTarget:
+                        self._dropTarget.SetHilight(False)
+                        self.RefreshLine(self._dropTarget)
+                    if item:
+                        item.SetHilight(True)
+                        self.RefreshLine(item)
+                        self._countDrag = self._countDrag + 1
+                    self._dropTarget = item
+
+                    self.Update()
+
+                if self._countDrag >= 3:
+                    # Here I am trying to avoid ugly repainting problems... hope it works
+                    self.RefreshLine(self._oldItem)
+                    self._countDrag = 0
+                    
+                return # nothing to do, already done
+
+            if item == None:
+                return # we need an item to dragging
+
+            # determine drag start
+            if self._dragCount == 0:
+                self._dragTimer.Start(_DRAG_TIMER_TICKS, wx.TIMER_ONE_SHOT)
+            
+            self._dragCount += 1
+            if self._dragCount < 3:
+                return # minimum drag 3 pixel
+            if self._dragTimer.IsRunning():
+                return
+
+            # we're going to drag
+            self._dragCount = 0
+
+            # send drag start event
+            command = (event.LeftIsDown() and [wx.wxEVT_COMMAND_TREE_BEGIN_DRAG] or [wx.wxEVT_COMMAND_TREE_BEGIN_RDRAG])[0]
+            nevent = TreeEvent(command, self._owner.GetId())
+            nevent.SetEventObject(self._owner)
+            nevent.SetItem(item) # the item the drag is ended
+            nevent.SetPoint(p)
+            nevent.Veto()         # dragging must be explicit allowed!
+            
+            if self.GetEventHandler().ProcessEvent(nevent) and nevent.IsAllowed():
+                
+                # we're going to drag this item
+                self._isDragging = True
+                self.CaptureMouse()
+                self.RefreshSelected()
+
+                # in a single selection control, hide the selection temporarily
+                if not (self._windowStyle & wx.TR_MULTIPLE):
+                    if self._oldSelection:
+                    
+                        self._oldSelection.SetHilight(False)
+                        self.RefreshLine(self._oldSelection)
+                else:
+                    selections = self.GetSelections()
+                    if len(selections) == 1:
+                        self._oldSelection = selections[0]
+                        self._oldSelection.SetHilight(False)
+                        self.RefreshLine(self._oldSelection)
+
+        elif self._isDragging:  # any other event but not event.Dragging()
+
+            # end dragging
+            self._dragCount = 0
+            self._isDragging = False
+            if self.HasCapture():
+                self.ReleaseMouse()
+            self.RefreshSelected()
+
+            # send drag end event event
+            nevent = TreeEvent(wx.wxEVT_COMMAND_TREE_END_DRAG, self._owner.GetId())
+            nevent.SetEventObject(self._owner)
+            nevent.SetItem(item) # the item the drag is started
+            nevent.SetPoint(p)
+            self._owner.GetEventHandler().ProcessEvent(nevent)
+            
+            if self._dragImage:
+                self._dragImage.EndDrag()
+
+            if self._dropTarget:
+                self._dropTarget.SetHilight(False)
+                self.RefreshLine(self._dropTarget)
+                
+            if self._oldSelection:
+                self._oldSelection.SetHilight(True)
+                self.RefreshLine(self._oldSelection)
+                self._oldSelection = None
+
+            self._isDragging = False
+            self._dropTarget = None
+            if self._dragImage:
+                self._dragImage = None
+            
+            if wx.Platform in ["__WXMSW__", "__WXMAC__"]:
+                self.Refresh()
+            else:
+                # Probably this is not enough on GTK. Try a Refresh() if it does not work.
+                wx.YieldIfNeeded()
+
+        elif self._dragCount > 0:  # just in case dragging is initiated
+
+            # end dragging
+            self._dragCount = 0
+
+        # we process only the messages which happen on tree items
+        if item == None or not self.IsItemEnabled(item):
+            self._owner.GetEventHandler().ProcessEvent(event)
+            return
+        
+        # remember item at shift down
+        if event.ShiftDown():
+            if not self._shiftItem:
+                self._shiftItem = self._current
+        else:
+            self._shiftItem = None
+        
+        if event.RightUp():
+
+            self.SetFocus()
+            nevent = TreeEvent(wx.wxEVT_COMMAND_TREE_ITEM_RIGHT_CLICK, self._owner.GetId())
+            nevent.SetEventObject(self._owner)
+            nevent.SetItem(item) # the item clicked
+            nevent.SetInt(self._curColumn) # the column clicked
+            nevent.SetPoint(p)
+            self._owner.GetEventHandler().ProcessEvent(nevent)
+
+        elif event.LeftUp():
+
+            if self._lastOnSame:
+                if item == self._current and self._curColumn != -1 and \
+                   self._owner.GetHeaderWindow().IsColumnEditable(self._curColumn) and \
+                   flags & (wx.TREE_HITTEST_ONITEMLABEL | wx.TREE_HITTEST_ONITEMCOLUMN):
+                    self._renameTimer.Start(_RENAME_TIMER_TICKS, wx.TIMER_ONE_SHOT)
+                
+                self._lastOnSame = False
+            
+            if (((flags & wx.TREE_HITTEST_ONITEMBUTTON) or (flags & wx.TREE_HITTEST_ONITEMICON)) and \
+                self.HasButtons() and item.HasPlus()):
+
+                # only toggle the item for a single click, double click on
+                # the button doesn't do anything (it toggles the item twice)
+                if event.LeftDown():
+                    self.Toggle(item)
+
+                # don't select the item if the button was clicked
+                return         
+            
+            # determine the selection if not done by left down
+            if not self._left_down_selection:
+                unselect_others = not ((event.ShiftDown() or event.ControlDown()) and self.HasFlag(wx.TR_MULTIPLE))
+                self.DoSelectItem(item, unselect_others, event.ShiftDown())
+                self.EnsureVisible (item)
+                self._current = item # make the new item the current item
+            else:
+                self._left_down_selection = False
+            
+        elif event.LeftDown() or event.RightDown() or event.LeftDClick():
+
+            if column >= 0:
+                self._curColumn = column
+            
+            if event.LeftDown() or event.RightDown():
+                self.SetFocus()
+                self._lastOnSame = item == self._current
+            
+            if (((flags & wx.TREE_HITTEST_ONITEMBUTTON) or (flags & wx.TREE_HITTEST_ONITEMICON)) and \
+                self.HasButtons() and item.HasPlus()):
+
+                # only toggle the item for a single click, double click on
+                # the button doesn't do anything (it toggles the item twice)
+                if event.LeftDown():
+                    self.Toggle(item)
+
+                # don't select the item if the button was clicked
+                return
+
+            if flags & TREE_HITTEST_ONITEMCHECKICON and event.LeftDown():
+                if item.GetType() > 0:
+                    self.CheckItem(item, not self.IsItemChecked(item))                        
+                    return
+                
+            # determine the selection if the current item is not selected
+            if not item.IsSelected():
+                unselect_others = not ((event.ShiftDown() or event.ControlDown()) and self.HasFlag(wx.TR_MULTIPLE))
+                self.DoSelectItem(item, unselect_others, event.ShiftDown())
+                self.EnsureVisible(item)
+                self._current = item # make the new item the current item
+                self._left_down_selection = True
+            
+            # For some reason, Windows isn't recognizing a left double-click,
+            # so we need to simulate it here.  Allow 200 milliseconds for now.
+            if event.LeftDClick():
+
+                # double clicking should not start editing the item label
+                self._renameTimer.Stop()
+                self._lastOnSame = False
+
+                # send activate event first
+                nevent = TreeEvent(wx.wxEVT_COMMAND_TREE_ITEM_ACTIVATED, self._owner.GetId())
+                nevent.SetEventObject(self._owner)
+                nevent.SetItem(item) # the item clicked
+                nevent.SetInt(self._curColumn) # the column clicked
+                nevent.SetPoint(p)
+                if not self._owner.GetEventHandler().ProcessEvent(nevent):
+
+                    # if the user code didn't process the activate event,
+                    # handle it ourselves by toggling the item when it is
+                    # double clicked
+                    if item.HasPlus():
+                        self.Toggle(item)
+                
+        else: # any other event skip just in case
+
+            event.Skip()
+
+        
+    def OnScroll(self, event):
+
+        event.Skip()
+        
+        if event.GetOrientation() == wx.HORIZONTAL:
+            self._owner.GetHeaderWindow().Refresh()
+            self._owner.GetHeaderWindow().Update()
+        
+
+    def CalculateSize(self, item, dc):
+
+        attr = item.GetAttributes()
+
+        if attr and attr.HasFont():
+            dc.SetFont(attr.GetFont())
+        elif item.IsBold():
+            dc.SetFont(self._boldFont)
+        else:
+            dc.SetFont(self._normalFont)
+
+        text_w = text_h = wnd_w = wnd_h = 0
+        for column in xrange(self.GetColumnCount()):
+            w, h, dummy = dc.GetMultiLineTextExtent(item.GetText(column))
+            text_w, text_h = max(w, text_w), max(h, text_h)
+            
+            wnd = item.GetWindow(column)
+            if wnd:
+                wnd_h = max(wnd_h, item.GetWindowSize(column)[1])
+                if column == self._main_column:
+                    wnd_w = item.GetWindowSize(column)[0]
+
+        text_w, dummy, dummy = dc.GetMultiLineTextExtent(item.GetText(self._main_column))
+        text_h+=2
+
+        # restore normal font
+        dc.SetFont(self._normalFont)
+
+        image_w, image_h = 0, 0
+        image = item.GetCurrentImage()
+
+        if image != _NO_IMAGE:
+        
+            if self._imageListNormal:
+            
+                image_w, image_h = self._imageListNormal.GetSize(image)
+                image_w += 2*_MARGIN
+
+        total_h = ((image_h > text_h) and [image_h] or [text_h])[0]
+
+        checkimage = item.GetCurrentCheckedImage()
+        if checkimage is not None:
+            wcheck, hcheck = self._imageListCheck.GetSize(checkimage)
+            wcheck += 2*_MARGIN
+        else:
+            wcheck = 0
+
+        if total_h < 30:
+            total_h += 2            # at least 2 pixels
+        else:
+            total_h += total_h/10   # otherwise 10% extra spacing
+
+        if total_h > self._lineHeight:
+            self._lineHeight = max(total_h, wnd_h+2)
+
+        item.SetWidth(image_w+text_w+wcheck+2+wnd_w)
+        item.SetHeight(max(total_h, wnd_h+2))
+
+        
+    def CalculateLevel(self, item, dc, level, y, x_colstart):
+
+        # calculate position of vertical lines
+        x = x_colstart + _MARGIN # start of column
+        if self.HasFlag(wx.TR_LINES_AT_ROOT):
+            x += _LINEATROOT # space for lines at root
+        if self.HasButtons():
+            x += (self._btnWidth-self._btnWidth2) # half button space
+        else:
+            x += (self._indent-self._indent/2)
+        
+        if self.HasFlag(wx.TR_HIDE_ROOT):
+            x += self._indent * (level-1) # indent but not level 1
+        else:
+            x += self._indent * level # indent according to level
+        
+        # a hidden root is not evaluated, but its children are always
+        if self.HasFlag(wx.TR_HIDE_ROOT) and (level == 0):
+            # a hidden root is not evaluated, but its
+            # children are always calculated
+            children = item.GetChildren()
+            count = len(children)
+            level = level + 1
+            for n in xrange(count):
+                y = self.CalculateLevel(children[n], dc, level, y, x_colstart)  # recurse
+                
+            return y
+
+        self.CalculateSize(item, dc)
+
+        # set its position
+        item.SetX(x)
+        item.SetY(y)
+        y += self.GetLineHeight(item)
+
+        if not item.IsExpanded():
+            # we don't need to calculate collapsed branches
+            return y
+
+        children = item.GetChildren()
+        count = len(children)
+        level = level + 1
+        for n in xrange(count):
+            y = self.CalculateLevel(children[n], dc, level, y, x_colstart)  # recurse
+        
+        return y
+    
+
+    def CalculatePositions(self):
+        
+        if not self._anchor:
+            return
+
+        dc = wx.ClientDC(self)
+        self.PrepareDC(dc)
+
+        dc.SetFont(self._normalFont)
+        dc.SetPen(self._dottedPen)
+
+        y, x_colstart = 2, 0
+        for i in xrange(self.GetMainColumn()):
+            if not self._owner.GetHeaderWindow().IsColumnShown(i):
+                continue
+            x_colstart += self._owner.GetHeaderWindow().GetColumnWidth(i)
+        
+        self.CalculateLevel(self._anchor, dc, 0, y, x_colstart) # start recursion
+
+
+    def SetItemText(self, item, text, column=None):
+
+        dc = wx.ClientDC(self)
+        item.SetText(column, text)
+        self.CalculateSize(item, dc)
+        self.RefreshLine(item)
+
+
+    def GetItemText(self, item, column=None):
+
+        if self.IsVirtual():
+            return self._owner.OnGetItemText(item, column)
+        else:
+            return item.GetText(column)
+   
+
+    def GetItemWidth(self, column, item):
+        
+        if not item:
+            return 0
+
+        # determine item width
+        font = self.GetItemFont(item)
+        dc = wx.ClientDC(self)
+        w, h, dummy = dc.GetMultiLineTextExtent(item.GetText(column))
+        w += 2*_MARGIN
+
+        # calculate width
+        width = w + 2*_MARGIN
+        if column == self.GetMainColumn():
+            width += _MARGIN
+            if self.HasFlag(wx.TR_LINES_AT_ROOT):
+                width += _LINEATROOT
+            if self.HasButtons():
+                width += self._btnWidth + _LINEATROOT
+            if item.GetCurrentImage() != _NO_IMAGE:
+                width += self._imgWidth
+
+            # count indent level
+            level = 0
+            parent = item.GetParent()
+            root = self.GetRootItem()
+            while (parent and (not self.HasFlag(wx.TR_HIDE_ROOT) or (parent != root))):
+                level += 1
+                parent = parent.GetParent()
+            
+            if level:
+                width += level*self.GetIndent()
+
+        wnd = item.GetWindow(column)
+        if wnd:
+            width += wnd.GetSize()[0] + 2*_MARGIN
+            
+        return width
+
+
+    def GetBestColumnWidth(self, column, parent=None):
+
+        maxWidth, h = self.GetClientSize()
+        width = 0
+
+        # get root if on item
+        if not parent:
+            parent = self.GetRootItem()
+
+        # add root width
+        if not self.HasFlag(wx.TR_HIDE_ROOT):
+            w = self.GetItemWidth(column, parent)
+            if width < w:
+                width = w
+            if width > maxWidth:
+                return maxWidth
+
+        item, cookie = self.GetFirstChild(parent)
+        while item:
+            w = self.GetItemWidth(column, item)
+            if width < w:
+                width = w
+            if width > maxWidth:
+                return maxWidth
+
+            # check the children of this item
+            if item.IsExpanded():
+                w = self.GetBestColumnWidth(column, item)
+                if width < w:
+                    width = w
+                if width > maxWidth:
+                    return maxWidth
+
+            # next sibling
+            item, cookie = self.GetNextChild(parent, cookie)
+        
+        return width
+
+
+    def HideItem(self, item, hide=True):
+
+        item.Hide(hide)
+        self.Refresh()
+        
+
+#----------------------------------------------------------------------------
+# TreeListCtrl - the multicolumn tree control
+#----------------------------------------------------------------------------
+
+_methods = ["GetIndent", "SetIndent", "GetSpacing", "SetSpacing", "GetImageList", "GetStateImageList",
+            "GetButtonsImageList", "AssignImageList", "AssignStateImageList", "AssignButtonsImageList",
+            "SetImageList", "SetButtonsImageList", "SetStateImageList",
+            "GetItemText", "GetItemImage", "GetItemPyData", "GetPyData", "GetItemTextColour",
+            "GetItemBackgroundColour", "GetItemFont", "SetItemText", "SetItemImage", "SetItemPyData", "SetPyData",
+            "SetItemHasChildren", "SetItemBackgroundColour", "SetItemFont", "IsItemVisible", "HasChildren",
+            "IsExpanded", "IsSelected", "IsBold", "GetChildrenCount", "GetRootItem", "GetSelection", "GetSelections",
+            "GetItemParent", "GetFirstChild", "GetNextChild", "GetPrevChild", "GetLastChild", "GetNextSibling",
+            "GetPrevSibling", "GetNext", "GetFirstExpandedItem", "GetNextExpanded", "GetPrevExpanded",
+            "GetFirstVisibleItem", "GetNextVisible", "GetPrevVisible", "AddRoot", "PrependItem", "InsertItem",
+            "AppendItem", "Delete", "DeleteChildren", "DeleteRoot", "Expand", "ExpandAll", "ExpandAllChildren",
+            "Collapse", "CollapseAndReset", "Toggle", "Unselect", "UnselectAll", "SelectItem",
+            "EnsureVisible", "ScrollTo", "HitTest", "GetBoundingRect", "EditLabel", "SortChildren", "FindItem",
+            "SetDragItem", "GetColumnCount", "SetMainColumn", "GetHyperTextFont", "SetHyperTextFont",
+            "SetHyperTextVisitedColour", "GetHyperTextVisitedColour", "SetHyperTextNewColour", "GetHyperTextNewColour",
+            "SetItemVisited", "GetItemVisited", "SetHilightFocusColour", "GetHilightFocusColour", "SetHilightNonFocusColour",
+            "GetHilightNonFocusColour", "SetFirstGradientColour", "GetFirstGradientColour", "SetSecondGradientColour",
+            "GetSecondGradientColour", "EnableSelectionGradient", "SetGradientStyle", "GetGradientStyle",
+            "EnableSelectionVista", "SetBorderPen", "GetBorderPen", "SetConnectionPen", "GetConnectionPen",
+            "SetBackgroundImage", "GetBackgroundImage", "SetImageListCheck", "GetImageListCheck", "EnableChildren",
+            "EnableItem", "IsItemEnabled", "GetDisabledColour", "SetDisabledColour", "IsItemChecked",
+            "UnCheckRadioParent", "CheckItem", "CheckItem2", "AutoToggleChild", "AutoCheckChild", "AutoCheckParent",
+            "CheckChilds", "CheckSameLevel", "GetItemWindowEnabled", "SetItemWindowEnabled", "GetItemType",
+            "IsDescendantOf", "SetItemHyperText", "IsItemHyperText", "SetItemBold", "SetItemDropHighlight", "SetItemItalic",
+            "GetEditControl", "ShouldInheritColours", "GetItemWindow", "SetItemWindow", "SetItemTextColour", "HideItem",
+            "DeleteAllItems", "ItemHasChildren"]
+
+
+class HyperTreeList(wx.PyControl):
+
+    def __init__(self, parent, id=wx.ID_ANY, pos=wx.DefaultPosition, size=wx.DefaultSize,
+                 style=wx.TR_DEFAULT_STYLE, validator=wx.DefaultValidator, name="HyperTreeList"):
+
+        wx.PyControl.__init__(self, parent, id, pos, size, style, validator, name)
+
+        self._header_win = None
+        self._main_win = None
+        self._headerHeight = 0
+        
+        main_style = style & ~(wx.SIMPLE_BORDER|wx.SUNKEN_BORDER|wx.DOUBLE_BORDER|
+                                wx.RAISED_BORDER|wx.STATIC_BORDER)
+        ctrl_style = style & ~(wx.VSCROLL|wx.HSCROLL)
+
+        self._windowStyle = style
+        
+        self._main_win = TreeListMainWindow(self, -1, wx.Point(0, 0), size, main_style, validator)
+        self._header_win = TreeListHeaderWindow(self, -1, self._main_win, wx.Point(0, 0),
+                                                wx.DefaultSize, wx.TAB_TRAVERSAL)
+        self.CalculateAndSetHeaderHeight()
+        self.Bind(wx.EVT_SIZE, self.OnSize)
+        
+        for method in _methods:
+            setattr(self, method, getattr(self._main_win, method))
+            
+
+    def CalculateAndSetHeaderHeight(self):
+
+        if self._header_win:
+            h = wx.RendererNative.Get().GetHeaderButtonHeight(self._header_win)
+            # only update if changed
+            if h != self._headerHeight:
+                self._headerHeight = h
+                self.DoHeaderLayout()
+            
+
+    def DoHeaderLayout(self):
+
+        w, h = self.GetClientSize()
+        if self._header_win:
+            self._header_win.SetDimensions(0, 0, w, self._headerHeight)
+            self._header_win.Refresh()
+        
+        if self._main_win:
+            self._main_win.SetDimensions(0, self._headerHeight + 1, w, h - self._headerHeight - 1)
+    
+
+    def OnSize(self, event):
+
+        self.DoHeaderLayout()
+
+
+    def GetCount(self):
+
+        return self._main_win.GetCount() 
+
+
+    def SetFont(self, font):
+
+        if self._header_win:
+            self._header_win.SetFont(font)
+            self.CalculateAndSetHeaderHeight()
+            self._header_win.Refresh()
+        
+        if self._main_win:
+            return self._main_win.SetFont(font)
+        else:
+            return False
+    
+
+    def SetWindowStyle(self, style):
+
+        if self._main_win:
+            self._main_win.SetTreeStyle(style)
+            
+        self._windowStyle = style
+        # TODO: provide something like wxTL_NO_HEADERS to hide self._header_win
+
+
+    def GetWindowStyle(self):
+
+        style = self._windowStyle
+        if self._main_win:
+            style |= self._main_win.GetTreeStyle()
+            
+        return style
+
+
+    def OnCompareItems(self, item1, item2):
+
+        # do the comparison here, and not delegate to self._main_win, in order
+        # to let the user override it
+
+        return self.GetItemText(item1) == self.GetItemText(item2)
+
+
+    def SetBackgroundColour(self, colour):
+
+        if not self._main_win:
+            return False
+        
+        return self._main_win.SetBackgroundColour(colour)
+
+
+    def SetForegroundColour(self, colour):
+
+        if not self._main_win:
+            return False
+        
+        return self._main_win.SetForegroundColour(colour)
+
+
+    def SetColumnWidth(self, column, width):
+
+        if width == wx.LIST_AUTOSIZE_USEHEADER:
+        
+            font = self._header_win.GetFont()
+            dc = wx.ClientDC(self._header_win)
+            width, dummy, dummy = dc.GetMultiLineTextExtent(self._header_win.GetColumnText(column))
+            #search TreeListHeaderWindow::OnPaint to understand this:
+            width += 2*_EXTRA_WIDTH + _MARGIN
+        
+        elif width == wx.LIST_AUTOSIZE:
+        
+            width = self._main_win.GetBestColumnWidth(column)
+        
+        self._header_win.SetColumnWidth(column, width)
+        self._header_win.Refresh()
+
+
+    def GetColumnWidth(self, column):
+
+        return self._header_win.GetColumnWidth(column)
+
+        
+    def SetColumnText(self, column, text):
+
+        self._header_win.SetColumnText(column, text)
+        self._header_win.Refresh()
+
+
+    def GetColumnText(self, column):
+
+        return self._header_win.GetColumnText(column)
+
+
+    def AddColumn(self, text, width=_DEFAULT_COL_WIDTH, flag=wx.ALIGN_LEFT,
+                  image=-1, shown=True, colour=None, edit=False):
+
+        self._header_win.AddColumn(text, width, flag, image, shown, colour, edit)
+        self.DoHeaderLayout()
+        
+
+    def AddColumnInfo(self, colInfo):
+
+        self._header_win.AddColumnInfo(colInfo)
+        self.DoHeaderLayout()
+
+
+    def InsertColumn(self, before, colInfo):
+
+        self._header_win.InsertColumn(before, colInfo)
+        self._header_win.Refresh()
+
+
+    def RemoveColumn(self, column):
+
+        self._header_win.RemoveColumn(column)
+        self._header_win.Refresh()
+
+
+    def SetColumn(self, column, colInfo):
+
+        self._header_win.SetColumn(column, colInfo)
+        self._header_win.Refresh()
+            
+
+    def GetColumn(self, column):
+        
+        return self._header_win.GetColumn(column)
+
+
+    def SetColumnImage(self, column, image):
+
+        self._header_win.SetColumn(column, self.GetColumn(column).SetImage(image))
+        self._header_win.Refresh()
+
+
+    def GetColumnImage(self, column):
+
+        return self._header_win.GetColumn(column).GetImage()
+
+
+    def SetColumnEditable(self, column, edit):
+
+        self._header_win.SetColumn(column, self.GetColumn(column).SetEditable(edit))
+
+
+    def SetColumnShown(self, column, shown):
+
+        if column == self.GetMainColumn():
+            raise Exception("The main column may not be hidden")
+        
+        self._header_win.SetColumn(column, self.GetColumn(column).SetShown((self.GetMainColumn()==column and [True] or [shown])[0]))
+        self._header_win.Refresh()
+
+
+    def IsColumnEditable(self, column):
+
+        return self._header_win.GetColumn(column).IsEditable()
+
+
+    def IsColumnShown(self, column):
+
+        return self._header_win.GetColumn(column).IsShown()
+
+
+    def SetColumnAlignment(self, column, flag):
+
+        self._header_win.SetColumn(column, self.GetColumn(column).SetAlignment(flag))
+        self._header_win.Refresh()
+
+
+    def GetColumnAlignment(self, column):
+
+        return self._header_win.GetColumn(column).GetAlignment()
+
+
+    def SetColumnColour(self, column, colour):
+
+        self._header_win.SetColumn(column, self.GetColumn(column).SetColour(colour))
+        self._header_win.Refresh()
+
+
+    def GetColumnColour(self, column):
+
+        return self._header_win.GetColumn(column).GetColour()
+                
+
+    def SetColumnFont(self, column, font):
+
+        self._header_win.SetColumn(column, self.GetColumn(column).SetFont(font))
+        self._header_win.Refresh()
+
+
+    def GetColumnFont(self, column):
+
+        return self._header_win.GetColumn(column).GetFont()
+
+
+    def Refresh(self, erase=True, rect=None):
+
+        self._main_win.Refresh(erase, rect)
+        self._header_win.Refresh(erase, rect)
+
+
+    def SetFocus(self):
+        
+        self._main_win.SetFocus() 
+
+
+    def GetHeaderWindow(self):
+        
+        return self._header_win
+    
+
+    def GetMainWindow(self):
+        
+        return self._main_win
+
+
+    def DoGetBestSize(self):
+
+        # something is better than nothing...
+        return wx.Size(200, 200) # but it should be specified values! FIXME
+
+
+    def OnGetItemText(self, item, column):
+
+        return ""
+
+
+    def GetClassDefaultAttributes(self):
+        """Gets the class default attributes."""
+
+        attr = wx.VisualAttributes()
+        attr.colFg = wx.SystemSettings_GetColour(wx.SYS_COLOUR_WINDOWTEXT)
+        attr.colBg = wx.SystemSettings_GetColour(wx.SYS_COLOUR_LISTBOX)
+        attr.font  = wx.SystemSettings_GetFont(wx.SYS_DEFAULT_GUI_FONT)
+        return attr
+
+    GetClassDefaultAttributes = classmethod(GetClassDefaultAttributes)
+
+    

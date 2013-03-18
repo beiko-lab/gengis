@@ -1,0 +1,48 @@
+# Compiling GenGIS for Ubuntu:
+
+# 1. Python 2.6 (Python 2.5 not in the package list)
+
+sudo apt-get install python2.6
+
+# 2. wxPython
+
+sudo apt-get install python-wxgtk2.8
+sudo apt-get install python-wxgtk2.8-dbg
+
+# 3. GDAL
+
+sudo apt-get install gdal-bin
+sudo apt-get install python2.6-gdal
+sudo apt-get install libgdal-dev
+
+# 4. FTGL
+
+sudo apt-get install ftgl-dev
+
+# 5. boost
+
+sudo apt-get install libboost-python-dev
+sudo apt-get install libboost-date-time-dev
+sudo apt-get install libboost-filesystem-dev
+sudo apt-get install libboost-graph-dev
+sudo apt-get install libboost-iostreams-dev
+sudo apt-get install libboost-regex-dev
+sudo apt-get install libboost-system-dev
+sudo apt-get install libboost-thread-dev
+sudo apt-get install libboost-signals-dev
+sudo apt-get install libboost-wave-dev
+sudo apt-get install libboost-serialization-dev
+sudo apt-get install libboost-serialization-dev
+sudo apt-get install libboost-program-options-dev
+sudo apt-get install libboost-test-dev
+#### sudo apt-get install libboost-prg_exec_monitor-dev
+
+# 6. wxWidgets
+
+sudo apt-get install libwxgtk2.8-dev
+sudo apt-get install libwxgtk2.8-dbg
+
+# A few fixes and hacks:
+
+sudo ln -s GL OpenGL
+

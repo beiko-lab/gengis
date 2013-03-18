@@ -1,0 +1,176 @@
+ATTRIBUTE|1|sequence_length
+ TYPE|Number
+ GROUPABLE|0
+ DEFINED|4,14-Nov-06_200m 9687 of 9687
+ DEFINED|4,18-Feb-06_10m 9356 of 9356
+ DEFINED|4,09-Apr-08_200m 16309 of 16309
+ DEFINED|4,14-Nov-06_120m 10105 of 10105
+ DEFINED|2,JGI_SLUDGE_US_SMPL_20060924 0 of 0
+ DEFINED|4,06-Jul-06_10m 11975 of 11975
+ DEFINED|4,18-Feb-06_125m 13624 of 13624
+ DEFINED|4,09-Apr-08_100m 14883 of 14883
+ DEFINED|4,24-Apr-07_120m 10314 of 10314
+ DEFINED|4,06-Jul-06_200m 10960 of 10960
+ DEFINED|4,06-Jul-06_120m 11787 of 11787
+ DEFINED|4,18-Feb-06_100m 10603 of 10603
+ DEFINED|4,14-Nov-06_10m 8070 of 8070
+ DEFINED|4,14-Nov-06_100m 12120 of 12120
+ DEFINED|4,18-Feb-06_215m 12334 of 12334
+ DEFINED|4,09-Apr-08_120m 12939 of 12939
+ DEFINED|2,JGI_SLUDGE_AUS_SMPL_20060924 0 of 0
+ DEFINED|4,06-Jul-06_100m 10872 of 10872
+ DEFINED|4,24-Apr-07_200m 13247 of 13247
+ DEFINED|4,24-Apr-07_10m 10636 of 10636
+ DEFINED|4,24-Apr-07_100m 8610 of 8610
+ RANGE|28|19770
+ END
+ATTRIBUTE|2|product
+ TYPE|String
+ GROUPABLE|1
+ DEFINED|4,14-Nov-06_200m 9687 of 9687
+ DEFINED|4,18-Feb-06_10m 9356 of 9356
+ DEFINED|4,09-Apr-08_200m 16309 of 16309
+ DEFINED|4,14-Nov-06_120m 10105 of 10105
+ DEFINED|2,JGI_SLUDGE_US_SMPL_20060924 0 of 0
+ DEFINED|4,06-Jul-06_10m 11975 of 11975
+ DEFINED|4,18-Feb-06_125m 13624 of 13624
+ DEFINED|4,09-Apr-08_100m 14883 of 14883
+ DEFINED|4,24-Apr-07_120m 10314 of 10314
+ DEFINED|4,06-Jul-06_200m 10960 of 10960
+ DEFINED|4,06-Jul-06_120m 11787 of 11787
+ DEFINED|4,18-Feb-06_100m 10603 of 10603
+ DEFINED|4,14-Nov-06_10m 8070 of 8070
+ DEFINED|4,14-Nov-06_100m 12120 of 12120
+ DEFINED|4,18-Feb-06_215m 12334 of 12334
+ DEFINED|4,09-Apr-08_120m 12939 of 12939
+ DEFINED|2,JGI_SLUDGE_AUS_SMPL_20060924 0 of 0
+ DEFINED|4,06-Jul-06_100m 10872 of 10872
+ DEFINED|4,24-Apr-07_200m 13247 of 13247
+ DEFINED|4,24-Apr-07_10m 10636 of 10636
+ DEFINED|4,24-Apr-07_100m 8610 of 8610
+ LABEL|0|
+ LABEL|1|( EC:1.13.11.6,EC:1.13.11.6 )
+ LABEL|2|( EC:1.13.11.8,EC:1.13.11.8 )
+ LABEL|3|( EC:1.14.13.-,EC:1.14.13.- )
+ LABEL|4|( EC:1.2.7.-,EC:1.2.7.- )
+ LABEL|5|( EC:1.20.4.1,EC:1.20.4.1 )
+ LABEL|6|( EC:1.3.1.45,EC:1.3.1.45 )
+ LABEL|7|( EC:1.7.99.1,EC:1.7.99.1 )
+ LABEL|8|( EC:1.8.4.6,EC:1.8.4.6 )
+ LABEL|9|( EC:2.1.1.100,EC:2.1.1.100 )
+ LABEL|10|( EC:2.1.1.107,EC:2.1.1.107 )
+ LABEL|11|( EC:2.3.1.20,EC:2.3.1.20 )
+ LABEL|12|( EC:2.3.1.60,EC:2.3.1.60 )
+ LABEL|13|( EC:2.4.2.30,EC:2.4.2.30 )
+ LABEL|14|( EC:2.4.2.37,EC:2.4.2.37 )
+ LABEL|15|( EC:2.5.1.18,EC:2.5.1.18 )
+ LABEL|16|( EC:2.7.-,EC:2.7.- )
+ LABEL|17|( EC:3.1.1.53,EC:3.1.1.53 )
+ LABEL|18|( EC:3.1.1.75,EC:3.1.1.75 )
+ LABEL|19|( EC:3.1.1.76,EC:3.1.1.76 )
+ LABEL|20|( EC:3.1.21.4,EC:3.1.21.4 )
+ LABEL|21|( EC:3.1.30.1,EC:3.1.30.1 )
+ LABEL|22|( EC:3.2.1.3,EC:3.2.1.3 )
+ LABEL|23|( EC:3.4.21.-,EC:3.4.21.- )
+ LABEL|24|( EC:3.4.23.36,EC:3.4.23.36 )
+ LABEL|25|( EC:3.5.2.6,EC:3.5.2.6 )
+ LABEL|26|( EC:3.6.1.1,EC:3.6.1.1 )
+ LABEL|27|( EC:3.6.3.14,EC:3.6.3.14 )
+ LABEL|28|( EC:4.2.2.2,EC:4.2.2.2 )
+ LABEL|29|( EC:4.4.1.5,EC:4.4.1.5 )
+ LABEL|30|( EC:4.6.1.1,EC:4.6.1.1 )
+ LABEL|31|( EC:6.3.2.2,EC:6.3.2.2 )
+ LABEL|32|(acyl-carrier-protein) S-malonyltransferase
+ LABEL|33|(acyl-carrier-protein) S-malonyltransferase( EC:2.3.1.39,EC:2.3.1.39 )
+ LABEL|34|1 Pyruvate decarboxylase and related thiamine pyr ophosphate-requiring enzymes
+ LABEL|35|1 Pyruvate decarboxylase and related thiamine pyr ophosphate-requiring enzymes( EC:4.1.1.74,EC:4.1.1.74 )
+ LABEL|36|1,4-alpha-glucan branching enzyme
+ LABEL|37|1,4-alpha-glucan branching enzyme( EC:2.4.1.18,EC:2.4.1.18 )
+ LABEL|38|1,4-dihydroxy-2-naphthoate octaprenyltransferase
+ LABEL|39|1-acyl-sn-glycerol-3-phosphate acyltransferase
+ LABEL|40|1-acyl-sn-glycerol-3-phosphate acyltransferase( EC:2.3.1.-,EC:2.3.1.- )
+ LABEL|41|1-acyl-sn-glycerol-3-phosphate acyltransferase( EC:2.3.1.51,EC:2.3.1.51 )
+ LABEL|42|1-aminocyclopropane-1-carboxylate deaminase( EC:3.5.99.7,EC:3.5.99.7 )
+ LABEL|43|1-deoxy-D-xylulose 5-phosphate reductoisomerase
+ LABEL|44|1-deoxy-D-xylulose 5-phosphate reductoisomerase( EC:1.1.1.267,EC:1.1.1.267 )
+ LABEL|45|15 Serine/threonine protein kinase
+ LABEL|46|15 Serine/threonine protein kinase( EC:2.7.1.-,EC:2.7.1.- )
+ LABEL|47|16S RNA G1207 methylase RsmC
+ LABEL|48|16S RNA G1207 methylase RsmC( EC:2.1.1.52,EC:2.1.1.52 )
+ LABEL|49|16S rRNA uridine-516 pseudouridylate synthase and related pseudouridylate synthases
+ LABEL|50|16S rRNA uridine-516 pseudouridylate synthase and related pseudouridylate synthases( EC:4.2.1.70,EC:4.2.1.70 )
+ LABEL|51|16S,( rRNA ) 
+ LABEL|52|2 Flagellar biosynthesis chaperone
+ LABEL|53|2 Lactate dehydrogenase and related dehydrogenase s
+ LABEL|54|2 Lactate dehydrogenase and related dehydrogenase s( EC:1.1.1.-,EC:1.1.1.26,EC:1.1.1.26,EC:1.1.1.- )
+ LABEL|55|2 Lactate dehydrogenase and related dehydrogenase s( EC:1.1.1.29,EC:1.1.1.29 )
+ LABEL|56|2'-5' RNA ligase
+ LABEL|57|2,4-dihydroxyhept-2-ene-1,7-dioic acid aldolase
+ LABEL|58|2,4-dihydroxyhept-2-ene-1,7-dioic acid aldolase( EC:4.1.2.-,EC:4.1.2.- )
+ LABEL|59|2-hydroxychromene-2-carboxylate isomerase
+ LABEL|60|2-keto-3-deoxy-6-phosphogluconate aldolase
+ LABEL|61|2-keto-3-deoxy-6-phosphogluconate aldolase( EC:4.1.2.14,EC:4.1.2.14 )
+ LABEL|62|2-keto-3-deoxy-galactonokinase
+ LABEL|63|2-keto-3-deoxy-galactonokinase( EC:2.7.1.58,EC:2.7.1.58 )
+ LABEL|64|2-keto-4-pentenoate hydratase( EC:4.1.1.77,EC:4.1.1.77 )
+ LABEL|65|2-keto-4-pentenoate hydratase/2-oxohepta-3-ene-1, 7-dioic acid hydratase (catechol pathway)
+ LABEL|66|2-keto-4-pentenoate hydratase/2-oxohepta-3-ene-1, 7-dioic acid hydratase (catechol pathway)( EC:3.7.1.2,EC:3.7.1.2 )
+ LABEL|67|2-keto-4-pentenoate hydratase/2-oxohepta-3-ene-1, 7-dioic acid hydratase (catechol pathway)( EC:3.7.1.5,EC:3.7.1.5 )
+ LABEL|68|2-methylthioadenine synthetase
+ LABEL|69|2-methylthioadenine synthetase( EC:1.8.-,EC:1.8.- )
+ LABEL|70|2-oxoglutarate dehydrogenase complex, dehydrogena se (E1) component, and related enzymes
+ LABEL|71|2-oxoglutarate dehydrogenase complex, dehydrogena se (E1) component, and related enzymes( EC:1.2.4.2,EC:1.2.4.2 )
+ LABEL|72|2-polyprenyl-3-methyl-5-hydroxy-6-metoxy-1,4-benz oquinol methylase
+ LABEL|73|2-polyprenyl-3-methyl-5-hydroxy-6-metoxy-1,4-benz oquinol methylase( EC:2.1.1.64,EC:2.1.1.64 )
+ LABEL|74|2-polyprenyl-6-methoxyphenol hydroxylase and rela ted FAD-dependent oxidoreductases
+ LABEL|75|2-polyprenyl-6-methoxyphenol hydroxylase and rela ted FAD-dependent oxidoreductases( EC:1.-,EC:1.- )
+ LABEL|76|2-polyprenyl-6-methoxyphenol hydroxylase and rela ted FAD-dependent oxidoreductases( EC:1.14.13.-,EC:1.14.13.- )
+ LABEL|77|2-polyprenyl-6-methoxyphenol hydroxylase and rela ted FAD-dependent oxidoreductases( EC:1.14.13.1,EC:1.14.13.1 )
+ LABEL|78|2-polyprenyl-6-methoxyphenol hydroxylase and rela ted FAD-dependent oxidoreductases( EC:1.14.13.2,EC:1.14.13.2 )
+ LABEL|79|2-polyprenyl-6-methoxyphenol hydroxylase and rela ted FAD-dependent oxidoreductases( EC:1.14.13.9,EC:1.14.13.9 )
+ LABEL|80|2-polyprenylphenol hydroxylase and related flavod oxin oxidoreductases
+ LABEL|81|2-polyprenylphenol hydroxylase and related flavod oxin oxidoreductases( EC:1.14.13.7,EC:1.14.13.7 )
+ LABEL|82|2-polyprenylphenol hydroxylase and related flavod oxin oxidoreductases( EC:1.14.13.7,EC:1.14.13.7,EC:1.17.1.-,EC:1.17.1.- )
+ LABEL|83|2-polyprenylphenol hydroxylase and related flavod oxin oxidoreductases( EC:1.17.1.-,EC:1.17.1.- )
+ LABEL|84|2-polyprenylphenol hydroxylase and related flavod oxin oxidoreductases( EC:1.5.1.30,EC:1.5.1.30 )
+ LABEL|85|2-succinyl-6-hydroxy-2,4-cyclohexadiene-1-carboxy late synthase
+ LABEL|86|2-succinyl-6-hydroxy-2,4-cyclohexadiene-1-carboxy late synthase( EC:2.5.1.64,EC:2.5.1.64 )
+ LABEL|87|23S rRNA methylase
+ LABEL|88|23S rRNA methylase( EC:2.1.1.-,EC:2.1.1.- )
+ LABEL|89|23S,( rRNA ) 
+ LABEL|90|2C-methyl-D-erythritol 2,4-cyclodiphosphate synth ase
+ LABEL|91|2C-methyl-D-erythritol 2,4-cyclodiphosphate synth ase( EC:4.6.1.12,EC:4.6.1.12 )
+ LABEL|92|3 Superfamily II DNA and RNA helicases
+ LABEL|93|3 Superfamily II DNA and RNA helicases( EC:2.7.7.-,EC:2.7.7.- )
+ LABEL|94|3 Superfamily II DNA and RNA helicases( EC:3.6.1.-,EC:3.6.1.- )
+ LABEL|95|3'-Phosphoadenosine 5'-phosphosulfate (PAPS) 3'-p hosphatase
+ LABEL|96|3'-Phosphoadenosine 5'-phosphosulfate (PAPS) 3'-p hosphatase( EC:3.1.3.7,EC:3.1.3.7 )
+ LABEL|97|3'-phosphoadenosine 5'-phosphosulfate sulfotransf erase (PAPS reductase)/FAD synthetase and related enzymes
+ LABEL|98|3'-phosphoadenosine 5'-phosphosulfate sulfotransf erase (PAPS reductase)/FAD synthetase and related enzymes( EC:1.8.4.8,EC:1.8.4.8 )
+ LABEL|99|3'-phosphoadenosine 5'-phosphosulfate sulfotransf erase (PAPS reductase)/FAD synthetase and related enzymes( EC:2.7.7.4,EC:2.7.7.4 )
+ END
+ATTRIBUTE|3|sequence
+ TYPE|String
+ GROUPABLE|0
+ DEFINED|4,14-Nov-06_200m 9687 of 9687
+ DEFINED|4,18-Feb-06_10m 9356 of 9356
+ DEFINED|4,09-Apr-08_200m 16309 of 16309
+ DEFINED|4,14-Nov-06_120m 10105 of 10105
+ DEFINED|2,JGI_SLUDGE_US_SMPL_20060924 0 of 0
+ DEFINED|4,06-Jul-06_10m 11975 of 11975
+ DEFINED|4,18-Feb-06_125m 13624 of 13624
+ DEFINED|4,09-Apr-08_100m 14883 of 14883
+ DEFINED|4,24-Apr-07_120m 10314 of 10314
+ DEFINED|4,06-Jul-06_200m 10960 of 10960
+ DEFINED|4,06-Jul-06_120m 11787 of 11787
+ DEFINED|4,18-Feb-06_100m 10603 of 10603
+ DEFINED|4,14-Nov-06_10m 8070 of 8070
+ DEFINED|4,14-Nov-06_100m 12120 of 12120
+ DEFINED|4,18-Feb-06_215m 12334 of 12334
+ DEFINED|4,09-Apr-08_120m 12939 of 12939
+ DEFINED|2,JGI_SLUDGE_AUS_SMPL_20060924 0 of 0
+ DEFINED|4,06-Jul-06_100m 10872 of 10872
+ DEFINED|4,24-Apr-07_200m 13247 of 13247
+ DEFINED|4,24-Apr-07_10m 10636 of 10636
+ DEFINED|4,24-Apr-07_100m 8610 of 8610
+ END

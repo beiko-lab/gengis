@@ -1,0 +1,24 @@
+PROCEDURES FOR BACKING UP THE GENGIS SVN
+
+(1) Log into Kiwi (kiwi.research.cs.dal.ca)
+
+(2) Make a 'hotcopy' of the repository to another location on the same machine (e.g., home directory):
+ 
+  svnadmin hotcopy /Users/gengis/Sites/GenGIS/code/repos ~/repos-backup
+
+(3) Copy the backup to another server (e.g., MOA)
+
+  scp -r ~/repos-backup <USERNAME>@moa.hpc.dal.ca:repos-backup
+
+  [the system will ask for your password]
+
+That's it!
+
+
+OTHER STUFF:
+
+Finding the size of a directory:
+  du -h repos-backup
+
+Repository location on Kiwi:
+  /Users/gengis/Sites/GenGIS/code/repos

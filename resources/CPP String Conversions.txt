@@ -1,0 +1,33 @@
+Website:
+
+	http://wiki.wxwidgets.org/Converting_everything_to_and_from_wxString#std::wstring_to_wxString
+
+
+wxString -> std::wstring
+
+	m_path.GetFullPath().wc_str(*wxConvCurrent)
+
+
+std::string -> wxString
+
+	wxString( file.c_str(), wxConvUTF8 )
+
+
+std::wstring -> wchar_t*
+
+  wchar_t* widecstr = widestr.c_str();
+
+	
+const wxString wstring2wxString(const std::wstring& str)
+{
+	return wxString(str.c_str(), wxConvISO8859_1);
+}
+
+const std::wstring wxString2wstring(const wxString& str)
+{
+    return str.wchar_str();
+}
+
+char* -> wxString
+	char myCharacterString[256] = "Hello World";
+	wxString mystring = wxString::FromUTF8( myCharacterString );

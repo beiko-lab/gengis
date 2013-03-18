@@ -1,0 +1,15 @@
+NCL README -- the NEXUS Class Library (NCL) README file
+
+Most documentation for this C++ class library is in the form of HTML 
+files in the html directory. Please begin by viewing the html/index.html
+file in your web browser.
+
+See the INSTALL file for important information about building and installing
+the NCL and example programs, and incorporating the NCL into your own
+applications.
+
+ACKNOWLEDGEMENTS
+	Many of the files used for testing were provided by Arlin Stoltzfus (see
+http://www.molevol.org/camel/projects/nexus/ for more information), the Mesquite
+package, and from TreeBase (thanks, to Bill Piel!).
+

@@ -1,0 +1,259 @@
+###############################################################################
+# Name: ed_ipc.py                                                             #
+# Purpose: Editra IPC client/server                                           #
+# Author: Cody Precord <cprecord@editra.org>                                  #
+# Copyright: (c) 2008 Cody Precord <staff@editra.org>                         #
+# License: wxWindows License                                                  #
+###############################################################################
+
+"""
+Classes and utilities for handling IPC between running instances of Editra. The
+IPC is done through sockets using the TCP protocol. Message packets have a
+specified format and authentication method that is described in L{EdIpcServer}.
+
+Remote Control Protocol:
+
+This server and its relationship with the main application object allows for
+some limited remote control of Editra. The server's basic message protocol
+requirements are as follows.
+
+SESSION_KEY;message1;message2;...;MSGEND
+
+Where the SESSION_KEY is the unique authentication key created by the app that
+started the server. This key is stored in the user profile and only valid for
+the current running session of Editra. The MSGEND indicator is the L{MSGEND}
+string defined in this file (*EDEND*). If both of these parts of the message
+are found and correct the server will forward the messages that are packed in
+between to the app.
+
+Message Format:
+
+Currently the types of messages that the app will process come in the following
+two formats.
+
+  1) Send a file path or name to open the file. If the file is already open
+     then that tab will be set as the current tab.
+
+  2) To control the currently selected buffer commands must be formatted as
+     follows. Cmd.EditraStc::MethodName the first part of the string is used
+     to identify this is a command being issued from the server, the second part
+     identifies what object the command is to be called on. The identification
+     string is separated from the command by :: and finally the command is the
+     string representation of the actual method to call on the buffer.
+
+@example: SESSION_KEY;Cmd.EditraStc::Revert;/usr/home/foo/test.py;MSGEND
+@summary: Editra's IPC Library
+
+"""
+
+__author__ = "Cody Precord <cprecord@editra.org>"
+__svnid__ = "$Id: ed_ipc.py 56615 2008-10-31 03:59:55Z CJP $"
+__revision__ = "$Revision: 56615 $"
+
+#-----------------------------------------------------------------------------#
+# Imports
+import wx
+import threading
+import socket
+import time
+#import select
+
+#-----------------------------------------------------------------------------#
+# Globals
+
+# Port choosing algorithm ;)
+EDPORT = 10 * int('ed', 16) + sum(ord(x) for x in "itr") + int('a', 16) 
+MSGEND = u"*EDEND*"
+
+#-----------------------------------------------------------------------------#
+
+edEVT_COMMAND_RECV = wx.NewEventType()
+EVT_COMMAND_RECV = wx.PyEventBinder(edEVT_COMMAND_RECV, 1)
+class IpcServerEvent(wx.PyCommandEvent):
+    """Event to signal the server has recieved some commands"""
+    def __init__(self, etype, eid, values=None):
+        """Creates the event object"""
+        wx.PyCommandEvent.__init__(self, etype, eid)
+        self._value = values
+
+    def GetCommands(self):
+        """Returns the list of commands sent to the server
+        @return: the value of this event
+
+        """
+        return self._value
+
+#-----------------------------------------------------------------------------#
+
+class EdIpcServer(threading.Thread):
+    """Create an instance of IPC server for Editra. IPC is handled through
+    a socket connection to an instance of this server listening on L{EDPORT}.
+    The server will recieve commands and dispatch them to the app.
+    Messages sent to the server must be in the following format.
+    
+      AuthenticationKey;Message Data;MSGEND
+
+    The _AuthenticationKey_ is the same as the key that started the server it
+    is used to validate that messages are coming from a legitimate source.
+
+    _Message Data_ is a string of data where items are separated by a single
+    ';' character. If you use L{SendCommands} to communicate with the server
+    then this message separators are handled internally by that method.
+
+    L{MSGEND} is the token to signify that the client is finished sending
+    commands to the server. When using L{SendCommands} this is also 
+    automatically handled.
+
+    @todo: investigate possible security issues
+
+    """
+    def __init__(self, app, key):
+        """Create the server thread
+        @param app: Application object the server belongs to
+        @param key: Unique user authentication key (string)
+
+        """
+        threading.Thread.__init__(self)
+
+        # Attributes
+        self._exit = False
+        self.__key = key
+        self.app = app
+        self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
+        # Setup
+        ## Try new ports till we find one that we can use
+        global EDPORT
+        while True:
+            try:
+                self.socket.bind(('127.0.0.1', EDPORT))
+                break
+            except:
+                EDPORT += 1
+
+        self.socket.listen(5)
+
+    def Shutdown(self):
+        """Tell the server to exit"""
+        self._exit = True
+        # Wake up the server in case its waiting
+        SendCommands(['quit', ], self.__key)
+
+    def run(self):
+        """Start the server. The server runs in blocking mode, this
+        shouldn't be an issue as it should rarely need to respond to
+        anything.
+
+        """
+        while not self._exit:
+            client, addr = self.socket.accept()
+
+            if self._exit:
+                break
+
+            # Block for upto 2 seconds while reading
+            start = time.time()
+            recieved = u''
+            while time.time() < start + 2:
+                recieved += client.recv(4096)
+                if recieved.endswith(MSGEND):
+                    break
+
+            # If message key is correct and the message is ended, process
+            # the input and dispatch to the app.
+            if recieved.startswith(self.__key) and recieved.endswith(MSGEND):
+                recieved = recieved.replace(self.__key, u'', 1)
+                # Get the separate commands
+                cmds = [ cmd
+                         for cmd in recieved.rstrip(MSGEND).split(u";")
+                         if len(cmd) ]
+
+                evt = IpcServerEvent(edEVT_COMMAND_RECV, wx.ID_ANY, cmds)
+                wx.CallAfter(wx.PostEvent, self.app, evt)
+
+        # Shutdown Server
+        try:
+            self.socket.shutdown(socket.SHUT_RDWR)
+        except:
+            pass
+
+        self.socket.close()
+
+#-----------------------------------------------------------------------------#
+
+def SendCommands(cmds, key):
+    """Send commands to the running instance of Editra
+    @param cmds: List of command strings
+    @param key: Server session authentication key
+    @return: bool
+
+    """
+    if not len(cmds):
+        return
+
+    # Add the authentication key
+    cmds.insert(0, key)
+
+    # Append the message end clause
+    cmds.append(MSGEND)
+
+    try:
+        # Setup the client socket
+        client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        client.connect(('127.0.0.1', EDPORT))
+
+        # Server expects commands delimited by ;
+        client.send(u";".join(cmds))
+        client.shutdown(socket.SHUT_RDWR)
+        client.close()
+    except:
+        return False
+    else:
+        return True
+
+#-----------------------------------------------------------------------------#
+# Test
+if __name__ == '__main__':
+    ID_GO = wx.NewId()
+    ID_STOP = wx.NewId()
+    KEY = 'mykey'
+
+    def OnMessage(evt):
+        """Test message reciever"""
+        print "MSG RECIEVED: %s" % str(evt.GetValue())
+
+    class TestFrame(wx.Frame):
+        """Test application frame"""  
+        def __init__(self, parent, title="Server Test"):
+            wx.Frame.__init__(self, parent, wx.ID_ANY, title)
+            sizer = wx.BoxSizer(wx.HORIZONTAL)
+            sizer.AddMany([(wx.Button(self, ID_GO, "GO"), 0, wx.ALIGN_LEFT),
+                           ((20, 20), 0),
+                           (wx.Button(self, ID_STOP, "STOP"), 0, wx.ALIGN_RIGHT),
+                          ])
+            self.SetSizer(sizer)
+            self.SetInitialSize()
+            self.Bind(wx.EVT_BUTTON, self.Go, id=ID_GO)
+            self.Bind(wx.EVT_BUTTON, self.Exit, id=ID_STOP)
+            self.Show()
+
+        def Go(self, evt):
+            """Send some commands to the server"""
+            for msg in ('Japan', 'United States', 'Spain', 'Greece'):
+                SendCommands(["I'm in %s" % msg], KEY)
+
+        def Exit(self, evt):
+            """Shutdown the server and the app"""
+            SERVER.Shutdown()
+            self.Close()
+
+    APP = wx.App(False)
+    print "Starting server..."
+    SERVER = EdIpcServer(APP, KEY)
+    SERVER.start()
+    APP.Bind(EVT_COMMAND_RECV, OnMessage)
+    TestFrame(None)
+    print "Starting application loop..."
+    APP.MainLoop()
+
+    
