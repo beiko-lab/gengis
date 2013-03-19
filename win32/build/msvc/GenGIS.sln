@@ -1,10 +1,7 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2010
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GenGIS", "GenGIS.vcxproj", "{92239317-F979-4A21-A64B-BAB16F1D587D}"
-Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual C++ Express 2010
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GenGIS", "GenGIS.vcxproj", "{92239317-F979-4A21-A64B-BAB16F1D587D}"
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GenGIS", "GenGIS.vcproj", "{92239317-F979-4A21-A64B-BAB16F1D587D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
