@@ -10,4 +10,3 @@ FTGL
 zlib
 png
 jpeg
-test
