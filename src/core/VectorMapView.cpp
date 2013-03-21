@@ -1,7 +1,7 @@
 //=======================================================================
-// Author: Timothy Mankowski
+// Author: Timothy Mankowski & Somayyeh Zangooei
 //
-// Copyright 2012 Timothy Mankowski
+// Copyright 2012 Timothy Mankowski & Somayyeh Zangooei
 //
 // This file is part of GenGIS.
 //

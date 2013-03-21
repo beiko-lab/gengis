@@ -1,5 +1,5 @@
 //=======================================================================
-// Author: Donovan Parks
+// Author: Donovan Parks & Somayyeh Zangooei
 //
 // Copyright 2009 Donovan Parks
 //
