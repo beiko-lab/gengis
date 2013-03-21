@@ -1,5 +1,5 @@
 //=======================================================================
-// Author: Timothy Mankowski
+// Author: Timothy Mankowski & Somayyeh Zangooei
 //
 // Copyright 2012 Timothy Mankowski
 //

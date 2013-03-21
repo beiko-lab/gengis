@@ -1,5 +1,5 @@
 //=======================================================================
-// Author: Donovan Parks
+// Author: Donovan Parks & Somayyeh Zangooei
 //
 // Copyright 2009 Donovan Parks
 //
@@ -1609,7 +1609,7 @@ void GenGisFrame::LayerOpenVectorMap( wxFileName fullPath, uint mapIndex )
 			//studyLayer->RemoveAllMapLayers(); 
 			}
 
-			////// Render vector map if the blank raster is loaded
+			// Render vector map if the blank raster is loaded
 			if ( App::Inst().GetLayerTreeController()->GetNumMapLayers() >0 )
 			{				
 				ltc->GetVectorMapLayer(0)->GetVectorMapController()->GetVectorMapView()->Render( true );

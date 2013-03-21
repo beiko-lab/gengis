@@ -1,6 +1,6 @@
 //=======================================================================
 // Author: Donovan Parks
-//
+// Modified by Somayyeh Zangooei (2013)
 // Copyright 2009 Donovan Parks
 //
 // This file is part of GenGIS.

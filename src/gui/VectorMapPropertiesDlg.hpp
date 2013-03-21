@@ -1,7 +1,7 @@
 //=======================================================================
-// Author: Donovan Parks
+// Author: Somayyeh Zangooei
 //
-// Copyright 2009 Donovan Parks
+// Copyright 2013 Somayyeh Zangooei
 //
 // This file is part of GenGIS.
 //
