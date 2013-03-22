@@ -72,9 +72,6 @@ namespace GenGIS
 		/** Initialize all dialog box parameters. */
 		void InitGeneral();
 
-		/** Initialize controls on Symbology->Colour Map page. */
-		//void InitColourMap();
-
 		/** Initialize the metadata text control. */
 		void InitMetaData();
 		void InitMeta_Data();
@@ -85,28 +82,8 @@ namespace GenGIS
 
 
 		void ReplaceColourPicker( wxColourPickerCtrl* wxColourPicker, Colour& colour );
-
-		/** Apply controls on Symbology->Colour Map page. */
-		//void ApplyColourMap();
-
-		/** Number of entires specified by spin control on Symbology->Colour Map page has changed. */
-		//void OnNumEntriesChange( wxSpinEvent& event ) { OnNumEntriesChange(); }
-	//	void OnNumEntriesChange();
-
-		/** Colour map combobox value on Symbology->Colour Map page has changed. */
-		//void OnColourMapChange( wxCommandEvent& event );
-
-		/** Interpolation combobox on Symbology->Colour Map page has changed. */
-		//void OnInterpolationChange( wxCommandEvent& event );
-
-		/** Evenly distribute elevation amongst colour map entries. */
-		//void OnEvenlySpace( wxCommandEvent& event );
-
-		/** Scale elevation data so it can be used with a level-of-detail wxSlider. */
-		//int ScaleElevation(float elevation);
-
-		/** Scale elevation data so it can be used to control the level-of-detail in the map. */
-		//float ScaleElevation(int elevation);
+		void OnCustomColourButtonClicked( wxMouseEvent& event );
+		
 
 		/** OK button event handler. */
 		void OnOK( wxCommandEvent& event );
@@ -128,12 +105,7 @@ namespace GenGIS
 	protected:
 		/** Map layer to display properties of. */
 		VectorMapLayerPtr m_vectorMapLayer;
-
-		/** Helper functions for interacting with terrain maps. */
-		//TerrainMapWidgetPtr m_terrainMapWidget;
-
-		/** Flag indicating if terrain colour map has changed. */
-		//bool m_bColourMapChanged;
+		
 	};
 
 }
