@@ -197,9 +197,29 @@ void VectorMapPropertiesDlg::ReplaceColourPicker( wxColourPickerCtrl* wxColourPi
 	colourIconSizer->Replace( wxColourPicker, customColourButton );
 	colourIconSizer->Layout();
 
-	customColourButton->Connect( wxEVT_LEFT_DOWN, wxMouseEventHandler( LocationPropertiesDlg::OnCustomColourButtonClicked ), NULL, this );
+	customColourButton->Connect( wxEVT_LEFT_DOWN, wxMouseEventHandler( VectorMapPropertiesDlg::OnCustomColourButtonClicked ), NULL, this );
 	#endif
 }
+
+void VectorMapPropertiesDlg::OnCustomColourButtonClicked( wxMouseEvent& event )
+{
+	// Retrieve the CustomColourButton object that was clicked
+	CustomColourButton* customColourButton = ( CustomColourButton* )event.GetEventObject();
+
+	// Create and open the colour picker dialog
+	wxColourData *colourData = new wxColourData();
+	colourData->SetColour( customColourButton->GetBackgroundColour() );
+	wxColourDialog *colourPicker = new wxColourDialog( this, colourData );
+	if ( colourPicker->ShowModal() == wxID_CANCEL ) return;
+
+	// Set the CustomColourButton background colour (used for display under Mac/Unix releases)
+	customColourButton->SetBackgroundColour( colourPicker->GetColourData().GetColour() );
+	customColourButton->Refresh();
+
+	// Set the wxColourPickerCtrl colour picker (hidden, but its value will be used to change the location colour)
+	customColourButton->GetWXColourPickerCtrl()->SetColour( colourPicker->GetColourData().GetColour() );
+}
+
 
 void VectorMapPropertiesDlg::InitMeta_Data()
 {
