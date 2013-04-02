@@ -62,7 +62,7 @@ class CABIN_RCA:
 		pass
 
 	### Run the reference condition analysis. Since this was initially written as an R script, most of the R code is simply preserved intact, with RPy used to pass data into and out of the original script. ###		
-	def Run_RCA(self,colToPlot = None):
+	def Run_RCA(self,rca_model = 'atlantic_rca_model'):
 		'''Runs test data against the given RCA model'''
 
 		### Get the layer data ###
@@ -179,8 +179,9 @@ class CABIN_RCA:
 		RfrName = str("test_SP_FRAME")
 		r(RfrName + " = data.frame(" + RmatName + ")")
 
+		#pass the name of the rca model
+		#r("rca_model <- " + rca_model)
 		############################################ RCA R CODE ################################################
-		#import pdb; pdb.set_trace()
 			
 		r('''
                 #location of R library
@@ -198,17 +199,22 @@ class CABIN_RCA:
                 write.csv(rca_results,file=outfile, row.names=FALSE)
 
                 ''')
-		diversity_measures=['site_ids','Richness','Shannon','Simpson','Pielou','Berger_Parker']
+		diversity_measures=['Richness','Shannon','Simpson','Pielou','Berger_Parker']
 
+		#import pdb; pdb.set_trace()
+	
 		#Save the results in a python dict
 		self.results ={}
+		site_ids=list(r("rca_results$" + 'site_ids'))
 		for metric in diversity_measures:
-			self.results[metric]=list(r("rca_results$" + metric))
+			raw_data=list(r("rca_results$" + metric))
+			for i,value in enumerate(raw_data):
+				self.results[(metric, site_ids[i])]=value
 			
 		self.locs=locs
 
-		if colToPlot:
-			self.ViewportPlot(colToPlot)
+	#	if colToPlot:
+	#			self.ViewportPlot(colToPlot)
 			
 	def clearLines(self):
 		for id in self.graphicalElementIds:
@@ -220,6 +226,7 @@ class CABIN_RCA:
 		#write header
 		measures=['site_ids','Richness','Shannon','Simpson','Pielou','Berger_Parker']
 		f.write(",".join(measures)+"\n")
+		
 		#write data
 		for i in range(len(self.locs)):
 			row = [self.results[metric][i] for metric in measures]
@@ -228,8 +235,9 @@ class CABIN_RCA:
 		
 
 	def ViewportPlot(self,metric):
-		locations=self.locs
-		data=self.results[metric]
+
+		#pull out data values for only the metric specified
+		data=[self.results[t] for t in self.results.keys() if t[0]==metric]
 
 		#Remove any previously plotted lines
 		self.clearLines()
@@ -263,18 +271,18 @@ class CABIN_RCA:
 
 		# plot data
 		self.graphicalElementIds = []
-		for i in xrange(0, len(locations)):			
-			locLayer = locations[i]
+		for i,locLayer in enumerate(self.locs):			
 			site_id = locLayer.GetController().GetData()["Site ID"]
+			value=self.results[metric,site_id]
 			geoCoord = GenGIS.GeoCoord(locLayer.GetController().GetLongitude(), locLayer.GetController().GetLatitude())
 			pos = GenGIS.Point3D()
 			terrainController.GeoToGrid(geoCoord, pos)
 
 			colourMap = GenGIS.colourMapManager.GetColourMap('Diverging (Red-White)')
-			print site_id + "   " + str(data[i])
-			colour = colourMap.GetInterpolatedColour(min(data[i],1.0), minValue, maxValue)
+			print site_id + "   " + str(value)
+			colour = colourMap.GetInterpolatedColour(min(value,1.0), minValue, maxValue)
 			
-			endPos = GenGIS.Point3D(pos.x, scaleFactor * abs(data[i]), pos.z)
+			endPos = GenGIS.Point3D(pos.x, scaleFactor * abs(value), pos.z)
 			line = GenGIS.VisualLine(colour, lineWidth, GenGIS.LINE_STYLE.SOLID, GenGIS.Line3D(pos, endPos))
 			lineId = GenGIS.graphics.AddLine(line)
 			self.graphicalElementIds.append(lineId)
