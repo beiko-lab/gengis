@@ -122,7 +122,7 @@ class RCA( RCALayout ):
 			return
 
 	def OnOK( self, event ):
-		self.OnClose(event)
+		self.Close()
 
 	def OnHelp( self, event ):
 		wx.LaunchDefaultBrowser( 'http://kiwi.cs.dal.ca/GenGIS/Description_of_GenGIS_plugins#RCA' )
