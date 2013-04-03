@@ -149,6 +149,7 @@ class RCALayout ( wx.Frame ):
 		# Connect Events
 		self.Bind( wx.EVT_CLOSE, self.OnClose )
 		self.btnRun.Bind( wx.EVT_BUTTON, self.OnRun )
+		self.table.Bind( wx.grid.EVT_GRID_LABEL_LEFT_CLICK, self.OnLabelClick )
 		self.table.Bind( wx.grid.EVT_GRID_RANGE_SELECT, self.OnSelectedRange )
 		self.table.Bind( wx.grid.EVT_GRID_SELECT_CELL, self.OnSelectedCell )
 		self.m_btnAdd.Bind( wx.EVT_BUTTON, self.OnAdd )
@@ -166,6 +167,9 @@ class RCALayout ( wx.Frame ):
 		event.Skip()
 	
 	def OnRun( self, event ):
+		event.Skip()
+	
+	def OnLabelClick( self, event ):
 		event.Skip()
 	
 	def OnSelectedRange( self, event ):

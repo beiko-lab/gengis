@@ -848,7 +848,7 @@
                                         <event name="OnGridCmdEditorCreated"></event>
                                         <event name="OnGridCmdEditorHidden"></event>
                                         <event name="OnGridCmdEditorShown"></event>
-                                        <event name="OnGridCmdLabelLeftClick"></event>
+                                        <event name="OnGridCmdLabelLeftClick">OnLabelClick</event>
                                         <event name="OnGridCmdLabelLeftDClick"></event>
                                         <event name="OnGridCmdLabelRightClick"></event>
                                         <event name="OnGridCmdLabelRightDClick"></event>

@@ -78,7 +78,7 @@ class RCA( RCALayout ):
 	
 		#Resize row labels
 		self.table.SetRowLabelSize(wx.grid.GRID_AUTOSIZE)
-		
+		self.table.SetCellHighlightPenWidth(0)
 		self.table.AutoSizeColumns()
 		self.table.Update()
 		self.table.Thaw()
@@ -109,7 +109,7 @@ class RCA( RCALayout ):
 
 		
 	def OnPlot(self, event):
-		#import pdb; pdb.set_trace()
+		
 		if len(self.selectedCols) != 1:
 			wx.MessageBox("Select one (and only one) column to plot!")
 			return
@@ -164,13 +164,21 @@ class RCA( RCALayout ):
 		except AttributeError:
 			wx.MessageBox("Please 'Run' this plugin before attempting to save the results!")
 			return
-	
+
+        def OnLabelClick(self, event):
+                #disable the ability to select the column using the label
+                pass
+        
 	def OnSelectedRange( self, event ):
-		"""Internal update to the selection tracking list"""
+                colL = event.GetLeftCol()
+                colR = event.GetRightCol()
+                if colL != colR:
+                        self.table.ClearSelection()
+                        
+              # for i in range(self.table.GetNumberCols()):
+                 #  self.table.DeselectCol(i) 
 		
-		event.Skip()
-				
-	def OnSelectedCell( self, event ):
+        def OnSelectedCell( self, event ):
 		"""Internal update to the selection tracking list"""
 		self.selectedCols = [ event.GetCol() ]
 		event.Skip()
