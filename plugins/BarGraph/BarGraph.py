@@ -43,13 +43,13 @@ class BarGraph( BarGraphLayout ):
 					siteID = data["Site id"]
 				elif ("Site Id" in data):
 					siteID = data["Site Id"]
+
 				if (siteID not in self.locationTotals):
 					self.locationTotals[siteID] = 0
 				if ("Count" in data):
 					self.locationTotals[siteID] += int(data["Count"])
 				else:
 					self.locationTotals[siteID] += 1
-		# print self.locationTotals
 	
 	def OnChoice( self, event ):
 		choices = set()
@@ -60,7 +60,13 @@ class BarGraph( BarGraphLayout ):
 		self.match = dict()
 		for location in GenGIS.layerTree.GetLocationLayers():
 			temp = location.GetController().GetData()
-			self.match[temp["Site ID"]] = temp[self.chcFieldSel.GetStringSelection()]
+			if ("Site ID" in temp):
+				siteID = temp["Site ID"]
+			elif ("Site id" in temp):
+				siteID = temp["Site id"]
+			elif ("Site Id" in temp):
+				siteID = temp["Site Id"]
+			self.match[siteID] = temp[self.chcFieldSel.GetStringSelection()]
 	
 		self.chcLocSel.Clear()
 		self.chcLocSel2.Clear()
@@ -89,7 +95,6 @@ class BarGraph( BarGraphLayout ):
 		if self.chcVarSel.Enabled == True:
 			self.Variable = self.chcVarSel.GetStringSelection()
 			
-		# elementCounter = 0
 		getData = self.GetData()
 		groupOne = getData[0]
 		groupTwo = getData[1]
@@ -100,35 +105,29 @@ class BarGraph( BarGraphLayout ):
 		meansTwo, standardDeviationsTwo = self.Statistics(groupTwo, self.groupIDTwo)
 		
 		typeOne = dict()
+		
 		#Calculates total to use for ratio
 		totalOne = 0
 		for item in groupOne.items():
-			# print item
 			for number in item[1].values():
-				# print number
 				if (item[0] not in typeOne):
 					typeOne[item[0]] = list()
 				totalOne += number
 				typeOne[item[0]].append(number)
 
 		typeTwo = dict()
+		
 		#Calculates total to use for ratio
 		totalTwo = 0
 		for item in groupTwo.items():
-			# print item
 			for number in item[1].values():
-				# print number
 				if (item[0] not in typeTwo):
 					typeTwo[item[0]] = list()
 				totalTwo += number
 				typeTwo[item[0]].append(number)
 		
 		self.Draw(typeOne, typeTwo, totalOne, totalTwo, standardDeviationsOne, standardDeviationsTwo)
-		
-		# print typeOne
-		# print "..................................."
-		# print typeTwo
-		
+
 		wx.EndBusyCursor()
 
 	def OnHelp( self, event ):
@@ -143,10 +142,7 @@ class BarGraph( BarGraphLayout ):
 			
 			if seqController.IsActive():
 				siteID = seqController.GetSiteId()
-				#Calculates occurances of selected variable for location one
 				if (self.match[siteID] == self.groupIDOne):
-					# if (siteID not in groupOne):
-						# groupOne[siteID] = dict()
 					line = seqController.GetData()
 					variable = line[self.Variable]
 					if (variable not in groupOne):
@@ -156,17 +152,12 @@ class BarGraph( BarGraphLayout ):
 					if ("Count" in line):
 						count = int(line["Count"])
 						
-					# print groupOne[variable]
 					if (siteID not in groupOne[variable]):
-						# print str(groupOne[variable]) + " HAHAHA"
 						groupOne[variable][siteID] = count / float(self.locationTotals[siteID])	
 					else:
-						# print str(groupOne[variable]) + " JAJAJAJA"
 						groupOne[variable][siteID] += count / float(self.locationTotals[siteID])
 					
 				if (self.match[siteID] == self.groupIDTwo):
-					# if (siteID not in groupTwo):
-						# groupTwo[siteID] = dict()
 					line = seqController.GetData()
 					variable = line[self.Variable]
 					if (variable not in groupTwo):
@@ -175,17 +166,12 @@ class BarGraph( BarGraphLayout ):
 					count = 1
 					if ("Count" in line):
 						count = int(line["Count"])
-						
-					# print groupTwo[variable]
+
 					if (siteID not in groupTwo[variable]):
-						# print str(groupTwo[variable]) + " HAHAHA"
 						groupTwo[variable][siteID] = count / float(self.locationTotals[siteID])	
 					else:
-						# print str(groupTwo[variable]) + " JAJAJAJA"
 						groupTwo[variable][siteID] += count / float(self.locationTotals[siteID])
 
-		# print groupOne
-		# print groupTwo
 		return (groupOne, groupTwo)
 		
 	#Returns a dictionary of means and standard deviations
@@ -193,15 +179,12 @@ class BarGraph( BarGraphLayout ):
 		standardDeviations = dict()
 		means = dict()
 		for (type, locationAndValues) in sorted(group.items()):
-			# print locationAndValues
 			listOfValues = list (locationAndValues.values())
-			# print listOfValues
 			for (location, matchValue) in self.match.items():
-				# print location
 				if (matchValue == groupID):
 					if (location not in locationAndValues.keys()):
 						listOfValues.append(0)
-			# print listOfValues
+
 			avg = sum(listOfValues)/float(len(listOfValues))
 			std = ((sum([((x - avg) ** 2) for x in listOfValues])/float(len(listOfValues))) ** 0.5)
 			print str(type) + " Mean: " + str(avg)
@@ -218,9 +201,6 @@ class BarGraph( BarGraphLayout ):
 		self.yTwo = []
 		self.standardErrorOne = []
 		self.standardErrorTwo = []
-		
-		# print graphOne
-		# print stdOne
 	
 		for element in sorted(set(graphOne.keys()) | set(graphTwo.keys())):
 			self.x.append(xCounter)
@@ -238,9 +218,6 @@ class BarGraph( BarGraphLayout ):
 			else:
 				self.yTwo.append(0)
 				self.standardErrorTwo.append(0)
-
-		# print standardErrorOne
-		# print standardErrorTwo
 		
 		sortedNames = sorted(set(graphOne) | set(graphTwo))
 		

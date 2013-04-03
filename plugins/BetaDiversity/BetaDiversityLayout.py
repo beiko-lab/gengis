@@ -64,7 +64,7 @@ class BetaDiversityLayout ( wx.Frame ):
 		self.chkIgnoreOther = wx.CheckBox( self, wx.ID_ANY, u"Ignore 'Other' and 'Unclassified' categories", wx.DefaultPosition, wx.DefaultSize, 0 )
 		bSizer4.Add( self.chkIgnoreOther, 0, wx.ALL, 5 )
 		
-		sbSizer2 = wx.StaticBoxSizer( wx.StaticBox( self, wx.ID_ANY, u"Subsampling without Replacement" ), wx.VERTICAL )
+		sbSizer2 = wx.StaticBoxSizer( wx.StaticBox( self, wx.ID_ANY, u"Subsampling with Replacement" ), wx.VERTICAL )
 		
 		self.chkSubsample = wx.CheckBox( self, wx.ID_ANY, u"Perform subsampling", wx.DefaultPosition, wx.DefaultSize, 0 )
 		sbSizer2.Add( self.chkSubsample, 0, wx.ALL, 5 )
