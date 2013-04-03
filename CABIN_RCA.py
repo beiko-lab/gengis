@@ -254,7 +254,7 @@ class CABIN_RCA:
 		
 		# desired plot attributes
 		lineWidth = 5
-		userScaleFactor = 0.2
+		userScaleFactor = 1.0
 							
 		maxValue = max(max(data), abs(min(data)))
 		if maxValue != 0:
