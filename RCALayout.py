@@ -18,7 +18,7 @@ import wx.grid
 class RCALayout ( wx.Frame ):
 	
 	def __init__( self, parent ):
-		wx.Frame.__init__ ( self, parent, id = wx.ID_ANY, title = u"Reference Condition Analysis", pos = wx.DefaultPosition, size = wx.Size( 750,500 ), style = wx.DEFAULT_FRAME_STYLE|wx.TAB_TRAVERSAL )
+		wx.Frame.__init__ ( self, parent, id = wx.ID_ANY, title = u"Reference Condition Analysis", pos = wx.DefaultPosition, size = wx.Size( 750,450 ), style = wx.DEFAULT_FRAME_STYLE|wx.TAB_TRAVERSAL )
 		
 		self.SetSizeHintsSz( wx.DefaultSize, wx.DefaultSize )
 		self.SetBackgroundColour( wx.SystemSettings.GetColour( wx.SYS_COLOUR_BTNFACE ) )
@@ -95,6 +95,9 @@ class RCALayout ( wx.Frame ):
 		
 		# Cell Defaults
 		self.table.SetDefaultCellAlignment( wx.ALIGN_LEFT, wx.ALIGN_TOP )
+		self.table.SetMinSize( wx.Size( 500,300 ) )
+		self.table.SetMaxSize( wx.Size( -1,300 ) )
+		
 		bSizer31.Add( self.table, 0, wx.ALL, 5 )
 		
 		fgSizer3 = wx.FlexGridSizer( 0, 2, 0, 0 )
@@ -107,7 +110,7 @@ class RCALayout ( wx.Frame ):
 		self.btnPlot = wx.Button( self, wx.ID_ANY, u"Plot Selected Data", wx.DefaultPosition, wx.DefaultSize, 0 )
 		fgSizer3.Add( self.btnPlot, 0, wx.ALL, 5 )
 		
-		self.m_staticText5 = wx.StaticText( self, wx.ID_ANY, u"Save results to file:", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_staticText5 = wx.StaticText( self, wx.ID_ANY, u"Save table of results to file:", wx.DefaultPosition, wx.DefaultSize, 0 )
 		self.m_staticText5.Wrap( -1 )
 		fgSizer3.Add( self.m_staticText5, 0, wx.ALL, 5 )
 		

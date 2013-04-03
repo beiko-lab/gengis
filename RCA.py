@@ -82,10 +82,7 @@ class RCA( RCALayout ):
 		self.table.AutoSizeColumns()
 		self.table.Update()
 		self.table.Thaw()
-		#Try to get scroll bars to appear
-		h,w = self.table.GetSize() 
-		self.table.SetSize((h+1, w)) 
-		self.table.SetSize((h, w)) 
+	
 
 			
 	def OnRun( self, event ):
