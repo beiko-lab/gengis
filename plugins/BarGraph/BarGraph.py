@@ -1,8 +1,8 @@
 from BarGraphLayout import BarGraphLayout
 from BarGraphGeneric import *
+
 import GenGIS
 import wx
-# import re
 
 class BarGraph( BarGraphLayout ):
 	def __init__(self, parent = None):
@@ -15,215 +15,190 @@ class BarGraph( BarGraphLayout ):
 			self.Close()
 			return
 		
-		for m in GenGIS.layerTree.GetLocationSetLayer(0).GetController().GetMetadataFields():
-			self.chcFieldSel.Append(m)
+		# populate fields that can be used to define groupings
+		for field in GenGIS.layerTree.GetLocationSetLayer(0).GetController().GetMetadataFields():
+			self.cboGroupField.Append(field)
 
-		self.chcLocSel.Disable()
-		self.chcLocSel2.Disable()
-		self.btnCalculate.Disable()
-	
-		# set variable comboboxes
+		self.cboGroup1.Disable()
+		self.cboGroup2.Disable()
+		self.btnPlot.Disable()
+
+		# set valid data fields for generating bar graph
 		sequenceSetLayer = GenGIS.layerTree.GetSequenceLayer(0)
-		numericFields = sequenceSetLayer.GetController().GetMetadataFields()
+		numericFields = sorted(sequenceSetLayer.GetController().GetMetadataFields())
 		for field in numericFields:
-			self.chcVarSel.Append(field)
-		self.chcVarSel.SetSelection(0)
-
+			self.cboDataField.Append(field)
+		self.cboDataField.SetSelection(0)
+		
+		# set count field combobox
+		numericFields = ['<none>'] + numericFields
+		for field in numericFields:
+			self.cboCountField.Append(field)
+		self.cboCountField.SetSelection(0)
+		
 		# initialize plot
 		self.plot = BarGraphGeneric(self.pnlHistogram)
-		
-		self.locationTotals = dict()
-		for layer in GenGIS.layerTree.GetSequenceLayers():
-			controller = layer.GetController()
-			if (controller.IsActive()):
-				data = controller.GetData()
-				if ("Site ID" in data):
-					siteID = data["Site ID"]
-				elif ("Site id" in data):
-					siteID = data["Site id"]
-				elif ("Site Id" in data):
-					siteID = data["Site Id"]
-
-				if (siteID not in self.locationTotals):
-					self.locationTotals[siteID] = 0
-				if ("Count" in data):
-					self.locationTotals[siteID] += int(data["Count"])
-				else:
-					self.locationTotals[siteID] += 1
 	
-	def OnChoice( self, event ):
-		choices = set()
-		for loc in GenGIS.layerTree.GetLocationLayers():
-			if (loc.GetController().GetData()[self.chcFieldSel.GetStringSelection()] not in choices):
-				choices.add(loc.GetController().GetData()[self.chcFieldSel.GetStringSelection()])
-	
-		self.match = dict()
+	def OnChangeGroupField( self, event ):
+		# get value of field for each location
+		self.locationValue = dict()
 		for location in GenGIS.layerTree.GetLocationLayers():
 			temp = location.GetController().GetData()
 			if ("Site ID" in temp):
-				siteID = temp["Site ID"]
+				siteId = temp["Site ID"]
 			elif ("Site id" in temp):
-				siteID = temp["Site id"]
+				siteId = temp["Site id"]
 			elif ("Site Id" in temp):
-				siteID = temp["Site Id"]
-			self.match[siteID] = temp[self.chcFieldSel.GetStringSelection()]
-	
-		self.chcLocSel.Clear()
-		self.chcLocSel2.Clear()
-		
-		#Puts Site IDs in drop menus
-		valList = sorted(list(choices))
-		self.chcLocSel2.Append("N/A")
-		for v in valList:
-			self.chcLocSel.Append(v)
-			self.chcLocSel2.Append(v)
-		self.chcLocSel.SetSelection(0)
-		self.chcLocSel2.SetSelection(0)
-		
-		self.chcLocSel.Enable()
-		self.chcLocSel2.Enable()
-		self.btnCalculate.Enable()
+				siteId = temp["Site Id"]
+			self.locationValue[siteId] = temp[self.cboGroupField.GetStringSelection()]
 			
-	def OnCalculate( self, event ):
+		# determine fields that can be used to define groups of sample sites
+		choices = set()
+		for loc in GenGIS.layerTree.GetLocationLayers():
+			choices.add(loc.GetController().GetData()[self.cboGroupField.GetStringSelection()])
+
+		self.cboGroup1.Clear()
+		self.cboGroup2.Clear()
+		valList = sorted(list(choices))
+		for v in valList:
+			self.cboGroup1.Append(v)
+			self.cboGroup2.Append(v)
+		self.cboGroup1.SetSelection(0)
+		self.cboGroup2.SetSelection(0)
+		if len(valList) >= 2:
+			self.cboGroup2.SetSelection(1)
+		
+		self.cboGroup1.Enable()
+		self.cboGroup2.Enable()
+		self.btnPlot.Enable()
+			
+	def OnPlot( self, event ):
 		wx.BeginBusyCursor()
 		
-		if self.chcLocSel.Enabled == True:
-			self.groupIDOne = self.chcLocSel.GetStringSelection()
-		if self.chcLocSel2.Enabled == True:
-			self.groupIDTwo = self.chcLocSel2.GetStringSelection()
-			
-		if self.chcVarSel.Enabled == True:
-			self.Variable = self.chcVarSel.GetStringSelection()
-			
-		getData = self.GetData()
-		groupOne = getData[0]
-		groupTwo = getData[1]
-		
-		print "Mean and standard deviation for " + self.groupIDOne
-		meansOne, standardDeviationsOne = self.Statistics(groupOne, self.groupIDOne)
-		print "\n\nMean and standard deviation for " + self.groupIDTwo
-		meansTwo, standardDeviationsTwo = self.Statistics(groupTwo, self.groupIDTwo)
-		
-		typeOne = dict()
-		
-		#Calculates total to use for ratio
-		totalOne = 0
-		for item in groupOne.items():
-			for number in item[1].values():
-				if (item[0] not in typeOne):
-					typeOne[item[0]] = list()
-				totalOne += number
-				typeOne[item[0]].append(number)
+		group1, totalSeqs1, group2, totalSeqs2 = self.GetData()
 
-		typeTwo = dict()
+		means1, standardDeviations1 = self.Statistics(group1, self.cboGroup1.GetStringSelection())
+		means2, standardDeviations2 = self.Statistics(group2, self.cboGroup2.GetStringSelection())
 		
-		#Calculates total to use for ratio
-		totalTwo = 0
-		for item in groupTwo.items():
-			for number in item[1].values():
-				if (item[0] not in typeTwo):
-					typeTwo[item[0]] = list()
-				totalTwo += number
-				typeTwo[item[0]].append(number)
+		# calculates total to use for ratio
+		bars1 = {}
+		for value in group1:
+			for data in group1[value].items():
+				bars1[value] = bars1.get(value, 0) + data[1]
+
+		bars2 = {}
+		for value in group2:
+			for data in group2[value].items():
+				bars2[value] = bars2.get(value, 0) + data[1]
+				
+		print bars1
 		
-		self.Draw(typeOne, typeTwo, totalOne, totalTwo, standardDeviationsOne, standardDeviationsTwo)
+		self.Draw(bars1, bars2, standardDeviations1, standardDeviations2)
 
 		wx.EndBusyCursor()
-
-	def OnHelp( self, event ):
-		wx.LaunchDefaultBrowser( 'http://kiwi.cs.dal.ca/GenGIS/Description_of_GenGIS_plugins#Bar_Graph' )
 		
 	def GetData(self):
-		groupOne = dict()
-		groupTwo = dict()
-		
+		group1 = {}
+		totalSeq1 = 0
+		group2 = {}
+		totalSeq2 = 0
 		for seqLayer in GenGIS.layerTree.GetSequenceLayers():
 			seqController = seqLayer.GetController()
 			
 			if seqController.IsActive():
-				siteID = seqController.GetSiteId()
-				if (self.match[siteID] == self.groupIDOne):
-					line = seqController.GetData()
-					variable = line[self.Variable]
-					if (variable not in groupOne):
-						groupOne[variable] = dict()
+				siteId = seqController.GetSiteId()
+				data = seqController.GetData()
+				value = data[self.cboDataField.GetStringSelection()]
+				
+				if self.locationValue[siteId] == self.cboGroup1.GetStringSelection():
+					if (value not in group1):
+						group1[value] = {}
 						
-					count = 1
-					if ("Count" in line):
-						count = int(line["Count"])
+					count = 1.0
+					if self.cboCountField.GetStringSelection() != "<none>":
+						count = float(data[self.cboCountField.GetStringSelection()])
 						
-					if (siteID not in groupOne[variable]):
-						groupOne[variable][siteID] = count / float(self.locationTotals[siteID])	
-					else:
-						groupOne[variable][siteID] += count / float(self.locationTotals[siteID])
+					group1[value][siteId] = group1[value].get(siteId, 0) + count
+					totalSeq1 += count
 					
-				if (self.match[siteID] == self.groupIDTwo):
-					line = seqController.GetData()
-					variable = line[self.Variable]
-					if (variable not in groupTwo):
-						groupTwo[variable] = dict()
+				if self.locationValue[siteId] == self.cboGroup2.GetStringSelection() :
+					if (value not in group2):
+						group2[value] = dict()
 						
-					count = 1
-					if ("Count" in line):
-						count = int(line["Count"])
+					count = 1.0
+					if self.cboCountField.GetStringSelection() != "<none>":
+						count = float(data[self.cboCountField.GetStringSelection()])
+						
+					group2[value][siteId] = group2[value].get(siteId, 0) + count
+					totalSeq2 += count
+					
+		# normalize data
+		print group1
+		for value in group1:
+			for siteId in group1[value]:
+				group1[value][siteId] /= totalSeq1
+		print group1
+				
+		for value in group2:
+			for siteId in group2[value]:
+				group2[value][siteId] /= totalSeq2
 
-					if (siteID not in groupTwo[variable]):
-						groupTwo[variable][siteID] = count / float(self.locationTotals[siteID])	
-					else:
-						groupTwo[variable][siteID] += count / float(self.locationTotals[siteID])
+		return (group1, totalSeq1, group2, totalSeq2)
 
-		return (groupOne, groupTwo)
+	def OnHelp( self, event ):
+		wx.LaunchDefaultBrowser( 'http://kiwi.cs.dal.ca/GenGIS/Description_of_GenGIS_plugins#Bar_Graph' )
 		
 	#Returns a dictionary of means and standard deviations
-	def Statistics( self, group, groupID ):
+	def Statistics( self, group, groupId ):
 		standardDeviations = dict()
 		means = dict()
 		for (type, locationAndValues) in sorted(group.items()):
 			listOfValues = list (locationAndValues.values())
-			for (location, matchValue) in self.match.items():
-				if (matchValue == groupID):
+			for (location, matchValue) in self.locationValue.items():
+				if (matchValue == groupId):
 					if (location not in locationAndValues.keys()):
 						listOfValues.append(0)
 
 			avg = sum(listOfValues)/float(len(listOfValues))
 			std = ((sum([((x - avg) ** 2) for x in listOfValues])/float(len(listOfValues))) ** 0.5)
-			print str(type) + " Mean: " + str(avg)
-			print str(type) + " Standard Deviation: " + str(std) + "\n"
 			means[type] = avg
 			standardDeviations[type]  = std
 		return means, standardDeviations
 
-
-	def Draw(self, graphOne, graphTwo, totalOne, totalTwo, stdOne, stdTwo):
-		xCounter = 0
-		self.x = []
-		self.yOne = []
-		self.yTwo = []
-		self.standardErrorOne = []
-		self.standardErrorTwo = []
 	
-		for element in sorted(set(graphOne.keys()) | set(graphTwo.keys())):
-			self.x.append(xCounter)
+	def Draw(self, bars1, bars2, std1, std2):
+		xCounter = 0
+		x = []
+		y1 = []
+		y2 = []
+		standardError1 = []
+		standardError2 = []
+		
+		sortedNames = sorted(set(bars1) | set(bars2))
+		for element in sortedNames:
+			x.append(xCounter)
 			xCounter += 1
-			if (element in graphOne.keys()):
-				self.yOne.append(sum(graphOne[element]) / float(totalOne))
-				self.standardErrorOne.append(stdOne[element])
+			
+			if element in bars1.keys():
+				y1.append(bars1[element])
+				standardError1.append(std1[element])
 			else:
-				self.yOne.append(0)
-				self.standardErrorOne.append(0)
+				y1.append(0)
+				standardError1.append(0)
 				
-			if (element in graphTwo):
-				self.yTwo.append(sum(graphTwo[element]) / float(totalTwo))
-				self.standardErrorTwo.append(stdTwo[element])
+			if element in bars2.keys():
+				y2.append(bars2[element])
+				standardError2.append(std2[element])
 			else:
-				self.yTwo.append(0)
-				self.standardErrorTwo.append(0)
-		
-		sortedNames = sorted(set(graphOne) | set(graphTwo))
-		
-		self.plot.Draw(self.x, self.yOne, self.yTwo, self.groupIDOne, self.groupIDTwo,
-						stdOne = self.standardErrorOne, stdTwo = self.standardErrorTwo,
-						xLabel = self.Variable, xTicks = sortedNames)
-		
+				y2.append(0)
+				standardError2.append(0)
+
+		self.plot.Draw(x, y1, y2, self.cboGroup1.GetStringSelection(), self.cboGroup2.GetStringSelection(),
+						stdOne = standardError1, stdTwo = standardError2,
+						xLabel = self.cboDataField.GetStringSelection(), xTicks = sortedNames)
+
+	def OnSavePlot(self, event):
+		self.plot.SavePlot()
+
 	def OnClose( self, event ):
 		self.Close()

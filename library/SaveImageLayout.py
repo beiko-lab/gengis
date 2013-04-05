@@ -16,7 +16,7 @@ import wx
 class SaveImageLayout ( wx.Dialog ):
 	
 	def __init__( self, parent ):
-		wx.Dialog.__init__ ( self, parent, id = wx.ID_ANY, title = u"Save image...", pos = wx.DefaultPosition, size = wx.Size( 380,136 ), style = wx.CAPTION|wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.STAY_ON_TOP )
+		wx.Dialog.__init__ ( self, parent, id = wx.ID_ANY, title = u"Save image...", pos = wx.DefaultPosition, size = wx.Size( 427,159 ), style = wx.CAPTION|wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.STAY_ON_TOP )
 		
 		self.SetSizeHintsSz( wx.DefaultSize, wx.DefaultSize )
 		
