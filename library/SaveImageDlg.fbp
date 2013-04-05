@@ -37,7 +37,7 @@
             <property name="minimum_size"></property>
             <property name="name">SaveImageLayout</property>
             <property name="pos"></property>
-            <property name="size">380,136</property>
+            <property name="size">427,159</property>
             <property name="style">wxCAPTION|wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER|wxSTAY_ON_TOP</property>
             <property name="subclass"></property>
             <property name="title">Save image...</property>

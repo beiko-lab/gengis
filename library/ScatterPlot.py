@@ -8,8 +8,8 @@ class ScatterPlot(AbstractPlot):
 		AbstractPlot.__init__(self, parent, (255,255,255))
 		
 	def Draw(self, x, y, xLabel = None, yLabel = None, slope = None, intercept = None, r2_value = None):
+	
 		"""Draw scatter plot."""
-		
 		self.Clear()
 		axesScatter = self.figure.add_axes([0.15,0.1,0.80,0.85]) 
 		
@@ -20,7 +20,6 @@ class ScatterPlot(AbstractPlot):
 		if xLabel:
 			axesScatter.set_xlabel(xLabel)
 			
-
 		# draw scatter plot
 		axesScatter.scatter(x, y)
 

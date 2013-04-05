@@ -6,19 +6,22 @@ import matplotlib.pyplot as plt
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_wxagg import FigureCanvasWxAgg as FigureCanvas
 
+from SaveImageDlg import SaveImageDlg
+import wx
+
 class BarGraphGeneric(AbstractPlot):
 	def __init__(self, parent):
 		AbstractPlot.__init__(self, parent, (255,255,255))
 		
-	def Draw(self, x, yOne, yTwo, location, locationTwo, stdOne = None, stdTwo = None,
-				xLabel = None, xTicks = None):
+	def Draw(self, x, yOne, yTwo, location, locationTwo, stdOne = None, stdTwo = None, xLabel = None, xTicks = None):
+				
 		"""Draw Bar Graph"""
-
+		self.SetColor( (255,255,255) )
 		self.figure = matplotlib.figure.Figure()
 		N = len(x)
 
 		ind = np.arange(N)  # the x locations for the groups
-		width = 0.35       # the width of the bars
+		width = 0.35        # the width of the bars
 
 		ax = self.figure.add_subplot(111)
 		rects1 = ax.bar(ind, yOne, width, color = 'g', yerr = stdOne)
@@ -43,4 +46,14 @@ class BarGraphGeneric(AbstractPlot):
 		self.canvas = FigureCanvas(self, -1, self.figure)
 
 		self.SetPlotSize()
+		
+	def SavePlot(self, dpi=300):
+		"""Save plot to file."""
+		saveImageDlg = SaveImageDlg(self)
+
+		if saveImageDlg.ShowModal() == wx.ID_OK:
+			if saveImageDlg.filename != None:
+				self.figure.savefig(saveImageDlg.filename, format=saveImageDlg.format, dpi=saveImageDlg.DPI, facecolor='white', edgecolor='white')
+	
+		saveImageDlg.Destroy()
 	
