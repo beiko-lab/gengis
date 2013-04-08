@@ -75,7 +75,8 @@ template void MapTexture::serialize<boost::archive::text_woarchive>(boost::archi
 template void MapTexture::serialize<boost::archive::text_wiarchive>(boost::archive::text_wiarchive& ar, const unsigned int version);
 
 MapTexture::MapTexture() :
-	m_texture(NULL), m_transparencyPercentage(0), m_numColours(0)
+	m_texture(NULL), m_transparencyPercentage(0), m_numColours(0),m_texWidth(0), m_texHeight(0),
+	m_numChannels(0), m_channelMode(0), m_texName(0), m_interpolate(LINEARLY)
 {
 
 }

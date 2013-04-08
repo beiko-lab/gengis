@@ -164,8 +164,8 @@ void MiniMapView2D::Render()
 		glTranslated( m_screenCoordinates.x, m_screenCoordinates.y, -(WIDGETS_LAYER+1) );
 		glScaled( m_scale.x, m_scale.y, m_scale.z );  
 		glRotated( 180, 0, 0, 1 );
-
-		DrawTerrain();
+		if(!App::Inst().GetLayerTreeController()->GetIsBlankRaster())
+			DrawTerrain();
 
 		// draw location markers
 		if(App::Inst().GetLayerTreeController())
