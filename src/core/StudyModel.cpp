@@ -44,21 +44,31 @@ void StudyModel::save(Archive & ar, const unsigned int version) const
 	char * _souResult = NULL;
 	char * _targResult = NULL;
 
-	OGRSpatialReference* sourceProj = m_projectionTool->GetSourceCS();
-	sourceProj->exportToWkt( &_souResult );
-	int nSourceElements = strlen(_souResult) + 1;
-	ar & nSourceElements;
-	for (int i = 0; i < nSourceElements; i++)
-		ar & _souResult[i];
-	
+	if(m_projectionTool!=NULL)
+	{
+		OGRSpatialReference* sourceProj = m_projectionTool->GetSourceCS();
+		sourceProj->exportToWkt( &_souResult );
+		int nSourceElements = strlen(_souResult) + 1;
+		ar & nSourceElements;
+		for (int i = 0; i < nSourceElements; i++)
+			ar & _souResult[i];
 		
-	OGRSpatialReference* targetProj = m_projectionTool-> GetTargetCS() ;	
-	targetProj->exportToWkt( &_targResult );	
-	int nTargetElements = strlen(_targResult) + 1;
-	ar & nTargetElements;
-	for (int i = 0; i < nTargetElements; i++)
-		ar & _targResult[i];
-	
+		
+		OGRSpatialReference* targetProj = m_projectionTool-> GetTargetCS() ;	
+		targetProj->exportToWkt( &_targResult );	
+		int nTargetElements = strlen(_targResult) + 1;
+		ar & nTargetElements;
+		for (int i = 0; i < nTargetElements; i++)
+			ar & _targResult[i];
+	}
+	else
+	{
+		int nSourceElements=0;
+		int nTargetElements=0;
+		ar & nSourceElements;
+		ar & nTargetElements;
+
+	}
 
 }
 template void StudyModel::save<boost::archive::text_woarchive>(boost::archive::text_woarchive& ar, const unsigned int version) const; 
@@ -83,26 +93,33 @@ void StudyModel::load(Archive & ar, const unsigned int version)
 
 	int nSourceElements;	
 	ar & nSourceElements;
-	char * _souResult = new char[nSourceElements];
-	for (int i = 0; i < nSourceElements; i++)
-		ar & _souResult[i];
 	
-	if( sourceProj.importFromWkt(&_souResult) == OGRERR_CORRUPT_DATA)
+	char * _souResult = new char[nSourceElements];
+	if (nSourceElements!= 0)
 	{
-		Log::Inst().Write("err");
-		return;
+		for (int i = 0; i < nSourceElements; i++)
+			ar & _souResult[i];
+		
+		if( sourceProj.importFromWkt(&_souResult) == OGRERR_CORRUPT_DATA)
+		{
+			Log::Inst().Write("err");
+			return;
+		}
 	}
 	
 	int nTargetElements;
 	ar & nTargetElements;
 	char * _targResult = new char[nTargetElements];
+	if (nTargetElements!= 0 )
+	{
+		for (int i = 0; i < nTargetElements; i++)
+			ar & _targResult[i];
 
-	for (int i = 0; i < nTargetElements; i++)
-		ar & _targResult[i];
-
-	targetProj.importFromWkt(&_targResult);
+		targetProj.importFromWkt(&_targResult);
+	
 	OGRCoordinateTransformation *poTransform = OGRCreateCoordinateTransformation(&sourceProj, &targetProj);
 	m_projectionTool.reset(poTransform);
+	}
 
 }
 template void StudyModel::load<boost::archive::text_wiarchive>(boost::archive::text_wiarchive& ar, const unsigned int version);

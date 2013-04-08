@@ -103,7 +103,7 @@ using namespace GenGIS;
 
 const int ID_MNU_LAYER_STUDY_PROPERTIES                     = 5000;
 const int ID_MNU_LAYER_MAP_PROPERTIES                       = 5001;
-const int ID_MNU_LAYER_VECTOR_MAP_PROPERTIES                = 5006;
+const int ID_MNU_LAYER_VECTOR_MAP_PROPERTIES                = 5007;
 
 const int ID_MNU_LAYER_LOCATION_SET_PROPERTIES              = 5002;
 const int ID_MNU_LAYER_LOCATION_PROPERTIES                  = 5003;
