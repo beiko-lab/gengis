@@ -43,6 +43,7 @@ MapView::MapView(MapModelPtr mapModel) :
 	m_vertices(NULL),
 	m_bWireFrame(false),
 	m_dimension(0),
+	m_epsilon(0.0),
 	m_curError(0),
 	m_cbounderyCount(0),
 	m_collapseRatio(0),

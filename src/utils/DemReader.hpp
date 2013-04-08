@@ -53,7 +53,8 @@ namespace GenGIS
 		* @param gdalDataset Pointer to GDAL dataset.
 		*/
 		void MetaDataInfo(GDALDataset* gdalDataset, MapControllerPtr mapController);
-
+		void MetaDataInfoForBlankRaster( MapControllerPtr mapController,double* adfGeoTransform);
+		
 		/**
 		* @brief Setup the desired projection.
 		* @param gdalDataset Pointer to GDAL dataset.

@@ -68,7 +68,8 @@ bool DemReader::Open(std::wstring fullPath, StudyControllerPtr studyController, 
 		numBands = 3;
 		bElevationMap = false;
 		header->nCols = 1000;
-		header->nRows = 1000;		
+		header->nRows = 1000;
+		header->noDataValue=0.0;
 		//adfGeoTransform[6]= {vectorMinX, x_res, 0.0,  vectorMaxY, 0.0, -y_res};
 		adfGeoTransform[0]= vectorMinX;
 		adfGeoTransform[1]= x_res;
@@ -292,6 +293,9 @@ bool DemReader::Open(std::wstring fullPath, StudyControllerPtr studyController, 
 	// report information in file to user
 	if (!App::Inst().GetLayerTreeController()->GetIsBlankRaster())
 		MetaDataInfo(gdalDataset, mapController);
+	else
+		MetaDataInfoForBlankRaster(mapController, adfGeoTransform);
+
 
 	// build texture that will be mapped onto terrain
 	if(!App::Inst().GetLayerTreeController()->GetIsBlankRaster()){
@@ -508,6 +512,31 @@ void DemReader::MetaDataInfo(GDALDataset* gdalDataset, MapControllerPtr mapContr
 		StringTools::ToString(header->extents.dy));
 
 	Log::Inst().Write("");
+}
+
+void DemReader::MetaDataInfoForBlankRaster(MapControllerPtr mapController,double* adfGeoTransform)
+{	
+	FileMetaData* header = mapController->GetMapModel()->GetMetaData();
+
+	header->driverDesc = "";
+	header->driverMetaData = "";	
+
+	header->xSize = 1000;
+	header->ySize = 1000;
+	header->bands = 3;
+	header->projection = "";
+	header->originX = adfGeoTransform[0];
+	header->originY = adfGeoTransform[3];
+	header->pixelSizeX = adfGeoTransform[1];
+	header->pixelSizeY = adfGeoTransform[5];
+
+	header->dataType ="";
+	header->colourInterpretation = "";	
+	header->extents.x = adfGeoTransform[0];
+	header->extents.y = adfGeoTransform[3] + 1000*adfGeoTransform[5];
+	header->extents.dx = adfGeoTransform[0]+1000*adfGeoTransform[1];
+	header->extents.dy = adfGeoTransform[3];
+
 }
 
 bool DemReader::BuildTerrainTexture(GDALDataset* gdalDataset, MapControllerPtr mapController, ProgressDlgPtr progressDlg)
