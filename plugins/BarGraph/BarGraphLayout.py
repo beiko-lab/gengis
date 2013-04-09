@@ -127,8 +127,8 @@ class BarGraphLayout ( wx.Frame ):
 		
 		bSizer3.AddSpacer( ( 0, 0), 1, wx.EXPAND, 5 )
 		
-		self.btnClose = wx.Button( self, wx.ID_ANY, u"OK", wx.DefaultPosition, wx.DefaultSize, 0 )
-		bSizer3.Add( self.btnClose, 0, wx.ALL, 5 )
+		self.btnOK = wx.Button( self, wx.ID_ANY, u"OK", wx.DefaultPosition, wx.DefaultSize, 0 )
+		bSizer3.Add( self.btnOK, 0, wx.ALL, 5 )
 		
 		bSizer5.Add( bSizer3, 0, wx.EXPAND, 5 )
 		
@@ -146,7 +146,7 @@ class BarGraphLayout ( wx.Frame ):
 		self.btnPlot.Bind( wx.EVT_BUTTON, self.OnPlot )
 		self.m_btnHelp.Bind( wx.EVT_BUTTON, self.OnHelp )
 		self.btnSavePlot.Bind( wx.EVT_BUTTON, self.OnSavePlot )
-		self.btnClose.Bind( wx.EVT_BUTTON, self.OnClose )
+		self.btnOK.Bind( wx.EVT_BUTTON, self.OnOK )
 	
 	def __del__( self ):
 		pass
@@ -171,7 +171,7 @@ class BarGraphLayout ( wx.Frame ):
 	def OnSavePlot( self, event ):
 		event.Skip()
 	
-	def OnClose( self, event ):
+	def OnOK( self, event ):
 		event.Skip()
 	
 

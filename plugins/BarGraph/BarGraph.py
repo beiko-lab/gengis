@@ -90,8 +90,6 @@ class BarGraph( BarGraphLayout ):
 		for value in group2:
 			for data in group2[value].items():
 				bars2[value] = bars2.get(value, 0) + data[1]
-				
-		print bars1
 		
 		self.Draw(bars1, bars2, standardDeviations1, standardDeviations2)
 
@@ -133,11 +131,9 @@ class BarGraph( BarGraphLayout ):
 					totalSeq2 += count
 					
 		# normalize data
-		print group1
 		for value in group1:
 			for siteId in group1[value]:
 				group1[value][siteId] /= totalSeq1
-		print group1
 				
 		for value in group2:
 			for siteId in group2[value]:
@@ -200,5 +196,5 @@ class BarGraph( BarGraphLayout ):
 	def OnSavePlot(self, event):
 		self.plot.SavePlot()
 
-	def OnClose( self, event ):
+	def OnOK( self, event ):
 		self.Close()
