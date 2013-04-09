@@ -241,7 +241,7 @@ class CABIN_RCA:
                 f.close()
 		
 
-	def ViewportPlot(self,metric):
+	def ViewportPlot(self,metric,userScaleFactor=1.0):
 
 		#pull out data values for only the metric specified
 		data=[self.results[t] for t in self.results.keys() if t[0]==metric]
@@ -254,7 +254,6 @@ class CABIN_RCA:
 		
 		# desired plot attributes
 		lineWidth = 5
-		userScaleFactor = 1.0
 							
 		maxValue = max(max(data), abs(min(data)))
 		if maxValue != 0:

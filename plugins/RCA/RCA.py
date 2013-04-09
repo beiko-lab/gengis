@@ -1,6 +1,7 @@
 from RCALayout import RCALayout
 
 import GenGIS
+from dataHelper import isNumber
 from rpy2 import robjects
 
 from CABIN_RCA import *
@@ -65,6 +66,7 @@ class RCA( RCALayout ):
 		for i,field in enumerate(metric_choices):
 			self.table.SetColLabelValue(i, field)
 
+
 		#get site ids
 		locs = GenGIS.layerTree.GetLocationSetLayer(0).GetAllActiveLocationLayers()
 		site_ids=[loc.GetController().GetData()["Site ID"] for loc in locs]	
@@ -115,8 +117,14 @@ class RCA( RCALayout ):
 			return
 		if hasattr(self,'rca'):
 			metric=self.table.GetColLabelValue(self.selectedCols[0])
+			if isNumber(self.userScaleFactor.GetValue()):
+				userScaleFactor = float(self.userScaleFactor.GetValue())
+			else:
+				wx.MessageBox("Scale factor must be numeric.", "Invalid scale factor")
+				return
+
 		        #Update the viewport using the metric selected by user
-			self.rca.ViewportPlot(metric)
+			self.rca.ViewportPlot(metric,userScaleFactor)
 		else:
 			wx.MessageBox("Please 'Run' this plugin before attempting to update the plot!")
 			return
