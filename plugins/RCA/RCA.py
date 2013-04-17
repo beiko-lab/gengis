@@ -69,7 +69,7 @@ class RCA( RCALayout ):
 
 		#get site ids
 		locs = GenGIS.layerTree.GetLocationSetLayer(0).GetAllActiveLocationLayers()
-		site_ids=[loc.GetController().GetData()["Site ID"] for loc in locs]	
+		site_ids=[loc.GetName() for loc in locs]	
 			
 	        #Create row labels
 
