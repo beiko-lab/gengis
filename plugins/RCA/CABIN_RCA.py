@@ -79,7 +79,7 @@ class CABIN_RCA:
 		### Iterate through the environmental data and build dictionary of values
 		for loc in locs:			
 
-			siteID = loc.GetController().GetData()["Site ID"]
+			siteID = loc.GetName()
 			envValues[siteID] = {}
 			
 			### Add values for each environmental value
@@ -137,7 +137,7 @@ class CABIN_RCA:
 		for loc in locs:
 			
 			### Create the entry for this location
-			siteID = loc.GetController().GetData()["Site ID"]
+			siteID = loc.GetName()
 			speciesCounts[siteID] = {}
 			
 			### Add values for each observed species
@@ -278,7 +278,7 @@ class CABIN_RCA:
 		# plot data
 		self.graphicalElementIds = []
 		for i,locLayer in enumerate(self.locs):			
-			site_id = locLayer.GetController().GetData()["Site ID"]
+			site_id = locLayer.GetName()
 			value=self.results[metric,site_id]
 			geoCoord = GenGIS.GeoCoord(locLayer.GetController().GetLongitude(), locLayer.GetController().GetLatitude())
 			pos = GenGIS.Point3D()
