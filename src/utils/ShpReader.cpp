@@ -582,7 +582,6 @@ bool ShpReader::SetupVectorProjection(OGRDataSource* OGRDataset, StudyController
 		{
 			needProjection=false;			
 			Log::Inst().Write("The projection information for this study is being ignored.");
-			Log::Inst().Write("The Vector maps must be specified in the same coordinate system as the first loaded map");
 		}
 		else
 		{
@@ -624,8 +623,8 @@ bool ShpReader::SetupVectorProjection(OGRDataSource* OGRDataset, StudyController
 
 			else 
 			{
-				studyController->SetProjectData(false);
-				studyController->SetGeographic(false);
+				//studyController->SetProjectData(false);
+				//studyController->SetGeographic(false);
 				needProjection=false;		
 				
 				Log::Inst().Write("Coordinate system information is not available for this map.");
@@ -694,6 +693,7 @@ bool ShpReader::SetupVectorProjection(OGRDataSource* OGRDataset, StudyController
 			
 			Log::Inst().Write("Coordinate system information is not available for this map.");
 			Log::Inst().Write("As a result, the projection information for this study is being ignored.");
+			Log::Inst().Write("To overlaid a Vector map on top of this map, the vector map must be specified in the same coordinate system as this map");
 			Log::Inst().Write("");
 		
 		}
