@@ -155,15 +155,17 @@ class RCA( RCALayout ):
 		for selectedCol in self.selectedCols:
 			#get name of selected metric
 			metric=self.table.GetColLabelValue(selectedCol)
-			
+			metric_name='RCA_'+metric
 			data=[]
 			for locLayer in GenGIS.layerTree.GetLocationSetLayer(0).GetAllActiveLocationLayers():
 				site_id = locLayer.GetName()
 				data.append(str(self.rca.results[metric,site_id]))
 		
-			GenGIS.layerTree.GetLocationSetLayer(0).GetController().AddMetadata(metric, data)
+			GenGIS.layerTree.GetLocationSetLayer(0).GetController().AddMetadata(metric_name, data)
 			
-			print '\n'+' Selected results added to location metadata table as "' + metric + '".\n\n'
+			message='Selected results added to location metadata table as "' + metric_name + '".'
+			print '\n'+message+'\n\n'
+			wx.MessageBox(message) 
 
 
 	def onSaveFile( self, event ):
