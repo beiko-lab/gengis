@@ -46,7 +46,7 @@ MapModel::~MapModel( void )
 }
 
 void MapModel::SetGrid( Point3D* grid ) 
-{ 
+{
 	if(m_grid != NULL) 
 		delete[] m_grid;
 	
@@ -104,13 +104,34 @@ void MapModel::GridToGeo(const Point3D &gridCoord, GeoCoord &mapCoord)
 {
 	FileHeader* header = GetHeader();
 	Box2D projExtents = header->projExtents;
+	StudyControllerPtr studyController = App::Inst().GetStudyController();
+	if(studyController->IsProjectData())
+	{
+		ProjectionToolPtr projTool = studyController->GetProjectionTool();
+		OGRCoordinateTransformation *poTransform;
+		if(projTool!= NULL)
+		{
+			OGRSpatialReference* sourceProj = projTool-> GetSourceCS();
+			OGRSpatialReference* targetProj = projTool-> GetTargetCS() ;
+			poTransform = OGRCreateCoordinateTransformation(targetProj, sourceProj);			
+		}
+
+		if(!poTransform->Transform(1, &projExtents.x, &projExtents.y))
+		{
+			Log::Inst().Warning("(Warning) Failed to project data.");
+		}
+		if(!poTransform->Transform(1, &projExtents.dx, &projExtents.dy))
+		{
+			Log::Inst().Warning("(Warning) Failed to project data.");
+		}
+	}
 
 	// x grid coordinates go from -1 to 1
-	mapCoord.easting = GetHeader()->projExtents.x + 0.5*(gridCoord.x + 1)*GetHeader()->projExtents.Width();
+	mapCoord.easting = projExtents.x + 0.5*(gridCoord.x + 1)* projExtents.Width();
 
 	// z grid coordinates go from -height/2 to height/2
-	float scaleFactor = 1.0f / (GetHeader()->height*0.5);
-	mapCoord.northing = GetHeader()->projExtents.y + 0.5*(-gridCoord.z*scaleFactor + 1)*GetHeader()->projExtents.Height();
+	float scaleFactor = 1.0f / (header->height*0.5);
+	mapCoord.northing = projExtents.y + 0.5*(-gridCoord.z*scaleFactor + 1)*projExtents.Height();
 }
 
 float MapModel::GetElevation(float gridX, float gridZ) const
