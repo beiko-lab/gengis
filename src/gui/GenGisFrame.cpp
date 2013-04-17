@@ -1,5 +1,5 @@
 //=======================================================================
-// Author: Donovan Parks & Somayyeh Zangooei
+// Author: Donovan Parks
 //
 // Copyright 2009 Donovan Parks
 //
@@ -840,10 +840,10 @@ void GenGisFrame::OpenSession( wxString sessionFullPath )
 			boost::archive::text_wiarchive ia( ifs, boost::archive::no_codecvt );
 
 			// Enable serialization mode
-			App::Inst().ToggleSerializationStatus();
+			App::Inst().ToggleSerializationStatus();			
 
 			// Read in data from session file
-			ia >> App::Inst();
+			ia >> App::Inst();			
 
 			// Read in Viewport separately
 			App::Inst().GetViewport()->ViewportSerialize( ia, App::SAVE_VERSION );
@@ -1603,7 +1603,8 @@ void GenGisFrame::LayerOpenVectorMap( wxFileName fullPath, uint mapIndex )
 			{
 				App::Inst().GetLayerTreeController()->SetSelection( App::Inst().GetLayerTreeController()->GetStudyLayer(0) );
 				App::Inst().GetLayerTreeController()->SetIsBlankRaster(true);
-				LayerOpenMap(wxString(App::Inst().GetExeDir() + wxT("images/blankRaster.tif")),0);
+				//LayerOpenMap(wxString(App::Inst().GetExeDir() + wxT("images/blankRaster.tif")),0);
+				LayerOpenMap(wxString(App::Inst().GetExeDir() + wxT("")),0);
 			//remove the empty raster layer from the study layer
 			//StudyLayerPtr studyLayer = App::Inst().GetLayerTreeController()->GetStudyLayer(0);
 			//studyLayer->RemoveAllMapLayers(); 
@@ -1631,14 +1632,14 @@ void GenGisFrame::LayerOpenVectorMap( wxFileName fullPath, uint mapIndex )
 		{
 			if (!App::Inst().IsCurrentlySerializing())
 			{
-				wxMessageBox( wxT( "Failed to load vector map file. Check console window for warning messages." ),
+				wxMessageBox( wxT( "Failed to load vector map file ")+ fullPath.GetName()+ wxT(".shp")+ wxT(" .Check console window for warning messages." ),
 					wxT( "Failed to read file" ), wxOK | wxICON_INFORMATION );
 			}
 			else
 			{
 				//
-				int answer = wxMessageBox( wxT( "The vector map file is missing, would you like to select it?"),
-					wxT( "Cannot find vector map file" ), wxYES_NO );
+				int answer = wxMessageBox( wxT( "The vector map file ")+ fullPath.GetName()+ wxT(".shp")+ wxT(" is missing, would you like to select it?"),
+					wxT( "Cannot find vector map file" ), wxYES_NO );				
 
 				if ( answer == wxYES)
 				{
