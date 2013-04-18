@@ -8,7 +8,7 @@ class CanonicalCorrelationAnalysis( CanonicalCorrelationAnalysisLayout ):
 		layout = CanonicalCorrelationAnalysisLayout.__init__( self, parent )
 		
 		self.chcCountField.Append("N/A")
-		for numDataField in GenGIS.layerTree.GetSequenceLayer(0).GetController().GetNumericMetadataFields():
+		for numDataField in GenGIS.layerTree.GetSequenceLayer(0).GetController().GetNumericMetadataFields(True):
 			self.chcCountField.Append(numDataField)
 		self.chcCountField.SetSelection(0)
 		try:
@@ -20,7 +20,7 @@ class CanonicalCorrelationAnalysis( CanonicalCorrelationAnalysisLayout ):
 			self.chcFieldToUse.Append(field)
 		self.chcFieldToUse.SetSelection(0)
 		
-		for numDataField in GenGIS.layerTree.GetLocationSetLayer(0).GetController().GetNumericMetadataFields():
+		for numDataField in GenGIS.layerTree.GetLocationSetLayer(0).GetController().GetNumericMetadataFields(True):
 			if numDataField == "Latitude" or numDataField == "Longitude":
 				self.lstNotIncluded.Append(numDataField)
 			else:
@@ -58,7 +58,7 @@ class CanonicalCorrelationAnalysis( CanonicalCorrelationAnalysisLayout ):
 			sequenceMatrix[locName] = {}
 			for category in self.setCategoryToUse:
 				sequenceMatrix[locName][category] = 0.0
-			for numDataField in GenGIS.layerTree.GetLocationSetLayer(0).GetController().GetNumericMetadataFields():
+			for numDataField in GenGIS.layerTree.GetLocationSetLayer(0).GetController().GetNumericMetadataFields(True):
 				if numDataField in self.enviroVarsToUse:
 					locationMatrix[locName][numDataField] = (locData[numDataField])
 		# print locationMatrix

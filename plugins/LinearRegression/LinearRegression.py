@@ -26,7 +26,7 @@ class LinearRegression( LinearRegressionLayout ):
 		
 		# set location comboboxes
 		locationSetLayer = GenGIS.layerTree.GetLocationSetLayer(0)
-		numericFields = locationSetLayer.GetController().GetNumericMetadataFields()
+		numericFields = locationSetLayer.GetController().GetNumericMetadataFields(True)
 		for field in numericFields:
 			self.cboIndependent.Append(field) 
 			self.cboDependent.Append(field)
@@ -45,7 +45,7 @@ class LinearRegression( LinearRegressionLayout ):
 			self.cboDependentIDField.Append(field)
 		self.cboDependentIDField.SetSelection(0)
 		
-		seqNumericMetadataFields = sequenceLayer.GetController().GetNumericMetadataFields()
+		seqNumericMetadataFields = sequenceLayer.GetController().GetNumericMetadataFields(True)
 		self.cboIndependentCountField.Append('<none>')
 		for field in seqNumericMetadataFields:
 			self.cboIndependentCountField.Append(field)
@@ -155,7 +155,7 @@ class LinearRegression( LinearRegressionLayout ):
 		if dlg.ShowModal()==wx.ID_OK:
 			filename =	dlg.GetFilename()
 			dir = dlg.GetDirectory()
-			self.txtOutput.SaveFile(dir + '\\' + filename)
+			self.txtOutput.SaveFile(dir + '/' + filename)
 			
 		dlg.Destroy()
 		

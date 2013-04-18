@@ -76,7 +76,7 @@ namespace GenGIS
 		std::vector<std::wstring> GetMetadataFields() const;
 
 		/** Get numeric fields for sequence data. */
-		std::vector<std::wstring> GetNumericMetadataFields() const;
+		std::vector<std::wstring> GetNumericMetadataFields(bool bOnlyActiveLocs = false) const;
 
 		/** 
 		* @brief Set active state of layer.
