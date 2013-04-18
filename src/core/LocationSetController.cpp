@@ -297,7 +297,7 @@ void LocationSetController::GetSortedFieldValues(const std::wstring& field, std:
 	//SortFieldValues(fieldValues);
 }
 
-std::vector<std::wstring> LocationSetController::GetNumericMetadataFields() const
+std::vector<std::wstring> LocationSetController::GetNumericMetadataFields(bool bOnlyActiveLocs) const
 {
 	if(m_locationLayers.size() == 0)
 	{
@@ -311,12 +311,15 @@ std::vector<std::wstring> LocationSetController::GetNumericMetadataFields() cons
 		bool bNumeric = true;
 		foreach(LocationLayerPtr locLayer, m_locationLayers)
 		{
-			std::wstring value = locLayer->GetLocationController()->GetData()[field];
-			
-			if(!StringTools::IsDecimalNumber(value))
+			if(locLayer->IsActive() || !bOnlyActiveLocs)
 			{
-				bNumeric = false;
-				break;
+				std::wstring value = locLayer->GetLocationController()->GetData()[field];
+				
+				if(!StringTools::IsDecimalNumber(value))
+				{
+					bNumeric = false;
+					break;
+				}
 			}
 		}
 
@@ -327,7 +330,7 @@ std::vector<std::wstring> LocationSetController::GetNumericMetadataFields() cons
 	return numericFields;
 }
 
-std::vector<std::wstring> LocationSetController::GetMetadata(const std::wstring& field, bool bOnlyVisibileLoc) const
+std::vector<std::wstring> LocationSetController::GetMetadata(const std::wstring& field, bool bOnlyActiveLocs) const
 {
 	if(m_locationLayers.size() == 0)
 	{
@@ -337,14 +340,14 @@ std::vector<std::wstring> LocationSetController::GetMetadata(const std::wstring&
 	std::vector<std::wstring> data;
 	for(uint i = 0; i < m_locationLayers.size(); ++i)
 	{
-		if(m_locationLayers.at(i)->IsActive() || !bOnlyVisibileLoc)
+		if(m_locationLayers.at(i)->IsActive() || !bOnlyActiveLocs)
 			data.push_back(m_locationLayers.at(i)->GetLocationController()->GetData()[field]);
 	}
 
 	return data;
 }
 
-std::vector<float> LocationSetController::GetNumericMetadata(const std::wstring& field, bool bOnlyVisibileLoc) const
+std::vector<float> LocationSetController::GetNumericMetadata(const std::wstring& field, bool bOnlyActiveLocs) const
 {
 	if(m_locationLayers.size() == 0)
 	{
@@ -354,7 +357,7 @@ std::vector<float> LocationSetController::GetNumericMetadata(const std::wstring&
 	std::vector<float> data;
 	for(uint i = 0; i < m_locationLayers.size(); ++i)
 	{
-		if(m_locationLayers.at(i)->IsActive() || !bOnlyVisibileLoc)
+		if(m_locationLayers.at(i)->IsActive() || !bOnlyActiveLocs)
 			data.push_back(StringTools::ToDouble(m_locationLayers.at(i)->GetLocationController()->GetData()[field]));
 	}
 

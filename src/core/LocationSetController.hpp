@@ -331,13 +331,13 @@ namespace GenGIS
 		void GetSortedFieldValues(const std::wstring& field, std::vector<std::wstring>& fieldValues);
 
 		/** Get numeric fields for location metadata. */
-		std::vector<std::wstring> GetNumericMetadataFields() const;
+		std::vector<std::wstring> GetNumericMetadataFields(bool bOnlyActiveLocs = false) const;
 
 		/** Get location data for a specified field. */ 
-		std::vector<std::wstring> GetMetadata(const std::wstring& field, bool bOnlyVisibileLoc = false) const;
+		std::vector<std::wstring> GetMetadata(const std::wstring& field, bool bOnlyActiveLocs = false) const;
 
 		/** Get numeric location data for a specified field. */ 
-		std::vector<float> GetNumericMetadata(const std::wstring& field, bool bOnlyVisibileLoc = false) const;
+		std::vector<float> GetNumericMetadata(const std::wstring& field, bool bOnlyActiveLocs = false) const;
 
 		/** Add field to location metadata. */ 
 		void AddMetadata(const std::wstring& field, const std::vector<std::wstring>& data) const;

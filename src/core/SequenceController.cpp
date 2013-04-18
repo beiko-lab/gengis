@@ -52,7 +52,7 @@ std::vector<std::wstring> SequenceController::GetMetadataFields() const
 	return fields;
 }
 
-std::vector<std::wstring> SequenceController::GetNumericMetadataFields() const
+std::vector<std::wstring> SequenceController::GetNumericMetadataFields(bool bOnlyActiveLocs) const
 {
 	std::vector<SequenceLayerPtr> seqLayers = App::Inst().GetLayerTreeController()->GetSequenceLayers();
 
@@ -68,12 +68,15 @@ std::vector<std::wstring> SequenceController::GetNumericMetadataFields() const
 		bool bNumeric = true;
 		foreach(SequenceLayerPtr seqLayer, seqLayers)
 		{
-			std::wstring value = seqLayer->GetSequenceController()->GetData()[field];
-			
-			if(!StringTools::IsDecimalNumber(value))
+			if(seqLayer->IsActive() || !bOnlyActiveLocs)
 			{
-				bNumeric = false;
-				break;
+				std::wstring value = seqLayer->GetSequenceController()->GetData()[field];
+				
+				if(!StringTools::IsDecimalNumber(value))
+				{
+					bNumeric = false;
+					break;
+				}
 			}
 		}
 

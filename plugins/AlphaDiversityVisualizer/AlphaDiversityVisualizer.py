@@ -49,7 +49,7 @@ class AlphaDiversityVisualizer( AlphaDiversityVisualizerLayout ):
 			
 		# set site ids in first column
 		locationSetLayer = GenGIS.layerTree.GetLocationSetLayer(0)
-		numericFields = locationSetLayer.GetController().GetNumericMetadataFields()
+		numericFields = locationSetLayer.GetController().GetNumericMetadataFields(True)
 
 		self.table.DeleteRows(0, self.table.GetNumberRows());
 		self.table.AppendRows(len(numericFields))
@@ -202,7 +202,7 @@ class AlphaDiversityVisualizer( AlphaDiversityVisualizerLayout ):
 			indices = self.AlphaDiversityMeasures.Calculate(self.cboMeasure.GetStringSelection(), sampleDict, self.chkIgnoreOther.IsChecked())
 		
 		# For every numeric field:
-		numericFields = GenGIS.layerTree.GetLocationSetLayer(0).GetController().GetNumericMetadataFields()
+		numericFields = GenGIS.layerTree.GetLocationSetLayer(0).GetController().GetNumericMetadataFields(True)
 		
 		self.regressionResults = {}
 		for field in numericFields:
@@ -252,7 +252,7 @@ class AlphaDiversityVisualizer( AlphaDiversityVisualizerLayout ):
 		if len(self.selectedRows) == 1 and len(self.regressionResults) != 0:
 			# Get linear regression results for selected field
 			selectedRow = self.selectedRows[0]
-			numericFields = GenGIS.layerTree.GetLocationSetLayer(0).GetController().GetNumericMetadataFields()
+			numericFields = GenGIS.layerTree.GetLocationSetLayer(0).GetController().GetNumericMetadataFields(True)
 			selectedField = numericFields[selectedRow]
 			
 			regressionData = self.regressionResults[selectedField]
