@@ -1,3 +1,13 @@
 win32/build/msvc/*
 bin/GenGIS.*
 *.pyc
+mac/i386/build/gcc/BUILD/
+mac/i386/build/gcc/.depend
+mac/i386/library3rd/Frameworks/
+mac/i386/library3rd/GL/
+mac/i386/library3rd/X11/
+mac/i386/library3rd/boost_1_47/
+mac/i386/library3rd/ftgl/
+mac/i386/library3rd/lib/
+mac/i386/library3rd/site-packages/
+mac/i386/library3rd/wxPython/
