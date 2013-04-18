@@ -1507,14 +1507,22 @@ void GeoTreeView::OptimizeLeafNodeOrdering()
 		uint numOptimalPermutations = 0;
 		for(uint i = 0; i < numCrossingReport.size(); ++i)
 		{
-			std::wstring resultStr = StringTools::ToStringW(i+1);
-			resultStr += _T(", ") + StringTools::ToStringW(numCrossingReport.at(i));
+			//std::wstring resultStr = StringTools::ToStringW(i+1);
+			//resultStr += _T(", ") + StringTools::ToStringW(numCrossingReport.at(i));
+			///std::string resultStr = StringTools::ToString(i+1);
+			///resultStr += ", " + StringTools::ToString(numCrossingReport.at(i));
+			wxString resultStr = wxString(StringTools::ToStringW(i+1).c_str());
+			resultStr += _T(", ") + wxString(StringTools::ToStringW(numCrossingReport.at(i)).c_str());
 			if(numCrossingReport.at(i) == minCrossings)
 			{
+				//resultStr += _T(", Yes");
+				///resultStr += ", Yes";
 				resultStr += _T(", Yes");
 				numOptimalPermutations++;
 			}
 			else
+				//resultStr += _T(", No");
+				///resultStr += ", No";
 				resultStr += _T(", No");
 			Log::Inst().Write(resultStr);
 
