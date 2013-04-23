@@ -179,6 +179,24 @@ namespace GenGIS
 		{
 			m_polygonBorderSize = size;
 		}
+		/** Set maximum allowed width size for polygon . */
+		void SetPolygonMaxWidthSize(float size)
+		{
+			m_polygonMaxWidthSize=size;
+		}
+		float GetPolygonMaxWidthSize()
+		{
+			return m_polygonMaxWidthSize;
+		}
+
+		void SetPolygonMinWidthSize(float size)
+		{
+			m_polygonMinWidthSize=size;
+		}
+		float GetPolygonMinWidthSize()
+		{
+			return m_polygonMinWidthSize;
+		}
 		
 		VisualLine::LINE_STYLE GetPolygonBorderStyle() const
 		{
@@ -216,6 +234,8 @@ namespace GenGIS
 		VisualLine::LINE_STYLE m_lineStyle;
 		Colour m_polygonBorderColour;
 		float m_polygonBorderSize;
+		float m_polygonMaxWidthSize;
+		float m_polygonMinWidthSize;
 		VisualLine::LINE_STYLE m_polygonBorderStyle;
 	};
 }

@@ -23,7 +23,6 @@
 #include <wx/image.h>
 #include <wx/icon.h>
 #include <wx/combobox.h>
-#include <wx/spinctrl.h>
 #include <wx/clrpicker.h>
 #include <wx/statline.h>
 #include <wx/statbox.h>
@@ -58,31 +57,31 @@ namespace GenGIS
 				ID_Symbol_POINT_PROPERTIES,
 				ID_CBO_POINT_SHAPE,
 				ID_LBL_POINT_SIZE,
-				ID_CTRL_POINT_SIZE,
+				ID_TXT_CTRL_POINT_SIZE,
 				ID_LBL_POINT_COLOUR,
 				ID_POINT_FILL_COLOUR_PICKER,
 				ID_LBL_POINT_BORDER_COLOUR,
 				ID_POINT_BORDER_COLOUR_PICKER,
 				ID_LBL_POINT_BORDER_THICKNESS,
-				ID_CTRL_POINT_BORDER_THICKNESS,
+				ID_TXT_CTRL_POINT_BORDER_THICKNESS,
 				ID_PNL_LINE,
 				ID_Symbol_POLYLINE_PROPERTIES,
 				ID_LBL_POLYLINE_STYLE,
 				ID_CBO_POLYLINE_STYLE,
 				ID_LBL_POLYLINE_THICKNESS,
-				ID_CTRL_POLYLINE_THICKNESS,
+				ID_TXT_CTRL_POLYLINE_THICKNESS,
 				ID_LBL_POLYLINE_COLOUR,
 				ID_POLYLINE_FILL_COLOUR_PICKER,
 				ID_LBL_POLYLINE_BORDER_COLOUR,
 				ID_POLYLINE_BORDER_COLOUR_PICKER,
 				ID_LBL_POLYLINE_BORDER_THICKNESS,
-				ID_CTRL_POLYLINE_BORDER_THICKNESS,
+				ID_TXT_CTRL_POLYLINE_BORDER_THICKNESS,
 				ID_PNL_POLYGON,
 				ID_Symbol_POLYGON_PROPERTIES,
 				ID_LBL_POLYGON_STYLE,
 				ID_CBO_POLYGON_STYLE,
 				ID_LBL_POLYGON_Thickness,
-				ID_CTRL_POLYGON_Thickness,
+				ID_TXT_CTRL_POLYGON_Thickness,
 				ID_LBL_POLYGON_COLOUR,
 				ID_POLYGON_BORDER_COLOUR_PICKER,
 				ID_PNL_METADATA,
@@ -106,31 +105,31 @@ namespace GenGIS
 			wxStaticText* m_lblPointShape;
 			wxComboBox* m_CboPointShape;
 			wxStaticText* m_lblPointSize;
-			wxSpinCtrl* m_CtrlPointSize;
+			wxTextCtrl* m_TxtCtrlPointSize;
 			wxStaticText* m_lblPointColour;
 			wxColourPickerCtrl* m_FillPointColourPicker;
 			wxStaticLine* m_staticline2;
 			wxStaticText* m_lblPointBorderColour;
 			wxColourPickerCtrl* m_PointBorderColourPicker;
 			wxStaticText* m_lblPointBorderThickness;
-			wxSpinCtrl* m_CtrlPointBorderThickness;
+			wxTextCtrl* m_TxtCtrlPointBorderThickness;
 			wxPanel* m_pnlLine;
 			wxStaticText* m_lblPolylineStyle;
 			wxComboBox* m_CboPolylineStyle;
 			wxStaticText* m_lblPolylineThickness;
-			wxSpinCtrl* m_CtrlPolylineThickness;
+			wxTextCtrl* m_TxtCtrlPolylineThickness;
 			wxStaticText* m_lblPolylineColour;
 			wxColourPickerCtrl* m_PolylineFillcolourPicker;
 			wxStaticLine* m_staticline21;
 			wxStaticText* m_lblPolylineBorderColour;
 			wxColourPickerCtrl* m_PolylineBordercolourPicker;
 			wxStaticText* m_lblPolylineBorderThickness;
-			wxSpinCtrl* m_CtrlPolylineBorderThickness;
+			wxTextCtrl* m_TxtCtrlPolylineBorderThickness;
 			wxPanel* m_pnlPolygon;
 			wxStaticText* m_lblPolygonStyle;
 			wxComboBox* m_CboPolygonStyle;
 			wxStaticText* m_lblPolygonThickness;
-			wxSpinCtrl* m_CtrlPolygonThickness;
+			wxTextCtrl* m_TxtCtrlPolygonThickness;
 			wxStaticText* m_lblPolygonColour;
 			wxColourPickerCtrl* m_PolygonBordercolourPicker;
 			wxPanel* m_pnlMetadata;
