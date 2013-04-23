@@ -41,9 +41,9 @@ using namespace GenGIS;
 VectorMapView::VectorMapView( VectorMapModelPtr vectorMapModel ) : 
 	m_vectorMapModel( vectorMapModel ),
 	m_pointColour((float) rand() / RAND_MAX, (float) rand() / RAND_MAX,(float) rand() / RAND_MAX ),
-	m_pointSize(4.0),
+	m_pointSize(3.0),
 	m_pointBorderColour((float) rand() / RAND_MAX, (float) rand() / RAND_MAX,(float) rand() / RAND_MAX),
-	m_pointBorderSize(1.0), 
+	m_pointBorderSize(0.0), 
 	m_pointShape(VisualMarker::CIRCLE),
 	m_lineColour((float) rand() / RAND_MAX, (float) rand() / RAND_MAX,(float) rand() / RAND_MAX),
 	m_lineSize(1.0),
@@ -73,8 +73,7 @@ void VectorMapView::serialize(Archive & ar, const unsigned int file_version)
 	ar & m_lineStyle;    
 	ar & m_polygonBorderColour;                
 	ar & m_polygonBorderSize;                
-	ar & m_polygonBorderStyle;     
-	
+	ar & m_polygonBorderStyle;     	
 	
 }
 
@@ -94,10 +93,9 @@ void VectorMapView::Render()
 void VectorMapView::Render( bool bSimplified )
 {
 	glDepthRange( TERRAIN_START_DEPTH, 1.0 );
-	// glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 
 	glDisable( GL_LIGHTING );
-	glDisable( GL_BLEND );
+	//glDisable( GL_BLEND );
 
 	Colour bgColour = App::Inst().GetViewport()->GetBackgroundColour();
 	glColor4ub( bgColour.GetRedInt(), bgColour.GetGreenInt(), bgColour.GetBlueInt(), 255 );
@@ -116,11 +114,7 @@ void VectorMapView::Render( bool bSimplified )
 
 		// Handle points
 		if ( GeoVector->GetGeometryType() == wkbPoint )
-		{
-			//glEnable( GL_POINT_SMOOTH ) ;
-			//glColor4f(pColour.GetRed(), pColour.GetGreen(), pColour.GetBlue(), pColour.GetAlpha());
-			//glColor3f( 0.75f, 0.75f, 0.1f );			
-			//glBegin( GL_POINTS );
+		{			
 			colour = GetPointColour();
 			bColour = GetPointBorderColour();			
 			size= GetPointSize();
@@ -129,10 +123,7 @@ void VectorMapView::Render( bool bSimplified )
 		}
 		//Handle polylines
 		else if ( GeoVector->GetGeometryType() == wkbLineString )
-		{
-			//glColor3f( 0.0f, 0.0f, 1.0f );
-			//glLineWidth(1.0f);
-			//glBegin( GL_LINES );
+		{			
 			colour = GetLineColour();
 			bColour = GetLineBorderColour();			
 			size=GetLineSize();
@@ -141,25 +132,27 @@ void VectorMapView::Render( bool bSimplified )
 		}
 		// Handle rings
 		else if ( GeoVector->GetGeometryType() == wkbLinearRing )
-		{
-			//glColor3f( 1.0f, 0.0f, 0.0f );
-			//glColor3f( (float) rand() / RAND_MAX, (float) rand() / RAND_MAX,(float) rand() / RAND_MAX );
-			//glBegin( GL_LINE_LOOP  );	
-			//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-			//glEnable(GL_POLYGON_OFFSET_FILL); // Avoid Stitching!
-			//glPolygonOffset(0.3f, 1.0f);
-			//glColor3f(1.0f, 0.0f, 0.0f);
-			//glBegin( GL_LINE_LOOP );
+		{			
 			colour = GetPolygonBorderColour();
 			size =  GetPolygonBorderSize();
 			style = GetPolygonBorderStyle();
-			glColor4f(colour.GetRed(),colour.GetGreen(),colour.GetBlue(),colour.GetAlpha());
-			glLineWidth(size * App::Inst().GetResolutionFactor());
-			glEnable(GL_LINE_STIPPLE);
-			glLineStipple(REPEAT_FACTOR, style);
-			//glBegin( GL_LINE_LOOP );
-			glBegin( GL_LINE_STRIP );
-			
+			GLfloat fSizes[2];
+			glGetFloatv(GL_LINE_WIDTH_RANGE,fSizes);
+			SetPolygonMaxWidthSize(fSizes[1]);			
+			//SetPolygonMinWidthSize(fSizes[0]);
+			SetPolygonMinWidthSize(1);
+			if( GetPolygonBorderSize() >= GetPolygonMinWidthSize() &&  GetPolygonBorderSize() <= GetPolygonMaxWidthSize())
+			{
+				glColor4f(colour.GetRed(),colour.GetGreen(),colour.GetBlue(),colour.GetAlpha());
+				glEnable (GL_LINE_SMOOTH);
+				glEnable (GL_BLEND);
+				glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+				glHint (GL_LINE_SMOOTH_HINT, GL_DONT_CARE);
+				glLineWidth(size * App::Inst().GetResolutionFactor());
+				glEnable(GL_LINE_STIPPLE);
+				glLineStipple(REPEAT_FACTOR, style);
+				glBegin( GL_LINE_STRIP );	
+			}
           
 		}
 		// Skip for unsupported types
@@ -182,9 +175,9 @@ void VectorMapView::Render( bool bSimplified )
 			float sPointX = GeoVector->pointX[currPoint];
 			float sPointY = GeoVector->pointY[currPoint];
 			float sPointZ = mapController->GetExaggeratedElevation(sPointX, sPointY);
-			
-			
-			if ( GeoVector->GetGeometryType() == wkbLinearRing )
+								
+			//Visualize rings whose thicknesses are between the line width range
+			if ( GeoVector->GetGeometryType() == wkbLinearRing && GetPolygonBorderSize() >= GetPolygonMinWidthSize() &&  GetPolygonBorderSize() <= GetPolygonMaxWidthSize())
 			{
 				double dist = sqrt( pow( ePointX - sPointX, 2 ) + pow( ePointY - sPointY, 2 ) );
 				double scaledMinX  = m_vectorMapModel->GetVectorBoundary_ScaledMinX();
@@ -208,7 +201,38 @@ void VectorMapView::Render( bool bSimplified )
 				}
 
 			}
+			//Visualize rings whose thicknesses are outside the line width range
+			else if ( GeoVector->GetGeometryType() == wkbLinearRing && (GetPolygonBorderSize() < GetPolygonMinWidthSize() || GetPolygonBorderSize() > GetPolygonMaxWidthSize() ) )
+			{
+				if(currPoint!=(GeoVector->GetNumberOfPoints()-1)){
+					Point3D ePoint;				
+					ePoint.x = GeoVector->pointX[currPoint+1];
+					ePoint.z = GeoVector->pointY[currPoint+1];
+					ePoint.y= mapController->GetExaggeratedElevation(ePoint.x, ePoint.z);
+					double dist = sqrt( pow( ePoint.x - sPoint.x, 2 ) + pow( ePoint.y - sPoint.y, 2 ) );
+					double scaledMinX  = m_vectorMapModel->GetVectorBoundary_ScaledMinX();
+					double scaledMaxX  = m_vectorMapModel->GetVectorBoundary_ScaledMaxX();		
 
+					if (dist < 7.0/8.0*(fabs(scaledMaxX-scaledMinX)))
+					{
+						VisualLine::RenderLineWithBorder(Line3D(sPoint, ePoint), colour, size, style, Colour(0,0,0), 0.0, VECTOR_LAYER, false);
+					}
+				}
+				else{
+					Point3D ePoint;
+					ePoint.x = GeoVector->pointX[0];
+					ePoint.z = GeoVector->pointY[0];
+					ePoint.y= mapController->GetExaggeratedElevation(ePoint.x, ePoint.z);
+					double dist = sqrt( pow( ePoint.x - sPoint.x, 2 ) + pow( ePoint.y - sPoint.y, 2 ) );
+					double scaledMinX  = m_vectorMapModel->GetVectorBoundary_ScaledMinX();
+					double scaledMaxX  = m_vectorMapModel->GetVectorBoundary_ScaledMaxX();	
+					if (dist < 7.0/8.0*(fabs(scaledMaxX-scaledMinX)))
+					{
+						VisualLine::RenderLineWithBorder(Line3D(sPoint, ePoint), colour, size, style, Colour(0,0,0), 0.0, VECTOR_LAYER, false);
+					}
+				}
+				
+			}		
 			else if(GeoVector->GetGeometryType() == wkbPoint)	
 			{
 				VisualMarker::RenderDecal(sPoint, colour, size, shape, bColour, bSize, m_bSelected, 0);
@@ -227,57 +251,26 @@ void VectorMapView::Render( bool bSimplified )
 
 					if (dist < 7.0/8.0*(fabs(scaledMaxX-scaledMinX)))
 					{
-						VisualLine::RenderLineWithBorder(Line3D(sPoint, ePoint), colour, size, style, bColour, bSize, LAYOUT_PRIMATIVES_LAYER, m_bSelected);
+						VisualLine::RenderLineWithBorder(Line3D(sPoint, ePoint), colour, size, style, bColour, 0.0, LAYOUT_PRIMATIVES_LAYER, m_bSelected);
 						
 					}
 				}
-			}
-			/*
-			else if ( GeoVector->GetGeometryType() == wkbLinearRing )
-			{
-				if(currPoint!=(GeoVector->GetNumberOfPoints()-1)){
-					Point3D ePoint;				
-					ePoint.x = GeoVector->pointX[currPoint+1];
-					ePoint.z = GeoVector->pointY[currPoint+1];
-					ePoint.y= mapController->GetExaggeratedElevation(ePoint.x, ePoint.z);
-					VisualLine::RenderLineWithBorder(Line3D(sPoint, ePoint), colour, size, style, Colour(0,0,0), 0.0, LAYOUT_PRIMATIVES_LAYER, m_bSelected);
-				}
-				else{
-					Point3D ePoint;
-					ePoint.x = GeoVector->pointX[0];
-					ePoint.z = GeoVector->pointY[0];
-					ePoint.y= mapController->GetExaggeratedElevation(ePoint.x, ePoint.z);
-					VisualLine::RenderLineWithBorder(Line3D(sPoint, ePoint), colour, size, style, Colour(0,0,0), 0.0, LAYOUT_PRIMATIVES_LAYER, m_bSelected);
-				}
-				
-			}
-			*/
+			}			
 			
 		}
-		if ( GeoVector->GetGeometryType() == wkbLinearRing)
+		
+		if ( GeoVector->GetGeometryType() == wkbLinearRing && GetPolygonBorderSize() >= GetPolygonMinWidthSize() &&  GetPolygonBorderSize() <= GetPolygonMaxWidthSize())
 		{			
 			if (!flag)			
 				glVertex3f(GeoVector->pointX[0], mapController->GetExaggeratedElevation(GeoVector->pointX[0], GeoVector->pointY[0]),GeoVector->pointY[0] );
-			glEnd();
-					
+			glEnd();				
 			
 		}
 		
 	}
-/*
-	// Draw the outline of the map
-		glBegin( GL_LINE_LOOP );
-			glVertex3f( -1.0f, 0.0f,  height/2 );
-			glVertex3f(  1.0f, 0.0f,  height/2 );
-			glVertex3f(  1.0f, 0.0f, -height/2 );
-			glVertex3f( -1.0f, 0.0f, -height/2 );		
-		glEnd();
-	}
-	
-	*/
-	glEnable(GL_BLEND);
+	//glEnable(GL_BLEND);
+	//glDisable(GL_BLEND);
 	glDisable(GL_LINE_STIPPLE);
-
 	glFlush();
 }
 

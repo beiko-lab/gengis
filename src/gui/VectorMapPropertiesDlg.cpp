@@ -69,25 +69,7 @@ VectorMapPropertiesDlg::~VectorMapPropertiesDlg()
 	m_vectorMapLayer->SetPropertiesDialogOpenStatus( false );
 	m_vectorMapLayer->SetPropertiesDialog( NULL );
 }
-/*
-int VectorMapPropertiesDlg::ScaleElevation(float elevation)
-{
-	float max = m_mapLayer->GetMapController()->GetMaxElevationGridSpace();
-	float normElevation = (max-elevation) / max;
 
-	// invert the elevation since the slider really represents an error measure
-	return int(MAX_ELEVATION*normElevation);
-}
-
-
-float MapPropertiesDlg::ScaleElevation(int elevation)
-{
-	float normElevation = float(MAX_ELEVATION-elevation) / MAX_ELEVATION;
-
-	MapControllerPtr mapController = m_mapLayer->GetMapController();
-	return normElevation*mapController->GetMaxElevationGridSpace();
-}
-*/
 void VectorMapPropertiesDlg::InitGeneral()
 {
 	// set the title of the properties dialog
@@ -102,8 +84,7 @@ void VectorMapPropertiesDlg::InitGeneral()
 void VectorMapPropertiesDlg::InitMetaData()
 {	
 	//VectorMapModelPtr vectorMapModel = m_vectorMapLayer->GetVectorMapController()->GetVectorMapModel();
-	//VectorMapViewPtr vectorMapView = m_vectorMapLayer->GetVectorMapController()->GetVectorMapView();
-	//m_txtLayerSource->SetValue(wxString(m_mapLayer->GetPath().c_str()) + _T("\\") + wxString(m_mapLayer->GetFilename().c_str()));
+	//VectorMapViewPtr vectorMapView = m_vectorMapLayer->GetVectorMapController()->GetVectorMapView();	
 	m_txtLayerSource->SetValue(m_vectorMapLayer->GetFullPath());
 	InitMeta_Data();
 }
@@ -115,12 +96,12 @@ void VectorMapPropertiesDlg::InitPointSymbology()
 	Colour colour = vectorMapView->GetPointColour();
 	m_FillPointColourPicker->SetColour(wxColour(colour.GetRedInt(), colour.GetGreenInt(), colour.GetBlueInt(), colour.GetAlphaInt()));
 	ReplaceColourPicker( m_FillPointColourPicker, colour );
-	m_CtrlPointSize->SetValue(wxString(StringTools::ToStringW(vectorMapView->GetPointSize(), 2).c_str()));
+	m_TxtCtrlPointSize->SetValue(wxString(StringTools::ToStringW(vectorMapView->GetPointSize(), 2).c_str()));
 
 	Colour bColour = vectorMapView->GetPointBorderColour();
 	m_PointBorderColourPicker->SetColour(wxColour(bColour.GetRedInt(), bColour.GetGreenInt(), bColour.GetBlueInt(), bColour.GetAlphaInt()));
 	ReplaceColourPicker( m_PointBorderColourPicker, bColour );
-	m_CtrlPointBorderThickness->SetValue(wxString(StringTools::ToStringW(vectorMapView->GetPointBorderSize(), 2).c_str()));
+	m_TxtCtrlPointBorderThickness->SetValue(wxString(StringTools::ToStringW(vectorMapView->GetPointBorderSize(), 2).c_str()));
 	
 	VisualMarker::MARKER_SHAPE pointShape = vectorMapView->GetPointShape();
 	if(pointShape == VisualMarker::CIRCLE)
@@ -148,12 +129,12 @@ void VectorMapPropertiesDlg::InitPolyLineSymbology()
 	Colour colour = vectorMapView->GetLineColour();
 	m_PolylineFillcolourPicker->SetColour(wxColour(colour.GetRedInt(), colour.GetGreenInt(), colour.GetBlueInt(), colour.GetAlphaInt()));
 	ReplaceColourPicker( m_PolylineFillcolourPicker, colour );
-	m_CtrlPolylineThickness->SetValue(wxString(StringTools::ToStringW(vectorMapView->GetLineSize(), 2).c_str()));
+	m_TxtCtrlPolylineThickness->SetValue(wxString(StringTools::ToStringW(vectorMapView->GetLineSize(), 2).c_str()));
 
 	Colour bColour = vectorMapView->GetLineBorderColour();
 	m_PolylineBordercolourPicker->SetColour(wxColour(bColour.GetRedInt(), bColour.GetGreenInt(), bColour.GetBlueInt(), bColour.GetAlphaInt()));
 	ReplaceColourPicker( m_PolylineBordercolourPicker, bColour );
-	m_CtrlPolylineBorderThickness->SetValue(wxString(StringTools::ToStringW(vectorMapView->GetLineBorderSize(), 2).c_str()));
+	m_TxtCtrlPolylineBorderThickness->SetValue(wxString(StringTools::ToStringW(vectorMapView->GetLineBorderSize(), 2).c_str()));
 	
 	VisualLine::LINE_STYLE lineStyle = vectorMapView->GetLineStyle();
 	if(lineStyle == VisualLine::SOLID)
@@ -173,7 +154,7 @@ void VectorMapPropertiesDlg::InitPolygonSymbology()
 	Colour colour = vectorMapView->GetPolygonBorderColour();
 	m_PolygonBordercolourPicker->SetColour(wxColour(colour.GetRedInt(), colour.GetGreenInt(), colour.GetBlueInt(), colour.GetAlphaInt()));
 	ReplaceColourPicker( m_PolygonBordercolourPicker, colour );
-	m_CtrlPolygonThickness->SetValue(wxString(StringTools::ToStringW(vectorMapView->GetPolygonBorderSize(), 2).c_str()));	
+	m_TxtCtrlPolygonThickness->SetValue(wxString(StringTools::ToStringW(vectorMapView->GetPolygonBorderSize(), 2).c_str()));	
 	
 	VisualLine::LINE_STYLE polygonBStyle = vectorMapView->GetPolygonBorderStyle();
 	if(polygonBStyle == VisualLine::SOLID)
@@ -263,25 +244,32 @@ void VectorMapPropertiesDlg::InitMeta_Data()
 
 }
 
-void VectorMapPropertiesDlg::Apply()
-{
+void VectorMapPropertiesDlg::Apply(){
 	
 	// set properties based on state of controls in General page
 	m_vectorMapLayer->SetName(m_txtLayerName->GetValue().c_str());
 	m_vectorMapLayer->SetDescription(m_txtLayerDescription->GetValue().c_str());
 	m_vectorMapLayer->SetAuthours(m_txtAuthours->GetValue().c_str());
-
-	// set properties based on state of controls in Symbology page
-	//m_vectorMapLayer->GetVectorMapController()->GetMapView()->SetWireFrame(m_chkWireframe->IsChecked());
-	//m_vectorMapLayer->GetVectorMapController()->GetMapView()->SetVerticalExaggeration(m_mapLayer->GetMapController(), StringTools::ToDouble(m_txtVerticalExaggeration->GetValue().c_str()));
-
-	//m_mapLayer->GetMapController()->GetMapModel()->GetTexture()->SetTransparencyPercentage(m_sliderTransparency->GetValue(), this);
-	//m_mapLayer->GetMapController()->GetMapView()->SetEpsilon(ScaleElevation(m_sliderLevelOfDetail->GetValue()));
-
+	
 	ApplyPointSymbology();
-	ApplyPolyLineSymbology();
-	ApplyPolygonSymbology();
+	ApplyPolyLineSymbology();	
 
+	VectorMapViewPtr vectorMapView = m_vectorMapLayer->GetVectorMapController()->GetVectorMapView();
+	double polygonThickness= StringTools::ToDouble(m_TxtCtrlPolygonThickness->GetValue().c_str());
+	if((float)vectorMapView->GetPolygonBorderSize()!= (float)polygonThickness)
+	{
+		if( polygonThickness < vectorMapView->GetPolygonMinWidthSize() || polygonThickness > vectorMapView->GetPolygonMaxWidthSize() )
+		{
+			int answer = wxMessageBox( wxT( "Thicknesses less than 1 and greater than 10 take longer time to be rendered. Would you still like to proceed?"),
+						wxT( "Confirmation" ), wxYES_NO );
+			if ( answer == wxYES)
+				ApplyPolygonSymbology();
+		}
+		else
+			ApplyPolygonSymbology();
+	}
+	else
+		ApplyPolygonSymbology();
 
 	App::Inst().SetSaveStatus( SESSION_NOT_SAVED );	
 	App::Inst().GetLayerTreeController()->SetName(m_vectorMapLayer, m_vectorMapLayer->GetName());
@@ -300,23 +288,24 @@ void VectorMapPropertiesDlg::ApplyPointSymbology()
 	if(colour != vectorMapView->GetPointColour())
 	{
 		vectorMapView->SetPointColour(colour);
-		//vectorMapView->SetPointColourModified(true);
+		
 	}
 	if(bColour != vectorMapView->GetPointBorderColour())
 	{
 		vectorMapView->SetPointBorderColour(bColour);
-		//vectorMapView->SetPointColourModified(true);
 	}
 
-	if(vectorMapView->GetPointSize() != m_CtrlPointSize->GetValue())
+	if(vectorMapView->GetPointSize() != m_TxtCtrlPointSize->GetValue())
 	{
-		vectorMapView->SetPointSize(m_CtrlPointSize->GetValue());
-		//vectorMapView->SetSizeModified(true);
+		//vectorMapView->SetPointSize(m_TxtCtrlPointSize->GetValue());
+		vectorMapView->SetPointSize(StringTools::ToDouble(m_TxtCtrlPointSize->GetValue().c_str()));
+
 	}
-	if(vectorMapView->GetPointBorderSize() != m_CtrlPointBorderThickness->GetValue())
+	if(vectorMapView->GetPointBorderSize() != m_TxtCtrlPointBorderThickness->GetValue())
 	{
-		vectorMapView->SetPointBorderSize(m_CtrlPointBorderThickness->GetValue());
-		//vectorMapView->SetSizeModified(true);
+		//vectorMapView->SetPointBorderSize(m_CtrlPointBorderThickness->GetValue());
+		vectorMapView->SetPointBorderSize(StringTools::ToDouble(m_TxtCtrlPointBorderThickness->GetValue().c_str()));
+		
 	}
 	
 	VisualMarker::MARKER_SHAPE pShape;
@@ -357,24 +346,22 @@ void VectorMapPropertiesDlg::ApplyPolyLineSymbology()
 
 	if(colour != vectorMapView->GetLineColour())
 	{
-		vectorMapView->SetLineColour(colour);
-		//vectorMapView->SetPointColourModified(true);
+		vectorMapView->SetLineColour(colour);		
 	}
 	if(bColour != vectorMapView->GetLineBorderColour())
 	{
-		vectorMapView->SetLineBorderColour(bColour);
-		//vectorMapView->SetPointColourModified(true);
+		vectorMapView->SetLineBorderColour(bColour);		
 	}
 
-	if(vectorMapView->GetLineSize() != m_CtrlPolylineThickness->GetValue())
+	if(vectorMapView->GetLineSize() != m_TxtCtrlPolylineThickness->GetValue())
 	{
-		vectorMapView->SetLineSize(m_CtrlPolylineThickness->GetValue());
-		//vectorMapView->SetSizeModified(true);
+		//vectorMapView->SetLineSize(m_TxtCtrlPolylineThickness->GetValue());
+		vectorMapView->SetLineSize(StringTools::ToDouble(m_TxtCtrlPolylineThickness->GetValue().c_str()));		
+		
 	}
-	if(vectorMapView->GetLineBorderSize() != m_CtrlPolylineBorderThickness->GetValue())
+	if(vectorMapView->GetLineBorderSize() != m_TxtCtrlPolylineBorderThickness->GetValue())
 	{
-		vectorMapView->SetLineBorderSize(m_CtrlPolylineBorderThickness->GetValue());
-		//vectorMapView->SetSizeModified(true);
+		vectorMapView->SetLineBorderSize(StringTools::ToDouble(m_TxtCtrlPolylineBorderThickness->GetValue().c_str()));		
 	}
 	
 	VisualLine::LINE_STYLE lnStyle;
@@ -408,11 +395,12 @@ void VectorMapPropertiesDlg::ApplyPolygonSymbology()
 		vectorMapView->SetPolygonBorderColour(colour);
 		//vectorMapView->SetPointColourModified(true);
 	}
-	if(vectorMapView->GetPolygonBorderSize() != m_CtrlPolygonThickness->GetValue())
+	if(vectorMapView->GetPolygonBorderSize() != m_TxtCtrlPolygonThickness->GetValue())
 	{
-		vectorMapView->SetPolygonBorderSize(m_CtrlPolygonThickness->GetValue());
-		//vectorMapView->SetSizeModified(true);
+		//vectorMapView->SetPolygonBorderSize(m_TxtCtrlPolygonThickness->GetValue());
+		vectorMapView->SetPolygonBorderSize(StringTools::ToDouble(m_TxtCtrlPolygonThickness->GetValue().c_str()));
 	}	
+
 	VisualLine::LINE_STYLE polygonBStyle;
 	if(m_CboPolygonStyle->GetValue() == _T("Hidden"))
 		polygonBStyle = VisualLine::HIDDEN;
