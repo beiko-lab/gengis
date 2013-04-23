@@ -41,6 +41,7 @@ namespace GenGIS
 	const int GEO_LOCATION_LAYER      = 750;
 	const int TREE_LAYER              = 800;
 	const int LAYOUT_PRIMATIVES_LAYER = 850;
+	const int VECTOR_LAYER            = 900;
 
 	const int SELECTED_LAYER_OFFSET   = 25;
 }
