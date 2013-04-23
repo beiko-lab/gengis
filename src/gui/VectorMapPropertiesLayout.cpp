@@ -113,8 +113,8 @@ VectorMapPropertiesLayout::VectorMapPropertiesLayout( wxWindow* parent, wxWindow
 	m_lblPointSize->Wrap( -1 );
 	m_sizerPointSize1->Add( m_lblPointSize, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
 	
-	m_CtrlPointSize = new wxSpinCtrl( m_pnlPoint, ID_CTRL_POINT_SIZE, wxT("1"), wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 50, 1 );
-	m_sizerPointSize1->Add( m_CtrlPointSize, 0, wxALIGN_CENTER|wxALL, 5 );
+	m_TxtCtrlPointSize = new wxTextCtrl( m_pnlPoint, ID_TXT_CTRL_POINT_SIZE, wxT("1.0"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_sizerPointSize1->Add( m_TxtCtrlPointSize, 0, wxALIGN_CENTER|wxALL, 5 );
 	
 	m_SizerSymbolPointProperties1->Add( m_sizerPointSize1, 1, wxEXPAND, 5 );
 	
@@ -152,8 +152,8 @@ VectorMapPropertiesLayout::VectorMapPropertiesLayout( wxWindow* parent, wxWindow
 	m_lblPointBorderThickness->Wrap( -1 );
 	m_sizerPointSize11->Add( m_lblPointBorderThickness, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
 	
-	m_CtrlPointBorderThickness = new wxSpinCtrl( m_pnlPoint, ID_CTRL_POINT_BORDER_THICKNESS, wxT("1"), wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 50, 1 );
-	m_sizerPointSize11->Add( m_CtrlPointBorderThickness, 0, wxALIGN_CENTER|wxALL, 5 );
+	m_TxtCtrlPointBorderThickness = new wxTextCtrl( m_pnlPoint, ID_TXT_CTRL_POINT_BORDER_THICKNESS, wxT("0.0"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_sizerPointSize11->Add( m_TxtCtrlPointBorderThickness, 0, wxALIGN_CENTER|wxALL, 5 );
 	
 	m_SizerSymbolPointProperties1->Add( m_sizerPointSize11, 1, wxEXPAND, 5 );
 	
@@ -162,7 +162,7 @@ VectorMapPropertiesLayout::VectorMapPropertiesLayout( wxWindow* parent, wxWindow
 	m_pnlPoint->SetSizer( bSizer15 );
 	m_pnlPoint->Layout();
 	bSizer15->Fit( m_pnlPoint );
-	m_symbology_Notebook->AddPage( m_pnlPoint, wxT("Point"), false );
+	m_symbology_Notebook->AddPage( m_pnlPoint, wxT("Point"), true );
 	m_pnlLine = new wxPanel( m_symbology_Notebook, ID_PNL_LINE, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
 	wxBoxSizer* bSizer16;
 	bSizer16 = new wxBoxSizer( wxVERTICAL );
@@ -193,8 +193,8 @@ VectorMapPropertiesLayout::VectorMapPropertiesLayout( wxWindow* parent, wxWindow
 	m_lblPolylineThickness->Wrap( -1 );
 	m_sizerPointSize2->Add( m_lblPolylineThickness, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
 	
-	m_CtrlPolylineThickness = new wxSpinCtrl( m_pnlLine, ID_CTRL_POLYLINE_THICKNESS, wxT("1"), wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 10, 0 );
-	m_sizerPointSize2->Add( m_CtrlPolylineThickness, 0, wxALIGN_CENTER|wxALL, 5 );
+	m_TxtCtrlPolylineThickness = new wxTextCtrl( m_pnlLine, ID_TXT_CTRL_POLYLINE_THICKNESS, wxT("1.0"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_sizerPointSize2->Add( m_TxtCtrlPolylineThickness, 0, wxALIGN_CENTER|wxALL, 5 );
 	
 	m_SizerSymbolPolylineProperties->Add( m_sizerPointSize2, 1, wxEXPAND, 5 );
 	
@@ -232,8 +232,8 @@ VectorMapPropertiesLayout::VectorMapPropertiesLayout( wxWindow* parent, wxWindow
 	m_lblPolylineBorderThickness->Wrap( -1 );
 	m_sizerPointSize22->Add( m_lblPolylineBorderThickness, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
 	
-	m_CtrlPolylineBorderThickness = new wxSpinCtrl( m_pnlLine, ID_CTRL_POLYLINE_BORDER_THICKNESS, wxT("1"), wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 10, 0 );
-	m_sizerPointSize22->Add( m_CtrlPolylineBorderThickness, 0, wxALIGN_CENTER|wxALL, 5 );
+	m_TxtCtrlPolylineBorderThickness = new wxTextCtrl( m_pnlLine, ID_TXT_CTRL_POLYLINE_BORDER_THICKNESS, wxT("0.0"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_sizerPointSize22->Add( m_TxtCtrlPolylineBorderThickness, 0, wxALIGN_CENTER|wxALL, 5 );
 	
 	m_SizerSymbolPolylineProperties->Add( m_sizerPointSize22, 1, wxEXPAND, 5 );
 	
@@ -273,8 +273,8 @@ VectorMapPropertiesLayout::VectorMapPropertiesLayout( wxWindow* parent, wxWindow
 	m_lblPolygonThickness->Wrap( -1 );
 	m_sizerPointSize3->Add( m_lblPolygonThickness, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 	
-	m_CtrlPolygonThickness = new wxSpinCtrl( m_pnlPolygon, ID_CTRL_POLYGON_Thickness, wxT("1"), wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 30, 0 );
-	m_sizerPointSize3->Add( m_CtrlPolygonThickness, 0, wxALIGN_CENTER|wxALL, 5 );
+	m_TxtCtrlPolygonThickness = new wxTextCtrl( m_pnlPolygon, ID_TXT_CTRL_POLYGON_Thickness, wxT("1.0"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_sizerPointSize3->Add( m_TxtCtrlPolygonThickness, 0, wxALIGN_CENTER|wxALL, 5 );
 	
 	m_SizerSymbolPolygonProperties3->Add( m_sizerPointSize3, 1, wxEXPAND, 5 );
 	
@@ -295,7 +295,7 @@ VectorMapPropertiesLayout::VectorMapPropertiesLayout( wxWindow* parent, wxWindow
 	m_pnlPolygon->SetSizer( bSizer17 );
 	m_pnlPolygon->Layout();
 	bSizer17->Fit( m_pnlPolygon );
-	m_symbology_Notebook->AddPage( m_pnlPolygon, wxT("Polygon"), true );
+	m_symbology_Notebook->AddPage( m_pnlPolygon, wxT("Polygon"), false );
 	
 	m_sizerSetting->Add( m_symbology_Notebook, 1, wxEXPAND | wxALL, 5 );
 	
