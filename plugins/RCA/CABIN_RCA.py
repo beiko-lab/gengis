@@ -199,17 +199,21 @@ class CABIN_RCA:
                 write.csv(rca_results,file=outfile, row.names=FALSE)
 
                 ''')
-		diversity_measures=['Richness','Shannon','Simpson','Pielou','Berger_Parker']
+
+		#the following two lists must have the same number of elements and be in the same order
+		diversity_measures_in_r_land=['Richness','Shannon','Simpson','Pielou','Berger_Parker']
+		diversity_measures_in_plugin=['O/E\nRichness','O/E\nShannon','O/E\nSimpson','O/E\nPielou','O/E\nBerger_Parker']
+
 
 		#import pdb; pdb.set_trace()
 	
 		#Save the results in a python dict
 		self.results ={}
 		site_ids=list(r("rca_results$" + 'site_ids'))
-		for metric in diversity_measures:
+		for x,metric in enumerate(diversity_measures_in_r_land):
 			raw_data=list(r("rca_results$" + metric))
 			for i,value in enumerate(raw_data):
-				self.results[(metric, site_ids[i])]=value
+				self.results[(diversity_measures_in_plugin[x], site_ids[i])]=value
 			
 		self.locs=locs
 

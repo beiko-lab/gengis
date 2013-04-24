@@ -24,7 +24,7 @@ class RCA( RCALayout ):
 			return
 		
 		#Diversity measure choices
-		metric_choices=("Richness","Shannon","Simpson","Pielou","Berger_Parker")
+		metric_choices=("O/E\nRichness","O/E\nShannon","O/E\nSimpson","O/E\nPielou","O/E\nBerger_Parker")
 		self.metrics=metric_choices
 
 		#Populate RCA Model Choices
@@ -78,9 +78,10 @@ class RCA( RCALayout ):
 		for i,value in enumerate(site_ids):
 			self.table.SetRowLabelValue(i, value)
 	
-		#Resize row labels
+		#Resize row and col labels
 		self.table.SetRowLabelSize(wx.grid.GRID_AUTOSIZE)
 		self.table.SetCellHighlightPenWidth(0)
+		self.table.SetColLabelSize(wx.grid.GRID_AUTOSIZE)
 		self.table.AutoSizeColumns()
 		self.table.Update()
 		self.table.Thaw()
