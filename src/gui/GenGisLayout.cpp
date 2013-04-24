@@ -308,7 +308,7 @@ GenGisLayout::GenGisLayout( wxWindow* parent, wxWindowID id, const wxString& tit
 	
 	m_mnuLayers = new wxMenu();
 	wxMenuItem* m_mnuLayerMap;
-	m_mnuLayerMap = new wxMenuItem( m_mnuLayers, ID_MNU_LAYER_ADD_MAP, wxString( wxT("Add &Map") ) + wxT('\t') + wxT("Ctrl+M"), wxT("Open digital elevation map"), wxITEM_NORMAL );
+	m_mnuLayerMap = new wxMenuItem( m_mnuLayers, ID_MNU_LAYER_ADD_MAP, wxString( wxT("Add &Raster Map") ) + wxT('\t') + wxT("Ctrl+M"), wxT("Open digital elevation map"), wxITEM_NORMAL );
 	#ifdef __WXMSW__
 	m_mnuLayerMap->SetBitmaps( wxBitmap( DEM_xpm ) );
 	#elif defined( __WXGTK__ )
@@ -317,7 +317,7 @@ GenGisLayout::GenGisLayout( wxWindow* parent, wxWindowID id, const wxString& tit
 	m_mnuLayers->Append( m_mnuLayerMap );
 	
 	wxMenuItem* m_mnuLayerVectorMap;
-	m_mnuLayerVectorMap = new wxMenuItem( m_mnuLayers, ID_MNU_LAYER_ADD_VECTOR_MAP, wxString( wxT("Add Vector Map") ) + wxT('\t') + wxT("Ctrl+V"), wxT("Open vector map"), wxITEM_NORMAL );
+	m_mnuLayerVectorMap = new wxMenuItem( m_mnuLayers, ID_MNU_LAYER_ADD_VECTOR_MAP, wxString( wxT("Add Vector Map") ) + wxT('\t') + wxT("Ctrl+Shift+V"), wxT("Open vector map"), wxITEM_NORMAL );
 	#ifdef __WXMSW__
 	m_mnuLayerVectorMap->SetBitmaps( wxBitmap( shapefile_xpm ) );
 	#elif defined( __WXGTK__ )
@@ -459,7 +459,7 @@ GenGisLayout::GenGisLayout( wxWindow* parent, wxWindowID id, const wxString& tit
 	
 	m_toolBar->AddSeparator(); 
 	
-	m_toolBar->AddTool( ID_TB_LAYER_OPEN_DEM, wxT("Load Map"), wxBitmap( DEM_xpm ), wxNullBitmap, wxITEM_NORMAL, wxT("Open digital map"), wxT("Open digital map"), NULL ); 
+	m_toolBar->AddTool( ID_TB_LAYER_OPEN_DEM, wxT("Load Raster Map"), wxBitmap( DEM_xpm ), wxNullBitmap, wxITEM_NORMAL, wxT("Open digital map"), wxT("Open digital map"), NULL ); 
 	
 	m_toolBar->AddTool( ID_TB_LAYER_OPEN_VECTOR, wxT("Load Vector Map"), wxBitmap( shapefile_xpm ), wxNullBitmap, wxITEM_NORMAL, wxT("Open vector map"), wxT("Open vector map"), NULL ); 
 	
