@@ -2601,6 +2601,8 @@ void GenGisFrame::OnLayerRemove( wxCommandEvent& event )
 
 	if(selectedLayer->GetType() == Layer::MAP && !App::Inst().GetLayerTreeController()->GetIsBlankRaster() && App::Inst().GetLayerTreeController()->GetNumVectorMapLayers() >0 )
 		answer = wxMessageBox( wxT( "(Warning) By removing the raster file all other layers will be removed. Are you sure you want to remove this layer?" ), wxT( "Remove layer" ), wxYES_NO | wxCANCEL );
+	else if(selectedLayer->GetType() == Layer::VECTOR_MAP && App::Inst().GetLayerTreeController()->GetNumVectorMapLayers()==1 && App::Inst().GetLayerTreeController()->GetNumLocationSetLayers()>0  )
+		answer = wxMessageBox( wxT( "(Warning) By removing the vector file all other layers will be removed. Are you sure you want to remove this layer?" ), wxT( "Remove layer" ), wxYES_NO | wxCANCEL );
 	else
 		answer = wxMessageBox( wxT( "Are you sure you want to remove this layer?" ), wxT( "Remove layer" ), wxYES_NO | wxCANCEL );
 
