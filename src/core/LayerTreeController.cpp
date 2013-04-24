@@ -296,7 +296,7 @@ bool LayerTreeController::AddMapLayer(MapLayerPtr map)
 		//if(display){
 			// add map to tree control
 			LayerTreeItem* layerItem = new LayerTreeItem(map);
-			wxString idStr(std::wstring(_T("Map : ") + map->GetName()).c_str());
+			wxString idStr(std::wstring(_T("Raster Map : ") + map->GetName()).c_str());
 			wxTreeItemId newId = m_treeView->GetTreeCtrl()->AppendItem(selectionId, wxT(""), 
 				map->IsActive(), -1, layerItem);
 			m_treeView->GetTreeCtrl()->SetItemText(newId, idStr);
@@ -850,6 +850,19 @@ bool LayerTreeController::EraseVectorMap(uint layerId)
 }
 
 
+bool LayerTreeController::EraseVectorMapFromArray(uint layerId)
+{
+	for(uint i = 0; i < m_vectorMaps.size(); ++i)
+	{
+		if(m_vectorMaps.at(i)->GetId() == layerId)
+		{
+			m_vectorMaps.erase(m_vectorMaps.begin()+i);
+		}
+		return true;
+	}
+	return false;
+	
+}
 
 
 void LayerTreeController::EraseTrees(MapLayerPtr mapLayer)
