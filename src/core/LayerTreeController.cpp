@@ -850,21 +850,6 @@ bool LayerTreeController::EraseVectorMap(uint layerId)
 }
 
 
-bool LayerTreeController::EraseVectorMapFromArray(uint layerId)
-{
-	for(uint i = 0; i < m_vectorMaps.size(); ++i)
-	{
-		if(m_vectorMaps.at(i)->GetId() == layerId)
-		{
-			m_vectorMaps.erase(m_vectorMaps.begin()+i);
-		}
-		return true;
-	}
-	return false;
-	
-}
-
-
 void LayerTreeController::EraseTrees(MapLayerPtr mapLayer)
 {
 	for(uint i = 0; i < mapLayer->GetNumTreeLayers(); ++i)
