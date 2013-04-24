@@ -191,7 +191,7 @@ namespace GenGIS
 		
 		public:
 			
-			GenGisLayout( wxWindow* parent, wxWindowID id = ID_MAIN_FRAME, const wxString& title = wxT("GenGIS"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 1096,653 ), long style = wxDEFAULT_FRAME_STYLE|wxCLIP_CHILDREN|wxTAB_TRAVERSAL );
+			GenGisLayout( wxWindow* parent, wxWindowID id = ID_MAIN_FRAME, const wxString& title = wxT("GenGIS"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 1120,653 ), long style = wxDEFAULT_FRAME_STYLE|wxCLIP_CHILDREN|wxTAB_TRAVERSAL );
 			
 			~GenGisLayout();
 			

@@ -69,7 +69,7 @@
             <property name="resize">Resizable</property>
             <property name="row"></property>
             <property name="show">1</property>
-            <property name="size">1096,653</property>
+            <property name="size">1120,653</property>
             <property name="style">wxDEFAULT_FRAME_STYLE</property>
             <property name="subclass"></property>
             <property name="title">GenGIS</property>
@@ -1982,7 +1982,7 @@
                         <property name="help">Open digital elevation map</property>
                         <property name="id">ID_MNU_LAYER_ADD_MAP</property>
                         <property name="kind">wxITEM_NORMAL</property>
-                        <property name="label">Add &amp;Map</property>
+                        <property name="label">Add &amp;Raster Map</property>
                         <property name="name">m_mnuLayerMap</property>
                         <property name="permission">none</property>
                         <property name="shortcut">Ctrl+M</property>
@@ -2000,7 +2000,7 @@
                         <property name="label">Add Vector Map</property>
                         <property name="name">m_mnuLayerVectorMap</property>
                         <property name="permission">none</property>
-                        <property name="shortcut">Ctrl+V</property>
+                        <property name="shortcut">Ctrl+Shift+V</property>
                         <property name="unchecked_bitmap"></property>
                         <event name="OnMenuSelection">OnLayerOpenVectorMap</event>
                         <event name="OnUpdateUI"></event>
@@ -2399,7 +2399,7 @@
                     <property name="context_menu">0</property>
                     <property name="id">ID_TB_LAYER_OPEN_DEM</property>
                     <property name="kind">wxITEM_NORMAL</property>
-                    <property name="label">Load Map</property>
+                    <property name="label">Load Raster Map</property>
                     <property name="name">m_tbLayerOpenMap</property>
                     <property name="permission">protected</property>
                     <property name="statusbar">Open digital map</property>
