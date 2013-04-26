@@ -113,8 +113,8 @@ VisualMarker::MARKER_SHAPE ShapeMap::ToShape(std::wstring str)
 		return VisualMarker::STAR;
 	else if(str == _T("Plus sign"))
 		return VisualMarker::PLUS_SIGN;
-	else if(str == _T("Hexagon"))
-		return VisualMarker::HEXAGON;
+	else if(str == _T("octagon"))
+		return VisualMarker::OCTAGON;
 	else if(str == _T("Diamond"))
 		return VisualMarker::DIAMOND;
 	else if(str == _T("Inverted triangle"))
@@ -136,8 +136,8 @@ std::wstring ShapeMap::ToStringW(VisualMarker::MARKER_SHAPE shape)
 		return _T("Star");
 	else if(shape == VisualMarker::PLUS_SIGN)
 		return _T("Plus sign");
-	else if(shape == VisualMarker::HEXAGON)
-		return _T("Hexagon");
+	else if(shape == VisualMarker::OCTAGON)
+		return _T("octagon");
 	else if(shape == VisualMarker::DIAMOND)
 		return _T("Diamond");
 	else if(shape == VisualMarker::INVERTED_TRIANGLE)

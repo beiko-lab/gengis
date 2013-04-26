@@ -94,7 +94,7 @@ LocationPropertiesLayout::LocationPropertiesLayout( wxWindow* parent, wxWindowID
 	m_cboSymbolShape->Append( wxT("Triangle") );
 	m_cboSymbolShape->Append( wxT("Star") );
 	m_cboSymbolShape->Append( wxT("Plus sign") );
-	m_cboSymbolShape->Append( wxT("Hexagon") );
+	m_cboSymbolShape->Append( wxT("octagon") );
 	m_cboSymbolShape->Append( wxT("Diamond") );
 	m_cboSymbolShape->Append( wxT("Inverted triangle") );
 	m_sizerSymbolShape->Add( m_cboSymbolShape, 0, wxALL|wxEXPAND, 5 );

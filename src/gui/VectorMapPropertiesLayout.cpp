@@ -99,7 +99,7 @@ VectorMapPropertiesLayout::VectorMapPropertiesLayout( wxWindow* parent, wxWindow
 	m_CboPointShape->Append( wxT("Triangle") );
 	m_CboPointShape->Append( wxT("Star") );
 	m_CboPointShape->Append( wxT("Plus sign") );
-	m_CboPointShape->Append( wxT("Hexagon") );
+	m_CboPointShape->Append( wxT("octagon") );
 	m_CboPointShape->Append( wxT("Diamond") );
 	m_CboPointShape->Append( wxT("Inverted triangle") );
 	m_sizerColour11->Add( m_CboPointShape, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );

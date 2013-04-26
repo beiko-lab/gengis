@@ -98,8 +98,8 @@ void LocationPropertiesDlg::InitSymbology()
 		m_cboSymbolShape->SetValue(_T("Star"));
 	else if(shape == VisualMarker::PLUS_SIGN)
 		m_cboSymbolShape->SetValue(_T("Plus sign"));
-	else if(shape == VisualMarker::HEXAGON)
-		m_cboSymbolShape->SetValue(_T("Hexagon"));
+	else if(shape == VisualMarker::OCTAGON)
+		m_cboSymbolShape->SetValue(_T("octagon"));
 	else if(shape == VisualMarker::DIAMOND)
 		m_cboSymbolShape->SetValue(_T("Diamond"));
 	else if(shape == VisualMarker::INVERTED_TRIANGLE)
@@ -177,8 +177,8 @@ void LocationPropertiesDlg::ApplySymbology()
 		shape = VisualMarker::STAR;
 	else if(m_cboSymbolShape->GetValue() == _T("Plus sign"))
 		shape = VisualMarker::PLUS_SIGN;
-	else if(m_cboSymbolShape->GetValue() == _T("Hexagon"))
-		shape = VisualMarker::HEXAGON;
+	else if(m_cboSymbolShape->GetValue() == _T("octagon"))
+		shape = VisualMarker::OCTAGON;
 	else if(m_cboSymbolShape->GetValue() == _T("Diamond"))
 		shape = VisualMarker::DIAMOND;
 	else if(m_cboSymbolShape->GetValue() == _T("Inverted triangle"))

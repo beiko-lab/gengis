@@ -34,7 +34,7 @@ namespace GenGIS
 	{
 	public:
 		/** Different shapes of visual markers. */
-		enum MARKER_SHAPE { CIRCLE, SQUARE, TRIANGLE, STAR, PLUS_SIGN, HEXAGON, DIAMOND, INVERTED_TRIANGLE };
+		enum MARKER_SHAPE { CIRCLE, SQUARE, TRIANGLE, STAR, PLUS_SIGN, OCTAGON, DIAMOND, INVERTED_TRIANGLE };
 
 		/** Different methods for drawing a marker. */
 		enum MARKER_RENDERING_STYLE { DECAL, ALWAYS_VISIBLE, MARKER_3D, SCREEN_POS };

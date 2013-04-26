@@ -739,7 +739,7 @@
                                                         <property name="proportion">0</property>
                                                         <object class="wxComboBox" expanded="1">
                                                             <property name="bg"></property>
-                                                            <property name="choices">&quot;Circle&quot; &quot;Square&quot; &quot;Triangle&quot; &quot;Star&quot; &quot;Plus sign&quot; &quot;Hexagon&quot; &quot;Diamond&quot; &quot;Inverted triangle&quot;</property>
+                                                            <property name="choices">&quot;Circle&quot; &quot;Square&quot; &quot;Triangle&quot; &quot;Star&quot; &quot;Plus sign&quot; &quot;Octagon&quot; &quot;Diamond&quot; &quot;Inverted triangle&quot;</property>
                                                             <property name="context_help"></property>
                                                             <property name="context_menu">1</property>
                                                             <property name="enabled">1</property>
