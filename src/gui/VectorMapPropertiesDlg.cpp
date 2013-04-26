@@ -114,8 +114,8 @@ void VectorMapPropertiesDlg::InitPointSymbology()
 		m_CboPointShape->SetValue(_T("Star"));
 	else if(pointShape == VisualMarker::PLUS_SIGN)
 		m_CboPointShape->SetValue(_T("Plus sign"));
-	else if(pointShape == VisualMarker::HEXAGON)
-		m_CboPointShape->SetValue(_T("Hexagon"));
+	else if(pointShape == VisualMarker::OCTAGON)
+		m_CboPointShape->SetValue(_T("octagon"));
 	else if(pointShape== VisualMarker::DIAMOND)
 		m_CboPointShape->SetValue(_T("Diamond"));
 	else if(pointShape == VisualMarker::INVERTED_TRIANGLE)
@@ -319,8 +319,8 @@ void VectorMapPropertiesDlg::ApplyPointSymbology()
 		pShape = VisualMarker::STAR;
 	else if(m_CboPointShape->GetValue() == _T("Plus sign"))
 		pShape = VisualMarker::PLUS_SIGN;
-	else if(m_CboPointShape->GetValue() == _T("Hexagon"))
-		pShape = VisualMarker::HEXAGON;
+	else if(m_CboPointShape->GetValue() == _T("octagon"))
+		pShape = VisualMarker::OCTAGON;
 	else if(m_CboPointShape->GetValue() == _T("Diamond"))
 		pShape = VisualMarker::DIAMOND;
 	else if(m_CboPointShape->GetValue() == _T("Inverted triangle"))

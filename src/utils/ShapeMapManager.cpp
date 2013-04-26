@@ -68,7 +68,7 @@ ShapeMapPtr ShapeMapManager::BuildStandardShapeMap()
 	shapeMap->AddShape(VisualMarker::DIAMOND);
 	shapeMap->AddShape(VisualMarker::INVERTED_TRIANGLE);
 	shapeMap->AddShape(VisualMarker::PLUS_SIGN);
-	shapeMap->AddShape(VisualMarker::HEXAGON);
+	shapeMap->AddShape(VisualMarker::OCTAGON);
 	shapeMap->AddShape(VisualMarker::STAR);
 	
 	return shapeMap;

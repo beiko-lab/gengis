@@ -344,7 +344,7 @@ void VisualMarker::RenderMarker(float size, const Colour& colour, MARKER_SHAPE s
 			glVertex3f( -size, size/3, 0.0f );
 		glEnd();
 	}
-	else if(shape == HEXAGON)
+	else if(shape == OCTAGON)
 	{
 		glBegin(GL_QUADS);
 			glVertex3f( -size/2, -size, 0.0f );
