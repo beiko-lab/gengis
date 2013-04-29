@@ -69,7 +69,7 @@ class RCA( RCALayout ):
 
 		#get site ids
 		locs = GenGIS.layerTree.GetLocationSetLayer(0).GetAllActiveLocationLayers()
-		site_ids=[loc.GetName() for loc in locs]	
+		site_ids=[loc.GetName() for loc in locs if loc.GetNumSequenceLayers() > 0]	
 			
 	        #Create row labels
 
@@ -148,25 +148,26 @@ class RCA( RCALayout ):
 		if not hasattr(self,'rca'):
 			wx.MessageBox("Please 'Run' this plugin before attempting to add results!")
 			return
+	
+		#get list of all locations
+		locs=GenGIS.layerTree.GetLocationSetLayer(0).GetAllLocationLayers()
 		
-		if len(self.selectedCols) ==0:
-			wx.MessageBox("Select one or more columns to add!")
-			return
-		
-		for selectedCol in self.selectedCols:
-			#get name of selected metric
-			metric=self.table.GetColLabelValue(selectedCol)
-			metric_name='RCA_'+metric
-			data=[]
-			for locLayer in GenGIS.layerTree.GetLocationSetLayer(0).GetAllActiveLocationLayers():
-				site_id = locLayer.GetName()
-				data.append(str(self.rca.results[metric,site_id]))
-		
-			GenGIS.layerTree.GetLocationSetLayer(0).GetController().AddMetadata(metric_name, data)
+		#get name of selected metric (assume only 1 column selected)
+	       	metric=self.table.GetColLabelValue(self.selectedCols[0])
 			
-			message='Selected results added to location metadata table as "' + metric_name + '".'
-			print '\n'+message+'\n\n'
-			wx.MessageBox(message) 
+
+		#import pdb; pdb.set_trace()
+	
+	       	for loc in locs:
+			data=''
+			if (metric,loc.GetName()) in self.rca.results:
+				data = str(self.rca.results[metric,loc.GetName()])
+
+			loc.GetController().AddData(metric,data)
+			
+	       	message='Selected results added to location metadata table as "' + metric + '".'
+	       	print '\n'+message+'\n\n'
+	       	wx.MessageBox(message) 
 
 
 	def onSaveFile( self, event ):
