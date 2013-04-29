@@ -65,9 +65,11 @@ class CABIN_RCA:
 	def Run_RCA(self,rca_model = 'atlantic_rca_model'):
 		'''Runs test data against the given RCA model'''
 
+		
 		### Get the layer data ###
 		locs = GenGIS.layerTree.GetLocationSetLayer(0).GetAllActiveLocationLayers()
-		
+		#only use locs with sequence data
+		locs=[loc for loc in locs if loc.GetNumSequenceLayers() > 0]
 		
 		
 		#################################### ENVIRONMENTAL DATA #####################################
