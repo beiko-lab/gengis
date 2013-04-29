@@ -233,7 +233,10 @@ class CABIN_RCA:
                 measures,site_ids=zip(*tuples)
                 measures=list(set(measures))
                 site_ids=list(set(site_ids))
-                header=['site_ids']+measures
+
+		#remove new lines from measures for better csv formatting
+		measures_without_newlines=[measure.replace("\n"," ") for measure in measures]
+                header=['site_ids']+measures_without_newlines
        
 
                 #write header                                                                                                                                           
@@ -241,7 +244,7 @@ class CABIN_RCA:
 
                 #write data                                                                                                                                             
                 for site in site_ids:
-                        row = [site]+[self.results[metric,site] for metric in measures]
+                        row = ['"'+site+'"']+[self.results[metric,site] for metric in measures]
                         f.write(",".join(map(str,row))+"\n")
 
                 f.close()
