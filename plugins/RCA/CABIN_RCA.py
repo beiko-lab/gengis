@@ -197,8 +197,8 @@ class CABIN_RCA:
                 rca_results<-run_test_rca(test_HAB_FRAME,test_SP_FRAME,model)
                 
                 #output results to file
-		outfile <- paste(hDir,"OE_test_GG.csv",sep="")
-                write.csv(rca_results,file=outfile, row.names=FALSE)
+		#outfile <- paste(hDir,"OE_test_GG.csv",sep="")
+                #write.csv(rca_results,file=outfile, row.names=FALSE)
 
                 ''')
 
