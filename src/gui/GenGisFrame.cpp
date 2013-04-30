@@ -2255,7 +2255,7 @@ void GenGisFrame::OnLayoutObjectSettingsDlg( wxCommandEvent& event )
 
 void GenGisFrame::OnHelpManual( wxCommandEvent& event )
 {
-	wxLaunchDefaultBrowser( wxT( "http://kiwi.cs.dal.ca/GenGIS/The_GenGIS_2.0_Manual" ));
+	wxLaunchDefaultBrowser( wxT( "http://kiwi.cs.dal.ca/GenGIS/The_GenGIS_2.1_Manual" ));
 }
 
 void GenGisFrame::OnHelpAbout( wxCommandEvent& event )
