@@ -32,7 +32,7 @@ template<class Archive>
 void VectorMapModel::serialize(Archive & ar, const unsigned int file_version)
 {
 	ar & m_Vector_Boundary;               
-	ar & vector_height;            
+	ar & vector_Aspect;            
 	ar & m_vectorMetaData; 
 	ar & m_bActive; 
 	//ar & m_geoVector;
