@@ -486,7 +486,7 @@ bool PluginManager::TransferDllFilesR()
 		wxT("\n\nAll *.dll files from:\n\t\"") + wxString( copySource ) +
 		wxT("\"\nwill be copied to:\n\t\"") + wxString( copyDestination ) +
 		wxT("\"\n\nFor more information please see:")
-		wxT("\nhttp://kiwi.cs.dal.ca/GenGIS/The_GenGIS_2.0_Manual#R_and_GenGIS")
+		wxT("\nhttp://kiwi.cs.dal.ca/GenGIS/The_GenGIS_2.1_Manual#R_and_GenGIS")
 		wxT("\n\nWould you like GenGIS to configure R?"),
 		wxT("R Configuration Required (Please Read)"), wxYES_NO );
 

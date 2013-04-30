@@ -99,7 +99,7 @@ namespace GenGIS
 
 		void OnHelp( wxCommandEvent& event )
 		{
-			wxLaunchDefaultBrowser( wxT( "http://kiwi.cs.dal.ca/GenGIS/The_GenGIS_2.0_Manual#Map_Layer_Properties" ));
+			wxLaunchDefaultBrowser( wxT( "http://kiwi.cs.dal.ca/GenGIS/The_GenGIS_2.1_Manual#Vector_Map_Layer_Properties" ));
 		}
 
 	protected:
