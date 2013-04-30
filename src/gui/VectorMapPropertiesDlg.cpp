@@ -115,7 +115,7 @@ void VectorMapPropertiesDlg::InitPointSymbology()
 	else if(pointShape == VisualMarker::PLUS_SIGN)
 		m_CboPointShape->SetValue(_T("Plus sign"));
 	else if(pointShape == VisualMarker::OCTAGON)
-		m_CboPointShape->SetValue(_T("octagon"));
+		m_CboPointShape->SetValue(_T("Octagon"));
 	else if(pointShape== VisualMarker::DIAMOND)
 		m_CboPointShape->SetValue(_T("Diamond"));
 	else if(pointShape == VisualMarker::INVERTED_TRIANGLE)
@@ -254,10 +254,12 @@ void VectorMapPropertiesDlg::Apply(){
 	ApplyPointSymbology();
 	ApplyPolyLineSymbology();	
 
-	VectorMapViewPtr vectorMapView = m_vectorMapLayer->GetVectorMapController()->GetVectorMapView();
-	double polygonThickness= StringTools::ToDouble(m_TxtCtrlPolygonThickness->GetValue().c_str());
+	//VectorMapViewPtr vectorMapView = m_vectorMapLayer->GetVectorMapController()->GetVectorMapView();
+	//double polygonThickness= StringTools::ToDouble(m_TxtCtrlPolygonThickness->GetValue().c_str());
+	/*
 	if((float)vectorMapView->GetPolygonBorderSize()!= (float)polygonThickness)
 	{
+		
 		if( polygonThickness < vectorMapView->GetPolygonMinWidthSize() || polygonThickness > vectorMapView->GetPolygonMaxWidthSize() )
 		{
 			int answer = wxMessageBox( wxT( "Thicknesses less than 1 and greater than 10 take longer time to be rendered. Would you still like to proceed?"),
@@ -270,7 +272,8 @@ void VectorMapPropertiesDlg::Apply(){
 	}
 	else
 		ApplyPolygonSymbology();
-
+		*/
+	ApplyPolygonSymbology();
 	App::Inst().SetSaveStatus( SESSION_NOT_SAVED );	
 	App::Inst().GetLayerTreeController()->SetName(m_vectorMapLayer, m_vectorMapLayer->GetName());
 	App::Inst().GetViewport()->Refresh( false );
@@ -319,7 +322,7 @@ void VectorMapPropertiesDlg::ApplyPointSymbology()
 		pShape = VisualMarker::STAR;
 	else if(m_CboPointShape->GetValue() == _T("Plus sign"))
 		pShape = VisualMarker::PLUS_SIGN;
-	else if(m_CboPointShape->GetValue() == _T("octagon"))
+	else if(m_CboPointShape->GetValue() == _T("Octagon"))
 		pShape = VisualMarker::OCTAGON;
 	else if(m_CboPointShape->GetValue() == _T("Diamond"))
 		pShape = VisualMarker::DIAMOND;

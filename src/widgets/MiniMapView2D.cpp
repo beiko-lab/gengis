@@ -263,8 +263,8 @@ void MiniMapView2D::Render()
 									{
 										Colour colour = m_vectorMapController->GetVectorMapView()->GetPolygonBorderColour();
 										glColor3f(colour.GetRed(), colour.GetGreen(), colour.GetBlue());
-										//glLineWidth(0.5f);
-										glLineWidth(m_vectorMapController->GetVectorMapView()->GetPolygonBorderSize());
+										glLineWidth(1.0f);
+										//glLineWidth(m_vectorMapController->GetVectorMapView()->GetPolygonBorderSize());
 										//glBegin( GL_LINE_LOOP  );
 										glBegin( GL_LINE_STRIP );
 									}

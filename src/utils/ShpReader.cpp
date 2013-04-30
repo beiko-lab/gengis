@@ -736,7 +736,7 @@ bool ShpReader::SetupVectorScaling(VectorMapModelPtr vectorMapModel, ProgressDlg
 	double scaledextent_maxX= -1.0f + 2*((vectorMapModel->GetVectorBoundary_MaxX() - minX) / fabs(maxX-minX));
 	double scaledextent_maxY = (1.0f + -2*((vectorMapModel->GetVectorBoundary_MaxY() - minY) / fabs(maxY-minY)))*aspect;
 
-	vectorMapModel->SetHeight(height);
+	vectorMapModel->SetAspect(aspect);
 	vectorMapModel->SetVectorBoundary_ScaledMinX(scaledextent_minX);
 	vectorMapModel->SetVectorBoundary_ScaledMinY(scaledextent_minY);
 	vectorMapModel->SetVectorBoundary_ScaledMaxX(scaledextent_maxX);

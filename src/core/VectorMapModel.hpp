@@ -283,12 +283,12 @@ namespace GenGIS
 		OGRSpatialReference* getSpatialReference(){
 			return currentSRS;
 		}
-		void SetHeight(double height){
-			vector_height=height;
+		void SetAspect(double aspect){
+			vector_Aspect=aspect;
 		}
-		double GetHeight()
+		double GetAspect()
 		{
-			return vector_height; 
+			return vector_Aspect; 
 		}
 		vFileMetaData* GetVectorMetaData() { return &m_vectorMetaData; }
 
@@ -305,7 +305,7 @@ namespace GenGIS
 	protected:
 		Vector_Boundary m_Vector_Boundary;
 		OGRSpatialReference* currentSRS;
-		double vector_height;
+		double vector_Aspect;
 		vFileMetaData m_vectorMetaData;
 
 	};

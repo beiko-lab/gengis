@@ -53,6 +53,14 @@ namespace GenGIS
 		/** Render terrain. */
 		void Render();
 		void Render(bool bSimplified);
+		void RenderLineWithBorder(const Line3D& line, const Colour& colour, float thickness, 
+		VisualLine::LINE_STYLE style, const Colour& borderColour, float borderThickness);
+
+		void RenderLineWithBorder(const Point3D& start, const Point3D& end, const Point3D& startToEnd, const Point3D& normalToLine,
+													const Colour& colour, float thickness, const Colour& borderColour, float borderThickness);
+		void RenderAntialiasedLine(const Point3D& start, const Point3D& end, const Colour& colour, 
+										  float thickness, VisualLine::LINE_STYLE style);
+
 
 		Colour GetPointColour() const
 		{
@@ -208,6 +216,9 @@ namespace GenGIS
 		{
 			m_polygonBorderStyle = style;
 		}
+
+
+
 		
 
 
