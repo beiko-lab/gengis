@@ -73,6 +73,7 @@ namespace GenGIS
 				ID_MNU_VIEW_DEFAULT,
 				ID_MNU_VIEW_TOP,
 				ID_MNU_VIEW_TOOLBARTEXT,
+				ID_MNU_FULL_SCREEN,
 				ID_MNU_LAYER_ADD_MAP,
 				ID_MNU_LAYER_ADD_VECTOR_MAP,
 				ID_MNU_LAYER_ADD_LOCATIONS,
@@ -165,6 +166,7 @@ namespace GenGIS
 			virtual void OnViewReset( wxCommandEvent& event ) { event.Skip(); }
 			virtual void OnViewTop( wxCommandEvent& event ) { event.Skip(); }
 			virtual void OnViewShowToolbarText( wxCommandEvent& event ) { event.Skip(); }
+			virtual void OnViewFullScreen( wxCommandEvent& event ) { event.Skip(); }
 			virtual void OnLayerOpenMap( wxCommandEvent& event ) { event.Skip(); }
 			virtual void OnLayerOpenVectorMap( wxCommandEvent& event ) { event.Skip(); }
 			virtual void OnLayerOpenLocations( wxCommandEvent& event ) { event.Skip(); }

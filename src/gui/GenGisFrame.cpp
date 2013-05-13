@@ -154,7 +154,8 @@ const int ID_MNU_FILE_RECENT_SESSION_7                      = 8007;
 const int ID_MNU_FILE_RECENT_SESSION_8                      = 8008;
 const int ID_MNU_FILE_RECENT_SESSION_9                      = 8009;
 
-GenGisFrame::GenGisFrame(wxWindow* parent): GenGisLayout(parent), m_toolbarTextStatus( true ), m_showWelcomeDialog( true )
+GenGisFrame::GenGisFrame(wxWindow* parent): GenGisLayout(parent), m_toolbarTextStatus( true ),m_toolbarFullScreenStatus(false),
+m_viewCompassStatus(true), m_viewMinimapStatus(true), m_viewNavStatus(true), m_showWelcomeDialog( true )
 {
 	Log::Inst().SetConsole(m_console);
 
@@ -2078,6 +2079,17 @@ void GenGisFrame::OnViewShowToolbarText( wxCommandEvent& event )
 
 	// Make the frame "resize" itself to the current size, to force a Fit() call to all sizers using the current size.
 	this->SetSize(wxDefaultCoord, wxDefaultCoord, wxDefaultCoord, wxDefaultCoord, wxSIZE_USE_EXISTING);
+	if( m_toolbarTextStatus)
+	{
+		m_mnuView->Check(ID_MNU_FULL_SCREEN, false);
+		m_toolbarFullScreenStatus=false;
+	}
+	else if(!m_splitterHorizontal->IsSplit() && !m_splitterVertical->IsSplit() && !m_viewNavStatus && !m_viewMinimapStatus && !m_viewCompassStatus)
+	{
+		m_toolbarFullScreenStatus=true;
+		m_mnuView->Check(ID_MNU_FULL_SCREEN, true);
+		
+	}
 	App::Inst().GetViewport()->Refresh(false);
 }
 
@@ -2088,8 +2100,13 @@ void GenGisFrame::SetToolbarTextStatus( bool newStatus )
 	if (!m_toolbarTextStatus)
 	{
 		m_toolBar->ToggleWindowStyle( wxTB_TEXT );
-		m_menubar->Check( ID_MNU_VIEW_TOOLBARTEXT, false );
+		m_menubar->Check( ID_MNU_VIEW_TOOLBARTEXT, false );		
 		this->UpdateWindowUI();
+	}
+	else
+	{
+		m_mnuView->Check(ID_MNU_FULL_SCREEN, false);
+		m_toolbarFullScreenStatus=false;
 	}
 }
 
@@ -2125,6 +2142,11 @@ void GenGisFrame::SetSidePanelVisibility(bool bVisible)
 		m_splitterVertical->Unsplit(m_pnlSidebar);
 		m_verSplitterPos = m_splitterVertical->GetSashPosition();
 		m_mnuView->Check(ID_MNU_VIEW_SIDE_PANEL, false);
+		if(!m_splitterHorizontal->IsSplit() && !m_toolbarTextStatus && !m_viewNavStatus && !m_viewMinimapStatus && !m_viewCompassStatus)
+		{
+			m_toolbarFullScreenStatus=true;
+			m_mnuView->Check(ID_MNU_FULL_SCREEN, true);
+		}
 	}
 	else if(bVisible && !m_splitterVertical->IsSplit())
 	{
@@ -2132,8 +2154,92 @@ void GenGisFrame::SetSidePanelVisibility(bool bVisible)
 		// so just set the side panel to a default size
 		m_splitterVertical->SplitVertically(m_pnlSidebar, m_pnlViewport, 200);	//m_verSplitterPos);
 		m_mnuView->Check(ID_MNU_VIEW_SIDE_PANEL, true);
+		m_toolbarFullScreenStatus=false;
 	}
 }
+
+
+void GenGisFrame::OnViewFullScreen(wxCommandEvent& event)
+{
+	if (!m_toolbarFullScreenStatus)
+	{
+		if(m_toolbarTextStatus)
+		{
+			m_toolBar->ToggleWindowStyle( wxTB_TEXT );
+			m_toolbarTextStatus = false;
+			m_mnuView->Check(ID_MNU_VIEW_TOOLBARTEXT, false);
+			//App::Inst().SaveUserPreferences();		
+			// Make the frame "resize" itself to the current size, to force a Fit() call to all sizers using the current size.
+			this->SetSize(wxDefaultCoord, wxDefaultCoord, wxDefaultCoord, wxDefaultCoord, wxSIZE_USE_EXISTING);
+		}	
+	
+		if(m_splitterHorizontal->IsSplit()) 
+		{
+			m_splitterHorizontal->Unsplit(m_pnlBottom);
+			m_horSplitterPos = m_splitterHorizontal->GetSashPosition();
+			m_mnuView->Check(ID_MNU_VIEW_CONSOLE, false);
+		}
+
+		if(m_splitterVertical->IsSplit()) 
+		{		
+			m_splitterVertical->Unsplit(m_pnlSidebar);
+			m_verSplitterPos = m_splitterVertical->GetSashPosition();
+			m_mnuView->Check(ID_MNU_VIEW_SIDE_PANEL, false);
+		}
+			
+		if(m_viewCompassStatus)
+		{
+			m_widgetController->SetCompassVisibility(false);
+			m_viewCompassStatus=false;
+			m_menubar->FindItem(ID_MNU_VIEW_COMPASS)->Check(false);
+		}
+		if(m_viewMinimapStatus)
+		{
+			m_widgetController->SetMiniMapVisibility(false);
+			m_viewMinimapStatus=false;
+			m_menubar->FindItem(ID_MNU_VIEW_MINIMAP)->Check(false);
+			
+		}
+		if(m_viewNavStatus)
+		{
+			m_widgetController->SetNavVisibility(false);
+			m_viewNavStatus=false;
+			m_menubar->FindItem(ID_MNU_VIEW_NAV)->Check(false);
+		}
+		m_toolbarFullScreenStatus=true;
+		m_mnuView->Check(ID_MNU_FULL_SCREEN, true);
+		
+	}
+	else
+	{
+		m_toolBar->ToggleWindowStyle( wxTB_TEXT );
+		m_toolbarTextStatus = true;
+		m_mnuView->Check(ID_MNU_VIEW_TOOLBARTEXT, true);
+		//App::Inst().SaveUserPreferences();
+		m_splitterVertical->SplitVertically(m_pnlSidebar, m_pnlViewport, 200);	//m_verSplitterPos);
+		m_mnuView->Check(ID_MNU_VIEW_SIDE_PANEL, true);
+		m_splitterHorizontal->SplitHorizontally(m_pnlTop, m_pnlBottom, App::Inst().GetViewport()->GetCamera()->GetHeight() - 200); //m_horSplitterPos);
+		m_mnuView->Check(ID_MNU_VIEW_CONSOLE, true);
+		m_mnuView->Check(ID_MNU_FULL_SCREEN, false);
+		m_toolbarFullScreenStatus=false;
+		// Make the frame "resize" itself to the current size, to force a Fit() call to all sizers using the current size.
+		this->SetSize(wxDefaultCoord, wxDefaultCoord, wxDefaultCoord, wxDefaultCoord, wxSIZE_USE_EXISTING);	
+
+		m_widgetController->SetCompassVisibility(true);
+		m_widgetController->SetMiniMapVisibility(true);	
+		m_widgetController->SetNavVisibility(true);
+		m_menubar->FindItem(ID_MNU_VIEW_COMPASS)->Check(true);
+		m_menubar->FindItem(ID_MNU_VIEW_MINIMAP)->Check(true);
+		m_menubar->FindItem(ID_MNU_VIEW_NAV)->Check(true);
+
+		m_viewCompassStatus=true;
+		m_viewNavStatus=true;
+		m_viewMinimapStatus=true;
+	}
+		
+	App::Inst().GetViewport()->Refresh(true);
+}
+
 
 void GenGisFrame::OnViewSidePanel( wxCommandEvent& event )
 {
@@ -2142,6 +2248,11 @@ void GenGisFrame::OnViewSidePanel( wxCommandEvent& event )
 		m_splitterVertical->Unsplit(m_pnlSidebar);
 		m_verSplitterPos = m_splitterVertical->GetSashPosition();
 		m_mnuView->Check(ID_MNU_VIEW_SIDE_PANEL, false);
+		if(!m_splitterHorizontal->IsSplit() && !m_toolbarTextStatus && !m_viewNavStatus && !m_viewMinimapStatus && !m_viewCompassStatus)
+		{
+			m_toolbarFullScreenStatus=true;
+			m_mnuView->Check(ID_MNU_FULL_SCREEN, true);
+		}
 	}
 	else
 	{
@@ -2149,7 +2260,10 @@ void GenGisFrame::OnViewSidePanel( wxCommandEvent& event )
 		// so just set the side panel to a default size
 		m_splitterVertical->SplitVertically(m_pnlSidebar, m_pnlViewport, 200);	//m_verSplitterPos);
 		m_mnuView->Check(ID_MNU_VIEW_SIDE_PANEL, true);
+		m_mnuView->Check(ID_MNU_FULL_SCREEN, false);
+		m_toolbarFullScreenStatus=false;
 	}
+
 }
 
 void GenGisFrame::SetConsoleVisibility(bool bVisible)
@@ -2159,6 +2273,11 @@ void GenGisFrame::SetConsoleVisibility(bool bVisible)
 		m_splitterHorizontal->Unsplit(m_pnlBottom);
 		m_horSplitterPos = m_splitterHorizontal->GetSashPosition();
 		m_mnuView->Check(ID_MNU_VIEW_CONSOLE, false);
+		if(!m_splitterVertical->IsSplit() && !m_toolbarTextStatus && !m_viewNavStatus && !m_viewMinimapStatus && !m_viewCompassStatus)
+		{
+			m_toolbarFullScreenStatus=true;
+			m_mnuView->Check(ID_MNU_FULL_SCREEN, true);
+		}
 	}
 	else if(bVisible && !m_splitterHorizontal->IsSplit())
 	{
@@ -2166,6 +2285,7 @@ void GenGisFrame::SetConsoleVisibility(bool bVisible)
 		// so just set the console to a default size
 		m_splitterHorizontal->SplitHorizontally(m_pnlTop, m_pnlBottom, App::Inst().GetViewport()->GetCamera()->GetHeight() - 200); //m_horSplitterPos);
 		m_mnuView->Check(ID_MNU_VIEW_CONSOLE, true);
+		m_toolbarFullScreenStatus=false;
 	}
 }
 
@@ -2176,29 +2296,71 @@ void GenGisFrame::OnViewConsole(wxCommandEvent& event)
 		m_splitterHorizontal->Unsplit(m_pnlBottom);
 		m_horSplitterPos = m_splitterHorizontal->GetSashPosition();
 		m_mnuView->Check(ID_MNU_VIEW_CONSOLE, false);
-	}
+		if(!m_splitterVertical->IsSplit() && !m_toolbarTextStatus && !m_viewNavStatus && !m_viewMinimapStatus && !m_viewCompassStatus)
+		{
+			m_toolbarFullScreenStatus=true;
+			m_mnuView->Check(ID_MNU_FULL_SCREEN, true);
+		}
+	
+	}		
 	else
 	{
 		// m_splitterHorizontal->GetSashPosition() doesn't work in v2.9 of wxWidgets
 		// so just set the console to a default size
 		m_splitterHorizontal->SplitHorizontally(m_pnlTop, m_pnlBottom, App::Inst().GetViewport()->GetCamera()->GetHeight() - 200); //m_horSplitterPos);
 		m_mnuView->Check(ID_MNU_VIEW_CONSOLE, true);
+		m_mnuView->Check(ID_MNU_FULL_SCREEN, false);
+		m_toolbarFullScreenStatus=false;
+		
 	}
 }
 
 void GenGisFrame::OnViewCompass( wxCommandEvent& event )
 {
+	m_viewCompassStatus=!m_viewCompassStatus;
+	if(m_viewCompassStatus)
+	{
+		m_toolbarFullScreenStatus=false;
+		m_mnuView->Check(ID_MNU_FULL_SCREEN, false);
+	}
+	else if(!m_splitterHorizontal->IsSplit() && !m_splitterVertical->IsSplit() && !m_toolbarTextStatus && !m_viewNavStatus && !m_viewMinimapStatus)
+	{
+		m_toolbarFullScreenStatus=true;
+		m_mnuView->Check(ID_MNU_FULL_SCREEN, true);
+	}
 	m_widgetController->ToggleCompassVisibility();
 }
 
 void GenGisFrame::OnViewMiniMap( wxCommandEvent& event )
 {
+	m_viewMinimapStatus=!m_viewMinimapStatus;
+	if(m_viewMinimapStatus)
+	{
+		m_toolbarFullScreenStatus=false;
+		m_mnuView->Check(ID_MNU_FULL_SCREEN, false);
+	}
+	else if(!m_splitterHorizontal->IsSplit() && !m_splitterVertical->IsSplit() && !m_toolbarTextStatus && !m_viewNavStatus && !m_viewCompassStatus)
+	{
+		m_toolbarFullScreenStatus=true;
+		m_mnuView->Check(ID_MNU_FULL_SCREEN, true);
+	}
 	m_widgetController->ToggleMiniMapVisibility();
 }
 
 
 void GenGisFrame::OnViewNav( wxCommandEvent& event )
 {
+	m_viewNavStatus=!m_viewNavStatus;
+	if(m_viewNavStatus)
+	{
+		m_toolbarFullScreenStatus=false;
+		m_mnuView->Check(ID_MNU_FULL_SCREEN, false);
+	}
+	else if(!m_splitterHorizontal->IsSplit() && !m_splitterVertical->IsSplit() && !m_toolbarTextStatus && !m_viewMinimapStatus && !m_viewCompassStatus)
+	{
+		m_toolbarFullScreenStatus=true;
+		m_mnuView->Check(ID_MNU_FULL_SCREEN, true);
+	}
 	m_widgetController->ToggleNavVisibility();
 }
 
@@ -2211,10 +2373,20 @@ void GenGisFrame::OnViewHideWidgets( wxCommandEvent& event )
 	m_menubar->FindItem(ID_MNU_VIEW_COMPASS)->Check(false);
 	m_menubar->FindItem(ID_MNU_VIEW_MINIMAP)->Check(false);
 	m_menubar->FindItem(ID_MNU_VIEW_NAV)->Check(false);
+
+	m_viewCompassStatus=false;
+	m_viewNavStatus=false;
+	m_viewMinimapStatus=false;
+
+	if (!m_splitterHorizontal->IsSplit() && !m_splitterVertical->IsSplit() && !m_toolbarTextStatus)
+	{
+		m_toolbarFullScreenStatus=true;
+		m_mnuView->Check(ID_MNU_FULL_SCREEN, true);
+	}
 }
 
 void GenGisFrame::OnViewShowWidgets( wxCommandEvent& event )
-{
+{	
 	m_widgetController->SetCompassVisibility(true);
 	m_widgetController->SetMiniMapVisibility(true);
 	m_widgetController->SetNavVisibility(true);
@@ -2222,6 +2394,12 @@ void GenGisFrame::OnViewShowWidgets( wxCommandEvent& event )
 	m_menubar->FindItem(ID_MNU_VIEW_COMPASS)->Check(true);
 	m_menubar->FindItem(ID_MNU_VIEW_MINIMAP)->Check(true);
 	m_menubar->FindItem(ID_MNU_VIEW_NAV)->Check(true);
+
+	m_viewCompassStatus=true;
+	m_viewNavStatus=true;
+	m_viewMinimapStatus=true;
+	m_toolbarFullScreenStatus=false;
+	m_mnuView->Check(ID_MNU_FULL_SCREEN, false);
 }
 
 void GenGisFrame::OnViewSelectSeqDlg( wxCommandEvent& event )
