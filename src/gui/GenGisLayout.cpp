@@ -304,6 +304,10 @@ GenGisLayout::GenGisLayout( wxWindow* parent, wxWindowID id, const wxString& tit
 	m_mnuView->Append( m_mnuToolbarText );
 	m_mnuToolbarText->Check( true );
 	
+	wxMenuItem* m_mnuViewFullscreen;
+	m_mnuViewFullscreen = new wxMenuItem( m_mnuView, ID_MNU_FULL_SCREEN, wxString( wxT("&Full Screen") ) + wxT('\t') + wxT("Ctrl+Alt+F"), wxEmptyString, wxITEM_CHECK );
+	m_mnuView->Append( m_mnuViewFullscreen );
+	
 	m_menubar->Append( m_mnuView, wxT("&View") ); 
 	
 	m_mnuLayers = new wxMenu();
@@ -522,6 +526,7 @@ GenGisLayout::GenGisLayout( wxWindow* parent, wxWindowID id, const wxString& tit
 	this->Connect( m_mnuViewDefault->GetId(), wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GenGisLayout::OnViewReset ) );
 	this->Connect( m_mnuViewTop->GetId(), wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GenGisLayout::OnViewTop ) );
 	this->Connect( m_mnuToolbarText->GetId(), wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GenGisLayout::OnViewShowToolbarText ) );
+	this->Connect( m_mnuViewFullscreen->GetId(), wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GenGisLayout::OnViewFullScreen ) );
 	this->Connect( m_mnuLayerMap->GetId(), wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GenGisLayout::OnLayerOpenMap ) );
 	this->Connect( m_mnuLayerVectorMap->GetId(), wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GenGisLayout::OnLayerOpenVectorMap ) );
 	this->Connect( m_mnuLayerLocations->GetId(), wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GenGisLayout::OnLayerOpenLocations ) );
@@ -583,6 +588,7 @@ GenGisLayout::~GenGisLayout()
 	this->Disconnect( ID_MNU_VIEW_DEFAULT, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GenGisLayout::OnViewReset ) );
 	this->Disconnect( ID_MNU_VIEW_TOP, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GenGisLayout::OnViewTop ) );
 	this->Disconnect( ID_MNU_VIEW_TOOLBARTEXT, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GenGisLayout::OnViewShowToolbarText ) );
+	this->Disconnect( ID_MNU_FULL_SCREEN, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GenGisLayout::OnViewFullScreen ) );
 	this->Disconnect( ID_MNU_LAYER_ADD_MAP, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GenGisLayout::OnLayerOpenMap ) );
 	this->Disconnect( ID_MNU_LAYER_ADD_VECTOR_MAP, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GenGisLayout::OnLayerOpenVectorMap ) );
 	this->Disconnect( ID_MNU_LAYER_ADD_LOCATIONS, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GenGisLayout::OnLayerOpenLocations ) );

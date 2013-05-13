@@ -257,6 +257,7 @@ namespace GenGIS
 
 		/** View->Panes->Side Panel event handler. */
 		void OnViewSidePanel( wxCommandEvent& event );
+		void OnViewFullScreen( wxCommandEvent& event );
 
 		/** View->Panes->Console event handler. */
 		void OnViewConsole( wxCommandEvent& event );
@@ -519,6 +520,11 @@ namespace GenGIS
 
 		/** Track whether or not toolbar text should be displayed. */
 		bool m_toolbarTextStatus;
+		bool m_toolbarFullScreenStatus;
+		bool m_viewCompassStatus;
+		bool m_viewMinimapStatus;
+		bool m_viewNavStatus;
+
 
 		/** Track whether or not the welcome screen should be displayed on startup. */
 		bool m_showWelcomeDialog;
