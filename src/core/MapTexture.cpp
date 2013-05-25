@@ -108,7 +108,10 @@ bool MapTexture::AllocateTextureMemory(MapControllerPtr mapController)
 	FreeTexture();
 	m_texture = ( GLubyte* )malloc( sizeof( GLubyte ) * m_numChannels * totalPixels );
 	if ( m_texture == NULL ) 
+	{
+		Log::Inst().Error("MapTexture::AllocateTextureMemory(): Insufficient memory to create terrain texture.");
 		return false;
+	}
 
 	return true;
 }

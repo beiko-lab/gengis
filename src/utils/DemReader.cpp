@@ -279,8 +279,6 @@ bool DemReader::Open(std::wstring fullPath, StudyControllerPtr studyController, 
 	}
 
 	// setup map model
-	
-	
 	mapModel->SetMinElevationGridSpace(minElevation);
 	mapModel->SetMaxElevationGridSpace(maxElevation);
 
