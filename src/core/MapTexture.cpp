@@ -35,6 +35,8 @@
 #include "../utils/StringTools.hpp"
 #include "../utils/Log.hpp"
 
+#include "../utils/ErrorGL.hpp"
+
 using namespace std;
 using namespace GenGIS;
 
@@ -312,6 +314,8 @@ void MapTexture::setTexturingStates()
 	GLint rval = gluBuild2DMipmaps( GL_TEXTURE_2D, m_numChannels, m_texWidth, m_texHeight,
 		m_channelMode, GL_UNSIGNED_BYTE, m_texture );
 
+	error::ErrorGL::Check();
+
 	if ( rval != 0 )
 		return;
 }
@@ -399,6 +403,8 @@ void MapTexture::SetColourMap(ColourMapDiscretePtr colourMap, const std::vector<
 
 	ComputeColour(App::Inst().GetMapController()->GetMapModel()->GetGrid(), progressDlg);
 	setTexturingStates();
+
+	error::ErrorGL::Check();
 }
 
 void MapTexture::GetIntervals(std::vector<float>& intervals) const
