@@ -34,7 +34,7 @@ namespace GenGIS
 	{
 	public:
 		/** Constructor. */
-		explicit Point3D(double _x = 0, double _y = 0, double _z = 0): x(_x), y(_y), z(_z) {}
+		explicit Point3D(float _x = 0, float _y = 0, float _z = 0): x(_x), y(_y), z(_z) {}
 
 		/** Desturctor. */
 		~Point3D() {}
@@ -59,7 +59,7 @@ namespace GenGIS
 		Point3D Cross(const Point3D& pt) const;
 
 		/** Dot product. Can also use * operator. */
-		double Dot(const Point3D& pt) const { return x * pt.x + y * pt.y + z * pt.z; }
+		float Dot(const Point3D& pt) const { return x * pt.x + y * pt.y + z * pt.z; }
 
 		/** Calculate the smallest angle between two vectors. */
 		float Angle(const Point3D& pt) const;
@@ -119,13 +119,13 @@ namespace GenGIS
 
 	public:
 		/** x position of point. */
-		double x;
+		float x;
 
 		/** y position of point. */
-		double y;
+		float y;
 
 		/** z position of point. */
-		double z;
+		float z;
 	};
 
 }
