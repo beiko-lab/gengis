@@ -1024,11 +1024,11 @@ PythonInterface::PythonInterface()
 	wxString gengisDir = App::Inst().GetExeDir();
 	gengisDir = gengisDir.BeforeLast('\\').BeforeLast('\\');
 	wxString sitePackagesPath = gengisDir + wxT("\\bin\\Lib\\site-packages");
-	std::string sitePackagesStr = "sys.path.insert(0,\"" + std::string(sitePackagesPath.mb_str())+ "\")";
+	std::string sitePackagesStr = "sys.path.insert(0,r\"" + std::string(sitePackagesPath.mb_str())+ "\")";
 	PyRun_SimpleString(sitePackagesStr.c_str());
 
 	// MAC: Add site-packages directory to sys.path
-	PyRun_SimpleString("sys.path.insert(0,\"./GenGIS.app/Contents/Resources/site-packages\")");
+	PyRun_SimpleString("sys.path.insert(0,r\"./GenGIS.app/Contents/Resources/site-packages\")");
 
 	// Load the wxPython core API.
 	if(!wxPyCoreAPI_IMPORT())
@@ -1061,7 +1061,7 @@ PythonInterface::PythonInterface()
 		wxString gengisDir = App::Inst().GetExeDir();
 		gengisDir = gengisDir.BeforeLast('\\').BeforeLast('\\');
 		wxString scriptsPath = gengisDir + wxT("\\scripts");
-		std::string scriptsPathStr = "sys.path.insert(0,\"" + std::string(scriptsPath.mb_str())+ "\")";
+		std::string scriptsPathStr = "sys.path.insert(0,r\"" + std::string(scriptsPath.mb_str())+ "\")";
 		PyRun_SimpleString(scriptsPathStr.c_str());
 		
 		// add /usr/X11/bin and /usr/local/bin to $PATH, if on a Mac/*nix
