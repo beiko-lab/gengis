@@ -174,7 +174,9 @@ class GBIFQuery(GBIFQueryLayout):
 		OUTL=""
 		OUTS=""
 		for obs,convs in zip(obs_list,conversions_list):
-			import pdb; pdb.set_trace()
+	#		print len(obs_list)
+	#		print len(conversions_list)
+	#		import pdb; pdb.set_trace()
 			locs, seqs = self.MAKEOUTS(obs,convs)
 			OUTL+=locs
 			OUTS+=seqs
@@ -185,16 +187,17 @@ class GBIFQuery(GBIFQueryLayout):
 		OUTSTEXT=""
 		seqFileAgg = {}
 		for cellOut in sorted(obs.keys()):
-			OUTLTEXT += ("%d,%f,%f,%d\n" % (cellOut, conversions[cellOut][0] + 0.5, conversions[cellOut][1] +0.5, len(obs[cellOut].keys()) )) 
-			for taxOut in sorted(obs[cellOut].keys()):
-				thisList=obs[cellOut][taxOut]
-				for ent in thisList:
-					toKey = "%d,%f,%f,%s,%s,%s,%s" %(cellOut, conversions[cellOut][0],conversions[cellOut][1],ent[3],taxOut,ent[1],ent[2])
-					toKey = re.sub(r'\<.*?\>','',toKey)
-					try:
-						seqFileAgg[toKey].extend([ent[0]])
-					except KeyError:
-						seqFileAgg[toKey]=[ent[0]]
+			if len(obs[cellOut].keys()) > 0:
+				OUTLTEXT += ("%d,%f,%f,%d\n" % (cellOut, conversions[cellOut][0] + 0.5, conversions[cellOut][1] +0.5, len(obs[cellOut].keys()) )) 
+				for taxOut in sorted(obs[cellOut].keys()):
+					thisList=obs[cellOut][taxOut]
+					for ent in thisList:
+						toKey = "%d,%f,%f,%s,%s,%s,%s" %(cellOut, conversions[cellOut][0],conversions[cellOut][1],ent[3],taxOut,ent[1],ent[2])
+						toKey = re.sub(r'\<.*?\>','',toKey)
+						try:
+							seqFileAgg[toKey].extend([ent[0]])
+						except KeyError:
+							seqFileAgg[toKey]=[ent[0]]
 		seqFileAgg_items = seqFileAgg.items()
 		seqFileAgg_items.sort(key=lambda x: x)
 		for outME,IDlist in seqFileAgg_items:
