@@ -77,7 +77,7 @@ void PluginManager::LoadPlugins()
 		wxString gengisDir        = App::Inst().GetExeDir();
 		gengisDir                 = gengisDir.BeforeLast('\\').BeforeLast('\\');
 		wxString pluginPath       = gengisDir + wxT("\\plugins");
-		std::string pluginPathStr = "sys.path.insert(0,\"" + std::string(pluginPath.mb_str())+ "\")";
+		std::string pluginPathStr = "sys.path.insert(0,r\"" + std::string(pluginPath.mb_str())+ "\")";
 		PyRun_SimpleString(pluginPathStr.c_str());
 	#else
 		//wxString pluginPath = wxT("./GenGIS.app/Contents/Resources/Plugins");
@@ -89,7 +89,7 @@ void PluginManager::LoadPlugins()
 	// add library directory to Python path
 	#ifdef WIN32
 		wxString libraryPath       = gengisDir + wxT("\\library");
-		std::string libraryPathStr = "sys.path.insert(0,\"" + std::string(libraryPath.mb_str())+ "\")";
+		std::string libraryPathStr = "sys.path.insert(0,r\"" + std::string(libraryPath.mb_str())+ "\")";
 		PyRun_SimpleString(libraryPathStr.c_str());
 	#else
 		wxString libraryPath = wxT("./Library");
