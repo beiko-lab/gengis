@@ -56,6 +56,7 @@ class GBIFQuery(GBIFQueryLayout):
 		
 	#	Create Sequence and Location files for selected Taxa 		
 	def OnCalculate(self,event):
+		self.m_staticText6.SetLabel("\n")
 		records,distLocations = 0,0
 		self.__obs__=[]
 	#	wx.MessageBox("Go")
@@ -92,7 +93,21 @@ class GBIFQuery(GBIFQueryLayout):
 	
 	#	Adds Data to GenGIS
 	def OnAddData(self,event):
-		wx.MessageBox("AddData")
+	#	GenGIS.layerTree.GetLocationSetLayer(0).GetController().GetLocationSetFromPython("thisisastringname")
+	
+	#	NEEDS TO ASK FOR NAME TO GIVE TO GENGIS
+		if (len(self.__obs__) > 0):
+			OUTLText, OUTSText = self.GETTEXT(self.__obs__,self.__conversions__)
+			OUTLArray=self.CPPOUT(OUTLText)
+			OUTSArray=self.CPPOUT(OUTSText)
+			OUTLArray.insert(0,"Site ID,Latitude,Longitude,Richness")
+			OUTSArray.insert(0,"Sequence ID,Site ID,CellLat,CellLong,Taxon,Genus,TrueLat,TrueLong,Count,AllRecords")					
+#			GenGIS.layerTree.GetLocationSetLayer(0).GetController().GetLocationSetFromPython("thisisastringname")
+			GenGIS.MainWindowWrapper.OpenLocationsCSVFile(OUTSArray, "thisisastringname")
+			
+		else:
+			wx.MessageBox("Please make a successful GBIF Query first.")
+		
 
 	#	Exports Location and Sequence Data to a location of the users choice
 	def OnExportData(self,event):
@@ -134,7 +149,7 @@ class GBIFQuery(GBIFQueryLayout):
 			self.m_IDList.InsertItems(["%s" % selected],IDCount+i)
 			split = selected.split(" | ")
 			self.__selectedTaxon__.append(split[1])
-			print self.__selectedTaxon__
+#			print self.__selectedTaxon__
 			i+=1
 			
 	#	Remove Data from ID List
@@ -143,7 +158,7 @@ class GBIFQuery(GBIFQueryLayout):
 			selected = self.m_IDList.GetString(index)
 			split = selected.split(" | ")
 			self.__selectedTaxon__.remove(split[1])
-			print self.__selectedTaxon__
+#			print self.__selectedTaxon__
 			self.m_IDList.Delete(index)
 	
 	#	Close the Plugin
@@ -188,7 +203,7 @@ class GBIFQuery(GBIFQueryLayout):
 		seqFileAgg = {}
 		for cellOut in sorted(obs.keys()):
 			if len(obs[cellOut].keys()) > 0:
-				OUTLTEXT += ("%d,%f,%f,%d\n" % (cellOut, conversions[cellOut][0] + 0.5, conversions[cellOut][1] +0.5, len(obs[cellOut].keys()) )) 
+				OUTLTEXT += ("%d,%f,%f,%d\n" % (cellOut, conversions[cellOut][0] + 0.5, conversions[cellOut][1] +0.5, len(obs[cellOut].keys()) ))  
 				for taxOut in sorted(obs[cellOut].keys()):
 					thisList=obs[cellOut][taxOut]
 					for ent in thisList:
@@ -205,7 +220,11 @@ class GBIFQuery(GBIFQueryLayout):
 		return(OUTLTEXT,OUTSTEXT)
 				
 	# Populate the Results Table using Taxa and Geographic boundaries
-
+	
+	def CPPOUT (self,input):
+		array = input.split("\n")
+	#	print array[0]
+		return (array)
 ##############
 #	GBIF SPECIFIC
 ##############
@@ -303,9 +322,9 @@ class GBIFQuery(GBIFQueryLayout):
 		records=0
 		distLocations=0
 		conversions = {}
-		print "#################"
-		print taxon_name
-		print "#################"
+#		print "#################"
+#		print taxon_name
+#		print "#################"
 		taxonReq = '+'.join(taxon_name)
 		####################################
 		#	check if text file or command input
