@@ -66,12 +66,7 @@ namespace GenGIS
 			((GenGisFrame*)App::Inst().GetMainWindow())->LayerOpenLocations(file);
 		}
 
-		//void OpenLocationsCSVFile( std::vector<std::wstring> csvTableRows, std::wstring locationNames )
-		//{
-		//	((GenGisFrame*)App::Inst().GetMainWindow())->LayerOpenLocations( csvTableRows, locationNames );
-		//}
-
-		void OpenLocationsCSVFile( boost::python::object csvTableRows, std::wstring locationNames )
+		void OpenLocationsCSVFile( std::vector<std::wstring> csvTableRows, std::wstring locationNames )
 		{
 			((GenGisFrame*)App::Inst().GetMainWindow())->LayerOpenLocations( csvTableRows, locationNames );
 		}
