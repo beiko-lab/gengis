@@ -90,6 +90,7 @@
 	#include <boost/python/return_value_policy.hpp>
 	#include <boost/python/suite/indexing/vector_indexing_suite.hpp>
 	#include <boost/python/stl_iterator.hpp>
+	#include <boost/python/object.hpp>
 #endif
 
 // Boost includes

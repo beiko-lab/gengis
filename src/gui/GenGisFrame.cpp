@@ -1708,8 +1708,14 @@ void GenGisFrame::LayerOpenLocations( std::string file )
 	LayerOpenLocations( wxString( file.c_str(), wxConvUTF8 ) );
 }
 
-void GenGisFrame::LayerOpenLocations( std::vector<std::wstring> csvTableRows, std::wstring locationNames )
+void GenGisFrame::LayerOpenLocations( boost::python::object csvTableRows, std::wstring locationNames )
 {
+	std::vector<std::wstring> rows;
+	boost::python::stl_input_iterator<std::wstring> begin( csvTableRows );
+	boost::python::stl_input_iterator<std::wstring> end;
+    rows.clear();
+    rows.insert(rows.end(), begin, end);
+
 	wxMessageBox( locationNames, locationNames, wxOK | wxICON_ERROR); // [###] remove later
 
 	if ( App::Inst().GetLayerTreeController()->GetNumLocationSetLayers() > 0 )
@@ -1736,7 +1742,7 @@ void GenGisFrame::LayerOpenLocations( std::vector<std::wstring> csvTableRows, st
 		std::vector<LocationModelPtr> locationModels;
 		StudyControllerPtr studyController = App::Inst().GetLayerTreeController()->GetStudyLayer(0)->GetStudyController();
 
-		if( LocationSetIO::ParseCSVFile( csvTableRows, studyController, locationModels ) )
+		if( LocationSetIO::ParseCSVFile( rows, studyController, locationModels ) )
 		{	
 			// stop refreshing the tree until all sequences are loaded (this is purely for efficency)
 			App::Inst().GetLayerTreeController()->GetTreeCtrl()->Freeze();
