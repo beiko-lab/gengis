@@ -67,7 +67,7 @@ void LayerTreeController::serialize(Archive & ar, const unsigned int file_versio
 	ar & m_locations;    // std::vector<LocationLayerPtr>
 	ar & m_sequences;    // std::vector<SequenceLayerPtr>
 	ar & m_trees;        // std::vector<TreeLayerPtr>
-	ar & isBlankRaster;
+	ar & m_isBlankRaster;
 }
 
 template void LayerTreeController::serialize<boost::archive::text_woarchive>(boost::archive::text_woarchive& ar, const unsigned int version); 
@@ -293,7 +293,7 @@ bool LayerTreeController::AddMapLayer(MapLayerPtr map)
 			StudyLayerPtr studyPtr = boost::dynamic_pointer_cast<StudyLayer>(selectedLayer);
 			studyPtr->AddMapLayer(map);
 		}
-		//if(display){
+
 			// add map to tree control
 			LayerTreeItem* layerItem = new LayerTreeItem(map);
 			wxString idStr(std::wstring(_T("Raster Map : ") + map->GetName()).c_str());
@@ -305,9 +305,6 @@ bool LayerTreeController::AddMapLayer(MapLayerPtr map)
 			// select the newly added layer
 			m_treeView->GetTreeCtrl()->SelectItem(newId);
 			m_treeView->GetTreeCtrl()->Expand(selectionId);
-
-			//App::Inst().GetViewport()->Refresh(false);
-	//	}
 	}
 	else
 	{
@@ -1615,10 +1612,10 @@ void LayerTreeController::UpdateActiveState(wxTreeItemId subtreeId, wxTreeItemId
 
 void LayerTreeController::SetIsBlankRaster(bool isBlank)
 {
-	isBlankRaster=isBlank;
+	m_isBlankRaster = isBlank;
 }
 
 bool LayerTreeController::GetIsBlankRaster()
 {
-	return isBlankRaster;
+	return m_isBlankRaster;
 }

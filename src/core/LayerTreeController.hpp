@@ -399,7 +399,7 @@ namespace GenGIS
 		/** Allow access to location sets without having to traverse tree. */
 		std::vector<TreeLayerPtr> m_trees;
 
-		bool isBlankRaster;
+		bool m_isBlankRaster;
 
 	private:
 		/** Serialization. */

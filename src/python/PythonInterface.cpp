@@ -732,6 +732,7 @@ BOOST_PYTHON_MODULE(GenGIS)
 			.def("GetMetadataFields", &LocationSetController::GetMetadataFields, "Get fields for location metadata.")
 			.def("GetNumericMetadataFields", &LocationSetController::GetNumericMetadataFields, "Get numeric fields for location metadata.")
 			.def("AddMetadata", &LocationSetController::AddMetadata, "Add field to location metadata.")
+			.def("GetLocationSetFromPython", &LocationSetController::GetLocationSetFromPython, "Send location set data from python.")
 			;
 
 		// <wiki-header>Location Layer class</wiki-header>
