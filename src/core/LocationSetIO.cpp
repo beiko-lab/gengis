@@ -75,7 +75,7 @@ bool LocationSetIO::Read( const wxString& fullPath, StudyControllerPtr studyCont
 		return false;
 	}
 
-	// Parse the rows
+	// Parse the rows of the CSV file
 	ParseCSVFile( rows, studyController, locationModels );
 
 	// closing the file stream.

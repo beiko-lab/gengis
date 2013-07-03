@@ -113,6 +113,9 @@ namespace GenGIS
 		/** Handle actual loading of sequence data from file. */
 		void LayerOpenSequenceData( wxFileName fullPath );
 
+		/** Handle actual loading of sequence CSV files. */
+		void LayerOpenSequenceData( std::vector<std::wstring> csvTableRows, std::wstring locationNames );
+
 		/** Open tree from command line. */
 		void LayerOpenTree( std::string file );
 

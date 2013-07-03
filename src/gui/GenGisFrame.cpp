@@ -1654,8 +1654,6 @@ void GenGisFrame::LayerOpenVectorMap( wxFileName fullPath, uint mapIndex )
 				return;
 			}
 		}
-	
-	
 	}
 
 	else
@@ -1663,11 +1661,6 @@ void GenGisFrame::LayerOpenVectorMap( wxFileName fullPath, uint mapIndex )
 		wxMessageBox(wxT("Please select a study node before adding a new vector map."),
 			wxT("Select study node"), wxOK | wxICON_INFORMATION);
 	}
-	
-
-
-	
-
 }
 
 void GenGisFrame::OnLayerOpenLocations( wxCommandEvent& event )
@@ -1710,8 +1703,6 @@ void GenGisFrame::LayerOpenLocations( std::string file )
 
 void GenGisFrame::LayerOpenLocations( std::vector<std::wstring> csvTableRows, std::wstring locationNames )
 {
-	wxMessageBox( locationNames, locationNames, wxOK | wxICON_ERROR); // [###] remove later
-
 	if ( App::Inst().GetLayerTreeController()->GetNumLocationSetLayers() > 0 )
 	{
 		wxMessageBox( wxT( "GenGIS currently supports only a single location set." ),
@@ -1953,6 +1944,72 @@ void GenGisFrame::LayerOpenSequenceData( wxFileName fullPath )
 				SequenceLayerPtr sequenceLayer(new SequenceLayer(UniqueId::Inst().GenerateId(), selectedLayer, sequenceController));
 				sequenceLayer->SetName(sequenceController->GetSequenceId().c_str());
 				sequenceLayer->SetFullPath( fullPath.GetFullPath() );
+
+				if(!App::Inst().GetLayerTreeController()->AddSequence(sequenceLayer, sequenceModel, missingLocations))
+				{			
+					// The above function should never return false!
+					wxMessageBox(wxT("Critial error: Failed to load sequence data. Please report this error to the GenGIS team."), wxT("Failed to load sequence data."), wxOK | wxICON_ERROR);
+					return;
+				}
+			}
+
+			// report any locations that are specified in the sequence file, but do not exist
+			foreach(std::wstring locationStr, missingLocations)
+			{
+				Log::Inst().Warning(wxT("(Warning) Site id '") + wxString(locationStr.c_str()) + wxT("' was not found in the location set. Sequences from this location will be ignored."));
+			}
+
+			// all tree to refresh
+			App::Inst().GetLayerTreeController()->GetTreeCtrl()->Thaw();
+		}
+		else
+		{
+			if(!bCancel)
+				wxMessageBox(wxT("Failed to read sequence data from file. Check console window for warning messages."), wxT("Failed to read file"), wxOK | wxICON_INFORMATION);
+		}
+	}
+	else
+	{
+		wxMessageBox(wxT("Please select a location set node before adding sequence data."), wxT("Select location set node"), wxOK | wxICON_INFORMATION);
+	}
+
+	App::Inst().GetViewport()->Refresh(false);
+}
+
+
+void GenGisFrame::LayerOpenSequenceData( std::vector<std::wstring> csvTableRows, std::wstring locationNames )
+{
+	// determine the selected layer
+	LayerPtr selectedLayer = App::Inst().GetLayerTreeController()->GetSelectedLayer();
+	if(selectedLayer == LayerPtr() || selectedLayer->GetType() != Layer::LOCATION_SET)
+	{
+		if(App::Inst().GetLayerTreeController()->GetNumLocationSetLayers() == 1)
+		{
+			// select the first location set layer by default
+			App::Inst().GetLayerTreeController()->SetSelection( App::Inst().GetLayerTreeController()->GetLocationSetLayer(0) );
+		}
+	}
+
+	selectedLayer = App::Inst().GetLayerTreeController()->GetSelectedLayer();
+	if(selectedLayer != LayerPtr() && selectedLayer->GetType() == Layer::LOCATION_SET)
+	{
+		std::vector<SequenceModelPtr> sequenceModels;
+		bool bCancel;
+		if( SequenceIO::ParseCSVFile( csvTableRows, sequenceModels, bCancel ) )
+		{	
+			wxBusyCursor wait;
+
+			// stop refreshing the tree until all sequences are loaded (this is purely for efficency)
+			App::Inst().GetLayerTreeController()->GetTreeCtrl()->Freeze();
+
+			std::set<std::wstring> missingLocations;
+			foreach(SequenceModelPtr sequenceModel, sequenceModels)
+			{
+				SequenceControllerPtr sequenceController(new SequenceController(sequenceModel));
+
+				SequenceLayerPtr sequenceLayer(new SequenceLayer(UniqueId::Inst().GenerateId(), selectedLayer, sequenceController));
+				sequenceLayer->SetName(sequenceController->GetSequenceId().c_str());
+				sequenceLayer->SetFullPath( locationNames );
 
 				if(!App::Inst().GetLayerTreeController()->AddSequence(sequenceLayer, sequenceModel, missingLocations))
 				{			
