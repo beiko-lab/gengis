@@ -103,7 +103,7 @@ class GBIFQuery(GBIFQueryLayout):
 			OUTLArray.insert(0,"Site ID,Latitude,Longitude,Richness")
 			OUTSArray.insert(0,"Sequence ID,Site ID,CellLat,CellLong,Taxon,Genus,TrueLat,TrueLong,Count,AllRecords")					
 #			GenGIS.layerTree.GetLocationSetLayer(0).GetController().GetLocationSetFromPython("thisisastringname")
-			GenGIS.MainWindowWrapper.OpenLocationsCSVFile(OUTSArray, "thisisastringname")
+			GenGIS.mainWindow.OpenLocationsCSVFile(OUTLArray, "thisisastringname")
 			
 		else:
 			wx.MessageBox("Please make a successful GBIF Query first.")
