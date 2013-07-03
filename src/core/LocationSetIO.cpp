@@ -38,8 +38,6 @@ using namespace GenGIS;
 
 bool LocationSetIO::Read( const wxString& fullPath, StudyControllerPtr studyController, std::vector<LocationModelPtr>& locationModels )
 {
-	const int ROWS_TO_SHOW_PROGRESS_DLG = 2000;
-
 	wifstream infile( fullPath.mb_str() );
 	if( !infile.is_open() )
 	{
@@ -77,23 +75,36 @@ bool LocationSetIO::Read( const wxString& fullPath, StudyControllerPtr studyCont
 		return false;
 	}
 
+	// Parse the rows
+	ParseCSVFile( rows, studyController, locationModels );
+
+	// closing the file stream.
+	infile.close();
+
+	return true;
+}
+
+bool LocationSetIO::ParseCSVFile( std::vector<std::wstring> csvTableRows, StudyControllerPtr studyController, std::vector<LocationModelPtr>& locationModels )
+{
+	const int ROWS_TO_SHOW_PROGRESS_DLG = 2000;
+
 	// tokenize column names
-	tokenizer< escaped_list_separator<wchar_t>, wstring::const_iterator, wstring > columnTokens(rows.at(0));
+	tokenizer< escaped_list_separator<wchar_t>, wstring::const_iterator, wstring > columnTokens(csvTableRows.at(0));
 	vector<wstring> columnValues(columnTokens.begin(), columnTokens.end());
 	if(columnValues.size() == 1)
 	{
 		// assume a tab-delimited file
 		columnValues.clear();
-		split(columnValues, rows.at(0), boost::is_any_of(_T("\t")));
+		split(columnValues, csvTableRows.at(0), boost::is_any_of(_T("\t")));
 	}
 
 	ProgressDlgPtr progressDlg;
-	if(rows.size() > ROWS_TO_SHOW_PROGRESS_DLG)
-		progressDlg.reset(new ProgressDlg(_T("Loading location set"), _T("Reading locations..."), rows.size(), App::Inst().GetMainWindow()));
+	if(csvTableRows.size() > ROWS_TO_SHOW_PROGRESS_DLG)
+		progressDlg.reset(new ProgressDlg(_T("Loading location set"), _T("Reading locations..."), csvTableRows.size(), App::Inst().GetMainWindow()));
 
 	uint rowNum = 1;
 	vector<wstring>::const_iterator it;
-	for(it = ++rows.begin(); it != rows.end(); ++it)
+	for(it = ++csvTableRows.begin(); it != csvTableRows.end(); ++it)
 	{
 		if(progressDlg && rowNum % 25 == 0)
 			progressDlg->Update(rowNum);		
@@ -215,9 +226,5 @@ bool LocationSetIO::Read( const wxString& fullPath, StudyControllerPtr studyCont
 		locationModels.push_back(locationModel);
 	}
 
-	// closing the file stream.
-	infile.close();
-
 	return true;
 }
-

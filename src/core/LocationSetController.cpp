@@ -488,9 +488,3 @@ bool LocationSetController::ModifiedLabelVisibility()
 
 	return false;
 }
-
-
-void LocationSetController::GetLocationSetFromPython(const std::wstring& field) const
-{
-	wxMessageBox( field, field, wxOK | wxICON_ERROR);
-}

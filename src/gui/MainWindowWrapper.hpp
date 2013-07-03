@@ -66,6 +66,11 @@ namespace GenGIS
 			((GenGisFrame*)App::Inst().GetMainWindow())->LayerOpenLocations(file);
 		}
 
+		void OpenLocationsCSVFile( std::vector<std::wstring> csvTableRows, std::wstring locationNames )
+		{
+			((GenGisFrame*)App::Inst().GetMainWindow())->LayerOpenLocations( csvTableRows, locationNames );
+		}
+
 		void OpenSequenceFile(std::string file)
 		{
 			((GenGisFrame*)App::Inst().GetMainWindow())->LayerOpenSequenceData(file);
