@@ -105,7 +105,7 @@ namespace GenGIS
 		void LayerOpenLocations( wxFileName fullPath );
 
 		/** Handle loading of location set CSV files */
-		void LayerOpenLocations( std::vector<std::wstring> csvTableRows, std::wstring locationNames );
+		void LayerOpenLocations( boost::python::object csvTableRows, std::wstring locationNames );
 
 		/** Open sequence data from command line. */
 		void LayerOpenSequenceData( std::string file );
