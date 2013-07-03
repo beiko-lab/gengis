@@ -373,6 +373,7 @@ BOOST_PYTHON_MODULE(GenGIS)
 			.def("OpenMapFile", &MainWindowWrapper::OpenMapFile, "Open map file.")
 			.def("OpenVectorMapFile", &MainWindowWrapper::OpenVectorMapFile, "Open vector map file.")
 			.def("OpenLocationsFile", &MainWindowWrapper::OpenLocationsFile, "Open location file.")
+			.def("OpenLocationsCSVFile", &MainWindowWrapper::OpenLocationsCSVFile, "Open location file.")
 			.def("OpenSequenceFile", &MainWindowWrapper::OpenSequenceFile, "Open sequence file.")
 			.def("OpenTreeFile", &MainWindowWrapper::OpenTreeFile, "Open tree file.")
 			.def("GetExeDir", &MainWindowWrapper::GetExeDir, "Get directory of GenGIS executable.")
@@ -732,7 +733,6 @@ BOOST_PYTHON_MODULE(GenGIS)
 			.def("GetMetadataFields", &LocationSetController::GetMetadataFields, "Get fields for location metadata.")
 			.def("GetNumericMetadataFields", &LocationSetController::GetNumericMetadataFields, "Get numeric fields for location metadata.")
 			.def("AddMetadata", &LocationSetController::AddMetadata, "Add field to location metadata.")
-			.def("GetLocationSetFromPython", &LocationSetController::GetLocationSetFromPython, "Send location set data from python.")
 			;
 
 		// <wiki-header>Location Layer class</wiki-header>

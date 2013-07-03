@@ -1708,12 +1708,100 @@ void GenGisFrame::LayerOpenLocations( std::string file )
 	LayerOpenLocations( wxString( file.c_str(), wxConvUTF8 ) );
 }
 
+void GenGisFrame::LayerOpenLocations( std::vector<std::wstring> csvTableRows, std::wstring locationNames )
+{
+	wxMessageBox( locationNames, locationNames, wxOK | wxICON_ERROR); // [###] remove later
+
+	if ( App::Inst().GetLayerTreeController()->GetNumLocationSetLayers() > 0 )
+	{
+		wxMessageBox( wxT( "GenGIS currently supports only a single location set." ),
+			wxT( "Multiple location sets not supported" ), wxOK | wxICON_INFORMATION );
+		return;
+	}
+
+	// get selected layer
+	LayerPtr selectedLayer = App::Inst().GetLayerTreeController()->GetSelectedLayer();
+	if(selectedLayer == LayerPtr() || selectedLayer->GetType() != Layer::MAP)
+	{
+		if(App::Inst().GetLayerTreeController()->GetNumMapLayers() == 1)
+		{
+			// select the first map by default
+			App::Inst().GetLayerTreeController()->SetSelection( App::Inst().GetLayerTreeController()->GetMapLayer(0) );
+		}
+	}
+
+	selectedLayer = App::Inst().GetLayerTreeController()->GetSelectedLayer();
+	if(selectedLayer != LayerPtr() && selectedLayer->GetType() == Layer::MAP)
+	{
+		std::vector<LocationModelPtr> locationModels;
+		StudyControllerPtr studyController = App::Inst().GetLayerTreeController()->GetStudyLayer(0)->GetStudyController();
+
+		if( LocationSetIO::ParseCSVFile( csvTableRows, studyController, locationModels ) )
+		{	
+			// stop refreshing the tree until all sequences are loaded (this is purely for efficency)
+			App::Inst().GetLayerTreeController()->GetTreeCtrl()->Freeze();
+
+			ChartSetViewPtr chartSetCtrl(new ChartSetView());
+			LocationSetLayerPtr locationSet(new LocationSetLayer(UniqueId::Inst().GenerateId(), 
+				App::Inst().GetLayerTreeController()->GetSelectedLayer(),
+				chartSetCtrl));
+			locationSet->SetName( locationNames );
+			locationSet->SetFullPath( locationNames );
+			m_locationSetLayer = locationSet;
+
+			// assign default colour map to location
+			ColourMapManagerPtr colourMapManager = App::Inst().GetColourMapManager();
+			ColourMapPtr defaultColourMap = colourMapManager->GetDefaultDiscreteColourMap();
+			ColourMapDiscretePtr newColourMap(new ColourMapDiscrete(defaultColourMap));
+
+			std::vector<LocationLayerPtr> locationLayers;
+			foreach(LocationModelPtr locationModel, locationModels)
+			{
+				LocationViewPtr locationView(new LocationView(locationModel, App::Inst().GetViewport()->GetCamera(), UniqueId::Inst().GenerateId()));
+				ChartViewPtr pieChartView(new ChartView(locationModel, locationView, newColourMap));
+				chartSetCtrl->AddChart(pieChartView);
+				LocationControllerPtr locationController(new LocationController(locationModel, locationView, pieChartView));
+
+				LocationLayerPtr locationLayer(new LocationLayer(UniqueId::Inst().GenerateId(), locationSet, locationController));			
+				locationLayer->SetName(wxString(locationController->GetId().c_str()));
+				locationLayer->SetFullPath( locationNames );
+				locationLayers.push_back(locationLayer);
+
+				locationView->SetLocationLayerId(locationLayer->GetId());
+				pieChartView->SetLocationLayerId(locationLayer->GetId());
+
+				locationSet->AddLocationLayer(locationLayer);
+			}
+			locationSet->GetLocationSetController()->SetLocationSetLayers(locationLayers);
+
+			App::Inst().GetLayerTreeController()->AddLocationSetLayer(locationSet);
+
+			App::Inst().GetLayerTreeController()->GetTreeCtrl()->Thaw();
+
+			// Update Samples legend on sidebar
+			FillSamplesLegend();
+
+			App::Inst().GetLayerTreeController()->GetLocationSetLayer(0)->GetLocationSetController()->GetNumericMetadataFields();
+		}
+		else
+		{
+			wxMessageBox(wxT("Failed to read location sites. Check console window for warning messages."), 
+				wxT("Failed to read location sites"), wxOK | wxICON_INFORMATION);
+		}
+	}
+	else
+	{
+		wxMessageBox(wxT("Please select a map node before adding a location sites layer."),
+			wxT("Select map node"), wxOK | wxICON_INFORMATION);
+	}
+}
+
 void GenGisFrame::LayerOpenLocations( wxFileName fullPath )
 {
 	if ( App::Inst().GetLayerTreeController()->GetNumLocationSetLayers() > 0 )
 	{
 		wxMessageBox( wxT( "GenGIS currently supports only a single location set." ),
-			wxT( "Multiple location sets not upported" ), wxOK | wxICON_INFORMATION );
+			wxT( "Multiple location sets not supported" ), wxOK | wxICON_INFORMATION );
 		return;
 	}
 
