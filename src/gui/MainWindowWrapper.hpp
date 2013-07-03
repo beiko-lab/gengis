@@ -76,6 +76,11 @@ namespace GenGIS
 			((GenGisFrame*)App::Inst().GetMainWindow())->LayerOpenSequenceData(file);
 		}
 
+		void OpenSequenceCSVFile( std::vector<std::wstring> csvTableRows, std::wstring locationNames )
+		{
+			((GenGisFrame*)App::Inst().GetMainWindow())->LayerOpenSequenceData( csvTableRows, locationNames );
+		}
+
 		void OpenTreeFile(std::string file)
 		{
 			((GenGisFrame*)App::Inst().GetMainWindow())->LayerOpenTree(file);

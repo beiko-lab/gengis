@@ -34,17 +34,12 @@ using namespace GenGIS;
 
 bool SequenceIO::Read(const wxString& fullPath, std::vector<SequenceModelPtr>& sequenceModels, bool& bCancel)
 {
-	bCancel = false;
-
 	wifstream infile( fullPath.mb_str() );
 	if(!infile.is_open()) 
 	{
 		Log::Inst().Warning("(Warning) Failed to open sequence data file.");	
 		return false;
 	}
-
-	// track progress
-	ProgressDlg progressDlg(wxT("Loading file"), wxT("Loading sequences..."), 100, App::Inst().GetMainWindow());
 
 	// parse all rows
 	wstring line;
@@ -77,24 +72,41 @@ bool SequenceIO::Read(const wxString& fullPath, std::vector<SequenceModelPtr>& s
 		return false;
 	}
 
+	// Parse the rows of the CSV file
+	ParseCSVFile( rows, sequenceModels, bCancel );
+
+	// closing the file stream.
+	infile.close();
+
+	return true;
+}
+
+
+bool SequenceIO::ParseCSVFile( std::vector<std::wstring> csvTableRows, std::vector<SequenceModelPtr>& sequenceModels, bool& bCancel)
+{
+	bCancel = false;
+
+	// track progress
+	ProgressDlg progressDlg(wxT("Loading file"), wxT("Loading sequences..."), 100, App::Inst().GetMainWindow());
+
 	// tokenize column names
-	boost::tokenizer< boost::escaped_list_separator<wchar_t>, wstring::const_iterator, wstring  > columnTokens(rows.at(0));
+	boost::tokenizer< boost::escaped_list_separator<wchar_t>, wstring::const_iterator, wstring  > columnTokens(csvTableRows.at(0));
 	vector<wstring> columnValues(columnTokens.begin(), columnTokens.end());
 	if(columnValues.size() == 1)
 	{
 		// assume a tab-delimited file
 		columnValues.clear();
-		split(columnValues, rows.at(0), boost::is_any_of(_T("\t")));
+		split(columnValues, csvTableRows.at(0), boost::is_any_of(_T("\t")));
 	}
 
 	// parse all rows
 	uint rowNum = 1;
 	vector<wstring>::const_iterator it;
-	for(it = ++rows.begin(); it != rows.end(); ++it)
+	for(it = ++csvTableRows.begin(); it != csvTableRows.end(); ++it)
 	{
 		if(rowNum % 100 == 0)
 		{
-			if(!progressDlg.Update(float(rowNum)/rows.size() * 100))
+			if(!progressDlg.Update(float(rowNum)/csvTableRows.size() * 100))
 			{
 				bCancel = true;
 				sequenceModels.clear();
@@ -165,10 +177,5 @@ bool SequenceIO::Read(const wxString& fullPath, std::vector<SequenceModelPtr>& s
 
 		sequenceModels.push_back(sequenceModel);
 	}
-
-	// closing the file stream.
-	infile.close();
-
 	return true;
 }
-
