@@ -345,6 +345,9 @@ namespace GenGIS
 		/** Get map which indicates metadata associates with sequences. */
 		std::map<std::wstring,std::wstring> GetSequenceMetadata() const;
 
+		/** Function to handle incoming location set data from plugins. */
+		void GetLocationSetFromPython(const std::wstring& field) const;
+
 		/** Check if any locations have changed their shape. */
 		bool ModifiedShape();
 
