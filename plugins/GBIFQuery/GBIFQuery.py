@@ -90,8 +90,19 @@ class GBIFQuery(GBIFQueryLayout):
 	#	Possibly present the number of records they are about to query.
 	#	Used as a check by the user to know they aren't going to produce way too much data.
 	def OnPreCalculate(self,event):
-		wx.MessageBox("PreGo")
-
+		self.m_staticText6.SetLabel("\n")
+		if(self.__selectedTaxon__):
+			minLatitude= self.m_MinLat.GetValue()
+			maxLatitude= self.m_MaxLat.GetValue()
+			minLongitude= self.m_MinLon.GetValue()
+			maxLongitude= self.m_MaxLon.GetValue()
+			count=0
+			for tax in self.__selectedTaxon__:
+				count+=self.GETCOUNT(tax.split(),minLatitude,maxLatitude,minLongitude,maxLongitude)
+		else:
+			wx.MessageBox("Please select some Taxa.")
+		self.m_staticText6.SetLabel("There were %d records for the given location." % count) 
+	
 	#	Redirects User to Wiki page for this plugin
 	def OnHelp(self, event):
 		wx.MessageBox("Help!Help! I'm being oppressed!")
@@ -106,7 +117,6 @@ class GBIFQuery(GBIFQueryLayout):
 			OUTSArray.insert(0,"Sequence ID,Site ID,CellLat,CellLong,Taxon,Genus,TrueLat,TrueLong,Count,AllRecords")					
 			OUTLArray.pop()
 			OUTSArray.pop()
-		#	print OUTLArray
 			
 			GenGIS.mainWindow.OpenLocationsCSVFile(OUTLArray, "thisisastringname")
 			GenGIS.mainWindow.OpenSequenceCSVFile(OUTSArray, "thisisastringname")
@@ -152,7 +162,6 @@ class GBIFQuery(GBIFQueryLayout):
 			self.m_IDList.InsertItems(["%s" % selected],IDCount+i)
 			split = selected.split(" | ")
 			self.__selectedTaxon__.append(split[1])
-#			print self.__selectedTaxon__
 			i+=1
 			
 	#	Remove Data from ID List
@@ -161,7 +170,6 @@ class GBIFQuery(GBIFQueryLayout):
 			selected = self.m_IDList.GetString(index)
 			split = selected.split(" | ")
 			self.__selectedTaxon__.remove(split[1])
-#			print self.__selectedTaxon__
 			self.m_IDList.Delete(index)
 	
 	#	Close the Plugin
@@ -230,10 +238,44 @@ class GBIFQuery(GBIFQueryLayout):
 		array = input.split("\n")
 	#	print array[0]
 		return (array)
+	
+	#subdivide a given range by longitude
+	def SUBDIVIDECOL(self,minlatitude,maxlatitude,minlongitude,maxlongitude):
+		longitudeRange = maxlongitude - minlongitude
+		new_coords = []
+		longitudeBase= float(longitudeRange)/float(10)
+		for i in range(0,9):
+			new_coords.append(( minlatitude,maxlatitude,longitudeBase * i,longitudeBase* (i+1)))
+		return(new_coords)
+	
+	#subdivide a given range by latitude
+	def SUBDIVIDEROW(self,minlatitude,maxlatitude,minlongitude,maxlongitude):
+		latitudeRange = maxlatitude - latitude
+		new_coords = []
+		longitudeBase= float(latitudeRange)/float(10)
+		for i in range(0,9):
+			new_coords.append(( minlatitude*i,maxlatitude *(i+1),maxlongitude,maxlongitude))
+		return(new_coords)	
+		
 ##############
 #	GBIF SPECIFIC
 ##############
 
+	#	Queries GBIF to find the number of results for given boundary 
+	def GETCOUNT(self,taxon_name,minLat,maxLat,minLon,maxLon):
+		taxonReq = '+'.join(taxon_name)			
+		cID = self.GETTAXID(taxonReq)
+		url= " http://data.gbif.org/ws/rest/occurrence/count?taxonconceptkey=%d&maxlatitude=%d&minlatitude=%d&maxlatitude=%d&minlongitude=%d" % (cID,maxLat,minLat,maxLon,minLon) 
+		try:	
+			response=urllib2.urlopen(url).read()
+		except urllib2.HTTPError as e:
+			wx.MessageBox("The server is temporarily unreachable.\nPlease try again later.")
+			self.Close()
+		key_string = re.search('gbif:summary totalMatched="(\d+)"',response)
+		count_string=re.search('\d+',key_string.group())
+		count = int(count_string.group())
+		return(count)
+			
 	def GETTAXRESULT(self,taxon_name):
 		taxonReq = '+'.join(taxon_name)
 
@@ -294,7 +336,7 @@ class GBIFQuery(GBIFQueryLayout):
 	
 	def GETTAXID (self,taxonName):
 		taxConceptID=100000000
-		self.m_Progress.WriteText("########### Querying GBIF for %s ######\n" % taxonName)
+#		self.m_Progress.WriteText("########### Querying GBIF for %s ######\n" % taxonName)
 		url="http://data.gbif.org/ws/rest/taxon/list?scientificname="+taxonName+"*&dataproviderkey=1&dataresourcekey=1"
 		try:	
 			html=urllib2.urlopen(url)
@@ -353,7 +395,7 @@ class GBIFQuery(GBIFQueryLayout):
 			taxonList=[taxonReq]
 		obs={}
 		for taxonName in taxonList:
-			
+			self.m_Progress.WriteText("########### Querying GBIF for %s ######\n" % taxonName)
 			cID = self.GETTAXID(taxonName)
 			if(cID == -1):
 				self.m_Progress.WriteText("No concept ID found for %s. Skipping...\n" % taxonName)
@@ -435,4 +477,136 @@ class GBIFQuery(GBIFQueryLayout):
 							except KeyError:
 								obs[currGrid] = {genus: [(rID,lat_tem,long_tem,name)] }
 		return(obs,conversions,records,distLocations)
+		
+		
+	def GETOBSENTIRERANGE(self,taxon_name,minLatitude,maxLatitude,minLongitude,maxLongitude):
+		records=0
+		distLocations=0
+		conversions = {}
+#		print "#################"
+#		print taxon_name
+#		print "#################"
+		taxonReq = '+'.join(taxon_name)
+		####################################
+		#	check if text file or command input
+		#	if (ends in .txt) then text
+		#	if ! then append .txt and check
+		####################################
+		taxonList=()
+		FAIL = 0
+		try:
+			taxonList = [line.strip() for line in open(taxonReq)]
+		except IOError:
+			FAIL=1
+		if(FAIL==1):
+			taxonReq_2 = taxonReq+".txt"
+			FAIL=0
+			try:
+				taxonList = [line.strip() for line in open(taxonReq_2)]
+			except IOError:
+				FAIL=1
+		if(FAIL==1):
+			taxonList=[taxonReq]
+		obs={}
+		for taxonName in taxonList:
+			self.m_Progress.WriteText("########### Querying GBIF for %s ######\n" % taxonName)
+			cID = self.GETTAXID(taxonName)
+			if(cID == -1):
+				self.m_Progress.WriteText("No concept ID found for %s. Skipping...\n" % taxonName)
+				continue
+			self.m_Progress.WriteText("Concept ID: %d\n" % cID)
+			#print("Concept ID \n",cID)
+			
+			### The set of observations
+			### hash key #1 = grid cell
+			### hash #2 = scientific name
+			### value = list of GBIF key + list of lat/longs of genus observations in that grid cell
+
+			fullTaxonomy={}
+
+		
+			resultCount =self.GETCOUNT(taxonName,minLatitude,maxLatitude,minLongitude,maxLongitude)
+			if resultCount>1000 :
+				nodeList=()
+				newCoords = self.SUBDIVIDECOL(minLatitude,maxLatitude,minLongitude,maxLongitude)
+				for coords in newCoords:
+					newMinLongitude = coords[2]
+					newMinLongitude = coords[3]
+					newMinLatitude = coords[0]
+					newMaxLatitude = coords[1]
+					resultCount =self.GETCOUNT(taxonName,newMinLatitude,newMaxLatitude,newMinLongitude,newMaxLongitude)
+					if resultCount > 1000:
+						nodeList=()
+						newCoords = self.SUBDIVIDECOL(minLatitude,maxLatitude,minLongitude,maxLongitude)
+						for coords in newCoords:
+							newMinLongitude = coords[2]
+							newMinLongitude = coords[3]
+							newMinLatitude = coords[0]
+							newMaxLatitude = coords[1]
+			
+			
+			
+			self.m_Progress.WriteText("Latitude: %d\tLongitude\t%d\tGrid ID: %d\t |" % (lat,lon,currGrid))
+			#print("Latitude: ",lat,"\tLongitude\t",lon,"\tGrid ID: ",currGrid,"\t |")
+			url= "http://data.gbif.org/ws/rest/occurrence/list?taxonconceptkey=%d&cellid=%d&coordinatestatus=true&coordinateissues=false&format=brief" % (cID,currGrid) 
+			response=urllib2.urlopen(url).read()
+			parser=minidom.parseString(response)
+			nodeList=parser.getElementsByTagName("to:TaxonOccurrence")
+			if len(nodeList)==1000:
+				nodeList=()
+				for j in range(0,100):
+					url = "http://data.gbif.org/ws/rest/occurrence/list?taxonconceptkey=%d&cellid=%d&coordinatestatus=true&coordinateissues=false&format=brief" % (cID,currGrid)
+					
+					for k in range(0,9):
+						url+="&centicellid="
+						url+=j+k
+					response=urllib2.urlopen(url).read()
+					parser=minidom.parseString(response) 
+					temp=parser.getElementsByTagName("to:TaxonOccurrence")
+					if len(temp)==1000:
+						temp=()
+						for jj in range(j,j+10):
+							url = "http://data.gbif.org/ws/rest/occurrence/list?taxonconceptkey=$cID&cellid=%d&coordinatestatus=true&coordinateissues=false&format=brief&centicellid=%d" %(cID,currGrid,jj)
+							self.m_Progress.WriteText("\t\t%s\n" % url)
+							#print("\t\t%s\n" % url)
+							response=urllib2.urlopen(url).read()
+							parser=minidom.parseString(response)
+							temper=parser.getElementsByTagName("to:TaxonOccurrence")
+							self.m_Progress.WriteText("\t\tSubsubset $d: $d records found\n" %(jj,len(temper)))
+							#print("\t\tSubsubset $d: $d records found\n" %(jj,len(temper)))
+							temp.append(temper)
+					self.m_Progress.WriteText("\n\tSubset $jj: %d records found.\n\n" % temp)
+					#print("\n\tSubset $jj: %d records found.\n\n" % temp)
+					nodeList.append(temp)		
+			self.m_Progress.WriteText("%d records found\n" % len(nodeList))
+			if len(nodeList) > 0:
+				records += len(nodeList)
+				distLocations += 1
+			#print("%d records found\n" % len(nodeList))
+			for node in nodeList:
+				string = node.toprettyxml(indent=' ')
+				rID=-1
+				key_string = re.search('gbifKey="(\d+)"',string)
+				if key_string:
+					id_string=re.search('\d+',key_string.group())
+					id = int(id_string.group())
+					rID=id
+				else:
+					sys.exit("Could not find a friggin GBIF key")
+				name=node.getElementsByTagName("tn:nameComplete")[0].toxml()
+				name = re.sub(r'<.*?\>','',name)
+				name = re.sub(r'[^A-Za-z ]+','',name)
+				name = re.sub(r' *$','',name)
+				genus = re.sub(r' .*','',name.lower())
+				lat_tem = node.getElementsByTagName("to:decimalLatitude")[0].toxml()
+				long_tem=node.getElementsByTagName("to:decimalLongitude")[0].toxml()
+				try:
+					obs[currGrid][genus].extend([(rID,lat_tem,long_tem,name)])
+				except KeyError:
+					try:
+						obs[currGrid].update({genus: [(rID,lat_tem,long_tem,name)] })
+					except KeyError:
+						obs[currGrid] = {genus: [(rID,lat_tem,long_tem,name)] }
+		return(obs,conversions,records,distLocations)
+
 
