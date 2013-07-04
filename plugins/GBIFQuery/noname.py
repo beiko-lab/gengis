@@ -55,21 +55,21 @@ class GBIFQueryLayout ( wx.Frame ):
 		self.m_MaxLonLabel.Wrap( -1 )
 		gSizer3.Add( self.m_MaxLonLabel, 0, wx.ALL|wx.ALIGN_CENTER_HORIZONTAL, 5 )
 		
-		self.m_MaxLon = wx.SpinCtrl( self, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, wx.SP_ARROW_KEYS, -180, 180, 180 )
+		self.m_MaxLon = wx.SpinCtrl( self, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, wx.SP_ARROW_KEYS|wx.TAB_TRAVERSAL, -180, 180, 180 )
 		gSizer3.Add( self.m_MaxLon, 0, wx.ALL|wx.ALIGN_CENTER_HORIZONTAL, 5 )
 		
 		self.m_staticText7 = wx.StaticText( self, wx.ID_ANY, u"Min Latitude", wx.DefaultPosition, wx.DefaultSize, 0 )
 		self.m_staticText7.Wrap( -1 )
 		gSizer3.Add( self.m_staticText7, 0, wx.ALL|wx.ALIGN_CENTER_HORIZONTAL, 5 )
 		
-		self.m_MinLat = wx.SpinCtrl( self, wx.ID_ANY, u"-90", wx.DefaultPosition, wx.DefaultSize, wx.SP_ARROW_KEYS, -90, 90, 90 )
+		self.m_MinLat = wx.SpinCtrl( self, wx.ID_ANY, u"-90", wx.DefaultPosition, wx.DefaultSize, wx.SP_ARROW_KEYS|wx.TAB_TRAVERSAL, -90, 90, 90 )
 		gSizer3.Add( self.m_MinLat, 0, wx.ALL|wx.ALIGN_CENTER_HORIZONTAL, 5 )
 		
 		self.m_staticText8 = wx.StaticText( self, wx.ID_ANY, u"Max Latitude", wx.DefaultPosition, wx.DefaultSize, 0 )
 		self.m_staticText8.Wrap( -1 )
 		gSizer3.Add( self.m_staticText8, 0, wx.ALL|wx.ALIGN_CENTER_HORIZONTAL, 5 )
 		
-		self.m_MaxLat = wx.SpinCtrl( self, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, wx.SP_ARROW_KEYS, -90, 90, 90 )
+		self.m_MaxLat = wx.SpinCtrl( self, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, wx.SP_ARROW_KEYS|wx.TAB_TRAVERSAL, -90, 90, 90 )
 		gSizer3.Add( self.m_MaxLat, 0, wx.ALL|wx.ALIGN_CENTER_HORIZONTAL, 5 )
 		
 		sbSizer4.Add( gSizer3, 1, wx.EXPAND, 5 )
@@ -99,7 +99,7 @@ class GBIFQueryLayout ( wx.Frame ):
 		self.m_AddData = wx.Button( self, wx.ID_ANY, u"Add Data to Map", wx.DefaultPosition, wx.DefaultSize, 0 )
 		bSizer12.Add( self.m_AddData, 0, wx.ALL, 5 )
 		
-		self.m_ExportData = wx.Button( self, wx.ID_ANY, u"Export Data to File...", wx.DefaultPosition, wx.DefaultSize, 0|wx.TAB_TRAVERSAL )
+		self.m_ExportData = wx.Button( self, wx.ID_ANY, u"Export Data...", wx.DefaultPosition, wx.DefaultSize, 0 )
 		bSizer12.Add( self.m_ExportData, 0, wx.ALL, 5 )
 		
 		

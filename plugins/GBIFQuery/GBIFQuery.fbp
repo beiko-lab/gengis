@@ -9,11 +9,11 @@
         <property name="disconnect_python_events">0</property>
         <property name="encoding">UTF-8</property>
         <property name="event_generation">connect</property>
-        <property name="file"></property>
+        <property name="file">GBIFQueryLayout</property>
         <property name="first_id">1000</property>
         <property name="help_provider">none</property>
         <property name="internationalize">0</property>
-        <property name="name">MyProject1</property>
+        <property name="name">GBIFQueryLayout</property>
         <property name="namespace"></property>
         <property name="path">.</property>
         <property name="precompiled_header"></property>
@@ -471,7 +471,7 @@
                                                         <property name="value"></property>
                                                         <property name="window_extra_style"></property>
                                                         <property name="window_name"></property>
-                                                        <property name="window_style">wxTAB_TRAVERSAL</property>
+                                                        <property name="window_style"></property>
                                                         <event name="OnChar"></event>
                                                         <event name="OnEnterWindow"></event>
                                                         <event name="OnEraseBackground"></event>
@@ -587,7 +587,7 @@
                                                         <property name="value">-90</property>
                                                         <property name="window_extra_style"></property>
                                                         <property name="window_name"></property>
-                                                        <property name="window_style">wxTAB_TRAVERSAL</property>
+                                                        <property name="window_style"></property>
                                                         <event name="OnChar"></event>
                                                         <event name="OnEnterWindow"></event>
                                                         <event name="OnEraseBackground"></event>
@@ -703,7 +703,7 @@
                                                         <property name="value"></property>
                                                         <property name="window_extra_style"></property>
                                                         <property name="window_name"></property>
-                                                        <property name="window_style">wxTAB_TRAVERSAL</property>
+                                                        <property name="window_style"></property>
                                                         <event name="OnChar"></event>
                                                         <event name="OnEnterWindow"></event>
                                                         <event name="OnEraseBackground"></event>
@@ -834,7 +834,7 @@
                                                 <property name="font"></property>
                                                 <property name="hidden">0</property>
                                                 <property name="id">wxID_ANY</property>
-                                                <property name="label">&#x0A;</property>
+                                                <property name="label"></property>
                                                 <property name="maximum_size"></property>
                                                 <property name="minimum_size"></property>
                                                 <property name="name">m_staticText6</property>
@@ -959,7 +959,7 @@
                                                 <property name="font"></property>
                                                 <property name="hidden">0</property>
                                                 <property name="id">wxID_ANY</property>
-                                                <property name="label">Add Data</property>
+                                                <property name="label">Add Data to Map</property>
                                                 <property name="maximum_size"></property>
                                                 <property name="minimum_size"></property>
                                                 <property name="name">m_AddData</property>
@@ -1016,7 +1016,7 @@
                                                 <property name="font"></property>
                                                 <property name="hidden">0</property>
                                                 <property name="id">wxID_ANY</property>
-                                                <property name="label">Export Data</property>
+                                                <property name="label">Export Data to File...</property>
                                                 <property name="maximum_size"></property>
                                                 <property name="minimum_size"></property>
                                                 <property name="name">m_ExportData</property>
@@ -1032,7 +1032,7 @@
                                                 <property name="validator_variable"></property>
                                                 <property name="window_extra_style"></property>
                                                 <property name="window_name"></property>
-                                                <property name="window_style"></property>
+                                                <property name="window_style">wxTAB_TRAVERSAL</property>
                                                 <event name="OnButtonClick">OnExportData</event>
                                                 <event name="OnChar"></event>
                                                 <event name="OnEnterWindow"></event>
