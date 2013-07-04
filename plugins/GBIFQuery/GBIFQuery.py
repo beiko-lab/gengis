@@ -21,8 +21,15 @@ class GBIFQuery(GBIFQueryLayout):
 #		import pdb; pdb.set_trace()
 		GBIFQueryLayout.__init__(self,parent)
 		self.SetIcon(wx.Icon(GenGIS.mainWindow.GetExeDir() + "images/CrazyEye.ico",wx.BITMAP_TYPE_ICO))
-		
 		self.graphicalElementIds=[]
+		self.__selectedTaxon__=[]
+		self.__obs__ = []
+		self.__conversions__ = []
+		self.m_IDList.Clear()
+		#No Map Data
+		self.m_AddData.Disable()
+		if GenGIS.layerTree.GetNumMapLayers() > 0 :
+			self.m_AddData.Enable()
 		
 	#	Query GBIF for Taxa in Lat/Lon Boundary
 	def OnSearch(self,event):
@@ -59,14 +66,13 @@ class GBIFQuery(GBIFQueryLayout):
 		self.m_staticText6.SetLabel("\n")
 		records,distLocations = 0,0
 		self.__obs__=[]
-	#	wx.MessageBox("Go")
+		self.__conversions__=[]
 		wx.BeginBusyCursor()
 		if(self.__selectedTaxon__):
 			minLatitude= self.m_MinLat.GetValue()
 			maxLatitude= self.m_MaxLat.GetValue()
 			minLongitude= self.m_MinLon.GetValue()
 			maxLongitude= self.m_MaxLon.GetValue()
-		#	wx.MessageBox("%s %s %s %s" %(minLatitude,maxLatitude,minLongitude,maxLongitude))
 			self.m_Progress.WriteText("Starting...\n")
 			for tax in self.__selectedTaxon__:
 				obs,con,recs,distLocs= self.GETOBS(tax.split(),minLatitude,maxLatitude,minLongitude,maxLongitude)
@@ -74,7 +80,6 @@ class GBIFQuery(GBIFQueryLayout):
 				self.__conversions__.append(con)
 				records += recs
 				distLocations +=distLocs
-		#	print ("%d\n" % len(self.__obs__.keys()))
 			self.m_Progress.WriteText("Done.\n")
 		else:
 			wx.MessageBox("Please select some Taxa.")
@@ -93,17 +98,18 @@ class GBIFQuery(GBIFQueryLayout):
 	
 	#	Adds Data to GenGIS
 	def OnAddData(self,event):
-	#	GenGIS.layerTree.GetLocationSetLayer(0).GetController().GetLocationSetFromPython("thisisastringname")
-	
-	#	NEEDS TO ASK FOR NAME TO GIVE TO GENGIS
 		if (len(self.__obs__) > 0):
 			OUTLText, OUTSText = self.GETTEXT(self.__obs__,self.__conversions__)
 			OUTLArray=self.CPPOUT(OUTLText)
 			OUTSArray=self.CPPOUT(OUTSText)
-			OUTLArray.insert(0,"Site ID,Latitude,Longitude,Richness")
+			OUTLArray.insert(0,"Site ID,Latitude,Longitude,Richness,Cell ID")
 			OUTSArray.insert(0,"Sequence ID,Site ID,CellLat,CellLong,Taxon,Genus,TrueLat,TrueLong,Count,AllRecords")					
-#			GenGIS.layerTree.GetLocationSetLayer(0).GetController().GetLocationSetFromPython("thisisastringname")
+			OUTLArray.pop()
+			OUTSArray.pop()
+		#	print OUTLArray
+			
 			GenGIS.mainWindow.OpenLocationsCSVFile(OUTLArray, "thisisastringname")
+			GenGIS.mainWindow.OpenSequenceCSVFile(OUTSArray, "thisisastringname")
 			
 		else:
 			wx.MessageBox("Please make a successful GBIF Query first.")
@@ -111,7 +117,6 @@ class GBIFQuery(GBIFQueryLayout):
 
 	#	Exports Location and Sequence Data to a location of the users choice
 	def OnExportData(self,event):
-#		print ("%d\n" % len(self.__obs__.keys()))
 		if (len(self.__obs__) > 0):
 			fileTypes = 'Loc and Seq Files (*.csv)|*.csv'
 			dlg = wx.FileDialog(self, "Save plot", "", "", fileTypes, wx.SAVE)
@@ -122,12 +127,10 @@ class GBIFQuery(GBIFQueryLayout):
 				#creates the directories
 				OUTLfile = ("%s/%s_locs.csv" % (dir,file_split[0]))				
 				OUTSfile = ("%s/%s_seqs.csv" % (dir,file_split[0]))
-				
-	#			OUTLText, OUTSText = self.MAKEOUTS(self.__obs__,self.__conversions__)
 				OUTLText, OUTSText = self.GETTEXT(self.__obs__,self.__conversions__)
 				OUTL=open(OUTLfile,'w')
 				OUTS=open(OUTSfile,'w')
-				OUTL.write("Site ID,Latitude,Longitude,Richness\n")
+				OUTL.write("Site ID,Latitude,Longitude,Richness,Cell ID\n")
 				OUTS.write("Sequence ID,Site ID,CellLat,CellLong,Taxon,Genus,TrueLat,TrueLong,Count,AllRecords\n")	
 				OUTL.write(OUTLText)
 				OUTS.write(OUTSText)
@@ -168,7 +171,6 @@ class GBIFQuery(GBIFQueryLayout):
 			GenGIS.graphics.RemoveLine(id)
 
 		GenGIS.viewport.Refresh()
-		
 		event.Skip()
 	
 	#	Close the Plugin
@@ -203,11 +205,15 @@ class GBIFQuery(GBIFQueryLayout):
 		seqFileAgg = {}
 		for cellOut in sorted(obs.keys()):
 			if len(obs[cellOut].keys()) > 0:
-				OUTLTEXT += ("%d,%f,%f,%d\n" % (cellOut, conversions[cellOut][0] + 0.5, conversions[cellOut][1] +0.5, len(obs[cellOut].keys()) ))  
+			#	OUTLTEXT += ("%d,%f,%f,%d\n" % (cellOut, conversions[cellOut][0] + 0.5, conversions[cellOut][1] +0.5, len(obs[cellOut].keys()) ))  
 				for taxOut in sorted(obs[cellOut].keys()):
 					thisList=obs[cellOut][taxOut]
 					for ent in thisList:
-						toKey = "%d,%f,%f,%s,%s,%s,%s" %(cellOut, conversions[cellOut][0],conversions[cellOut][1],ent[3],taxOut,ent[1],ent[2])
+						fullLat = float(re.sub(r'\<.*?\>','',ent[1]))
+						fullLon = float(re.sub(r'\<.*?\>','',ent[2]))
+						siteID = "%s_%f_%f" %(taxOut,fullLat,fullLon)
+						OUTLTEXT += ("%s,%f,%f,%d,%d\n" % (siteID, fullLat, fullLon, len(obs[cellOut].keys()), cellOut ))
+						toKey = "%s,%f,%f,%s,%s,%s,%s" %(siteID, conversions[cellOut][0],conversions[cellOut][1],ent[3],taxOut,ent[1],ent[2])
 						toKey = re.sub(r'\<.*?\>','',toKey)
 						try:
 							seqFileAgg[toKey].extend([ent[0]])
@@ -220,7 +226,6 @@ class GBIFQuery(GBIFQueryLayout):
 		return(OUTLTEXT,OUTSTEXT)
 				
 	# Populate the Results Table using Taxa and Geographic boundaries
-	
 	def CPPOUT (self,input):
 		array = input.split("\n")
 	#	print array[0]
