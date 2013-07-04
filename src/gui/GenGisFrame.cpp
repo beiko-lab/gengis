@@ -1701,7 +1701,7 @@ void GenGisFrame::LayerOpenLocations( std::string file )
 	LayerOpenLocations( wxString( file.c_str(), wxConvUTF8 ) );
 }
 
-void GenGisFrame::LayerOpenLocations( std::vector<std::wstring> csvTableRows, std::wstring locationNames )
+void GenGisFrame::LayerOpenLocations( std::vector<std::wstring>& csvTableRows, std::wstring locationNames )
 {
 	if ( App::Inst().GetLayerTreeController()->GetNumLocationSetLayers() > 0 )
 	{
@@ -1849,6 +1849,15 @@ void GenGisFrame::LayerOpenLocations( wxFileName fullPath )
 
 				locationSet->AddLocationLayer(locationLayer);
 			}
+			//unsigned int numberOfLocationLayers = locationSet->GetNumLocationLayers();
+			//if ( numberOfLocationLayers > 2500 )
+			//{
+			//	for ( unsigned int locLayer = 0; locLayer < numberOfLocationLayers; locLayer++ )
+			//	{
+			//		locationSet->GetLocationLayer( locLayer )->GetLocationController()->GetLocationView()->SetShape( VisualMarker::MARKER_SHAPE::OCTAGON );
+			//	}
+			//}
+
 			locationSet->GetLocationSetController()->SetLocationSetLayers(locationLayers);
 
 			App::Inst().GetLayerTreeController()->AddLocationSetLayer(locationSet);
@@ -1977,7 +1986,7 @@ void GenGisFrame::LayerOpenSequenceData( wxFileName fullPath )
 }
 
 
-void GenGisFrame::LayerOpenSequenceData( std::vector<std::wstring> csvTableRows, std::wstring locationNames )
+void GenGisFrame::LayerOpenSequenceData( std::vector<std::wstring>& csvTableRows, std::wstring locationNames )
 {
 	// determine the selected layer
 	LayerPtr selectedLayer = App::Inst().GetLayerTreeController()->GetSelectedLayer();

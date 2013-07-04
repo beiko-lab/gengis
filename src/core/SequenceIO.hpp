@@ -45,7 +45,7 @@ namespace GenGIS
 		*/
 		static bool Read( const wxString& fullPath, std::vector<SequenceModelPtr>& sequenceModels, bool& bCancel );
 
-		static bool ParseCSVFile( const std::vector<std::wstring> csvTableRows, std::vector<SequenceModelPtr>& sequenceModels, bool& bCancel);
+		static bool ParseCSVFile( const std::vector<std::wstring>& csvTableRows, std::vector<SequenceModelPtr>& sequenceModels, bool& bCancel);
 	};
 
 }
