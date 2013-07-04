@@ -84,7 +84,7 @@ bool LocationSetIO::Read( const wxString& fullPath, StudyControllerPtr studyCont
 	return true;
 }
 
-bool LocationSetIO::ParseCSVFile( std::vector<std::wstring> csvTableRows, StudyControllerPtr studyController, std::vector<LocationModelPtr>& locationModels )
+bool LocationSetIO::ParseCSVFile( const std::vector<std::wstring>& csvTableRows, StudyControllerPtr studyController, std::vector<LocationModelPtr>& locationModels )
 {
 	const int ROWS_TO_SHOW_PROGRESS_DLG = 2000;
 

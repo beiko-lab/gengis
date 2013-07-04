@@ -82,7 +82,7 @@ bool SequenceIO::Read(const wxString& fullPath, std::vector<SequenceModelPtr>& s
 }
 
 
-bool SequenceIO::ParseCSVFile( std::vector<std::wstring> csvTableRows, std::vector<SequenceModelPtr>& sequenceModels, bool& bCancel)
+bool SequenceIO::ParseCSVFile( const std::vector<std::wstring>& csvTableRows, std::vector<SequenceModelPtr>& sequenceModels, bool& bCancel)
 {
 	bCancel = false;
 
