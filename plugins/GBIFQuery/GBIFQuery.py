@@ -265,7 +265,7 @@ class GBIFQuery(GBIFQueryLayout):
 	def GETCOUNT(self,taxon_name,minLat,maxLat,minLon,maxLon):
 		taxonReq = '+'.join(taxon_name)			
 		cID = self.GETTAXID(taxonReq)
-		url= " http://data.gbif.org/ws/rest/occurrence/count?taxonconceptkey=%d&maxlatitude=%d&minlatitude=%d&maxlatitude=%d&minlongitude=%d" % (cID,maxLat,minLat,maxLon,minLon) 
+		url= " http://data.gbif.org/ws/rest/occurrence/count?taxonconceptkey=%d&maxlatitude=%d&minlatitude=%d&maxlongitude=%d&minlongitude=%d" % (cID,maxLat,minLat,maxLon,minLon) 
 		try:	
 			response=urllib2.urlopen(url).read()
 		except urllib2.HTTPError as e:
