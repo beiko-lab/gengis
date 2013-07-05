@@ -138,14 +138,20 @@ class GBIFQuery(GBIFQueryLayout):
 				OUTLfile = ("%s/%s_locs.csv" % (dir,file_split[0]))				
 				OUTSfile = ("%s/%s_seqs.csv" % (dir,file_split[0]))
 				OUTLText, OUTSText = self.GETTEXT(self.__obs__,self.__conversions__)
-				OUTL=open(OUTLfile,'w')
-				OUTS=open(OUTSfile,'w')
-				OUTL.write("Site ID,Latitude,Longitude,Richness,Cell ID\n")
-				OUTS.write("Sequence ID,Site ID,CellLat,CellLong,Taxon,Genus,TrueLat,TrueLong,Count,AllRecords\n")	
-				OUTL.write(OUTLText)
-				OUTS.write(OUTSText)
-				OUTL.close()
-				OUTS.close()
+				try:
+					OUTL=open(OUTLfile,'w')
+					OUTL.write("Site ID,Latitude,Longitude,Richness,Cell ID\n")
+					OUTL.write(OUTLText)
+					OUTL.close()
+				except IOError:
+					wx.MessageBox("File could not be written. Perhaps another program is using it.")
+				try:
+					OUTS=open(OUTSfile,'w')
+					OUTS.write("Sequence ID,Site ID,CellLat,CellLong,Taxon,Genus,TrueLat,TrueLong,Count,AllRecords\n")	
+					OUTS.write(OUTSText)
+					OUTS.close()
+				except IOError:
+					wx.MessageBox("File could not be written. Perhaps another program is using it.")
 			dlg.Destroy()
 		else:
 			wx.MessageBox("Please make a successful GBIF Query first.")
@@ -208,6 +214,7 @@ class GBIFQuery(GBIFQueryLayout):
 		return(OUTL,OUTS)
 	#	Transforms the mined data into text to be output
 	def MAKEOUTS (self,obs,conversions):
+		uniqueSiteID = set()
 		OUTLTEXT=""
 		OUTSTEXT=""
 		seqFileAgg = {}
@@ -220,7 +227,9 @@ class GBIFQuery(GBIFQueryLayout):
 						fullLat = float(re.sub(r'\<.*?\>','',ent[1]))
 						fullLon = float(re.sub(r'\<.*?\>','',ent[2]))
 						siteID = "%s_%f_%f" %(taxOut,fullLat,fullLon)
-						OUTLTEXT += ("%s,%f,%f,%d,%d\n" % (siteID, fullLat, fullLon, len(obs[cellOut].keys()), cellOut ))
+						if siteID not in uniqueSiteID:
+							uniqueSiteID.add(siteID)
+							OUTLTEXT += ("%s,%f,%f,%d,%d\n" % (siteID, fullLat, fullLon, len(obs[cellOut].keys()), cellOut ))
 						toKey = "%s,%f,%f,%s,%s,%s,%s" %(siteID, conversions[cellOut][0],conversions[cellOut][1],ent[3],taxOut,ent[1],ent[2])
 						toKey = re.sub(r'\<.*?\>','',toKey)
 						try:
