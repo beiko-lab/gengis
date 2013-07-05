@@ -40,37 +40,37 @@ class GBIFQueryLayout ( wx.Frame ):
 		
 		bSizer3.Add( sbSizer2, 0, wx.EXPAND, 5 )
 		
-		sbSizer4 = wx.StaticBoxSizer( wx.StaticBox( self, wx.ID_ANY, u"Boundries" ), wx.VERTICAL )
+		sbSizer4 = wx.StaticBoxSizer( wx.StaticBox( self, wx.ID_ANY, u"Geographic Range" ), wx.VERTICAL )
 		
 		gSizer3 = wx.GridSizer( 2, 2, 0, 0 )
 		
-		self.m_MinLonLabel = wx.StaticText( self, wx.ID_ANY, u"Min Longitude", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_MinLonLabel = wx.StaticText( self, wx.ID_ANY, u"Min Latitude", wx.DefaultPosition, wx.DefaultSize, 0 )
 		self.m_MinLonLabel.Wrap( -1 )
 		gSizer3.Add( self.m_MinLonLabel, 0, wx.ALL|wx.ALIGN_CENTER_HORIZONTAL, 5 )
 		
-		self.m_MinLon = wx.SpinCtrl( self, wx.ID_ANY, u"-180", wx.DefaultPosition, wx.DefaultSize, wx.SP_ARROW_KEYS|wx.TAB_TRAVERSAL, -180, 180, -180 )
-		gSizer3.Add( self.m_MinLon, 0, wx.ALL|wx.ALIGN_CENTER_HORIZONTAL, 5 )
+		self.m_MinLat = wx.SpinCtrl( self, wx.ID_ANY, u"-90", wx.DefaultPosition, wx.DefaultSize, wx.SP_ARROW_KEYS|wx.TAB_TRAVERSAL, -90, 90, -180 )
+		gSizer3.Add( self.m_MinLat, 0, wx.ALL|wx.ALIGN_CENTER_HORIZONTAL, 5 )
 		
-		self.m_MaxLonLabel = wx.StaticText( self, wx.ID_ANY, u"Max Longitude", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_MaxLonLabel = wx.StaticText( self, wx.ID_ANY, u"Max Latitude", wx.DefaultPosition, wx.DefaultSize, 0 )
 		self.m_MaxLonLabel.Wrap( -1 )
 		gSizer3.Add( self.m_MaxLonLabel, 0, wx.ALL|wx.ALIGN_CENTER_HORIZONTAL, 5 )
 		
-		self.m_MaxLon = wx.SpinCtrl( self, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, wx.SP_ARROW_KEYS, -180, 180, 180 )
-		gSizer3.Add( self.m_MaxLon, 0, wx.ALL|wx.ALIGN_CENTER_HORIZONTAL, 5 )
+		self.m_MaxLat = wx.SpinCtrl( self, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, wx.SP_ARROW_KEYS, -90, 90, 90 )
+		gSizer3.Add( self.m_MaxLat, 0, wx.ALL|wx.ALIGN_CENTER_HORIZONTAL, 5 )
 		
-		self.m_staticText7 = wx.StaticText( self, wx.ID_ANY, u"Min Latitude", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_staticText7 = wx.StaticText( self, wx.ID_ANY, u"Min Longitude", wx.DefaultPosition, wx.DefaultSize, 0 )
 		self.m_staticText7.Wrap( -1 )
 		gSizer3.Add( self.m_staticText7, 0, wx.ALL|wx.ALIGN_CENTER_HORIZONTAL, 5 )
 		
-		self.m_MinLat = wx.SpinCtrl( self, wx.ID_ANY, u"-90", wx.DefaultPosition, wx.DefaultSize, wx.SP_ARROW_KEYS, -90, 90, 90 )
-		gSizer3.Add( self.m_MinLat, 0, wx.ALL|wx.ALIGN_CENTER_HORIZONTAL, 5 )
+		self.m_MinLon = wx.SpinCtrl( self, wx.ID_ANY, u"-180", wx.DefaultPosition, wx.DefaultSize, wx.SP_ARROW_KEYS, -180, 180, 90 )
+		gSizer3.Add( self.m_MinLon, 0, wx.ALL|wx.ALIGN_CENTER_HORIZONTAL, 5 )
 		
-		self.m_staticText8 = wx.StaticText( self, wx.ID_ANY, u"Max Latitude", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_staticText8 = wx.StaticText( self, wx.ID_ANY, u"Max Longitude", wx.DefaultPosition, wx.DefaultSize, 0 )
 		self.m_staticText8.Wrap( -1 )
 		gSizer3.Add( self.m_staticText8, 0, wx.ALL|wx.ALIGN_CENTER_HORIZONTAL, 5 )
 		
-		self.m_MaxLat = wx.SpinCtrl( self, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, wx.SP_ARROW_KEYS, -90, 90, 90 )
-		gSizer3.Add( self.m_MaxLat, 0, wx.ALL|wx.ALIGN_CENTER_HORIZONTAL, 5 )
+		self.m_MaxLon = wx.SpinCtrl( self, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, wx.SP_ARROW_KEYS, -180, 180, 180 )
+		gSizer3.Add( self.m_MaxLon, 0, wx.ALL|wx.ALIGN_CENTER_HORIZONTAL, 5 )
 		
 		sbSizer4.Add( gSizer3, 1, wx.EXPAND, 5 )
 		
