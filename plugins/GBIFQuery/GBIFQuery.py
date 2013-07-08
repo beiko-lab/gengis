@@ -21,6 +21,7 @@ class GBIFQuery(GBIFQueryLayout):
 #		import pdb; pdb.set_trace()
 		GBIFQueryLayout.__init__(self,parent)
 		self.SetIcon(wx.Icon(GenGIS.mainWindow.GetExeDir() + "images/CrazyEye.ico",wx.BITMAP_TYPE_ICO))
+		self.m_bitmap3.SetIcon(wx.Icon(GenGIS.mainWindow.GetExeDir() + "images/GBIF_compass.png",wx.BITMAP_TYPE_PNG))
 		self.graphicalElementIds=[]
 		self.__selectedTaxon__=[]
 		self.__obs__ = []
