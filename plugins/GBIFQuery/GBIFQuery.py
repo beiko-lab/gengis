@@ -582,7 +582,6 @@ class GBIFQuery(GBIFQueryLayout):
 										wx.MessageBox("Smallest Gradient not sufficient.")
 									#centicells worked
 									else:
-										self.m_Progress.WriteText("ccell\n")
 										self.m_Progress.WriteText("Latitude: %0.2f : %0.2f\tLongitude: %0.2f : %0.2f\t |" % (ccellMinLatitude,ccellMaxLatitude,ccellMinLongitude,ccellMaxLongitude))
 										url="http://data.gbif.org/ws/rest/occurrence/list?taxonconceptkey=%d&maxlatitude=%d&minlatitude=%d&maxlongitude=%d&minlongitude=%d" %(cID,ccellMaxLatitude,ccellMinLatitude,ccellMaxLongitude,ccellMinLongitude)
 										response=urllib2.urlopen(url).read()
@@ -593,7 +592,6 @@ class GBIFQuery(GBIFQueryLayout):
 							
 							#cells worked
 							else:
-								self.m_Progress.WriteText("cell\n")
 								self.m_Progress.WriteText("Latitude: %0.2f : %0.2f\tLongitude: %0.2f : %0.2f\t |" % (cellMinLatitude,cellMaxLatitude,cellMinLongitude,cellMaxLongitude))
 								url="http://data.gbif.org/ws/rest/occurrence/list?taxonconceptkey=%d&maxlatitude=%d&minlatitude=%d&maxlongitude=%d&minlongitude=%d" %(cID,cellMaxLatitude,cellMinLatitude,cellMaxLongitude,cellMinLongitude)
 								response=urllib2.urlopen(url).read()
@@ -603,7 +601,6 @@ class GBIFQuery(GBIFQueryLayout):
 								self.m_Progress.WriteText("%d records found\n" % len(temper))
 					#cols worked
 					else:
-						self.m_Progress.WriteText("coll\n")
 						self.m_Progress.WriteText("Latitude: %0.2f : %0.2f\tLongitude: %0.2f : %0.2f\t |" % (colMinLatitude,colMaxLatitude,colMinLongitude,colMaxLongitude))
 						url="http://data.gbif.org/ws/rest/occurrence/list?taxonconceptkey=%d&maxlatitude=%d&minlatitude=%d&maxlongitude=%d&minlongitude=%d" %(cID,colMaxLatitude,colMinLatitude,colMaxLongitude,colMinLongitude)
 						response=urllib2.urlopen(url).read()
@@ -614,7 +611,6 @@ class GBIFQuery(GBIFQueryLayout):
 						
 			#whole thing worked
 			else:
-				self.m_Progress.WriteText("full\n")
 				self.m_Progress.WriteText("Latitude: %0.2f : %0.2f\tLongitude: %0.2f : %0.2f\t |" % (minLatitude,maxLatitude,minLongitude,maxLongitude))
 				url="http://data.gbif.org/ws/rest/occurrence/list?taxonconceptkey=%d&maxlatitude=%d&minlatitude=%d&maxlongitude=%d&minlongitude=%d" %(cID,maxLatitude,minLatitude,maxLongitude,minLongitude)
 				response=urllib2.urlopen(url).read()
