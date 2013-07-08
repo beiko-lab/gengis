@@ -53,8 +53,8 @@ class GBIFQuery(GBIFQueryLayout):
 		elif(taxon=="Galaxiidae"):
 			taxon="Galaxiidae"
 			self.m_MinLat.SetValue(-42)
-			self.m_MaxLat.SetValue(-32)
-			self.m_MinLon.SetValue(147)
+			self.m_MaxLat.SetValue(-26)
+			self.m_MinLon.SetValue(127)
 			self.m_MaxLon.SetValue(167)
 		taxon=taxon.split()
 		if(len(taxon)==0):
@@ -260,16 +260,16 @@ class GBIFQuery(GBIFQueryLayout):
 		longitudeRange = maxlongitude - minlongitude
 		new_coords = []
 		longitudeBase= float(longitudeRange)/float(10)
-		for i in range(0,9):
+		for i in range(0,10):
 			new_coords.append(( minlatitude,maxlatitude,minlongitude+longitudeBase * i,minlongitude+longitudeBase* (i+1)))
 		return(new_coords)
 	
 	#subdivide a given range by latitude
 	def SUBDIVIDEROW(self,minlatitude,maxlatitude,minlongitude,maxlongitude):
-		latitudeRange = maxlatitude - latitude
+		latitudeRange = maxlatitude - minlatitude
 		new_coords = []
 		latitudeBase= float(latitudeRange)/float(10)
-		for i in range(0,9):
+		for i in range(0,10):
 			new_coords.append((minlatitude + latitudeBase*i,minlatitude + latitudeBase *(i+1),minlongitude,maxlongitude))
 		return(new_coords)	
 		
@@ -545,8 +545,9 @@ class GBIFQuery(GBIFQueryLayout):
 			resultCount =self.GETCOUNT(taxon_name,minLatitude,maxLatitude,minLongitude,maxLongitude)
 			#chek if whole window fits: if not divide into columns
 	#		import pdb; pdb.set_trace()
+			nodeList=[]
 			if resultCount>1000 :
-				nodeList=[]
+	#			nodeList=[]
 				newCoords = self.SUBDIVIDECOL(minLatitude,maxLatitude,minLongitude,maxLongitude)
 				for coords in newCoords:
 					colMinLongitude = coords[2]
@@ -557,7 +558,7 @@ class GBIFQuery(GBIFQueryLayout):
 					resultCount =self.GETCOUNT(taxon_name,colMinLatitude,colMaxLatitude,colMinLongitude,colMaxLongitude)
 					#check if col fits: if not divide into cells
 					if resultCount > 1000:
-						temp
+		#				temp
 						newCoords = self.SUBDIVIDEROW(colMinLatitude,colMaxLatitude,colMinLongitude,colMaxLongitude)
 						for coords in newCoords:
 							cellMinLongitude = coords[2]
@@ -568,7 +569,7 @@ class GBIFQuery(GBIFQueryLayout):
 							#check if cell fits: if not divide into centicells
 							print "stage 3"
 							if resultCount >1000:
-								temp=[]
+		#						temp=[]
 								newCoords = self.SUBDIVIDECOL(cellMinLatitude,cellMaxLatitude,cellMinLongitude,cellMaxLongitude)
 								for coords in newCoords:
 									ccellMinLongitude = coords[2]
@@ -581,7 +582,8 @@ class GBIFQuery(GBIFQueryLayout):
 										wx.MessageBox("Smallest Gradient not sufficient.")
 									#centicells worked
 									else:
-										self.m_Progress.WriteText("Latitude: %d : %d\tLongitude: %d : %d\t |" % (ccellMinLatitude,ccellMaxLatitude,ccellMinLongitude,ccellMaxLongitude))
+										self.m_Progress.WriteText("ccell\n")
+										self.m_Progress.WriteText("Latitude: %0.2f : %0.2f\tLongitude: %0.2f : %0.2f\t |" % (ccellMinLatitude,ccellMaxLatitude,ccellMinLongitude,ccellMaxLongitude))
 										url="http://data.gbif.org/ws/rest/occurrence/list?taxonconceptkey=%d&maxlatitude=%d&minlatitude=%d&maxlongitude=%d&minlongitude=%d" %(cID,ccellMaxLatitude,ccellMinLatitude,ccellMaxLongitude,ccellMinLongitude)
 										response=urllib2.urlopen(url).read()
 										parser=minidom.parseString(response)
@@ -591,16 +593,18 @@ class GBIFQuery(GBIFQueryLayout):
 							
 							#cells worked
 							else:
-								self.m_Progress.WriteText("Latitude: %d : %d\tLongitude: %d : %d\t |" % (cellMinLatitude,cellMaxLatitude,cellMinLongitude,cellMaxLongitude))
+								self.m_Progress.WriteText("cell\n")
+								self.m_Progress.WriteText("Latitude: %0.2f : %0.2f\tLongitude: %0.2f : %0.2f\t |" % (cellMinLatitude,cellMaxLatitude,cellMinLongitude,cellMaxLongitude))
 								url="http://data.gbif.org/ws/rest/occurrence/list?taxonconceptkey=%d&maxlatitude=%d&minlatitude=%d&maxlongitude=%d&minlongitude=%d" %(cID,cellMaxLatitude,cellMinLatitude,cellMaxLongitude,cellMinLongitude)
 								response=urllib2.urlopen(url).read()
 								parser=minidom.parseString(response)
 								temper=parser.getElementsByTagName("to:TaxonOccurrence")
-								NodeList.extend(temper)
+								nodeList.extend(temper)
 								self.m_Progress.WriteText("%d records found\n" % len(temper))
 					#cols worked
 					else:
-						self.m_Progress.WriteText("Latitude: %d : %d\tLongitude: %d : %d\t |" % (colMinLatitude,colMaxLatitude,colMinLongitude,colMaxLongitude))
+						self.m_Progress.WriteText("coll\n")
+						self.m_Progress.WriteText("Latitude: %0.2f : %0.2f\tLongitude: %0.2f : %0.2f\t |" % (colMinLatitude,colMaxLatitude,colMinLongitude,colMaxLongitude))
 						url="http://data.gbif.org/ws/rest/occurrence/list?taxonconceptkey=%d&maxlatitude=%d&minlatitude=%d&maxlongitude=%d&minlongitude=%d" %(cID,colMaxLatitude,colMinLatitude,colMaxLongitude,colMinLongitude)
 						response=urllib2.urlopen(url).read()
 						parser=minidom.parseString(response)
@@ -610,7 +614,8 @@ class GBIFQuery(GBIFQueryLayout):
 						
 			#whole thing worked
 			else:
-				self.m_Progress.WriteText("Latitude: %d : %d\tLongitude: %d : %d\t |" % (minLatitude,maxLatitude,minLongitude,maxLongitude))
+				self.m_Progress.WriteText("full\n")
+				self.m_Progress.WriteText("Latitude: %0.2f : %0.2f\tLongitude: %0.2f : %0.2f\t |" % (minLatitude,maxLatitude,minLongitude,maxLongitude))
 				url="http://data.gbif.org/ws/rest/occurrence/list?taxonconceptkey=%d&maxlatitude=%d&minlatitude=%d&maxlongitude=%d&minlongitude=%d" %(cID,maxLatitude,minLatitude,maxLongitude,minLongitude)
 				response=urllib2.urlopen(url).read()
 				parser=minidom.parseString(response)
@@ -642,6 +647,9 @@ class GBIFQuery(GBIFQueryLayout):
 				conversions[currGrid]=	[fullLat,fullLon]
 #				if (fullLat,fullLon) in distLocations:
 #					print fullLat,fullLon
+				#	Currently considers only geographic points on the map
+				#	to consider all entries in the Loc file (two taxon at one place)
+				# 	consider adding rID to tuple
 				distLocations.add((fullLat,fullLon))
 				try:
 					obs[currGrid][genus].extend([(rID,lat_tem,long_tem,name)])
