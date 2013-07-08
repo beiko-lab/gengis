@@ -1672,12 +1672,12 @@ void GenGisFrame::OnLayerOpenLocations( wxCommandEvent& event )
 		return;
 	}
 
-	if ( App::Inst().GetLayerTreeController()->GetNumLocationSetLayers() > 0 )
-	{
-		wxMessageBox( wxT( "GenGIS currently supports only a single location set." ),
-			wxT( "Multiple location sets not upported" ), wxOK | wxICON_INFORMATION );
-		return;
-	}
+	//if ( App::Inst().GetLayerTreeController()->GetNumLocationSetLayers() > 0 )
+	//{
+	//	wxMessageBox( wxT( "GenGIS currently supports only a single location set." ),
+	//		wxT( "Multiple location sets not upported" ), wxOK | wxICON_INFORMATION );
+	//	return;
+	//}
 
 	wxFileDialog* openDlg = new wxFileDialog(this, wxT("Open location set file..."), wxEmptyString,wxEmptyString, wxT("*.*"), 
 		wxFD_OPEN | wxFD_FILE_MUST_EXIST | wxFD_CHANGE_DIR);
@@ -1703,12 +1703,12 @@ void GenGisFrame::LayerOpenLocations( std::string file )
 
 void GenGisFrame::LayerOpenLocations( std::vector<std::wstring>& csvTableRows, std::wstring locationNames )
 {
-	if ( App::Inst().GetLayerTreeController()->GetNumLocationSetLayers() > 0 )
-	{
-		wxMessageBox( wxT( "GenGIS currently supports only a single location set." ),
-			wxT( "Multiple location sets not supported" ), wxOK | wxICON_INFORMATION );
-		return;
-	}
+	//if ( App::Inst().GetLayerTreeController()->GetNumLocationSetLayers() > 0 )
+	//{
+	//	wxMessageBox( wxT( "GenGIS currently supports only a single location set." ),
+	//		wxT( "Multiple location sets not supported" ), wxOK | wxICON_INFORMATION );
+	//	return;
+	//}
 
 	// get selected layer
 	LayerPtr selectedLayer = App::Inst().GetLayerTreeController()->GetSelectedLayer();
@@ -1791,9 +1791,9 @@ void GenGisFrame::LayerOpenLocations( wxFileName fullPath )
 {
 	if ( App::Inst().GetLayerTreeController()->GetNumLocationSetLayers() > 0 )
 	{
-		wxMessageBox( wxT( "GenGIS currently supports only a single location set." ),
-			wxT( "Multiple location sets not supported" ), wxOK | wxICON_INFORMATION );
-		return;
+		//wxMessageBox( wxT( "GenGIS currently supports only a single location set." ),
+		//	wxT( "Multiple location sets not supported" ), wxOK | wxICON_INFORMATION );
+		//return;
 	}
 
 	// get selected layer
@@ -1849,14 +1849,6 @@ void GenGisFrame::LayerOpenLocations( wxFileName fullPath )
 
 				locationSet->AddLocationLayer(locationLayer);
 			}
-			//unsigned int numberOfLocationLayers = locationSet->GetNumLocationLayers();
-			//if ( numberOfLocationLayers > 2500 )
-			//{
-			//	for ( unsigned int locLayer = 0; locLayer < numberOfLocationLayers; locLayer++ )
-			//	{
-			//		locationSet->GetLocationLayer( locLayer )->GetLocationController()->GetLocationView()->SetShape( VisualMarker::MARKER_SHAPE::OCTAGON );
-			//	}
-			//}
 
 			locationSet->GetLocationSetController()->SetLocationSetLayers(locationLayers);
 

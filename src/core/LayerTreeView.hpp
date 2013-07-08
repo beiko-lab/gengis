@@ -72,6 +72,16 @@ namespace GenGIS
 		*/
 		void SetName(const wxTreeItemId& treeId, const std::wstring& name);
 
+		/**
+		* @brief Search wxTreeControl for an item by name
+		* @param treeId of tree item to change name of
+		* @param name of node
+		*/
+		wxTreeItemId FindItem( wxTreeItemId root, const wxString& sSearchFor );
+		// Code for this method adapted from: http://wiki.wxwidgets.org/WxTreeCtrl
+
+		wxTreeItemId GetRootItem() { return m_treeCtrl->GetRootItem(); }
+
 	protected:
 		/**
 		* @brief Traverse all children and set their text colour.
