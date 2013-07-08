@@ -267,18 +267,35 @@ void VisualMarker::RenderMarker(float size, const Colour& colour, MARKER_SHAPE s
 
 	if(shape == CIRCLE)
 	{
-		GLUquadricObj*  quadric = gluNewQuadric();
-		gluQuadricDrawStyle( quadric, GLU_FILL );
-		gluQuadricNormals( quadric, GLU_SMOOTH );
+		// Render cicles as dodecagons to improve performance
+		glBegin( GL_TRIANGLE_FAN );
+			glVertex3f( size, 0.0f, 0.0f );
+			glVertex3f( size*0.87f, size*0.5f, 0.0f );
+			glVertex3f( size*0.5f, size*0.87f, 0.0f );
+			glVertex3f( 0.0f, size, 0.0f );
+			glVertex3f( size*-0.5f, size*0.87f, 0.0f );
+			glVertex3f( size*-0.87f, size*0.5f, 0.0f );
+			glVertex3f( size*-1.0f, 0.0f, 0.0f );
+			glVertex3f( size*-0.87f, size*-0.5f, 0.0f );
+			glVertex3f( size*-0.5f, size*-0.87f, 0.0f );
+			glVertex3f( 0.0f, size*-1.0f, 0.0f );
+			glVertex3f( size*0.5f, size*-0.87f, 0.0f );
+			glVertex3f( size*0.87f, size*-0.5, 0.0f );
+			glVertex3f( size, 0.0f, 0.0f );
+		glEnd();
 
-		if(quadric != NULL)
-		{
-			gluDisk(quadric, 0, size, 120, 1);
-		}
-		else
-			Log::Inst().Error("(Error) VisualShape::DrawShape(): m_quadric not allocated.");
+	//	GLUquadricObj*  quadric = gluNewQuadric();
+	//	gluQuadricDrawStyle( quadric, GLU_FILL );
+	//	gluQuadricNormals( quadric, GLU_SMOOTH );
 
-		gluDeleteQuadric( quadric );
+	//	if(quadric != NULL)
+	//	{
+	//		gluDisk(quadric, 0, size, 120, 1);
+	//	}
+	//	else
+	//		Log::Inst().Error("(Error) VisualShape::DrawShape(): m_quadric not allocated.");
+
+	//	gluDeleteQuadric( quadric );
 	}
 	else if(shape == SQUARE)
 	{
