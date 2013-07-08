@@ -202,3 +202,33 @@ void LayerTreeView::SetName(const wxTreeItemId& treeId, const std::wstring& name
 	m_treeCtrl->SetItemText(treeId, wxString(treeName.c_str()));
 }
 
+wxTreeItemId LayerTreeView::FindItem( wxTreeItemId root, const wxString& sSearchFor )
+{
+	// Code for this method adapted from: http://wiki.wxwidgets.org/WxTreeCtrl
+	wxTreeItemIdValue cookie;
+	wxTreeItemId search;
+	wxTreeItemId item = m_treeCtrl->GetFirstChild( root, cookie );
+	wxTreeItemId child;
+ 
+	while( item.IsOk() )
+	{
+		wxString sData = m_treeCtrl->GetItemText(item);
+		if( sSearchFor.CompareTo(sData) == 0 )
+		{
+			return item;
+		}
+		if( m_treeCtrl->ItemHasChildren( item ) )
+		{
+			wxTreeItemId search = FindItem( item, sSearchFor );
+			if( search.IsOk() )
+			{
+				return search;
+			}
+		}
+		item = m_treeCtrl->GetNextChild( root, cookie);
+	}
+ 
+	/* Not found */
+	wxTreeItemId dummy;
+	return dummy;
+}

@@ -416,6 +416,12 @@ bool LayerTreeController::AddLocationSetLayer(LocationSetLayerPtr locationSet)
 	wxTreeItemId selectionId = m_treeView->GetTreeCtrl()->GetSelection();
 	LayerPtr selectedLayer = GetSelectedLayer();
 
+	if (App::Inst().GetLayerTreeController()->GetNumMapLayers() > 0)
+	{
+		wxTreeItemId map = m_treeView->FindItem( m_treeView->GetRootItem(), wxT( "sydney_3m_tar" ) );
+		int a = 0;
+	}
+
 	if(selectedLayer != LayerPtr() && selectedLayer->GetType() == Layer::MAP)
 	{
 		// At this point during deserialization, the location set layer is already connected to the map layer
@@ -460,6 +466,7 @@ bool LayerTreeController::AddLocationSetLayer(LocationSetLayerPtr locationSet)
 
 		App::Inst().GetViewport()->Refresh(false);
 	}
+
 	else
 	{
 		wxMessageBox(wxT("Please select a map node before adding a new location set."),
