@@ -16,7 +16,7 @@ class GBIFQuery(GBIFQueryLayout):
 	__obs__ = []
 	__conversions__ = []
 	__selectedTaxon__= []
-
+	__description__=""
 	def __init__(self,parent=None):
 #		import pdb; pdb.set_trace()
 		GBIFQueryLayout.__init__(self,parent)
@@ -82,10 +82,11 @@ class GBIFQuery(GBIFQueryLayout):
 			maxLongitude= self.m_MaxLon.GetValue()
 			self.m_Progress.WriteText("Starting...\n")
 			for tax in self.__selectedTaxon__:
-				obs,con,recs,distLocs= self.GETOBSENTIRERANGE(tax.split(),minLatitude,maxLatitude,minLongitude,maxLongitude)
+				obs,con,recs,distLocs,description= self.GETOBSENTIRERANGE(tax.split(),minLatitude,maxLatitude,minLongitude,maxLongitude)
 			#	obs,con,recs,distLocs= self.GETOBS(tax.split(),minLatitude,maxLatitude,minLongitude,maxLongitude)
 				self.__obs__.append(obs)
 				self.__conversions__.append(con)
+				self.__description__+="%s\n" % description
 				records += recs
 				distLocations +=distLocs
 			self.m_Progress.WriteText("Done.\n")
@@ -126,9 +127,13 @@ class GBIFQuery(GBIFQueryLayout):
 			OUTLArray.pop()
 			OUTSArray.pop()
 			layerName = "GBIFLayer_%d" % GenGIS.layerTree.GetNumLocationLayers()
-			
 			GenGIS.mainWindow.OpenLocationsCSVFile(OUTLArray, layerName)
 			GenGIS.mainWindow.OpenSequenceCSVFile(OUTSArray, layerName)
+			
+			#Get the number of last location layer added (the gbif one)
+			numLocationLayers=GenGIS.layerTree.GetNumLocationSetLayers()
+			locationSetLayer = GenGIS.layerTree.GetLocationSetLayer(numLocationLayers-1)
+			locationSetLayer.SetDescription(self.__description__)
 			
 		else:
 			wx.MessageBox("Please make a successful GBIF Query first.")
@@ -209,7 +214,8 @@ class GBIFQuery(GBIFQueryLayout):
 ##########
 #	GENERIC
 ##########	
-
+	
+	
 	def GETTEXT (self,obs_list,conversions_list):
 		OUTL=""
 		OUTS=""
@@ -278,6 +284,25 @@ class GBIFQuery(GBIFQueryLayout):
 ##############
 #	GBIF SPECIFIC
 ##############
+	def GETRIGHTS(self,fh):
+		desc=""
+		resource=fh.getElementsByTagName("gbif:dataResources")
+		for node in resource:
+			name = node.getElementsByTagName("gbif:name")
+			rights = node.getElementsByTagName("gbif:rights")
+			citation = node.getElementsByTagName("gbif:citation")
+			desc+="##########################\n"
+			for tem in name:
+				desc+= "Name\n"
+				desc+= re.sub(r'<.*?\>','',tem.toprettyxml(' '))
+			for tem in rights:
+				desc+= "\nRights\n"
+				desc+= re.sub(r'<.*?\>','',tem.toprettyxml(' '))
+			for tem in citation:
+				desc+= "\nCitation\n"
+				desc+= re.sub(r'<.*?\>','',tem.toprettyxml(' '))
+			desc+="\n"
+		return(desc)
 
 	#	Queries GBIF to find the number of results for given boundary 
 	def GETCOUNT(self,taxon_name,minLat,maxLat,minLon,maxLon):
@@ -548,6 +573,7 @@ class GBIFQuery(GBIFQueryLayout):
 			#chek if whole window fits: if not divide into columns
 	#		import pdb; pdb.set_trace()
 			nodeList=[]
+			description=""
 			if resultCount>1000 :
 	#			nodeList=[]
 				newCoords = self.SUBDIVIDECOL(minLatitude,maxLatitude,minLongitude,maxLongitude)
@@ -588,6 +614,7 @@ class GBIFQuery(GBIFQueryLayout):
 										url="http://data.gbif.org/ws/rest/occurrence/list?taxonconceptkey=%d&maxlatitude=%d&minlatitude=%d&maxlongitude=%d&minlongitude=%d" %(cID,ccellMaxLatitude,ccellMinLatitude,ccellMaxLongitude,ccellMinLongitude)
 										response=urllib2.urlopen(url).read()
 										parser=minidom.parseString(response)
+										description+=self.GETRIGHTS(parser)
 										temper=parser.getElementsByTagName("to:TaxonOccurrence")
 										nodeList.extend(temper)
 										self.m_Progress.WriteText("%d records found\n" % len(temper))
@@ -598,6 +625,7 @@ class GBIFQuery(GBIFQueryLayout):
 								url="http://data.gbif.org/ws/rest/occurrence/list?taxonconceptkey=%d&maxlatitude=%d&minlatitude=%d&maxlongitude=%d&minlongitude=%d" %(cID,cellMaxLatitude,cellMinLatitude,cellMaxLongitude,cellMinLongitude)
 								response=urllib2.urlopen(url).read()
 								parser=minidom.parseString(response)
+								description+=self.GETRIGHTS(parser)
 								temper=parser.getElementsByTagName("to:TaxonOccurrence")
 								nodeList.extend(temper)
 								self.m_Progress.WriteText("%d records found\n" % len(temper))
@@ -607,6 +635,7 @@ class GBIFQuery(GBIFQueryLayout):
 						url="http://data.gbif.org/ws/rest/occurrence/list?taxonconceptkey=%d&maxlatitude=%d&minlatitude=%d&maxlongitude=%d&minlongitude=%d" %(cID,colMaxLatitude,colMinLatitude,colMaxLongitude,colMinLongitude)
 						response=urllib2.urlopen(url).read()
 						parser=minidom.parseString(response)
+						description+=self.GETRIGHTS(parser)
 						temp=parser.getElementsByTagName("to:TaxonOccurrence")
 						self.m_Progress.WriteText("%d records found\n" % len(temp))
 						nodeList.extend(temp)
@@ -617,6 +646,7 @@ class GBIFQuery(GBIFQueryLayout):
 				url="http://data.gbif.org/ws/rest/occurrence/list?taxonconceptkey=%d&maxlatitude=%d&minlatitude=%d&maxlongitude=%d&minlongitude=%d" %(cID,maxLatitude,minLatitude,maxLongitude,minLongitude)
 				response=urllib2.urlopen(url).read()
 				parser=minidom.parseString(response)
+				description+=self.GETRIGHTS(parser)
 				nodeList=parser.getElementsByTagName("to:TaxonOccurrence")
 				self.m_Progress.WriteText("%d records found\n" % len(nodeList))
 			if len(nodeList) > 0:
@@ -657,5 +687,5 @@ class GBIFQuery(GBIFQueryLayout):
 					except KeyError:
 						obs[currGrid] = {genus: [(rID,lat_tem,long_tem,name)] }
 #		print distLocations
-		return(obs,conversions,records,len(distLocations))
+		return(obs,conversions,records,len(distLocations),description)
 
