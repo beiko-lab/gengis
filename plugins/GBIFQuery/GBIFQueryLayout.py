@@ -175,7 +175,7 @@ class GBIFQueryLayout ( wx.Frame ):
 		
 		bSizer14 = wx.BoxSizer( wx.VERTICAL )
 		
-		self.m_button15 = wx.Button( self, wx.ID_ANY, u"OK", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_button15 = wx.Button( self, wx.ID_ANY, u"Close", wx.DefaultPosition, wx.DefaultSize, 0 )
 		bSizer14.Add( self.m_button15, 0, wx.ALL|wx.ALIGN_RIGHT, 5 )
 		
 		bSizer5.Add( bSizer14, 0, wx.EXPAND, 5 )
