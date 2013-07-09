@@ -119,6 +119,8 @@ namespace GenGIS
 		*/
 		Box2D GetProjectionExtents() const { return m_mapModel->GetProjectionExtents(); }
 
+		Box2D GetMapBorders() const { return m_mapModel->GetMetaData()->extents; };
+
 		/**
 		* @brief Width (x-dimension) of DEM map. 
 		* @return Width.

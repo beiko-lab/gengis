@@ -55,7 +55,7 @@ bool DemReader::Open(std::wstring fullPath, StudyControllerPtr studyController, 
 		LayerTreeControllerPtr ltc = App::Inst().GetLayerTreeController();
 		VectorMapLayerPtr vectorMapLayer =ltc->GetVectorMapLayer(0);
 	    VectorMapModelPtr vectorMapModel= vectorMapLayer->GetVectorMapController()->GetVectorMapModel();			
-		double vectorMinX= vectorMapModel->GetVectorBoundary_MinX();
+		double vectorMinX = vectorMapModel->GetVectorBoundary_MinX();
 		double vectorMinY = vectorMapModel->GetVectorBoundary_MinY();
 		double vectorMaxX = vectorMapModel->GetVectorBoundary_MaxX();
 		double vectorMaxY = vectorMapModel->GetVectorBoundary_MaxY();

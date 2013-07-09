@@ -439,6 +439,7 @@ BOOST_PYTHON_MODULE(GenGIS)
 			.def("GeoToGrid", &MapController::GeoToGrid, "Convert geographic coordinates to grid coordinates.")
 			.def("LatLongToGrid", &MapController::LatLongToGrid, "Convert lat/long coordinates to grid coordinates.")
 			.def("GridToGeo", &MapController::GridToGeo, "Convert grid coordinates to geographic coordinates.")
+			.def("GetMapBorders", &MapController::GetMapBorders, "Get borders of map.")
 			;
 
 		// <wiki-header>Layer Tree Controller class</wiki-header>
