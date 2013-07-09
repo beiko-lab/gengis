@@ -413,14 +413,19 @@ bool LayerTreeController::AddTreeLayer(TreeLayerPtr tree)
 
 bool LayerTreeController::AddLocationSetLayer(LocationSetLayerPtr locationSet)
 {
-	wxTreeItemId selectionId = m_treeView->GetTreeCtrl()->GetSelection();
 	LayerPtr selectedLayer = GetSelectedLayer();
 
-	if (App::Inst().GetLayerTreeController()->GetNumMapLayers() > 0)
+	if(selectedLayer == LayerPtr() || selectedLayer->GetType() != Layer::MAP)
 	{
-		wxTreeItemId map = m_treeView->FindItem( m_treeView->GetRootItem(), wxT( "sydney_3m_tar" ) );
-		int a = 0;
+		if( GetNumMapLayers() == 1 )
+		{
+			// select the first map by default
+			SetSelection( GetMapLayer(0) );
+			selectedLayer = GetSelectedLayer();
+		}
 	}
+
+	wxTreeItemId selectionId = m_treeView->GetTreeCtrl()->GetSelection();
 
 	if(selectedLayer != LayerPtr() && selectedLayer->GetType() == Layer::MAP)
 	{
