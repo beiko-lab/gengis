@@ -125,9 +125,10 @@ class GBIFQuery(GBIFQueryLayout):
 			OUTSArray.insert(0,"Sequence ID,Site ID,CellLat,CellLong,Taxon,Genus,TrueLat,TrueLong,Count,AllRecords")					
 			OUTLArray.pop()
 			OUTSArray.pop()
+			layerName = "GBIFLayer_%d" % GenGIS.layerTree.GetNumLocationLayers()
 			
-			GenGIS.mainWindow.OpenLocationsCSVFile(OUTLArray, "thisisastringname")
-			GenGIS.mainWindow.OpenSequenceCSVFile(OUTSArray, "thisisastringname")
+			GenGIS.mainWindow.OpenLocationsCSVFile(OUTLArray, layerName)
+			GenGIS.mainWindow.OpenSequenceCSVFile(OUTSArray, layerName)
 			
 		else:
 			wx.MessageBox("Please make a successful GBIF Query first.")
