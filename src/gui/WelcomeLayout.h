@@ -43,14 +43,20 @@ namespace GenGIS
 			wxButton* m_button1;
 			wxBitmapButton* m_newSession;
 			wxButton* m_buttonNewSession;
+			
+			
 			wxBitmapButton* m_openSession;
 			wxButton* m_buttonOpenSession;
+			
 			wxBitmapButton* m_bpButton4;
 			wxButton* m_button5;
+			
+			
 			wxBitmapButton* m_exit;
 			wxButton* m_buttonExit;
 			
 			wxCheckBox* m_checkBoxShowOnStartup;
+			
 			
 			// Virtual event handlers, overide them in your derived class
 			virtual void OnRecentSession( wxCommandEvent& event ) { event.Skip(); }
@@ -64,7 +70,7 @@ namespace GenGIS
 		
 		public:
 			
-			WelcomeLayout( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Welcome to GenGIS"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 580,329 ), long style = wxCAPTION|wxCLOSE_BOX|wxFRAME_FLOAT_ON_PARENT|wxFRAME_NO_TASKBAR|wxSTAY_ON_TOP|wxSYSTEM_MENU|wxTAB_TRAVERSAL );
+			WelcomeLayout( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Welcome to GenGIS"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 580,392 ), long style = wxCAPTION|wxCLOSE_BOX|wxFRAME_FLOAT_ON_PARENT|wxFRAME_NO_TASKBAR|wxSTAY_ON_TOP|wxSYSTEM_MENU|wxTAB_TRAVERSAL );
 			~WelcomeLayout();
 		
 	};

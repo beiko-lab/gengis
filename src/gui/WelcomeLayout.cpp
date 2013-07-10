@@ -28,93 +28,111 @@ WelcomeLayout::WelcomeLayout( wxWindow* parent, wxWindowID id, const wxString& t
 	m_bitmap = new wxStaticBitmap( this, wxID_ANY, wxNullBitmap, wxDefaultPosition, wxDefaultSize, 0 );
 	bSizer1->Add( m_bitmap, 0, wxEXPAND, 50 );
 	
-	wxGridSizer* gSizer1;
-	gSizer1 = new wxGridSizer( 3, 2, 0, 0 );
+	wxBoxSizer* bSizer81;
+	bSizer81 = new wxBoxSizer( wxVERTICAL );
 	
 	wxStaticBoxSizer* sbSizer1;
 	sbSizer1 = new wxStaticBoxSizer( new wxStaticBox( this, wxID_ANY, wxT("Previous Sessions") ), wxVERTICAL );
 	
-	m_listBoxRecentSessions = new wxListBox( this, wxID_ANY, wxDefaultPosition, wxSize( 240,60 ), 0, NULL, wxLB_HSCROLL ); 
+	m_listBoxRecentSessions = new wxListBox( this, wxID_ANY, wxDefaultPosition, wxSize( 545,500 ), 0, NULL, wxLB_HSCROLL ); 
 	m_listBoxRecentSessions->SetFont( wxFont( wxNORMAL_FONT->GetPointSize(), 70, 90, 90, false, wxEmptyString ) );
 	
-	sbSizer1->Add( m_listBoxRecentSessions, 1, wxEXPAND|wxALL, 5 );
+	sbSizer1->Add( m_listBoxRecentSessions, 1, wxALL|wxEXPAND, 5 );
 	
 	m_button1 = new wxButton( this, wxID_ANY, wxT("Open"), wxDefaultPosition, wxDefaultSize, 0 );
 	sbSizer1->Add( m_button1, 0, wxALIGN_RIGHT|wxBOTTOM|wxRIGHT|wxLEFT, 5 );
 	
-	gSizer1->Add( sbSizer1, 1, wxEXPAND|wxLEFT, 5 );
+	bSizer81->Add( sbSizer1, 1, wxEXPAND|wxALL, 5 );
 	
-	wxBoxSizer* bSizer3;
-	bSizer3 = new wxBoxSizer( wxVERTICAL );
+	wxGridSizer* gSizer2;
+	gSizer2 = new wxGridSizer( 2, 2, 0, 0 );
 	
 	wxBoxSizer* bSizer9;
 	bSizer9 = new wxBoxSizer( wxHORIZONTAL );
 	
 	m_newSession = new wxBitmapButton( this, wxID_ANY, wxBitmap( filenewsession_xpm ), wxDefaultPosition, wxSize( 30,30 ), 0 );
 	m_newSession->SetDefault(); 
-	bSizer9->Add( m_newSession, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
+	bSizer9->Add( m_newSession, 0, wxALIGN_CENTER_VERTICAL|wxRIGHT|wxLEFT, 5 );
 	
-	m_buttonNewSession = new wxButton( this, wxID_ANY, wxT("New Session"), wxDefaultPosition, wxSize( 150,30 ), 0 );
+	m_buttonNewSession = new wxButton( this, wxID_ANY, wxT("New Session"), wxDefaultPosition, wxSize( 150,25 ), 0 );
 	m_buttonNewSession->SetFont( wxFont( 11, 74, 90, 90, false, wxT("Tahoma") ) );
 	
-	bSizer9->Add( m_buttonNewSession, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
+	bSizer9->Add( m_buttonNewSession, 1, wxALIGN_CENTER_VERTICAL|wxRIGHT|wxLEFT, 5 );
 	
-	bSizer3->Add( bSizer9, 1, wxEXPAND, 5 );
+	
+	bSizer9->Add( 10, 0, 0, 0, 5 );
+	
+	gSizer2->Add( bSizer9, 1, wxEXPAND, 5 );
 	
 	wxBoxSizer* bSizer8;
 	bSizer8 = new wxBoxSizer( wxHORIZONTAL );
 	
-	m_openSession = new wxBitmapButton( this, wxID_ANY, wxBitmap( fileopensession_xpm ), wxDefaultPosition, wxSize( 30,30 ), 0 );
-	bSizer8->Add( m_openSession, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
 	
-	m_buttonOpenSession = new wxButton( this, wxID_ANY, wxT("Open Session"), wxDefaultPosition, wxSize( 150,30 ), 0 );
+	bSizer8->Add( 10, 0, 0, 0, 5 );
+	
+	m_openSession = new wxBitmapButton( this, wxID_ANY, wxBitmap( fileopensession_xpm ), wxDefaultPosition, wxSize( 30,30 ), 0 );
+	bSizer8->Add( m_openSession, 0, wxALIGN_CENTER_VERTICAL|wxRIGHT|wxLEFT, 5 );
+	
+	m_buttonOpenSession = new wxButton( this, wxID_ANY, wxT("Open Session"), wxDefaultPosition, wxSize( 150,25 ), 0 );
 	m_buttonOpenSession->SetFont( wxFont( 11, 74, 90, 90, false, wxT("Tahoma") ) );
 	
-	bSizer8->Add( m_buttonOpenSession, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
+	bSizer8->Add( m_buttonOpenSession, 1, wxALIGN_CENTER_VERTICAL|wxRIGHT|wxLEFT, 5 );
 	
-	bSizer3->Add( bSizer8, 1, wxEXPAND, 5 );
+	
+	bSizer8->Add( 10, 0, 0, wxEXPAND, 5 );
+	
+	gSizer2->Add( bSizer8, 1, wxEXPAND, 5 );
 	
 	wxBoxSizer* bSizer7;
 	bSizer7 = new wxBoxSizer( wxHORIZONTAL );
 	
 	m_bpButton4 = new wxBitmapButton( this, wxID_ANY, wxBitmap( manual_xpm ), wxDefaultPosition, wxSize( 30,30 ), 0 );
-	bSizer7->Add( m_bpButton4, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
+	bSizer7->Add( m_bpButton4, 0, wxALIGN_CENTER_VERTICAL|wxRIGHT|wxLEFT, 5 );
 	
-	m_button5 = new wxButton( this, wxID_ANY, wxT("GenGIS Manual"), wxDefaultPosition, wxSize( 150,30 ), 0 );
+	m_button5 = new wxButton( this, wxID_ANY, wxT("GenGIS Manual"), wxDefaultPosition, wxSize( 150,25 ), 0 );
 	m_button5->SetFont( wxFont( 11, 74, 90, 90, false, wxT("Tahoma") ) );
 	
-	bSizer7->Add( m_button5, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
+	bSizer7->Add( m_button5, 1, wxALIGN_CENTER_VERTICAL|wxRIGHT|wxLEFT, 5 );
 	
-	bSizer3->Add( bSizer7, 1, wxEXPAND, 5 );
+	
+	bSizer7->Add( 10, 0, 0, 0, 5 );
+	
+	gSizer2->Add( bSizer7, 1, wxEXPAND, 5 );
 	
 	wxBoxSizer* bSizer10;
 	bSizer10 = new wxBoxSizer( wxHORIZONTAL );
 	
-	m_exit = new wxBitmapButton( this, wxID_ANY, wxBitmap( close_xpm ), wxDefaultPosition, wxSize( 30,30 ), 0 );
-	bSizer10->Add( m_exit, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
 	
-	m_buttonExit = new wxButton( this, wxID_ANY, wxT("Exit GenGIS"), wxDefaultPosition, wxSize( 150,30 ), 0 );
+	bSizer10->Add( 10, 0, 0, 0, 5 );
+	
+	m_exit = new wxBitmapButton( this, wxID_ANY, wxBitmap( close_xpm ), wxDefaultPosition, wxSize( 30,30 ), 0 );
+	bSizer10->Add( m_exit, 0, wxALIGN_CENTER_VERTICAL|wxRIGHT|wxLEFT, 5 );
+	
+	m_buttonExit = new wxButton( this, wxID_ANY, wxT("Exit GenGIS"), wxDefaultPosition, wxSize( 150,25 ), 0 );
 	m_buttonExit->SetFont( wxFont( 11, 74, 90, 90, false, wxT("Tahoma") ) );
 	
-	bSizer10->Add( m_buttonExit, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
-	
-	bSizer3->Add( bSizer10, 1, wxEXPAND, 5 );
+	bSizer10->Add( m_buttonExit, 1, wxALIGN_CENTER_VERTICAL|wxRIGHT|wxLEFT, 5 );
 	
 	
-	bSizer3->Add( 0, 0, 1, wxEXPAND, 5 );
+	bSizer10->Add( 10, 0, 0, wxEXPAND, 5 );
+	
+	gSizer2->Add( bSizer10, 1, wxEXPAND, 5 );
+	
+	bSizer81->Add( gSizer2, 0, wxALIGN_CENTER_HORIZONTAL|wxEXPAND, 0 );
 	
 	wxBoxSizer* bSizer141;
-	bSizer141 = new wxBoxSizer( wxVERTICAL );
+	bSizer141 = new wxBoxSizer( wxHORIZONTAL );
 	
 	m_checkBoxShowOnStartup = new wxCheckBox( this, wxID_ANY, wxT("Show this window on startup"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_checkBoxShowOnStartup->SetValue(true); 
 	bSizer141->Add( m_checkBoxShowOnStartup, 0, wxTOP|wxBOTTOM|wxRIGHT, 5 );
 	
-	bSizer3->Add( bSizer141, 0, wxALIGN_RIGHT, 5 );
 	
-	gSizer1->Add( bSizer3, 0, wxLEFT|wxEXPAND, 50 );
+	bSizer141->Add( 10, 0, 0, wxALIGN_RIGHT, 5 );
 	
-	bSizer1->Add( gSizer1, 1, wxEXPAND|wxTOP, 30 );
+	bSizer81->Add( bSizer141, 0, wxALIGN_RIGHT, 5 );
+	
+	bSizer1->Add( bSizer81, 1, wxEXPAND, 5 );
 	
 	this->SetSizer( bSizer1 );
 	this->Layout();
