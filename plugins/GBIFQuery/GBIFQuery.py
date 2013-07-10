@@ -31,6 +31,11 @@ class GBIFQuery(GBIFQueryLayout):
 		self.m_AddData.Disable()
 		if GenGIS.layerTree.GetNumMapLayers() > 0 :
 			self.m_AddData.Enable()
+			borders = GenGIS.layerTree.GetMapLayer(0).GetController().GetMapBorders()
+			self.m_MinLat.SetValue(borders.y1)
+			self.m_MaxLat.SetValue(borders.dy)
+			self.m_MinLon.SetValue(borders.x1)
+			self.m_MaxLon.SetValue(borders.dx)
 		
 	#	Query GBIF for Taxa in Lat/Lon Boundary
 	def OnSearch(self,event):
@@ -41,10 +46,10 @@ class GBIFQuery(GBIFQueryLayout):
 		taxon = self.m_TaxonName.GetLineText(0)
 		if(taxon=="TEST"):
 			taxon="Liolaemus darwinii"
-			self.m_MinLat.SetValue(-34)
-			self.m_MaxLat.SetValue(-31)
-			self.m_MinLon.SetValue(-72)
-			self.m_MaxLon.SetValue(-66)
+		#	self.m_MinLat.SetValue(-34)
+		#	self.m_MaxLat.SetValue(-31)
+		#	self.m_MinLon.SetValue(-72)
+		#	self.m_MaxLon.SetValue(-66)
 		elif(taxon=="TE"):
 			taxon="Apolochiton"
 			self.m_MinLat.SetValue(-34)
