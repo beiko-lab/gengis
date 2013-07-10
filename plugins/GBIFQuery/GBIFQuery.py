@@ -21,8 +21,8 @@ class GBIFQuery(GBIFQueryLayout):
 	
 	def __init__(self,parent=None):
 #		import pdb; pdb.set_trace()
-		self.GBIFSPECIFIC = GBIFSpecific()
-		self.GBIFGENERIC = GBIFGeneric()
+		self.GBIFSpecific = GBIFSpecific()
+		self.GBIFGeneric = GBIFGeneric()
 		GBIFQueryLayout.__init__(self,parent)
 		self.SetIcon(wx.Icon(GenGIS.mainWindow.GetExeDir() + "images/CrazyEye.ico",wx.BITMAP_TYPE_ICO))
 		self.m_bitmap3.SetIcon(wx.Icon(GenGIS.mainWindow.GetExeDir() + "images/GBIF_compass_small.png",wx.BITMAP_TYPE_PNG))
@@ -76,7 +76,7 @@ class GBIFQuery(GBIFQueryLayout):
 			maxLatitude= self.m_MaxLat.GetValue()
 			minLongitude= self.m_MinLon.GetValue()
 			maxLongitude= self.m_MaxLon.GetValue()
-			self.GBIFSPECIFIC.GETTAXRESULT(taxon,self.m_Result)
+			self.GBIFSpecific.GETTAXRESULT(taxon,self.m_Result)
 		wx.EndBusyCursor()
 		
 	#	Create Sequence and Location files for selected Taxa 		
@@ -93,7 +93,7 @@ class GBIFQuery(GBIFQueryLayout):
 			maxLongitude= self.m_MaxLon.GetValue()
 			self.m_Progress.WriteText("Starting...\n")
 			for tax in self.__selectedTaxon__:
-				obs,con,recs,distLocs,description= self.GBIFSPECIFIC.GETOBSENTIRERANGE(tax.split(),minLatitude,maxLatitude,minLongitude,maxLongitude,self.m_Progress)
+				obs,con,recs,distLocs,description= self.GBIFSpecific.GETOBSENTIRERANGE(tax.split(),minLatitude,maxLatitude,minLongitude,maxLongitude,self.m_Progress)
 				self.__obs__.append(obs)
 				self.__conversions__.append(con)
 				self.__description__+="%s\n" % description
@@ -117,7 +117,7 @@ class GBIFQuery(GBIFQueryLayout):
 			maxLongitude= self.m_MaxLon.GetValue()
 			count=0
 			for tax in self.__selectedTaxon__:
-				count+=self.GBIFSPECIFIC.GETCOUNT(tax.split(),minLatitude,maxLatitude,minLongitude,maxLongitude,self.m_Progress)
+				count+=self.GBIFSpecific.GETCOUNT(tax.split(),minLatitude,maxLatitude,minLongitude,maxLongitude,self.m_Progress)
 		else:
 			wx.MessageBox("Please select some Taxa.")
 		self.m_staticText6.SetLabel("There were %d records for the given location." % count) 
@@ -129,9 +129,9 @@ class GBIFQuery(GBIFQueryLayout):
 	#	Adds Data to GenGIS
 	def OnAddData(self,event):
 		if (len(self.__obs__) > 0):
-			OUTLText, OUTSText = self.GBIFGENERIC.GETTEXT(self.__obs__,self.__conversions__)
-			OUTLArray=self.GBIFGENERIC.CPPOUT(OUTLText)
-			OUTSArray=self.GBIFGENERIC.CPPOUT(OUTSText)
+			OUTLText, OUTSText = self.GBIFGeneric.GETTEXT(self.__obs__,self.__conversions__)
+			OUTLArray=self.GBIFGeneric.CPPOUT(OUTLText)
+			OUTSArray=self.GBIFGeneric.CPPOUT(OUTSText)
 			OUTLArray.insert(0,"Site ID,Latitude,Longitude,Richness,Cell ID")
 			OUTSArray.insert(0,"Sequence ID,Site ID,CellLat,CellLong,Taxon,Genus,TrueLat,TrueLong,Count,AllRecords")					
 			OUTLArray.pop()
@@ -162,11 +162,11 @@ class GBIFQuery(GBIFQueryLayout):
 				OUTLfile = ("%s/%s_locs.csv" % (dir,file_split[0]))				
 				OUTSfile = ("%s/%s_seqs.csv" % (dir,file_split[0]))
 				OUTDfile = ("%s/%s_source.txt" % (dir,file_split[0]))
-				OUTLText, OUTSText = self.GBIFGENERIC.GETTEXT(self.__obs__,self.__conversions__)
-				self.GBIFGENERIC.WRITEEXPORT(OUTLfile,OUTLText,"Site ID,Latitude,Longitude,Richness,Cell ID\n")
-				self.GBIFGENERIC.WRITEEXPORT(OUTSfile,OUTSText,"Sequence ID,Site ID,CellLat,CellLong,Taxon,Genus,TrueLat,TrueLong,Count,AllRecords\n")
+				OUTLText, OUTSText = self.GBIFGeneric.GETTEXT(self.__obs__,self.__conversions__)
+				self.GBIFGeneric.WRITEEXPORT(OUTLfile,OUTLText,"Site ID,Latitude,Longitude,Richness,Cell ID\n")
+				self.GBIFGeneric.WRITEEXPORT(OUTSfile,OUTSText,"Sequence ID,Site ID,CellLat,CellLong,Taxon,Genus,TrueLat,TrueLong,Count,AllRecords\n")
 				description = self.__description__.encode('utf-8')
-				self.GBIFGENERIC.WRITEEXPORT(OUTDfile,description,"")
+				self.GBIFGeneric.WRITEEXPORT(OUTDfile,description,"")
 			dlg.Destroy()
 		else:
 			wx.MessageBox("Please make a successful GBIF Query first.")
