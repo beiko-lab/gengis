@@ -85,6 +85,7 @@ class GBIFQuery(GBIFQueryLayout):
 		records,distLocations = 0,0
 		self.__obs__=[]
 		self.__conversions__=[]
+		self.__description__=""
 		wx.BeginBusyCursor()
 		if(self.__selectedTaxon__):
 			minLatitude= self.m_MinLat.GetValue()
