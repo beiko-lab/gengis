@@ -24,6 +24,7 @@
 #include "../core/App.hpp"
 #include "../core/LocationModel.hpp"
 #include "../core/LocationSetIO.hpp"
+#include "../core/LocationSetLayer.hpp"
 #include "../core/StudyController.hpp"
 #include "../core/MapController.hpp"
 
@@ -226,5 +227,40 @@ bool LocationSetIO::ParseCSVFile( const std::vector<std::wstring>& csvTableRows,
 		locationModels.push_back(locationModel);
 	}
 
+	return true;
+}
+
+
+bool LocationSetIO::ReadSourceFile( const wxString& fullPath, LocationSetLayerPtr locationSetLayer )
+{
+	// Convert wxString to wxFileName for easier filename operations
+	wxFileName sourceFile( fullPath );
+
+	// Strip the filename of its directory path and file extension
+	wxString sourceFileName = sourceFile.GetName();
+
+	// Return false if the location filename does not end with "_loc"
+	if ( !sourceFileName.EndsWith( wxT( "_locs" ) ) )
+		return false;
+
+	// Remove "_loc" from the end of the filename
+	sourceFileName.Truncate( sourceFileName.Length()-5 );
+
+	// Append "_source.txt" to filename and prepend directory path
+	sourceFileName.Append( wxT( "_source.txt" ) );
+	sourceFile.Assign( sourceFile.GetPath(), sourceFileName );
+	sourceFileName = sourceFile.GetFullPath();
+
+	// Return false if source file does not exist
+	if ( !sourceFile.FileExists() )
+		return false;
+
+	// Read in source file
+	std::wifstream ifs( sourceFileName.mb_str(), std::ios_base::binary );
+	wstring description_field( istreambuf_iterator<wchar_t>(ifs), (istreambuf_iterator<wchar_t>()) );
+	ifs.close();
+	
+	// Add data to description field of location set layer properties dialog
+	locationSetLayer->SetDescription( description_field );
 	return true;
 }

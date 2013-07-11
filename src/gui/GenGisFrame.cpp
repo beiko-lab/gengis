@@ -1826,6 +1826,8 @@ void GenGisFrame::LayerOpenLocations( wxFileName fullPath )
 			locationSet->SetFullPath( fullPath.GetFullPath() );
 			m_locationSetLayer = locationSet;
 
+			LocationSetIO::ReadSourceFile( fullPath.GetFullPath(), locationSet );
+
 			// assign default colour map to location
 			ColourMapManagerPtr colourMapManager = App::Inst().GetColourMapManager();
 			ColourMapPtr defaultColourMap = colourMapManager->GetDefaultDiscreteColourMap();
