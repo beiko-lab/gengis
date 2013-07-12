@@ -125,7 +125,7 @@ class GBIFQuery(GBIFQueryLayout):
 	
 	#	Redirects User to Wiki page for this plugin
 	def OnHelp(self, event):
-		wx.LaunchDefaultBrowser( 'http://kiwi.cs.dal.ca/GenGIS/Description_of_GenGIS_plugins#Linear_Regression' )
+		wx.LaunchDefaultBrowser( 'http://kiwi.cs.dal.ca/GenGIS/Description_of_GenGIS_plugins#GBIF_Query' )
 	
 	#	Adds Data to GenGIS
 	def OnAddData(self,event):
