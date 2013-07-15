@@ -194,6 +194,11 @@ void GeoTreeView::serialize(Archive & ar, const unsigned int file_version)
 	ar & m_branchBorderColour;            // Colour
 	ar & m_treeColourStyle;               // TREE_COLOUR_STYLE
 	ar & m_linearAxesResults;             // std::vector<GeoTreeOptLeafOrder::LinearResults>
+
+	if ( Archive::is_loading::value )
+	{
+		SignalNodeUpdate(boost::bind(&GenGisFrame::SigNodeUpdate, ((GenGisFrame*)App::Inst().GetMainWindow()), _1));
+	}
 }
 template void GeoTreeView::serialize<boost::archive::text_woarchive>(boost::archive::text_woarchive& ar, const unsigned int version); 
 template void GeoTreeView::serialize<boost::archive::text_wiarchive>(boost::archive::text_wiarchive& ar, const unsigned int version);
