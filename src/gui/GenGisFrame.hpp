@@ -177,6 +177,9 @@ namespace GenGIS
 		void ClearSequenceLayer()    { m_sequenceLayer.reset();    }
 		void ClearTreeLayer()        { m_treeLayer.reset();        }
 
+		/** Handle node update events for trees. */
+		void SigNodeUpdate(NodeInfo nodeInfo);
+
 	private:
 		/** Custom serialization function for GenGisFrame */
 		template<class Archive>
@@ -471,8 +474,8 @@ namespace GenGIS
 		/** Handle keyboard events from viewport. */
 		void SigViewportKeyboard( wxKeyEvent& event );
 
-		/** Handle node update events for trees. */
-		void SigNodeUpdate(NodeInfo nodeInfo);
+		///** Handle node update events for trees. */
+		//void SigNodeUpdate(NodeInfo nodeInfo);
 
 		/**
 		* @brief Determine if mouse is over an interactive element when mouse left down event occurs.
