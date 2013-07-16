@@ -30,6 +30,10 @@ from xml.dom import minidom
 
 class GBIFSpecific:
 	# get source of data sets as well as rights and citation
+	
+	def __init__(self):
+		self.GBIFGeneric = GBIFGeneric()
+	
 	def GETRIGHTS(self,fh):
 		desc=""
 		resource=fh.getElementsByTagName("gbif:dataResources")
@@ -51,9 +55,9 @@ class GBIFSpecific:
 		return(desc)
 
 	#	Queries GBIF to find the number of results for given boundary 
-	def GETCOUNT(self,taxon_name,minLat,maxLat,minLon,maxLon,m_Progress):
+	def GETCOUNT(self,taxon_name,cID,minLat,maxLat,minLon,maxLon,m_Progress):
 		taxonReq = '+'.join(taxon_name)			
-		cID = self.GETTAXID(taxonReq,m_Progress)
+	#	cID = self.GETTAXID(taxonReq,m_Progress)
 		url= " http://data.gbif.org/ws/rest/occurrence/count?taxonconceptkey=%d&maxlatitude=%d&minlatitude=%d&maxlongitude=%d&minlongitude=%d" % (cID,maxLat,minLat,maxLon,minLon) 
 		try:	
 			response=urllib2.urlopen(url).read()
@@ -149,7 +153,7 @@ class GBIFSpecific:
 		return(taxConceptID)
 		
 	# Search for a Taxon Name in a Geographic boundary
-	def GETOBSENTIRERANGE(self,taxon_name,minLatitude,maxLatitude,minLongitude,maxLongitude,m_Progress):
+	def GETOBSENTIRERANGE(self,taxon_name,cID,minLatitude,maxLatitude,minLongitude,maxLongitude,m_Progress):
 		records=0
 		distLocations=set()
 		
@@ -179,10 +183,10 @@ class GBIFSpecific:
 		description=""
 		for taxonName in taxonList:
 			m_Progress.WriteText("########### Querying GBIF for %s ######\n" % taxonName)
-			cID = self.GETTAXID(taxonName,m_Progress)
-			if(cID == -1):
-				m_Progress.WriteText("No concept ID found for %s. Skipping...\n" % taxonName)
-				continue
+#			cID = self.GETTAXID(taxonName,m_Progress)
+#			if(cID == -1):
+#				m_Progress.WriteText("No concept ID found for %s. Skipping...\n" % taxonName)
+#				continue
 			m_Progress.WriteText("Concept ID: %d\n" % cID)
 			### The set of observations
 			### hash key #1 = grid cell
@@ -190,7 +194,7 @@ class GBIFSpecific:
 			### value = list of GBIF key + list of lat/longs of genus observations in that grid cell
 
 			fullTaxonomy={}
-			resultCount =self.GETCOUNT(taxon_name,minLatitude,maxLatitude,minLongitude,maxLongitude,m_Progress)
+			resultCount =self.GETCOUNT(taxon_name,cID,minLatitude,maxLatitude,minLongitude,maxLongitude,m_Progress)
 			#chek if whole window fits: if not divide into columns
 			nodeList=[]
 			if resultCount>1000 :
@@ -201,7 +205,7 @@ class GBIFSpecific:
 					colMinLatitude = coords[0]
 					colMaxLatitude = coords[1]
 					
-					resultCount =self.GETCOUNT(taxon_name,colMinLatitude,colMaxLatitude,colMinLongitude,colMaxLongitude,m_Progress)
+					resultCount =self.GETCOUNT(taxon_name,cID,colMinLatitude,colMaxLatitude,colMinLongitude,colMaxLongitude,m_Progress)
 					#check if col fits: if not divide into cells
 					if resultCount > 1000:
 						newCoords = self.GBIFGeneric.SUBDIVIDEROW(colMinLatitude,colMaxLatitude,colMinLongitude,colMaxLongitude)
@@ -210,9 +214,9 @@ class GBIFSpecific:
 							cellMaxLongitude = coords[3]
 							cellMinLatitude = coords[0]
 							cellMaxLatitude = coords[1]
-							resultCount =self.GETCOUNT(taxon_name,cellMinLatitude,cellMaxLatitude,cellMinLongitude,cellMaxLongitude,m_Progress)
+							resultCount =self.GETCOUNT(taxon_name,cID,cellMinLatitude,cellMaxLatitude,cellMinLongitude,cellMaxLongitude,m_Progress)
 							#check if cell fits: if not divide into centicells
-							print "stage 3"
+						#	print "stage 3"
 							if resultCount >1000:
 								newCoords = self.GBIFGeneric.SUBDIVIDECOL(cellMinLatitude,cellMaxLatitude,cellMinLongitude,cellMaxLongitude)
 								for coords in newCoords:
@@ -220,8 +224,8 @@ class GBIFSpecific:
 									ccellMaxLongitude = coords[3]
 									ccellMinLatitude = coords[0]
 									ccellMaxLatitude = coords[1]
-									resultCount =self.GETCOUNT(taxon_name,ccellMinLatitude,ccellMaxLatitude,ccellMinLongitude,ccellMaxLongitude,m_Progress)
-									print "stage 4"
+									resultCount =self.GETCOUNT(taxon_name,cID,ccellMinLatitude,ccellMaxLatitude,ccellMinLongitude,ccellMaxLongitude,m_Progress)
+						#			print "stage 4"
 									if resultCount>1000:
 										wx.MessageBox("Smallest Gradient not sufficient.")
 									#centicells worked

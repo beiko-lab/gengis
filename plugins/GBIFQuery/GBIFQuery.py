@@ -32,12 +32,13 @@ from xml.dom import minidom
 from dataHelper import isNumber
 from GBIFGeneric import GBIFGeneric
 from GBIFSpecific import GBIFSpecific
+from sets import Set
 
 class GBIFQuery(GBIFQueryLayout):
 	#	Global variables to store queried information
 	__obs__ = []
 	__conversions__ = []
-	__selectedTaxon__= []
+	__selectedTaxon__= Set()
 	__description__=""
 	
 	def __init__(self,parent=None):
@@ -46,9 +47,9 @@ class GBIFQuery(GBIFQueryLayout):
 		self.GBIFGeneric = GBIFGeneric()
 		GBIFQueryLayout.__init__(self,parent)
 		self.SetIcon(wx.Icon(GenGIS.mainWindow.GetExeDir() + "images/CrazyEye.ico",wx.BITMAP_TYPE_ICO))
-		self.m_bitmap3.SetIcon(wx.Icon(GenGIS.mainWindow.GetExeDir() + "images/GBIF_compass_small.png",wx.BITMAP_TYPE_PNG))
+		self.m_Compass.SetIcon(wx.Icon(GenGIS.mainWindow.GetExeDir() + "images/GBIF_compass_small.png",wx.BITMAP_TYPE_PNG))
 		self.graphicalElementIds=[]
-		self.__selectedTaxon__=[]
+		self.__selectedTaxon__=Set()
 		self.__obs__ = []
 		self.__conversions__ = []
 		self.m_IDList.Clear()
@@ -73,26 +74,6 @@ class GBIFQuery(GBIFQueryLayout):
 		self.m_Result.Clear()
 		
 		taxon = self.m_TaxonName.GetLineText(0)
-		
-		#TEST  CASES REMOVE BEFORE LAUNCH
-		if(taxon=="TEST"):
-			taxon="Liolaemus darwinii"
-		#	self.m_MinLat.SetValue(-34)
-		#	self.m_MaxLat.SetValue(-31)
-		#	self.m_MinLon.SetValue(-72)
-		#	self.m_MaxLon.SetValue(-66)
-		elif(taxon=="TE"):
-			taxon="Apolochiton"
-			self.m_MinLat.SetValue(-34)
-			self.m_MaxLat.SetValue(-31)
-			self.m_MinLon.SetValue(-72)
-			self.m_MaxLon.SetValue(-66)
-		elif(taxon=="Galaxiidae"):
-			taxon="Galaxiidae"
-			self.m_MinLat.SetValue(-42)
-			self.m_MaxLat.SetValue(-26)
-			self.m_MinLon.SetValue(127)
-			self.m_MaxLon.SetValue(167)
 		taxon=taxon.split()
 		if(len(taxon)==0):
 			wx.MessageBox("You did not enter a taxon name.")
@@ -106,7 +87,7 @@ class GBIFQuery(GBIFQueryLayout):
 		
 	#	Create Sequence and Location files for selected Taxa
 	def OnCalculate(self,event):
-		self.m_staticText6.SetLabel("\n")
+		self.m_Summary.SetLabel("\n")
 		records,distLocations = 0,0
 		self.__obs__=[]
 		self.__conversions__=[]
@@ -119,7 +100,7 @@ class GBIFQuery(GBIFQueryLayout):
 			maxLongitude= self.m_MaxLon.GetValue()
 			self.m_Progress.WriteText("Starting...\n")
 			for tax in self.__selectedTaxon__:
-				obs,con,recs,distLocs,description = self.GBIFSpecific.GETOBSENTIRERANGE(tax.split(),minLatitude,maxLatitude,minLongitude,maxLongitude,self.m_Progress)
+				obs,con,recs,distLocs,description= self.GBIFSpecific.GETOBSENTIRERANGE(tax[1].split(),tax[0],minLatitude,maxLatitude,minLongitude,maxLongitude,self.m_Progress)
 				self.__obs__.append(obs)
 				self.__conversions__.append(con)
 				self.__description__+="%s\n" % description
@@ -129,13 +110,13 @@ class GBIFQuery(GBIFQueryLayout):
 		else:
 			wx.MessageBox("Please select some Taxa.")
 		
-		self.m_staticText6.SetLabel("%d records retrieved.\n%d distinct locations." %(records,distLocations))
+		self.m_Summary.SetLabel("%d records retrieved.\n%d distinct locations." %(records,distLocations))
 		wx.EndBusyCursor()
 	
 	#	Present the number of locations a user is about to query
 	#	Used as a check by the user to know they aren't going to produce way too much data.
 	def OnPreCalculate(self,event):
-		self.m_staticText6.SetLabel("\n")
+		self.m_Summary.SetLabel("\n")
 		if(self.__selectedTaxon__):
 			minLatitude= self.m_MinLat.GetValue()
 			maxLatitude= self.m_MaxLat.GetValue()
@@ -143,10 +124,10 @@ class GBIFQuery(GBIFQueryLayout):
 			maxLongitude= self.m_MaxLon.GetValue()
 			count=0
 			for tax in self.__selectedTaxon__:
-				count+=self.GBIFSpecific.GETCOUNT(tax.split(),minLatitude,maxLatitude,minLongitude,maxLongitude,self.m_Progress)
+				count+=self.GBIFSpecific.GETCOUNT(tax[1].split(),tax[0],minLatitude,maxLatitude,minLongitude,maxLongitude,self.m_Progress)
 		else:
 			wx.MessageBox("Please select some Taxa.")
-		self.m_staticText6.SetLabel("There were %d records for the given location." % count) 
+		self.m_Summary.SetLabel("There were %d records for the given location." % count) 
 	
 	#	Redirects User to Wiki page for this plugin
 	def OnHelp(self, event):
@@ -203,17 +184,18 @@ class GBIFQuery(GBIFQueryLayout):
 		IDCount = self.m_IDList.GetCount()
 		for index in self.m_Result.GetSelections():
 			selected = self.m_Result.GetString(index)
-			self.m_IDList.InsertItems(["%s" % selected],IDCount+i)
 			split = selected.split(" | ")
-			self.__selectedTaxon__.append(split[1])
-			i+=1
+			if (int(split[0]),split[1]) not in self.__selectedTaxon__:
+				self.m_IDList.InsertItems(["%s" % selected],IDCount+i)
+				self.__selectedTaxon__.add((int(split[0]),split[1]))
+				i+=1
 			
 	#	Remove Data from ID List
 	def OnRemove(self,event):
 		for index in self.m_IDList.GetSelections():
 			selected = self.m_IDList.GetString(index)
 			split = selected.split(" | ")
-			self.__selectedTaxon__.remove(split[1])
+			self.__selectedTaxon__.remove((int(split[0]),split[1]))
 			self.m_IDList.Delete(index)
 	
 	#	Close the Plugin
@@ -228,3 +210,4 @@ class GBIFQuery(GBIFQueryLayout):
 	#	Close the Plugin
 	def OnOK( self, event ):
 		self.Close()
+		
