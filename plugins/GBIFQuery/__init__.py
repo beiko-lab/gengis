@@ -1,19 +1,19 @@
 def name():
 	return "GBIF Query"
-	
+
 def version():
 	return "Version 0.1"
 
 def description():
 	return "Query GBIF DB for instances of Taxon Name in a region."
-	
+
 def authors():
-	return "Alexander Keddy & Timothy Mankowski"
+	return "Alexander Keddy and Timothy Mankowski"
 
 def publicationDate():
 	return "July 4, 2013"
-	
-def minimumVersionOfGenGIS(): 
+
+def minimumVersionOfGenGIS():
 	return "2.1.1"
 
 def requireR():
@@ -21,3 +21,8 @@ def requireR():
 
 def rDependencies():
 	return ""
+
+# Specifies the destination plugin menu (plugins or data) within GenGIS
+def pluginMenu():
+	return "data"
+

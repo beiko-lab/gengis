@@ -1,5 +1,5 @@
 ///////////////////////////////////////////////////////////////////////////
-// C++ code generated with wxFormBuilder (version Jun 30 2011)
+// C++ code generated with wxFormBuilder (version Sep  8 2010)
 // http://www.wxformbuilder.org/
 //
 // PLEASE DO "NOT" EDIT THIS FILE!
@@ -425,6 +425,9 @@ GenGisLayout::GenGisLayout( wxWindow* parent, wxWindowID id, const wxString& tit
 	
 	m_menubar->Append( m_mnuAnalysis, wxT("&Analysis") ); 
 	
+	m_mnuData = new wxMenu();
+	m_menubar->Append( m_mnuData, wxT("&Data") ); 
+	
 	m_mnuPlugins = new wxMenu();
 	m_menubar->Append( m_mnuPlugins, wxT("&Plugins") ); 
 	
@@ -459,41 +462,24 @@ GenGisLayout::GenGisLayout( wxWindow* parent, wxWindowID id, const wxString& tit
 	this->SetMenuBar( m_menubar );
 	
 	m_toolBar = this->CreateToolBar( wxTB_FLAT|wxTB_HORIZONTAL|wxTB_TEXT|wxCLIP_CHILDREN, ID_TOOLBAR ); 
-	m_toolBar->AddTool( ID_TB_OPEN_SESSION, wxT("Open Session"), wxBitmap( fileopensession_xpm ), wxNullBitmap, wxITEM_NORMAL, wxT("Open Session"), wxT("Opens previous configuration settings"), NULL ); 
-	
+	m_toolBar->AddTool( ID_TB_OPEN_SESSION, wxT("Open Session"), wxBitmap( fileopensession_xpm ), wxNullBitmap, wxITEM_NORMAL, wxT("Open Session"), wxT("Opens previous configuration settings") ); 
 	m_toolBar->AddSeparator(); 
-	
-	m_toolBar->AddTool( ID_TB_LAYER_OPEN_DEM, wxT("Load Raster Map"), wxBitmap( DEM_xpm ), wxNullBitmap, wxITEM_NORMAL, wxT("Open digital map"), wxT("Open digital map"), NULL ); 
-	
-	m_toolBar->AddTool( ID_TB_LAYER_OPEN_VECTOR, wxT("Load Vector Map"), wxBitmap( shapefile_xpm ), wxNullBitmap, wxITEM_NORMAL, wxT("Open vector map"), wxT("Open vector map"), NULL ); 
-	
-	m_toolBar->AddTool( ID_TB_LAYER_OPEN_LOCATIONS, wxT("Load Locations"), wxBitmap( Location_xpm ), wxNullBitmap, wxITEM_NORMAL, wxT("Open georeferenced sample sites"), wxT("Open georeferenced sample sites"), NULL ); 
-	
-	m_toolBar->AddTool( ID_TB_LAYER_OPEN_SAMPLE_DATA, wxT("Load Sequences"), wxBitmap( SampleData_xpm ), wxNullBitmap, wxITEM_NORMAL, wxT("Open sequence data"), wxT("Open sequence data"), NULL ); 
-	
-	m_toolBar->AddTool( ID_TB_LAYER_OPEN_TREE, wxT("Load Tree"), wxBitmap( phylogram_xpm ), wxNullBitmap, wxITEM_NORMAL, wxT("Open tree"), wxT("Open tree"), NULL ); 
-	
+	m_toolBar->AddTool( ID_TB_LAYER_OPEN_DEM, wxT("Load Raster Map"), wxBitmap( DEM_xpm ), wxNullBitmap, wxITEM_NORMAL, wxT("Open digital map"), wxT("Open digital map") ); 
+	m_toolBar->AddTool( ID_TB_LAYER_OPEN_VECTOR, wxT("Load Vector Map"), wxBitmap( shapefile_xpm ), wxNullBitmap, wxITEM_NORMAL, wxT("Open vector map"), wxT("Open vector map") ); 
+	m_toolBar->AddTool( ID_TB_LAYER_OPEN_LOCATIONS, wxT("Load Locations"), wxBitmap( Location_xpm ), wxNullBitmap, wxITEM_NORMAL, wxT("Open georeferenced sample sites"), wxT("Open georeferenced sample sites") ); 
+	m_toolBar->AddTool( ID_TB_LAYER_OPEN_SAMPLE_DATA, wxT("Load Sequences"), wxBitmap( SampleData_xpm ), wxNullBitmap, wxITEM_NORMAL, wxT("Open sequence data"), wxT("Open sequence data") ); 
+	m_toolBar->AddTool( ID_TB_LAYER_OPEN_TREE, wxT("Load Tree"), wxBitmap( phylogram_xpm ), wxNullBitmap, wxITEM_NORMAL, wxT("Open tree"), wxT("Open tree") ); 
 	m_toolBar->AddSeparator(); 
-	
-	m_toolBar->AddTool( ID_VIEW_RESET, wxT("Perspective View"), wxBitmap( Reset_xpm ), wxNullBitmap, wxITEM_NORMAL, wxT("Reset viewpoint"), wxT("Reset viewpoint"), NULL ); 
-	
-	m_toolBar->AddTool( ID_VIEW_TOP, wxT("Top View"), wxBitmap( top_xpm ), wxNullBitmap, wxITEM_NORMAL, wxT("View from top"), wxT("View from top"), NULL ); 
-	
+	m_toolBar->AddTool( ID_VIEW_RESET, wxT("Perspective View"), wxBitmap( Reset_xpm ), wxNullBitmap, wxITEM_NORMAL, wxT("Reset viewpoint"), wxT("Reset viewpoint") ); 
+	m_toolBar->AddTool( ID_VIEW_TOP, wxT("Top View"), wxBitmap( top_xpm ), wxNullBitmap, wxITEM_NORMAL, wxT("View from top"), wxT("View from top") ); 
 	m_toolBar->AddSeparator(); 
-	
-	m_toolBar->AddTool( ID_TB_MODE_DRAW_LAYOUT_LINE, wxT("Layout Line"), wxBitmap( line_xpm ), wxNullBitmap, wxITEM_CHECK, wxT("Draw layout line"), wxT("Draw layout line"), NULL ); 
-	
-	m_toolBar->AddTool( ID_TB_MODE_DRAW_LAYOUT_ELLIPSE, wxT("Layout Ellipse"), wxBitmap( ellipse_xpm ), wxNullBitmap, wxITEM_CHECK, wxT("Draw layout ellipse"), wxT("Draw layout ellipse"), NULL ); 
-	
+	m_toolBar->AddTool( ID_TB_MODE_DRAW_LAYOUT_LINE, wxT("Layout Line"), wxBitmap( line_xpm ), wxNullBitmap, wxITEM_CHECK, wxT("Draw layout line"), wxT("Draw layout line") ); 
+	m_toolBar->AddTool( ID_TB_MODE_DRAW_LAYOUT_ELLIPSE, wxT("Layout Ellipse"), wxBitmap( ellipse_xpm ), wxNullBitmap, wxITEM_CHECK, wxT("Draw layout ellipse"), wxT("Draw layout ellipse") ); 
 	m_toolBar->AddSeparator(); 
-	
-	m_toolBar->AddTool( ID_TB_GEO_AXIS_BY_POLYLINE, wxT("Geographic Axis"), wxBitmap( polyline_xpm ), wxNullBitmap, wxITEM_CHECK, wxT("Define geographic axis"), wxT("Define geographic axis using a polyline"), NULL ); 
-	
+	m_toolBar->AddTool( ID_TB_GEO_AXIS_BY_POLYLINE, wxT("Geographic Axis"), wxBitmap( polyline_xpm ), wxNullBitmap, wxITEM_CHECK, wxT("Define geographic axis"), wxT("Define geographic axis using a polyline") ); 
 	m_toolBar->AddSeparator(); 
-	
-	m_toolBar->AddTool( ID_TB_LABEL_TOOL, wxT("Label Tool"), wxBitmap( Label_xpm ), wxNullBitmap, wxITEM_CHECK, wxT("Label tool"), wxT("Label tool"), NULL ); 
-	
-	m_toolBar->Realize(); 
+	m_toolBar->AddTool( ID_TB_LABEL_TOOL, wxT("Label Tool"), wxBitmap( Label_xpm ), wxNullBitmap, wxITEM_CHECK, wxT("Label tool"), wxT("Label tool") ); 
+	m_toolBar->Realize();
 	
 	m_statusBar = this->CreateStatusBar( 4, wxST_SIZEGRIP|wxCLIP_CHILDREN, ID_STATUSBAR );
 	

@@ -1,21 +1,19 @@
 ///////////////////////////////////////////////////////////////////////////
-// C++ code generated with wxFormBuilder (version Jun 30 2011)
+// C++ code generated with wxFormBuilder (version Sep  8 2010)
 // http://www.wxformbuilder.org/
 //
 // PLEASE DO "NOT" EDIT THIS FILE!
 ///////////////////////////////////////////////////////////////////////////
 
-#ifndef __GENGISLAYOUT_H__
-#define __GENGISLAYOUT_H__
+#ifndef __GenGisLayout__
+#define __GenGisLayout__
 
-#include <wx/artprov.h>
-#include <wx/xrc/xmlres.h>
 #include <wx/statline.h>
-#include <wx/string.h>
 #include <wx/gdicmn.h>
 #include <wx/font.h>
 #include <wx/colour.h>
 #include <wx/settings.h>
+#include <wx/string.h>
 #include <wx/treectrl.h>
 #include <wx/sizer.h>
 #include <wx/panel.h>
@@ -136,6 +134,7 @@ namespace GenGIS
 			wxMenu* m_mnuSettings;
 			wxMenuItem* m_mnuRAutoConfigUtil;
 			wxMenu* m_mnuAnalysis;
+			wxMenu* m_mnuData;
 			wxMenu* m_mnuPlugins;
 			wxMenu* m_mnuHelp;
 			wxToolBar* m_toolBar;
@@ -194,7 +193,6 @@ namespace GenGIS
 		public:
 			
 			GenGisLayout( wxWindow* parent, wxWindowID id = ID_MAIN_FRAME, const wxString& title = wxT("GenGIS"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 1120,653 ), long style = wxDEFAULT_FRAME_STYLE|wxCLIP_CHILDREN|wxTAB_TRAVERSAL );
-			
 			~GenGisLayout();
 			
 			void m_splitterHorizontalOnIdle( wxIdleEvent& )
@@ -213,4 +211,4 @@ namespace GenGIS
 	
 } // namespace GenGIS
 
-#endif //__GENGISLAYOUT_H__
+#endif //__GenGisLayout__

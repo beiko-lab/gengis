@@ -23,3 +23,7 @@ def requireR():
 # (e.g., "ade4,somethingElse")
 def rDependencies():
 	return "vegan"
+
+# Specifies the destination plugin menu (plugins or data) within GenGIS
+def pluginMenu():
+	return "plugins"

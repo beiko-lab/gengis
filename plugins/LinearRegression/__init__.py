@@ -1,19 +1,19 @@
 def name():
 	return "Linear Regression"
-	
+
 def version():
 	return "Version 1.0"
 
 def description():
 	return "Perform linear regression analysis."
-	
+
 def authors():
 	return "Donovan Parks"
 
 def publicationDate():
 	return "August 18, 2011"
-	
-def minimumVersionOfGenGIS(): 
+
+def minimumVersionOfGenGIS():
 	return "2.0"
 
 def requireR():
@@ -21,3 +21,7 @@ def requireR():
 
 def rDependencies():
 	return ""
+
+# Specifies the destination plugin menu (plugins or data) within GenGIS
+def pluginMenu():
+	return "plugins"

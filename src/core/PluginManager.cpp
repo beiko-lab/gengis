@@ -43,6 +43,7 @@ const int ID_PLUGINS        = 20001;
 
 wxFrame* PluginManager::m_mainWindow;
 wxMenu*  PluginManager::m_mnuPlugins;
+wxMenu*  PluginManager::m_mnuData;
 
 std::vector<std::string> PluginManager::m_fields;
 std::vector< std::vector<std::string> > PluginManager::m_pluginMetadata;
@@ -71,6 +72,7 @@ void PluginManager::LoadPlugins()
 	// get plugin menu
 	wxMenuBar* menuBar = m_mainWindow->GetMenuBar();	
 	m_mnuPlugins = menuBar->GetMenu(menuBar->FindMenu(wxT("Plugins")));
+	m_mnuData    = menuBar->GetMenu(menuBar->FindMenu(wxT("Data")));
 
 	// add plugins directory to python path
 	#ifdef WIN32
@@ -168,6 +170,11 @@ void PluginManager::LoadPlugins()
 			pluginMetadata.push_back( "-" );
 		}
 
+		// Check which menu -- "Plugins" or "Data" -- plugin should be added
+		myFunction = PyObject_GetAttrString(myModule,(char*)"pluginMenu");
+		myResult = PyObject_CallObject(myFunction, 0);
+		std::string pluginMenuLocation = PyString_AsString(myResult);
+
 		m_pluginMetadata.push_back(pluginMetadata);
 
 		wxString menuName = wxString( pluginName.c_str(), wxConvUTF8 );
@@ -175,20 +182,33 @@ void PluginManager::LoadPlugins()
 			menuName += wxT( " (R required)" );
 
 		// add plugin to plugin menu
-		wxMenuItem* pluginMenu = new wxMenuItem( m_mnuPlugins, ID_PLUGINS+i, 
-		                                         menuName, 
-		                                         wxString(pluginDesc.c_str(), wxConvUTF8),
-		                                         wxITEM_NORMAL );
-		m_mnuPlugins->Append(pluginMenu);
-		m_mainWindow->Connect( pluginMenu->GetId(), wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( PluginManager::OnExecutePlugin ) );
-	
+		if ( pluginMenuLocation == "data" )
+		{
+			wxMenuItem* pluginMenu = new wxMenuItem( m_mnuData, ID_PLUGINS+i, 
+													 menuName, 
+													 wxString(pluginDesc.c_str(), wxConvUTF8),
+													 wxITEM_NORMAL );
+			m_mnuData->Append(pluginMenu);
+			m_mainWindow->Connect( pluginMenu->GetId(), wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( PluginManager::OnExecutePlugin ) );
+		}
+		else // for now all other plugins are: pluginMenuLocation == "plugins"
+		{
+			wxMenuItem* pluginMenu = new wxMenuItem( m_mnuPlugins, ID_PLUGINS+i, 
+													 menuName, 
+													 wxString(pluginDesc.c_str(), wxConvUTF8),
+													 wxITEM_NORMAL );
+			m_mnuPlugins->Append(pluginMenu);
+			m_mainWindow->Connect( pluginMenu->GetId(), wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( PluginManager::OnExecutePlugin ) );
+		}
+
 		// add to plugin map
 		m_objectIdToPluginModuleName[ID_PLUGINS+i] = pluginModuleNameStr;
 		m_objectIdToRequiresR[ID_PLUGINS+i] = bRequireR;
 	}
-	
+
 	// add plugin manager to plugin menu
-	m_mnuPlugins->InsertSeparator(m_pluginMetadata.size());
+	m_mnuPlugins->AppendSeparator();
+
 	wxMenuItem* mnuPluginManager = new wxMenuItem( m_mnuPlugins, ID_PLUGIN_MANAGER, 
 	                                               wxString(wxT("Plugin Manager")) + wxT('\t') + wxT("Ctrl+P"), 
 	                                               wxT("Information and options for plugins"), 
