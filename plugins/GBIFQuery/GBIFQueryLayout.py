@@ -38,51 +38,51 @@ class GBIFQueryLayout ( wx.Frame ):
 		self.m_Search = wx.Button( self, wx.ID_ANY, u"Search", wx.DefaultPosition, wx.DefaultSize, 0 )
 		sbSizer2.Add( self.m_Search, 0, wx.ALL, 5 )
 		
-		bSizer3.Add( sbSizer2, 0, wx.EXPAND, 5 )
+		bSizer3.Add( sbSizer2, 0, wx.EXPAND|wx.ALL, 5 )
 		
 		sbSizer4 = wx.StaticBoxSizer( wx.StaticBox( self, wx.ID_ANY, u"Geographic Range" ), wx.VERTICAL )
 		
 		fgSizer1 = wx.FlexGridSizer( 3, 3, 0, 0 )
 		fgSizer1.SetFlexibleDirection( wx.BOTH )
-		fgSizer1.SetNonFlexibleGrowMode( wx.FLEX_GROWMODE_SPECIFIED )
+		fgSizer1.SetNonFlexibleGrowMode( wx.FLEX_GROWMODE_ALL )
 		
 		
 		fgSizer1.AddSpacer( ( 0, 0), 1, wx.EXPAND, 5 )
 		
 		self.m_MaxLat = wx.SpinCtrl( self, wx.ID_ANY, u"90", wx.DefaultPosition, wx.DefaultSize, wx.SP_ARROW_KEYS, -90, 90, 0 )
-		fgSizer1.Add( self.m_MaxLat, 0, wx.ALL|wx.ALIGN_CENTER_VERTICAL, 5 )
+		fgSizer1.Add( self.m_MaxLat, 0, wx.ALIGN_CENTER_VERTICAL|wx.TOP|wx.BOTTOM|wx.RIGHT, 5 )
 		
 		
 		fgSizer1.AddSpacer( ( 0, 0), 1, wx.EXPAND, 5 )
 		
-		self.m_MinLon = wx.SpinCtrl( self, wx.ID_ANY, u"-180", wx.DefaultPosition, wx.DefaultSize, wx.SP_ARROW_KEYS, -180, 180, 0 )
-		fgSizer1.Add( self.m_MinLon, 0, wx.ALL|wx.ALIGN_CENTER_VERTICAL, 5 )
+		self.m_MinLon = wx.SpinCtrl( self, wx.ID_ANY, u"-180", wx.DefaultPosition, wx.DefaultSize, wx.SP_ARROW_KEYS, -180, 180, -179 )
+		fgSizer1.Add( self.m_MinLon, 0, wx.ALIGN_CENTER_VERTICAL|wx.TOP|wx.BOTTOM|wx.RIGHT, 5 )
 		
 		self.m_Compass = wx.StaticBitmap( self, wx.ID_ANY, wx.NullBitmap, wx.DefaultPosition, wx.Size( 100,100 ), 0 )
-		fgSizer1.Add( self.m_Compass, 0, wx.ALL|wx.ALIGN_CENTER_HORIZONTAL|wx.ALIGN_CENTER_VERTICAL, 5 )
+		fgSizer1.Add( self.m_Compass, 0, wx.ALL|wx.ALIGN_CENTER_VERTICAL, 5 )
 		
 		self.m_MaxLon = wx.SpinCtrl( self, wx.ID_ANY, u"180", wx.DefaultPosition, wx.DefaultSize, wx.SP_ARROW_KEYS, -180, 180, 0 )
-		fgSizer1.Add( self.m_MaxLon, 0, wx.ALL|wx.ALIGN_CENTER_VERTICAL, 5 )
+		fgSizer1.Add( self.m_MaxLon, 0, wx.ALIGN_CENTER_VERTICAL|wx.ALIGN_RIGHT|wx.TOP|wx.BOTTOM, 5 )
 		
 		
 		fgSizer1.AddSpacer( ( 0, 0), 1, wx.EXPAND, 5 )
 		
 		self.m_MinLat = wx.SpinCtrl( self, wx.ID_ANY, u"-90", wx.DefaultPosition, wx.DefaultSize, wx.SP_ARROW_KEYS, -90, 90, 0 )
-		fgSizer1.Add( self.m_MinLat, 0, wx.ALL|wx.ALIGN_CENTER_VERTICAL, 5 )
+		fgSizer1.Add( self.m_MinLat, 0, wx.ALIGN_CENTER_VERTICAL|wx.TOP|wx.BOTTOM|wx.RIGHT, 5 )
 		
 		
 		fgSizer1.AddSpacer( ( 0, 0), 1, wx.EXPAND, 5 )
 		
-		sbSizer4.Add( fgSizer1, 1, wx.EXPAND, 5 )
+		sbSizer4.Add( fgSizer1, 1, wx.EXPAND|wx.ALL, 5 )
 		
-		bSizer3.Add( sbSizer4, 0, wx.EXPAND, 5 )
+		bSizer3.Add( sbSizer4, 0, wx.EXPAND|wx.ALL, 5 )
 		
 		sbSizer8 = wx.StaticBoxSizer( wx.StaticBox( self, wx.ID_ANY, u"Progress" ), wx.HORIZONTAL )
 		
 		self.m_Progress = wx.TextCtrl( self, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, wx.TE_DONTWRAP|wx.TE_MULTILINE|wx.TE_READONLY|wx.CLIP_CHILDREN )
 		sbSizer8.Add( self.m_Progress, 1, wx.ALL|wx.EXPAND, 5 )
 		
-		bSizer3.Add( sbSizer8, 1, wx.EXPAND, 5 )
+		bSizer3.Add( sbSizer8, 1, wx.EXPAND|wx.ALL, 5 )
 		
 		sbSizer11 = wx.StaticBoxSizer( wx.StaticBox( self, wx.ID_ANY, u"Summary" ), wx.VERTICAL )
 		
@@ -90,7 +90,7 @@ class GBIFQueryLayout ( wx.Frame ):
 		self.m_Summary.Wrap( -1 )
 		sbSizer11.Add( self.m_Summary, 0, wx.ALL, 5 )
 		
-		bSizer3.Add( sbSizer11, 0, wx.EXPAND, 5 )
+		bSizer3.Add( sbSizer11, 0, wx.EXPAND|wx.ALL, 5 )
 		
 		bSizer12 = wx.BoxSizer( wx.HORIZONTAL )
 		
@@ -106,7 +106,7 @@ class GBIFQueryLayout ( wx.Frame ):
 		
 		bSizer12.AddSpacer( ( 0, 0), 1, wx.EXPAND, 5 )
 		
-		bSizer3.Add( bSizer12, 0, wx.EXPAND, 5 )
+		bSizer3.Add( bSizer12, 0, wx.EXPAND|wx.ALL, 5 )
 		
 		bSizer2.Add( bSizer3, 1, wx.EXPAND, 5 )
 		
@@ -124,7 +124,7 @@ class GBIFQueryLayout ( wx.Frame ):
 		
 		sbSizer5.Add( bSizer10, 1, wx.EXPAND, 5 )
 		
-		bSizer8.Add( sbSizer5, 1, wx.EXPAND, 5 )
+		bSizer8.Add( sbSizer5, 1, wx.EXPAND|wx.ALL, 5 )
 		
 		bSizer9 = wx.BoxSizer( wx.HORIZONTAL )
 		
@@ -143,7 +143,7 @@ class GBIFQueryLayout ( wx.Frame ):
 		
 		bSizer9.AddSpacer( ( 0, 0), 1, wx.EXPAND, 5 )
 		
-		bSizer8.Add( bSizer9, 0, wx.EXPAND, 5 )
+		bSizer8.Add( bSizer9, 0, wx.EXPAND|wx.ALL, 5 )
 		
 		sbSizer7 = wx.StaticBoxSizer( wx.StaticBox( self, wx.ID_ANY, u"ID List" ), wx.VERTICAL )
 		
@@ -165,16 +165,16 @@ class GBIFQueryLayout ( wx.Frame ):
 		
 		sbSizer7.Add( bSizer11, 1, wx.EXPAND, 5 )
 		
-		bSizer8.Add( sbSizer7, 1, wx.EXPAND, 5 )
+		bSizer8.Add( sbSizer7, 1, wx.EXPAND|wx.ALL, 5 )
 		
-		bSizer5.Add( bSizer8, 1, wx.EXPAND, 5 )
+		bSizer5.Add( bSizer8, 1, wx.EXPAND|wx.ALL, 5 )
 		
 		bSizer14 = wx.BoxSizer( wx.VERTICAL )
 		
 		self.m_Close = wx.Button( self, wx.ID_ANY, u"Close", wx.DefaultPosition, wx.DefaultSize, 0 )
 		bSizer14.Add( self.m_Close, 0, wx.ALL|wx.ALIGN_RIGHT, 5 )
 		
-		bSizer5.Add( bSizer14, 0, wx.EXPAND, 5 )
+		bSizer5.Add( bSizer14, 0, wx.EXPAND|wx.ALL, 5 )
 		
 		bSizer2.Add( bSizer5, 1, wx.EXPAND, 5 )
 		
