@@ -1,3 +1,25 @@
+#=======================================================================
+# Author: Donovan Parks
+#
+# Copyright 2013 Alexander Keddy
+#
+# This file is part of GenGIS.
+#
+# GenGIS is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# GenGIS is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with GenGIS.  If not, see <http://www.gnu.org/licenses/>.
+#=======================================================================
+
+
 import re
 import wx
 import sys
@@ -204,7 +226,7 @@ class GBIFSpecific:
 										wx.MessageBox("Smallest Gradient not sufficient.")
 									#centicells worked
 									else:
-										m_Progress.WriteText("Latitude: %0.2f : %0.2f\tLongitude: %0.2f : %0.2f\t |" % (ccellMinLatitude,ccellMaxLatitude,ccellMinLongitude,ccellMaxLongitude))
+										m_Progress.WriteText("Latitude: %0.2f to %0.2f\tLongitude: %0.2f to %0.2f\n" % (ccellMinLatitude,ccellMaxLatitude,ccellMinLongitude,ccellMaxLongitude))
 										url="http://data.gbif.org/ws/rest/occurrence/list?taxonconceptkey=%d&maxlatitude=%d&minlatitude=%d&maxlongitude=%d&minlongitude=%d" %(cID,ccellMaxLatitude,ccellMinLatitude,ccellMaxLongitude,ccellMinLongitude)
 										try:
 											response=urllib2.urlopen(url).read()
@@ -220,7 +242,7 @@ class GBIFSpecific:
 							
 							#cells worked
 							else:
-								m_Progress.WriteText("Latitude: %0.2f : %0.2f\tLongitude: %0.2f : %0.2f\t |" % (cellMinLatitude,cellMaxLatitude,cellMinLongitude,cellMaxLongitude))
+								m_Progress.WriteText("Latitude: %0.2f to %0.2f\tLongitude: %0.2f to %0.2f\n" % (cellMinLatitude,cellMaxLatitude,cellMinLongitude,cellMaxLongitude))
 								url="http://data.gbif.org/ws/rest/occurrence/list?taxonconceptkey=%d&maxlatitude=%d&minlatitude=%d&maxlongitude=%d&minlongitude=%d" %(cID,cellMaxLatitude,cellMinLatitude,cellMaxLongitude,cellMinLongitude)
 								try:
 									response=urllib2.urlopen(url).read()
@@ -235,7 +257,7 @@ class GBIFSpecific:
 								m_Progress.WriteText("%d records found\n" % len(temper))
 					#cols worked
 					else:
-						m_Progress.WriteText("Latitude: %0.2f : %0.2f\tLongitude: %0.2f : %0.2f\t |" % (colMinLatitude,colMaxLatitude,colMinLongitude,colMaxLongitude))
+						m_Progress.WriteText("Latitude: %0.2f to %0.2f\tLongitude: %0.2f to %0.2f\n" % (colMinLatitude,colMaxLatitude,colMinLongitude,colMaxLongitude))
 						url="http://data.gbif.org/ws/rest/occurrence/list?taxonconceptkey=%d&maxlatitude=%d&minlatitude=%d&maxlongitude=%d&minlongitude=%d" %(cID,colMaxLatitude,colMinLatitude,colMaxLongitude,colMinLongitude)
 						try:
 							response=urllib2.urlopen(url).read()
@@ -251,7 +273,7 @@ class GBIFSpecific:
 						
 			#whole thing worked
 			else:
-				m_Progress.WriteText("Latitude: %0.2f : %0.2f\tLongitude: %0.2f : %0.2f\t |" % (minLatitude,maxLatitude,minLongitude,maxLongitude))
+				m_Progress.WriteText("Latitude: %0.2f to %0.2f\tLongitude: %0.2f to %0.2f\n" % (minLatitude,maxLatitude,minLongitude,maxLongitude))
 				url="http://data.gbif.org/ws/rest/occurrence/list?taxonconceptkey=%d&maxlatitude=%d&minlatitude=%d&maxlongitude=%d&minlongitude=%d" %(cID,maxLatitude,minLatitude,maxLongitude,minLongitude)
 				try:
 					response=urllib2.urlopen(url).read()

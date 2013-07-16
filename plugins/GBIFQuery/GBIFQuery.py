@@ -1,3 +1,24 @@
+#=======================================================================
+# Author: Donovan Parks
+#
+# Copyright 2013 Alexander Keddy
+#
+# This file is part of GenGIS.
+#
+# GenGIS is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# GenGIS is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with GenGIS.  If not, see <http://www.gnu.org/licenses/>.
+#=======================================================================
+
 from GBIFQueryLayout import GBIFQueryLayout
 
 import GenGIS
@@ -31,8 +52,10 @@ class GBIFQuery(GBIFQueryLayout):
 		self.__obs__ = []
 		self.__conversions__ = []
 		self.m_IDList.Clear()
+		
 		#No Map Data
 		self.m_AddData.Disable()
+		
 		#Map Data
 		if GenGIS.layerTree.GetNumMapLayers() > 0 :
 			self.m_AddData.Enable()
@@ -45,10 +68,12 @@ class GBIFQuery(GBIFQueryLayout):
 	#	Query GBIF for Taxa in Lat/Lon Boundary
 	def OnSearch(self,event):
 		wx.BeginBusyCursor()
+		
 		#	Clear the results list
 		self.m_Result.Clear()
 		
 		taxon = self.m_TaxonName.GetLineText(0)
+		
 		#TEST  CASES REMOVE BEFORE LAUNCH
 		if(taxon=="TEST"):
 			taxon="Liolaemus darwinii"
@@ -79,7 +104,7 @@ class GBIFQuery(GBIFQueryLayout):
 			self.GBIFSpecific.GETTAXRESULT(taxon,self.m_Result)
 		wx.EndBusyCursor()
 		
-	#	Create Sequence and Location files for selected Taxa 		
+	#	Create Sequence and Location files for selected Taxa
 	def OnCalculate(self,event):
 		self.m_staticText6.SetLabel("\n")
 		records,distLocations = 0,0
@@ -94,7 +119,7 @@ class GBIFQuery(GBIFQueryLayout):
 			maxLongitude= self.m_MaxLon.GetValue()
 			self.m_Progress.WriteText("Starting...\n")
 			for tax in self.__selectedTaxon__:
-				obs,con,recs,distLocs,description= self.GBIFSpecific.GETOBSENTIRERANGE(tax.split(),minLatitude,maxLatitude,minLongitude,maxLongitude,self.m_Progress)
+				obs,con,recs,distLocs,description = self.GBIFSpecific.GETOBSENTIRERANGE(tax.split(),minLatitude,maxLatitude,minLongitude,maxLongitude,self.m_Progress)
 				self.__obs__.append(obs)
 				self.__conversions__.append(con)
 				self.__description__+="%s\n" % description
