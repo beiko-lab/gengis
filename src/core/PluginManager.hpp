@@ -86,6 +86,8 @@ namespace GenGIS
 
 		static wxMenu* m_mnuPlugins;
 
+		static wxMenu* m_mnuData;
+
 		/** Metadata fields. */
 		static std::vector<std::string> m_fields;
 
