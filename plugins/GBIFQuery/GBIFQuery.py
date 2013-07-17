@@ -1,5 +1,5 @@
 #=======================================================================
-# Author: Donovan Parks
+# Author: Alexander Keddy
 #
 # Copyright 2013 Alexander Keddy
 #
@@ -223,13 +223,4 @@ class GBIFQuery(GBIFQueryLayout):
 	#	Close the Plugin
 	def OnOK( self, event ):
 		self.Close()
-		
-	#	increment geographic range
-	def OnScrollUp(self,event):
-		event_id = event.GetEventObject().GetId()
-		print GenGIS.GetEventObject().FindWindowByID(event_id+1)
-		
-	#	decrement geographic range
-	def OnScrollDown(self,event):
-		print "bye"
 	

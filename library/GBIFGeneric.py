@@ -1,5 +1,5 @@
 #=======================================================================
-# Author: Donovan Parks
+# Author: Alexander Keddy
 #
 # Copyright 2013 Alexander Keddy
 #

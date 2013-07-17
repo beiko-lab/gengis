@@ -49,25 +49,25 @@ class GBIFQueryLayout ( wx.Frame ):
 		
 		fgSizer1.AddSpacer( ( 0, 0), 1, wx.EXPAND, 5 )
 		
-		self.m_MaxLat = wx.SpinCtrl( self, wx.ID_ANY, u"90", wx.DefaultPosition, wx.DefaultSize, wx.SP_ARROW_KEYS, -90, 90, 0 )
+		self.m_MaxLat = wx.SpinCtrl( self, wx.ID_ANY, u"90", wx.DefaultPosition, wx.DefaultSize, wx.SP_ARROW_KEYS|wx.TAB_TRAVERSAL, -90, 90, 0 )
 		fgSizer1.Add( self.m_MaxLat, 0, wx.ALIGN_CENTER_VERTICAL|wx.TOP|wx.BOTTOM|wx.RIGHT, 5 )
 		
 		
 		fgSizer1.AddSpacer( ( 0, 0), 1, wx.EXPAND, 5 )
 		
-		self.m_MinLon = wx.SpinCtrl( self, wx.ID_ANY, u"-180", wx.DefaultPosition, wx.DefaultSize, wx.SP_ARROW_KEYS, -180, 180, -179 )
+		self.m_MinLon = wx.SpinCtrl( self, wx.ID_ANY, u"-180", wx.DefaultPosition, wx.DefaultSize, wx.SP_ARROW_KEYS|wx.TAB_TRAVERSAL, -180, 180, -179 )
 		fgSizer1.Add( self.m_MinLon, 0, wx.ALIGN_CENTER_VERTICAL|wx.TOP|wx.BOTTOM|wx.RIGHT, 5 )
 		
 		self.m_Compass = wx.StaticBitmap( self, wx.ID_ANY, wx.NullBitmap, wx.DefaultPosition, wx.Size( 100,100 ), 0 )
 		fgSizer1.Add( self.m_Compass, 0, wx.ALL|wx.ALIGN_CENTER_VERTICAL, 5 )
 		
-		self.m_MaxLon = wx.SpinCtrl( self, wx.ID_ANY, u"180", wx.DefaultPosition, wx.DefaultSize, wx.SP_ARROW_KEYS, -180, 180, 0 )
+		self.m_MaxLon = wx.SpinCtrl( self, wx.ID_ANY, u"180", wx.DefaultPosition, wx.DefaultSize, wx.SP_ARROW_KEYS|wx.TAB_TRAVERSAL, -180, 180, 0 )
 		fgSizer1.Add( self.m_MaxLon, 0, wx.ALIGN_CENTER_VERTICAL|wx.ALIGN_RIGHT|wx.TOP|wx.BOTTOM, 5 )
 		
 		
 		fgSizer1.AddSpacer( ( 0, 0), 1, wx.EXPAND, 5 )
 		
-		self.m_MinLat = wx.SpinCtrl( self, wx.ID_ANY, u"-90", wx.DefaultPosition, wx.DefaultSize, wx.SP_ARROW_KEYS, -90, 90, 0 )
+		self.m_MinLat = wx.SpinCtrl( self, wx.ID_ANY, u"-90", wx.DefaultPosition, wx.DefaultSize, wx.SP_ARROW_KEYS|wx.TAB_TRAVERSAL, -90, 90, 0 )
 		fgSizer1.Add( self.m_MinLat, 0, wx.ALIGN_CENTER_VERTICAL|wx.TOP|wx.BOTTOM|wx.RIGHT, 5 )
 		
 		
@@ -86,7 +86,7 @@ class GBIFQueryLayout ( wx.Frame ):
 		
 		sbSizer11 = wx.StaticBoxSizer( wx.StaticBox( self, wx.ID_ANY, u"Summary" ), wx.VERTICAL )
 		
-		self.m_Summary = wx.StaticText( self, wx.ID_ANY, u"\n", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_Summary = wx.StaticText( self, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, 0 )
 		self.m_Summary.Wrap( -1 )
 		sbSizer11.Add( self.m_Summary, 0, wx.ALL, 5 )
 		
