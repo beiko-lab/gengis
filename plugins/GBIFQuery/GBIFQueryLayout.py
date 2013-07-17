@@ -88,7 +88,7 @@ class GBIFQueryLayout ( wx.Frame ):
 		
 		self.m_Summary = wx.StaticText( self, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, 0 )
 		self.m_Summary.Wrap( -1 )
-		sbSizer11.Add( self.m_Summary, 0, wx.ALL, 5 )
+		sbSizer11.Add( self.m_Summary, 1, wx.ALL, 5 )
 		
 		bSizer3.Add( sbSizer11, 0, wx.EXPAND|wx.ALL, 5 )
 		
