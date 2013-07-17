@@ -58,7 +58,7 @@ class GBIFSpecific:
 	def GETCOUNT(self,taxon_name,cID,minLat,maxLat,minLon,maxLon,m_Progress):
 		taxonReq = '+'.join(taxon_name)			
 	#	cID = self.GETTAXID(taxonReq,m_Progress)
-		url= " http://data.gbif.org/ws/rest/occurrence/count?taxonconceptkey=%d&maxlatitude=%d&minlatitude=%d&maxlongitude=%d&minlongitude=%d" % (cID,maxLat,minLat,maxLon,minLon) 
+		url= " http://data.gbif.org/ws/rest/occurrence/count?taxonconceptkey=%d&maxlatitude=%f&minlatitude=%f&maxlongitude=%f&minlongitude=%f" % (cID,maxLat,minLat,maxLon,minLon) 
 		try:	
 			response=urllib2.urlopen(url).read()
 		except urllib2.HTTPError as e:
@@ -154,6 +154,7 @@ class GBIFSpecific:
 		
 	# Search for a Taxon Name in a Geographic boundary
 	def GETOBSENTIRERANGE(self,taxon_name,cID,minLatitude,maxLatitude,minLongitude,maxLongitude,m_Progress):
+		warningsFlag = 0
 		records=0
 		distLocations=set()
 		
@@ -227,11 +228,25 @@ class GBIFSpecific:
 									resultCount =self.GETCOUNT(taxon_name,cID,ccellMinLatitude,ccellMaxLatitude,ccellMinLongitude,ccellMaxLongitude,m_Progress)
 						#			print "stage 4"
 									if resultCount>1000:
-										wx.MessageBox("Smallest Gradient not sufficient.")
+										m_Progress.WriteText("!!!!!!!!!!!!WARNING!!!!!!!!!!!!!!!\nMaximum number of records exceeded, only retrieving the first 1000\n")
+										warningsFlag=1
+										m_Progress.WriteText("Latitude: %0.2f to %0.2f\tLongitude: %0.2f to %0.2f\n" % (ccellMinLatitude,ccellMaxLatitude,ccellMinLongitude,ccellMaxLongitude))
+										url="http://data.gbif.org/ws/rest/occurrence/list?taxonconceptkey=%d&maxlatitude=%f&minlatitude=%f&maxlongitude=%f&minlongitude=%f" %(cID,ccellMaxLatitude,ccellMinLatitude,ccellMaxLongitude,ccellMinLongitude)
+										try:
+											response=urllib2.urlopen(url).read()
+										except urllob2.URLError:
+											m_Progress.WriteText("%s\n" % e.code)
+											wx.MessageBox("The server is temporarily unreachable.\nPlease try again later.")
+											self.Close()
+										parser=minidom.parseString(response)
+										description+=self.GETRIGHTS(parser)
+										temper=parser.getElementsByTagName("to:TaxonOccurrence")
+										nodeList.extend(temper)
+										m_Progress.WriteText("%d records found\n" % len(temper))
 									#centicells worked
 									else:
 										m_Progress.WriteText("Latitude: %0.2f to %0.2f\tLongitude: %0.2f to %0.2f\n" % (ccellMinLatitude,ccellMaxLatitude,ccellMinLongitude,ccellMaxLongitude))
-										url="http://data.gbif.org/ws/rest/occurrence/list?taxonconceptkey=%d&maxlatitude=%d&minlatitude=%d&maxlongitude=%d&minlongitude=%d" %(cID,ccellMaxLatitude,ccellMinLatitude,ccellMaxLongitude,ccellMinLongitude)
+										url="http://data.gbif.org/ws/rest/occurrence/list?taxonconceptkey=%d&maxlatitude=%f&minlatitude=%f&maxlongitude=%f&minlongitude=%f" %(cID,ccellMaxLatitude,ccellMinLatitude,ccellMaxLongitude,ccellMinLongitude)
 										try:
 											response=urllib2.urlopen(url).read()
 										except urllob2.URLError:
@@ -247,7 +262,7 @@ class GBIFSpecific:
 							#cells worked
 							else:
 								m_Progress.WriteText("Latitude: %0.2f to %0.2f\tLongitude: %0.2f to %0.2f\n" % (cellMinLatitude,cellMaxLatitude,cellMinLongitude,cellMaxLongitude))
-								url="http://data.gbif.org/ws/rest/occurrence/list?taxonconceptkey=%d&maxlatitude=%d&minlatitude=%d&maxlongitude=%d&minlongitude=%d" %(cID,cellMaxLatitude,cellMinLatitude,cellMaxLongitude,cellMinLongitude)
+								url="http://data.gbif.org/ws/rest/occurrence/list?taxonconceptkey=%d&maxlatitude=%f&minlatitude=%f&maxlongitude=%f&minlongitude=%f" %(cID,cellMaxLatitude,cellMinLatitude,cellMaxLongitude,cellMinLongitude)
 								try:
 									response=urllib2.urlopen(url).read()
 								except urllob2.URLError:
@@ -262,7 +277,7 @@ class GBIFSpecific:
 					#cols worked
 					else:
 						m_Progress.WriteText("Latitude: %0.2f to %0.2f\tLongitude: %0.2f to %0.2f\n" % (colMinLatitude,colMaxLatitude,colMinLongitude,colMaxLongitude))
-						url="http://data.gbif.org/ws/rest/occurrence/list?taxonconceptkey=%d&maxlatitude=%d&minlatitude=%d&maxlongitude=%d&minlongitude=%d" %(cID,colMaxLatitude,colMinLatitude,colMaxLongitude,colMinLongitude)
+						url="http://data.gbif.org/ws/rest/occurrence/list?taxonconceptkey=%d&maxlatitude=%f&minlatitude=%f&maxlongitude=%f&minlongitude=%f" %(cID,colMaxLatitude,colMinLatitude,colMaxLongitude,colMinLongitude)
 						try:
 							response=urllib2.urlopen(url).read()
 						except urllob2.URLError:
@@ -278,7 +293,7 @@ class GBIFSpecific:
 			#whole thing worked
 			else:
 				m_Progress.WriteText("Latitude: %0.2f to %0.2f\tLongitude: %0.2f to %0.2f\n" % (minLatitude,maxLatitude,minLongitude,maxLongitude))
-				url="http://data.gbif.org/ws/rest/occurrence/list?taxonconceptkey=%d&maxlatitude=%d&minlatitude=%d&maxlongitude=%d&minlongitude=%d" %(cID,maxLatitude,minLatitude,maxLongitude,minLongitude)
+				url="http://data.gbif.org/ws/rest/occurrence/list?taxonconceptkey=%d&maxlatitude=%f&minlatitude=%f&maxlongitude=%f&minlongitude=%f" %(cID,maxLatitude,minLatitude,maxLongitude,minLongitude)
 				try:
 					response=urllib2.urlopen(url).read()
 				except urllob2.URLError:
@@ -289,6 +304,8 @@ class GBIFSpecific:
 				description+=self.GETRIGHTS(parser)
 				nodeList=parser.getElementsByTagName("to:TaxonOccurrence")
 				m_Progress.WriteText("%d records found\n" % len(nodeList))
+			if warningsFlag==1:
+				m_Progress.WriteText("!!!!!!!!!!!!!!!!!!!!\nWarnings were created. Please review progress bar for more information.\n!!!!!!!!!!!!!!!!!!!!\n")
 			if len(nodeList) > 0:
 				records += len(nodeList)
 			for node in nodeList:

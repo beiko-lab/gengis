@@ -32,14 +32,15 @@ from xml.dom import minidom
 from dataHelper import isNumber
 from GBIFGeneric import GBIFGeneric
 from GBIFSpecific import GBIFSpecific
-from sets import Set
+#from sets import Set
 
 class GBIFQuery(GBIFQueryLayout):
 	#	Global variables to store queried information
 	__obs__ = []
 	__conversions__ = []
-	__selectedTaxon__= Set()
+	__selectedTaxon__= set()
 	__description__=""
+	MAXLAT,MINLAT,MAXLON,MINLON = 90,-90,180,-180
 	
 	def __init__(self,parent=None):
 #		import pdb; pdb.set_trace()
@@ -49,7 +50,7 @@ class GBIFQuery(GBIFQueryLayout):
 		self.SetIcon(wx.Icon(GenGIS.mainWindow.GetExeDir() + "images/CrazyEye.ico",wx.BITMAP_TYPE_ICO))
 		self.m_Compass.SetIcon(wx.Icon(GenGIS.mainWindow.GetExeDir() + "images/GBIF_compass_small.png",wx.BITMAP_TYPE_PNG))
 		self.graphicalElementIds=[]
-		self.__selectedTaxon__=Set()
+		self.__selectedTaxon__=set()
 		self.__obs__ = []
 		self.__conversions__ = []
 		self.m_IDList.Clear()
@@ -61,10 +62,13 @@ class GBIFQuery(GBIFQueryLayout):
 		if GenGIS.layerTree.GetNumMapLayers() > 0 :
 			self.m_AddData.Enable()
 			borders = GenGIS.layerTree.GetMapLayer(0).GetController().GetMapBorders()
-			self.m_MinLat.SetValue(borders.y1)
-			self.m_MaxLat.SetValue(borders.dy)
-			self.m_MinLon.SetValue(borders.x1)
-			self.m_MaxLon.SetValue(borders.dx)
+			print borders.y1
+			print type(borders.y1)
+			#Text boxes hate non String types. use int to round, and string to make them fit the container
+			self.m_MinLat.SetValue(str(int(borders.y1)))
+			self.m_MaxLat.SetValue(str(int(borders.dy)))
+			self.m_MinLon.SetValue(str(int(borders.x1)))
+			self.m_MaxLon.SetValue(str(int(borders.dx)))
 		
 	#	Query GBIF for Taxa in Lat/Lon Boundary
 	def OnSearch(self,event):
@@ -94,10 +98,10 @@ class GBIFQuery(GBIFQueryLayout):
 		self.__description__=""
 		wx.BeginBusyCursor()
 		if(self.__selectedTaxon__):
-			minLatitude= self.m_MinLat.GetValue()
-			maxLatitude= self.m_MaxLat.GetValue()
-			minLongitude= self.m_MinLon.GetValue()
-			maxLongitude= self.m_MaxLon.GetValue()
+			minLatitude= int(self.m_MinLat.GetValue())
+			maxLatitude= int(self.m_MaxLat.GetValue())
+			minLongitude= int(self.m_MinLon.GetValue())
+			maxLongitude= int(self.m_MaxLon.GetValue())
 			self.m_Progress.WriteText("Starting...\n")
 			for tax in self.__selectedTaxon__:
 				obs,con,recs,distLocs,description= self.GBIFSpecific.GETOBSENTIRERANGE(tax[1].split(),tax[0],minLatitude,maxLatitude,minLongitude,maxLongitude,self.m_Progress)
@@ -116,19 +120,21 @@ class GBIFQuery(GBIFQueryLayout):
 	#	Present the number of locations a user is about to query
 	#	Used as a check by the user to know they aren't going to produce way too much data.
 	def OnPreCalculate(self,event):
+		wx.BeginBusyCursor()
+		self.m_Progress.WriteText("Retrieving record counts.\n")
 		self.m_Summary.SetLabel("\n")
 		if(self.__selectedTaxon__):
-			minLatitude= self.m_MinLat.GetValue()
-			maxLatitude= self.m_MaxLat.GetValue()
-			minLongitude= self.m_MinLon.GetValue()
-			maxLongitude= self.m_MaxLon.GetValue()
+			minLatitude= int(self.m_MinLat.GetValue())
+			maxLatitude= int(self.m_MaxLat.GetValue())
+			minLongitude= int(self.m_MinLon.GetValue())
+			maxLongitude= int(self.m_MaxLon.GetValue())
 			count=0
 			for tax in self.__selectedTaxon__:
 				count+=self.GBIFSpecific.GETCOUNT(tax[1].split(),tax[0],minLatitude,maxLatitude,minLongitude,maxLongitude,self.m_Progress)
 		else:
 			wx.MessageBox("Please select some Taxa.")
 		self.m_Summary.SetLabel("There were %d records for the given location." % count) 
-	
+		wx.EndBusyCursor()
 	#	Redirects User to Wiki page for this plugin
 	def OnHelp(self, event):
 		wx.LaunchDefaultBrowser( 'http://kiwi.cs.dal.ca/GenGIS/Description_of_GenGIS_plugins#GBIF_Query' )
@@ -192,7 +198,14 @@ class GBIFQuery(GBIFQueryLayout):
 			
 	#	Remove Data from ID List
 	def OnRemove(self,event):
-		for index in self.m_IDList.GetSelections():
+		
+		#	NEED TO SORT ON DECREASING ORDER
+		print self.m_IDList.GetSelections()
+		candidates = sorted(self.m_IDList.GetSelections(),reverse=True)
+		print candidates
+	#	for index in self.m_IDList.GetSelections():
+		for index in candidates:
+			print index
 			selected = self.m_IDList.GetString(index)
 			split = selected.split(" | ")
 			self.__selectedTaxon__.remove((int(split[0]),split[1]))
@@ -211,3 +224,12 @@ class GBIFQuery(GBIFQueryLayout):
 	def OnOK( self, event ):
 		self.Close()
 		
+	#	increment geographic range
+	def OnScrollUp(self,event):
+		event_id = event.GetEventObject().GetId()
+		print GenGIS.GetEventObject().FindWindowByID(event_id+1)
+		
+	#	decrement geographic range
+	def OnScrollDown(self,event):
+		print "bye"
+	
