@@ -40,7 +40,6 @@ class GBIFQuery(GBIFQueryLayout):
 	__conversions__ = []
 	__selectedTaxon__= set()
 	__description__=""
-	MAXLAT,MINLAT,MAXLON,MINLON = 90,-90,180,-180
 	
 	def __init__(self,parent=None):
 #		import pdb; pdb.set_trace()
@@ -67,10 +66,10 @@ class GBIFQuery(GBIFQueryLayout):
 			print borders.y1
 			print type(borders.y1)
 			#Text boxes hate non String types. use int to round, and string to make them fit the container
-			self.m_MinLat.SetValue(str(int(borders.y1)))
-			self.m_MaxLat.SetValue(str(int(borders.dy)))
-			self.m_MinLon.SetValue(str(int(borders.x1)))
-			self.m_MaxLon.SetValue(str(int(borders.dx)))
+			self.m_MinLat.SetValue(borders.y1)
+			self.m_MaxLat.SetValue(borders.dy)
+			self.m_MinLon.SetValue(borders.x1)
+			self.m_MaxLon.SetValue(borders.dx)
 		
 	#	Query GBIF for Taxa in Lat/Lon Boundary
 	def OnSearch(self,event):
