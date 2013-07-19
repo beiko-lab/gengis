@@ -131,14 +131,14 @@ class GBIFQueryLayout ( wx.Frame ):
 		
 		bSizer9.AddSpacer( ( 0, 0), 1, wx.EXPAND, 5 )
 		
-		self.m_Add = wx.Button( self, wx.ID_ANY, u"Add", wx.DefaultPosition, wx.DefaultSize, 0 )
-		bSizer9.Add( self.m_Add, 0, wx.ALL, 5 )
+		self.m_Add = wx.BitmapButton( self, wx.ID_ANY, wx.NullBitmap, wx.DefaultPosition, wx.Size( -1,-1 ), wx.BU_AUTODRAW )
+		bSizer9.Add( self.m_Add, 0, wx.RIGHT|wx.LEFT, 5 )
 		
 		
 		bSizer9.AddSpacer( ( 0, 0), 1, wx.EXPAND, 5 )
 		
-		self.m_Remove = wx.Button( self, wx.ID_ANY, u"Remove", wx.DefaultPosition, wx.DefaultSize, 0 )
-		bSizer9.Add( self.m_Remove, 0, wx.ALL, 5 )
+		self.m_Remove = wx.BitmapButton( self, wx.ID_ANY, wx.NullBitmap, wx.DefaultPosition, wx.DefaultSize, wx.BU_AUTODRAW )
+		bSizer9.Add( self.m_Remove, 0, wx.RIGHT|wx.LEFT, 5 )
 		
 		
 		bSizer9.AddSpacer( ( 0, 0), 1, wx.EXPAND, 5 )
