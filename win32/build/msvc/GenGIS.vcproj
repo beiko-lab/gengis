@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9,00"
+	Version="9.00"
 	Name="GenGIS"
 	ProjectGUID="{92239317-F979-4A21-A64B-BAB16F1D587D}"
 	RootNamespace="GenGIS"
@@ -784,6 +784,10 @@
 			Filter="h;hpp;hxx;hm;inl;inc;xsd"
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
+			<File
+				RelativePath=".\resource.h"
+				>
+			</File>
 			<Filter
 				Name="core"
 				>
@@ -1461,6 +1465,14 @@
 				</File>
 			</Filter>
 		</Filter>
+		<File
+			RelativePath="..\..\..\bin\images\CrazyEye\win\CrazyEye.ico"
+			>
+		</File>
+		<File
+			RelativePath=".\GenGIS.rc"
+			>
+		</File>
 	</Files>
 	<Globals>
 	</Globals>

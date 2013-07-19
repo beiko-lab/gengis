@@ -171,7 +171,7 @@ namespace GenGIS
 
 		/** Functions to clear layer vectors. */
 		void ClearMapLayer()         { m_mapLayer.reset();         }
-		void ClearVectorMapLayer()         { m_vectorMapLayer.reset();         }
+		void ClearVectorMapLayer()   { m_vectorMapLayer.reset();   }
 		void ClearLocationSetLayer() { m_locationSetLayer.reset(); }
 		void ClearLocationLayer()    { m_locationLayer.reset();    }
 		void ClearSequenceLayer()    { m_sequenceLayer.reset();    }
