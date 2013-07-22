@@ -1736,8 +1736,9 @@ void GenGisFrame::LayerOpenLocations( std::vector<std::wstring>& csvTableRows, s
 			LocationSetLayerPtr locationSet(new LocationSetLayer(UniqueId::Inst().GenerateId(), 
 				App::Inst().GetLayerTreeController()->GetSelectedLayer(),
 				chartSetCtrl));
-			locationSet->SetName( locationNames );
-			locationSet->SetFullPath( locationNames );
+
+			locationSet->SetName( wxString( locationNames.c_str(), wxConvISO8859_1 ) );
+			locationSet->SetFullPath( wxString( locationNames.c_str(), wxConvISO8859_1 ) );
 			m_locationSetLayer = locationSet;
 
 			// assign default colour map to location
@@ -1755,7 +1756,7 @@ void GenGisFrame::LayerOpenLocations( std::vector<std::wstring>& csvTableRows, s
 
 				LocationLayerPtr locationLayer(new LocationLayer(UniqueId::Inst().GenerateId(), locationSet, locationController));			
 				locationLayer->SetName(wxString(locationController->GetId().c_str()));
-				locationLayer->SetFullPath( locationNames );
+				locationLayer->SetFullPath( wxString( locationNames.c_str(), wxConvISO8859_1 ) );
 				locationLayers.push_back(locationLayer);
 
 				locationView->SetLocationLayerId(locationLayer->GetId());
@@ -2012,7 +2013,7 @@ void GenGisFrame::LayerOpenSequenceData( std::vector<std::wstring>& csvTableRows
 
 				SequenceLayerPtr sequenceLayer(new SequenceLayer(UniqueId::Inst().GenerateId(), selectedLayer, sequenceController));
 				sequenceLayer->SetName(sequenceController->GetSequenceId().c_str());
-				sequenceLayer->SetFullPath( locationNames );
+				sequenceLayer->SetFullPath( wxString( locationNames.c_str(), wxConvISO8859_1 ) );
 
 				if(!App::Inst().GetLayerTreeController()->AddSequence(sequenceLayer, sequenceModel, missingLocations))
 				{			
