@@ -34,7 +34,7 @@ WelcomeLayout::WelcomeLayout( wxWindow* parent, wxWindowID id, const wxString& t
 	wxStaticBoxSizer* sbSizer1;
 	sbSizer1 = new wxStaticBoxSizer( new wxStaticBox( this, wxID_ANY, wxT("Previous Sessions") ), wxVERTICAL );
 	
-	m_listBoxRecentSessions = new wxListBox( this, wxID_ANY, wxDefaultPosition, wxSize( 545,500 ), 0, NULL, wxLB_HSCROLL ); 
+	m_listBoxRecentSessions = new wxListBox( this, wxID_ANY, wxDefaultPosition, wxSize( -1,-1 ), 0, NULL, wxLB_HSCROLL ); 
 	m_listBoxRecentSessions->SetFont( wxFont( wxNORMAL_FONT->GetPointSize(), 70, 90, 90, false, wxEmptyString ) );
 	
 	sbSizer1->Add( m_listBoxRecentSessions, 1, wxALL|wxEXPAND, 5 );

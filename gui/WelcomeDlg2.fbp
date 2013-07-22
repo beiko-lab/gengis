@@ -178,7 +178,7 @@
                                         <property name="name">m_listBoxRecentSessions</property>
                                         <property name="permission">protected</property>
                                         <property name="pos"></property>
-                                        <property name="size">545,500</property>
+                                        <property name="size">-1,-1</property>
                                         <property name="style">wxLB_HSCROLL</property>
                                         <property name="subclass"></property>
                                         <property name="tooltip"></property>
