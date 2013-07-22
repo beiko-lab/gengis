@@ -120,7 +120,17 @@ class GBIFQuery(GBIFQueryLayout):
 		else:
 			wx.MessageBox("Please select some Taxa.")
 		
-		self.m_Summary.SetLabel("%d records retrieved.\n%d distinct locations." %(records,distLocations))
+
+#		self.m_Summary.SetLabel("%d records retrieved.\n%d distinct locations." %(records,distLocations))
+		summaryText = ("%d records retrieved.\n%d distinct locations." %(records,distLocations))
+		f = self.m_Summary.GetFont()
+		dc = wx.WindowDC(self.m_Summary)
+		dc.SetFont(f)
+		aSize = dc.GetMultiLineTextExtent(summaryText)
+		aSize = wx.Size(aSize[0],aSize[1])
+		self.m_Summary.SetSize(aSize)
+		
+		self.m_Summary.SetLabel(summaryText)
 		wx.EndBusyCursor()
 	
 	#	Present the number of locations a user is about to query
