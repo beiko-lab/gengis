@@ -127,7 +127,7 @@ class GBIFQuery(GBIFQueryLayout):
 		dc = wx.WindowDC(self.m_Summary)
 		dc.SetFont(f)
 		aSize = dc.GetMultiLineTextExtent(summaryText)
-		aSize = wx.Size(aSize[0],aSize[1])
+		aSize = wx.Size(aSize[0],aSize[1]*2)
 		self.m_Summary.SetSize(aSize)
 		
 		self.m_Summary.SetLabel(summaryText)
