@@ -66,7 +66,7 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_CAN
 
 // Icon with lowest ID value placed first to ensure application icon
 // remains consistent on all systems.
-IDI_ICON1               ICON                    "C:\\Users\\Timothy\\Documents\\GitHub\\gengis\\bin\\images\\CrazyEye\\win\\CrazyEye.ico"
+IDI_ICON1               ICON                    "..\\..\\..\\bin\\images\\CrazyEye\\win\\CrazyEye.ico"
 #endif    // English (Canada) resources
 /////////////////////////////////////////////////////////////////////////////
 
