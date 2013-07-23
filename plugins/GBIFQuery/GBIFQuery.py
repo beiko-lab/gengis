@@ -59,7 +59,7 @@ class GBIFQuery(GBIFQueryLayout):
 		self.__conversions__ = []
 		self.m_IDList.Clear()
 		#fix to expand summary box enough to print two lines of text properly
-		self.m_Summary.SetLabel("\n")
+		self.m_Summary.SetLabel("\n\n")
 		
 		#No Map Data
 		self.m_AddData.Disable()
