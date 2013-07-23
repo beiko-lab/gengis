@@ -32,7 +32,6 @@ from xml.dom import minidom
 from dataHelper import isNumber
 from GBIFGeneric import GBIFGeneric
 from GBIFSpecific import GBIFSpecific
-#from sets import Set
 
 class GBIFQuery(GBIFQueryLayout):
 	#	Global variables to store queried information
@@ -43,6 +42,7 @@ class GBIFQuery(GBIFQueryLayout):
 	
 	def __init__(self,parent=None):
 #		import pdb; pdb.set_trace()
+		MaxLon,MinLon,MaxLat,MinLat = 180,-180,90,-90
 		self.GBIFSpecific = GBIFSpecific()
 		self.GBIFGeneric = GBIFGeneric()
 		GBIFQueryLayout.__init__(self,parent)
@@ -69,10 +69,23 @@ class GBIFQuery(GBIFQueryLayout):
 			self.m_AddData.Enable()
 			borders = GenGIS.layerTree.GetMapLayer(0).GetController().GetMapBorders()
 			#Text boxes hate non String types. use int to round, and string to make them fit the container
+			
 			self.m_MinLat.SetValue(borders.y1)
 			self.m_MaxLat.SetValue(borders.dy)
 			self.m_MinLon.SetValue(borders.x1)
 			self.m_MaxLon.SetValue(borders.dx)
+			
+			#EITHER CHECK MAP FILE FOR DEM	OR	CHECK RANGE OF BORDERS because UTM maps don't work
+#			if(borders.y1<MinLat or borders.dy>MaxLat or borders.x1<MinLon or borders.dx>MaxLon):
+#				wx.MessageBox("The borders of your map exceed those allowed by Latitude/Longitude. Please check the geographic coordinate system of your map as UTM format is not compatible with GBIF.")
+			if(".dem" in GenGIS.layerTree.GetMapLayer(0).GetFilename()):
+				wx.MessageBox("The selected map uses a DEM extensions. Maps of this type may use UTM encoding which is not supported by GBIF. You will need to manually select Longitudes/Latitudes.")
+				self.m_AddData.Disable()
+				self.m_MinLat.SetValue(MinLat)
+				self.m_MaxLat.SetValue(MaxLat)
+				self.m_MinLon.SetValue(MinLon)
+				self.m_MaxLon.SetValue(MaxLon)
+		
 		
 	#	Query GBIF for Taxa in Lat/Lon Boundary
 	def OnSearch(self,event):
