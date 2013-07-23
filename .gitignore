@@ -2,7 +2,6 @@ win32/build/msvc/*
 bin/GenGIS.*
 *.pyc
 *.DS_Store
-*.fbp
 mac/i386/build/gcc/BUILD/
 mac/i386/build/gcc/.depend
 mac/i386/library3rd/Frameworks/
