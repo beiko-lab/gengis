@@ -48,10 +48,10 @@ class GBIFQuery(GBIFQueryLayout):
 		GBIFQueryLayout.__init__(self,parent)
 		self.SetIcon(wx.Icon(GenGIS.mainWindow.GetExeDir() + "images/CrazyEye.ico",wx.BITMAP_TYPE_ICO))
 		self.m_Compass.SetIcon(wx.Icon(GenGIS.mainWindow.GetExeDir() + "images/GBIF_compass_small.png",wx.BITMAP_TYPE_PNG))
-		self.m_Add.SetBitmapLabel(wx.Image(GenGIS.mainWindow.GetExeDir() + "../plugins/GBIFQuery/green_arrow_down.png",wx.BITMAP_TYPE_PNG).ConvertToBitmap())
-		self.m_Add.SetBitmapHover(wx.Image(GenGIS.mainWindow.GetExeDir() + "../plugins/GBIFQuery/green_arrow_down_hover.png",wx.BITMAP_TYPE_PNG).ConvertToBitmap())
-		self.m_Remove.SetBitmapLabel(wx.Image(GenGIS.mainWindow.GetExeDir() + "../plugins/GBIFQuery/red_arrow_up.png",wx.BITMAP_TYPE_PNG).ConvertToBitmap())
-		self.m_Remove.SetBitmapHover(wx.Image(GenGIS.mainWindow.GetExeDir() + "../plugins/GBIFQuery/red_arrow_up_hover.png",wx.BITMAP_TYPE_PNG).ConvertToBitmap())
+		self.m_Add.SetBitmapLabel(wx.Image(GenGIS.mainWindow.GetExeDir() + "images/green_arrow_down.png",wx.BITMAP_TYPE_PNG).ConvertToBitmap())
+		self.m_Add.SetBitmapHover(wx.Image(GenGIS.mainWindow.GetExeDir() + "images/green_arrow_down_hover.png",wx.BITMAP_TYPE_PNG).ConvertToBitmap())
+		self.m_Remove.SetBitmapLabel(wx.Image(GenGIS.mainWindow.GetExeDir() + "images/red_arrow_up.png",wx.BITMAP_TYPE_PNG).ConvertToBitmap())
+		self.m_Remove.SetBitmapHover(wx.Image(GenGIS.mainWindow.GetExeDir() + "images/red_arrow_up_hover.png",wx.BITMAP_TYPE_PNG).ConvertToBitmap())
 		
 		self.graphicalElementIds=[]
 		self.__selectedTaxon__=set()
