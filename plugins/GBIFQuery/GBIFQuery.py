@@ -68,8 +68,6 @@ class GBIFQuery(GBIFQueryLayout):
 		if GenGIS.layerTree.GetNumMapLayers() > 0 :
 			self.m_AddData.Enable()
 			borders = GenGIS.layerTree.GetMapLayer(0).GetController().GetMapBorders()
-			print borders.y1
-			print type(borders.y1)
 			#Text boxes hate non String types. use int to round, and string to make them fit the container
 			self.m_MinLat.SetValue(borders.y1)
 			self.m_MaxLat.SetValue(borders.dy)
@@ -216,12 +214,9 @@ class GBIFQuery(GBIFQueryLayout):
 	def OnRemove(self,event):
 		
 		#	NEED TO SORT ON DECREASING ORDER
-		print self.m_IDList.GetSelections()
 		candidates = sorted(self.m_IDList.GetSelections(),reverse=True)
-		print candidates
 	#	for index in self.m_IDList.GetSelections():
 		for index in candidates:
-			print index
 			selected = self.m_IDList.GetString(index)
 			split = selected.split(" | ")
 			self.__selectedTaxon__.remove((int(split[0]),split[1]))

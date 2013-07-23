@@ -85,7 +85,7 @@ class GBIFQueryLayout ( wx.Frame ):
 		
 		sbSizer8 = wx.StaticBoxSizer( wx.StaticBox( self, wx.ID_ANY, u"Progress" ), wx.HORIZONTAL )
 		
-		self.m_Progress = wx.TextCtrl( self, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, wx.TE_DONTWRAP|wx.TE_MULTILINE|wx.TE_READONLY|wx.CLIP_CHILDREN )
+		self.m_Progress = wx.TextCtrl( self, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size( -1,90 ), wx.TE_DONTWRAP|wx.TE_MULTILINE|wx.TE_READONLY|wx.CLIP_CHILDREN )
 		sbSizer8.Add( self.m_Progress, 1, wx.ALL|wx.EXPAND, 5 )
 		
 		bSizer3.Add( sbSizer8, 1, wx.EXPAND|wx.ALL, 5 )

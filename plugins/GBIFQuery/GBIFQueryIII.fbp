@@ -640,7 +640,7 @@
                                                 <property name="name">m_Progress</property>
                                                 <property name="permission">protected</property>
                                                 <property name="pos"></property>
-                                                <property name="size"></property>
+                                                <property name="size">-1,90</property>
                                                 <property name="style">wxTE_DONTWRAP|wxTE_MULTILINE|wxTE_READONLY</property>
                                                 <property name="subclass"></property>
                                                 <property name="tooltip"></property>
