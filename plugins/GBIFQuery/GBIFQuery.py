@@ -76,10 +76,8 @@ class GBIFQuery(GBIFQueryLayout):
 			self.m_MaxLon.SetValue(borders.dx)
 			
 			#EITHER CHECK MAP FILE FOR DEM	OR	CHECK RANGE OF BORDERS because UTM maps don't work
-#			if(borders.y1<MinLat or borders.dy>MaxLat or borders.x1<MinLon or borders.dx>MaxLon):
-#				wx.MessageBox("The borders of your map exceed those allowed by Latitude/Longitude. Please check the geographic coordinate system of your map as UTM format is not compatible with GBIF.")
-			if(".dem" in GenGIS.layerTree.GetMapLayer(0).GetFilename()):
-				wx.MessageBox("The selected map uses a DEM extensions. Maps of this type may use UTM encoding which is not supported by GBIF. You will need to manually select Longitudes/Latitudes.")
+			if(borders.y1<MinLat or borders.dy>MaxLat or borders.x1<MinLon or borders.dx>MaxLon):
+				wx.MessageBox("The borders of your map exceed those allowed by Latitude/Longitude. Please check the geographic coordinate system of your map as UTM format is not compatible with GBIF.")
 				self.m_AddData.Disable()
 				self.m_MinLat.SetValue(MinLat)
 				self.m_MaxLat.SetValue(MaxLat)
