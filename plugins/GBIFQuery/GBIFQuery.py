@@ -85,11 +85,9 @@ class GBIFQuery(GBIFQueryLayout):
 				self.m_MinLon.SetValue(MinLon)
 				self.m_MaxLon.SetValue(MaxLon)
 		
-		
 	#	Query GBIF for Taxa in Lat/Lon Boundary
 	def OnSearch(self,event):
 		wx.BeginBusyCursor()
-		
 		#	Clear the results list
 		self.m_Result.Clear()
 		
@@ -129,9 +127,6 @@ class GBIFQuery(GBIFQueryLayout):
 			self.m_Progress.WriteText("Done.\n")
 		else:
 			wx.MessageBox("Please select some Taxa.")
-		
-
-#		self.m_Summary.SetLabel("%d records retrieved.\n%d distinct locations." %(records,distLocations))
 		summaryText = ("%d records retrieved.\n%d distinct locations." %(records,distLocations))
 		f = self.m_Summary.GetFont()
 		dc = wx.WindowDC(self.m_Summary)
@@ -161,6 +156,7 @@ class GBIFQuery(GBIFQueryLayout):
 			wx.MessageBox("Please select some Taxa.")
 		self.m_Summary.SetLabel("There were %d records for the given location." % count) 
 		wx.EndBusyCursor()
+		
 	#	Redirects User to Wiki page for this plugin
 	def OnHelp(self, event):
 		wx.LaunchDefaultBrowser( 'http://kiwi.cs.dal.ca/GenGIS/Description_of_GenGIS_plugins#GBIF_Query' )
@@ -187,7 +183,6 @@ class GBIFQuery(GBIFQueryLayout):
 		else:
 			wx.MessageBox("Please make a successful GBIF Query first.")
 		
-
 	#	Exports Location and Sequence Data to a location of the users choice
 	def OnExportData(self,event):
 		if (len(self.__obs__) > 0):
@@ -224,10 +219,7 @@ class GBIFQuery(GBIFQueryLayout):
 			
 	#	Remove Data from ID List
 	def OnRemove(self,event):
-		
-		#	NEED TO SORT ON DECREASING ORDER
 		candidates = sorted(self.m_IDList.GetSelections(),reverse=True)
-	#	for index in self.m_IDList.GetSelections():
 		for index in candidates:
 			selected = self.m_IDList.GetString(index)
 			split = selected.split(" | ")
