@@ -75,9 +75,10 @@ class GBIFQuery(GBIFQueryLayout):
 			self.m_MinLon.SetValue(borders.x1)
 			self.m_MaxLon.SetValue(borders.dx)
 			
-			#EITHER CHECK MAP FILE FOR DEM	OR	CHECK RANGE OF BORDERS because UTM maps don't work
-			if(borders.y1<MinLat or borders.dy>MaxLat or borders.x1<MinLon or borders.dx>MaxLon):
-				wx.MessageBox("The borders of your map exceed those allowed by Latitude/Longitude. Please check the geographic coordinate system of your map as UTM format is not compatible with GBIF.")
+			#check if geographic coordinates are used or some other measure; only geographic are compatible
+			geographic = GenGIS.StudyController.IsGeographic(GenGIS.study.GetController())
+			if(not geographic):
+				wx.MessageBox("Geographic coordinates are not being used in the current map file. Only geographic coordinates are compatible with GBIF. Geographic range will need to be manually set, and any returned data will not display correctly.","!!!!!!!Warning!!!!!!!")
 				self.m_AddData.Disable()
 				self.m_MinLat.SetValue(MinLat)
 				self.m_MaxLat.SetValue(MaxLat)
