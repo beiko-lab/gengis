@@ -70,20 +70,20 @@ class GBIFQuery(GBIFQueryLayout):
 			borders = GenGIS.layerTree.GetMapLayer(0).GetController().GetMapBorders()
 			#Text boxes hate non String types. use int to round, and string to make them fit the container
 			
-			self.m_MinLat.SetValue(borders.y1)
-			self.m_MaxLat.SetValue(borders.dy)
-			self.m_MinLon.SetValue(borders.x1)
-			self.m_MaxLon.SetValue(borders.dx)
+			self.m_MinLat.SetValue(str(borders.y1))
+			self.m_MaxLat.SetValue(str(borders.dy))
+			self.m_MinLon.SetValue(str(borders.x1))
+			self.m_MaxLon.SetValue(str(borders.dx))
 			
 			#check if geographic coordinates are used or some other measure; only geographic are compatible
 			geographic = GenGIS.StudyController.IsGeographic(GenGIS.study.GetController())
 			if(not geographic):
 				wx.MessageBox("Geographic coordinates are not being used in the current map file. Only geographic coordinates are compatible with GBIF. Geographic range will need to be manually set, and any returned data will not display correctly.","!!!!!!!Warning!!!!!!!")
 				self.m_AddData.Disable()
-				self.m_MinLat.SetValue(MinLat)
-				self.m_MaxLat.SetValue(MaxLat)
-				self.m_MinLon.SetValue(MinLon)
-				self.m_MaxLon.SetValue(MaxLon)
+				self.m_MinLat.SetValue(str(MinLat))
+				self.m_MaxLat.SetValue(str(MaxLat))
+				self.m_MinLon.SetValue(str(MinLon))
+				self.m_MaxLon.SetValue(str(MaxLon))
 		
 	#	Query GBIF for Taxa in Lat/Lon Boundary
 	def OnSearch(self,event):
@@ -96,10 +96,10 @@ class GBIFQuery(GBIFQueryLayout):
 		if(len(taxon)==0):
 			wx.MessageBox("You did not enter a taxon name.")
 		else:
-			minLatitude= self.m_MinLat.GetValue()
-			maxLatitude= self.m_MaxLat.GetValue()
-			minLongitude= self.m_MinLon.GetValue()
-			maxLongitude= self.m_MaxLon.GetValue()
+			minLatitude= float(self.m_MinLat.GetValue())
+			maxLatitude= float(self.m_MaxLat.GetValue())
+			minLongitude= float(self.m_MinLon.GetValue())
+			maxLongitude= float(self.m_MaxLon.GetValue())
 			self.GBIFSpecific.GETTAXRESULT(taxon,self.m_Result)
 		wx.EndBusyCursor()
 		
@@ -112,10 +112,10 @@ class GBIFQuery(GBIFQueryLayout):
 		self.__description__=""
 		wx.BeginBusyCursor()
 		if(self.__selectedTaxon__):
-			minLatitude= int(self.m_MinLat.GetValue())
-			maxLatitude= int(self.m_MaxLat.GetValue())
-			minLongitude= int(self.m_MinLon.GetValue())
-			maxLongitude= int(self.m_MaxLon.GetValue())
+			minLatitude= float(self.m_MinLat.GetValue())
+			maxLatitude= float(self.m_MaxLat.GetValue())
+			minLongitude= float(self.m_MinLon.GetValue())
+			maxLongitude= float(self.m_MaxLon.GetValue())
 			self.m_Progress.WriteText("Starting...\n")
 			for tax in self.__selectedTaxon__:
 				obs,con,recs,distLocs,description= self.GBIFSpecific.GETOBSENTIRERANGE(tax[1].split(),tax[0],minLatitude,maxLatitude,minLongitude,maxLongitude,self.m_Progress)
@@ -145,10 +145,10 @@ class GBIFQuery(GBIFQueryLayout):
 		self.m_Progress.WriteText("Retrieving record counts.\n")
 		self.m_Summary.SetLabel("\n")
 		if(self.__selectedTaxon__):
-			minLatitude= int(self.m_MinLat.GetValue())
-			maxLatitude= int(self.m_MaxLat.GetValue())
-			minLongitude= int(self.m_MinLon.GetValue())
-			maxLongitude= int(self.m_MaxLon.GetValue())
+			minLatitude= float(self.m_MinLat.GetValue())
+			maxLatitude= float(self.m_MaxLat.GetValue())
+			minLongitude= float(self.m_MinLon.GetValue())
+			maxLongitude= float(self.m_MaxLon.GetValue())
 			count=0
 			for tax in self.__selectedTaxon__:
 				count+=self.GBIFSpecific.GETCOUNT(tax[1].split(),tax[0],minLatitude,maxLatitude,minLongitude,maxLongitude,self.m_Progress)
