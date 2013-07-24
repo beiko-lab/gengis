@@ -55,26 +55,29 @@ class GBIFQueryLayout ( wx.Frame ):
 		
 		fgSizer1.AddSpacer( ( 0, 0), 1, wx.EXPAND|wx.ALIGN_CENTER_HORIZONTAL, 5 )
 		
-		self.m_MaxLat = wx.SpinCtrl( self, wx.ID_ANY, u"90", wx.DefaultPosition, wx.Size( 70,-1 ), wx.SP_ARROW_KEYS|wx.TAB_TRAVERSAL, -90, 90, 0 )
-		fgSizer1.Add( self.m_MaxLat, 1, wx.ALIGN_CENTER_VERTICAL|wx.TOP|wx.BOTTOM|wx.RIGHT|wx.ALIGN_CENTER_HORIZONTAL, 5 )
+		self.m_MaxLat = wx.TextCtrl( self, wx.ID_ANY, u"90", wx.DefaultPosition, wx.DefaultSize, wx.TE_CENTRE )
+		self.m_MaxLat.SetMinSize( wx.Size( 70,-1 ) )
+		self.m_MaxLat.SetMaxSize( wx.Size( 70,-1 ) )
+		
+		fgSizer1.Add( self.m_MaxLat, 0, wx.ALL|wx.ALIGN_CENTER_HORIZONTAL, 5 )
 		
 		
 		fgSizer1.AddSpacer( ( 0, 0), 1, wx.EXPAND|wx.ALIGN_CENTER_HORIZONTAL, 5 )
 		
-		self.m_MinLon = wx.SpinCtrl( self, wx.ID_ANY, u"-180", wx.DefaultPosition, wx.Size( 70,-1 ), wx.SP_ARROW_KEYS|wx.TAB_TRAVERSAL, -180, 180, -179 )
-		fgSizer1.Add( self.m_MinLon, 1, wx.ALIGN_CENTER_VERTICAL|wx.ALL|wx.ALIGN_CENTER_HORIZONTAL, 5 )
+		self.m_MinLon = wx.TextCtrl( self, wx.ID_ANY, u"-180", wx.DefaultPosition, wx.Size( 70,-1 ), wx.TE_CENTRE )
+		fgSizer1.Add( self.m_MinLon, 0, wx.ALL|wx.ALIGN_CENTER_VERTICAL, 5 )
 		
 		self.m_Compass = wx.StaticBitmap( self, wx.ID_ANY, wx.NullBitmap, wx.DefaultPosition, wx.Size( 128,128 ), 0 )
 		fgSizer1.Add( self.m_Compass, 1, wx.ALIGN_CENTER_VERTICAL|wx.ALL|wx.ALIGN_CENTER_HORIZONTAL, 5 )
 		
-		self.m_MaxLon = wx.SpinCtrl( self, wx.ID_ANY, u"180", wx.DefaultPosition, wx.Size( 70,-1 ), wx.SP_ARROW_KEYS|wx.TAB_TRAVERSAL, -180, 180, 0 )
-		fgSizer1.Add( self.m_MaxLon, 1, wx.ALIGN_CENTER_VERTICAL|wx.TOP|wx.BOTTOM|wx.ALIGN_CENTER_HORIZONTAL, 5 )
+		self.m_MaxLon = wx.TextCtrl( self, wx.ID_ANY, u"180", wx.DefaultPosition, wx.Size( 70,-1 ), wx.TE_CENTRE )
+		fgSizer1.Add( self.m_MaxLon, 0, wx.ALL|wx.ALIGN_CENTER_VERTICAL, 5 )
 		
 		
 		fgSizer1.AddSpacer( ( 0, 0), 1, wx.EXPAND, 5 )
 		
-		self.m_MinLat = wx.SpinCtrl( self, wx.ID_ANY, u"-90", wx.DefaultPosition, wx.Size( 70,-1 ), wx.SP_ARROW_KEYS|wx.TAB_TRAVERSAL, -90, 90, 0 )
-		fgSizer1.Add( self.m_MinLat, 1, wx.ALIGN_CENTER_VERTICAL|wx.TOP|wx.BOTTOM|wx.RIGHT|wx.ALIGN_CENTER_HORIZONTAL, 5 )
+		self.m_MinLat = wx.TextCtrl( self, wx.ID_ANY, u"-90", wx.DefaultPosition, wx.Size( 70,-1 ), wx.TE_CENTRE )
+		fgSizer1.Add( self.m_MinLat, 0, wx.ALL|wx.ALIGN_CENTER_HORIZONTAL, 5 )
 		
 		
 		fgSizer1.AddSpacer( ( 0, 0), 1, wx.EXPAND, 5 )
