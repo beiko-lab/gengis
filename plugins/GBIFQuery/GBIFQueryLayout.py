@@ -199,6 +199,10 @@ class GBIFQueryLayout ( wx.Frame ):
 		# Connect Events
 		self.Bind( wx.EVT_CLOSE, self.OnClose )
 		self.m_Search.Bind( wx.EVT_BUTTON, self.OnSearch )
+		self.m_MaxLat.Bind( wx.EVT_TEXT, self.OnLatEnter )
+		self.m_MinLon.Bind( wx.EVT_TEXT, self.OnLonEnter )
+		self.m_MaxLon.Bind( wx.EVT_TEXT, self.OnLonEnter )
+		self.m_MinLat.Bind( wx.EVT_TEXT, self.OnLatEnter )
 		self.m_Help.Bind( wx.EVT_BUTTON, self.OnHelp )
 		self.m_AddData.Bind( wx.EVT_BUTTON, self.OnAddData )
 		self.m_ExportData.Bind( wx.EVT_BUTTON, self.OnExportData )
@@ -220,6 +224,14 @@ class GBIFQueryLayout ( wx.Frame ):
 	
 	def OnSearch( self, event ):
 		event.Skip()
+	
+	def OnLatEnter( self, event ):
+		event.Skip()
+	
+	def OnLonEnter( self, event ):
+		event.Skip()
+	
+	
 	
 	def OnHelp( self, event ):
 		event.Skip()

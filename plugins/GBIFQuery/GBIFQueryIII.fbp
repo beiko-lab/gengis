@@ -305,7 +305,7 @@
                                                         <property name="subclass"></property>
                                                         <property name="tooltip"></property>
                                                         <property name="validator_data_type"></property>
-                                                        <property name="validator_style">wxFILTER_ALPHA|wxFILTER_NONE</property>
+                                                        <property name="validator_style">wxFILTER_NUMERIC</property>
                                                         <property name="validator_type">wxDefaultValidator</property>
                                                         <property name="validator_variable"></property>
                                                         <property name="value">90</property>
@@ -334,7 +334,7 @@
                                                         <event name="OnRightUp"></event>
                                                         <event name="OnSetFocus"></event>
                                                         <event name="OnSize"></event>
-                                                        <event name="OnText"></event>
+                                                        <event name="OnText">OnLatEnter</event>
                                                         <event name="OnTextEnter"></event>
                                                         <event name="OnTextMaxLen"></event>
                                                         <event name="OnTextURL"></event>
@@ -375,7 +375,7 @@
                                                         <property name="subclass"></property>
                                                         <property name="tooltip"></property>
                                                         <property name="validator_data_type"></property>
-                                                        <property name="validator_style">wxFILTER_ALPHA|wxFILTER_NONE</property>
+                                                        <property name="validator_style">wxFILTER_NUMERIC</property>
                                                         <property name="validator_type">wxDefaultValidator</property>
                                                         <property name="validator_variable"></property>
                                                         <property name="value">-180</property>
@@ -404,7 +404,7 @@
                                                         <event name="OnRightUp"></event>
                                                         <event name="OnSetFocus"></event>
                                                         <event name="OnSize"></event>
-                                                        <event name="OnText"></event>
+                                                        <event name="OnText">OnLonEnter</event>
                                                         <event name="OnTextEnter"></event>
                                                         <event name="OnTextMaxLen"></event>
                                                         <event name="OnTextURL"></event>
@@ -489,7 +489,7 @@
                                                         <property name="subclass"></property>
                                                         <property name="tooltip"></property>
                                                         <property name="validator_data_type"></property>
-                                                        <property name="validator_style">wxFILTER_ALPHA|wxFILTER_NONE</property>
+                                                        <property name="validator_style">wxFILTER_NUMERIC</property>
                                                         <property name="validator_type">wxDefaultValidator</property>
                                                         <property name="validator_variable"></property>
                                                         <property name="value">180</property>
@@ -518,7 +518,7 @@
                                                         <event name="OnRightUp"></event>
                                                         <event name="OnSetFocus"></event>
                                                         <event name="OnSize"></event>
-                                                        <event name="OnText"></event>
+                                                        <event name="OnText">OnLonEnter</event>
                                                         <event name="OnTextEnter"></event>
                                                         <event name="OnTextMaxLen"></event>
                                                         <event name="OnTextURL"></event>
@@ -559,7 +559,7 @@
                                                         <property name="subclass"></property>
                                                         <property name="tooltip"></property>
                                                         <property name="validator_data_type"></property>
-                                                        <property name="validator_style">wxFILTER_ALPHA|wxFILTER_NONE</property>
+                                                        <property name="validator_style">wxFILTER_NUMERIC</property>
                                                         <property name="validator_type">wxDefaultValidator</property>
                                                         <property name="validator_variable"></property>
                                                         <property name="value">-90</property>
@@ -588,7 +588,7 @@
                                                         <event name="OnRightUp"></event>
                                                         <event name="OnSetFocus"></event>
                                                         <event name="OnSize"></event>
-                                                        <event name="OnText"></event>
+                                                        <event name="OnText">OnLatEnter</event>
                                                         <event name="OnTextEnter"></event>
                                                         <event name="OnTextMaxLen"></event>
                                                         <event name="OnTextURL"></event>

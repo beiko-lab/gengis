@@ -237,5 +237,31 @@ class GBIFQuery(GBIFQueryLayout):
 	
 	#	Close the Plugin
 	def OnOK( self, event ):
-		self.Close()
-	
+		self.Close()	
+		
+	def OnLatEnter(self,event):
+		str = event.GetString()
+		str2 = re.sub('[^\d\.\-]','',str)
+		if str2 and str !="-":
+			str3=float(str2)
+			if str3 > 90:
+				str2 = str2[:-1]
+			elif str3 < -90:
+				str2 = str2[:-1]
+		event.GetClientData().SetValue(str2)
+		event.GetClientData().SetInsertionPoint(len(str2))
+		
+	def OnLonEnter(self,event):
+		str = event.GetString()
+		str2 = re.sub('[^\d\.\-]','',str)
+		if str2 and str !="-":
+			str3=float(str2)
+			if str3 > 180:
+				str2 = str[:-1]
+			elif str3 < -180:
+				str2 = str[:-1]
+		event.GetClientData().SetValue(str2)
+		event.GetClientData().SetInsertionPoint(len(str2))
+		
+		
+		
