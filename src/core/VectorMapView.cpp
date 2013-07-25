@@ -46,7 +46,7 @@ VectorMapView::VectorMapView( VectorMapModelPtr vectorMapModel ) :
 	m_pointSize(3.0),
 	m_pointBorderColour((float) rand() / RAND_MAX, (float) rand() / RAND_MAX,(float) rand() / RAND_MAX),
 	m_pointBorderSize(0.0), 
-	m_pointShape(VisualMarker::CIRCLE),
+	m_pointShape(VisualMarker::CIRCLE_FAST),
 	m_lineColour((float) rand() / RAND_MAX, (float) rand() / RAND_MAX,(float) rand() / RAND_MAX),
 	m_lineSize(1.0),
 	m_lineBorderColour((float) rand() / RAND_MAX, (float) rand() / RAND_MAX,(float) rand() / RAND_MAX),

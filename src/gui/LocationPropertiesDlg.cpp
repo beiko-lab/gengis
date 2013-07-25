@@ -90,6 +90,8 @@ void LocationPropertiesDlg::InitSymbology()
 	VisualMarker::MARKER_SHAPE shape = locationView->GetShape();
 	if(shape == VisualMarker::CIRCLE)
 		m_cboSymbolShape->SetValue(_T("Circle"));
+	else if(shape == VisualMarker::CIRCLE_FAST)
+		m_cboSymbolShape->SetValue(_T("Circle (fast)"));
 	else if(shape == VisualMarker::SQUARE)
 		m_cboSymbolShape->SetValue(_T("Square"));
 	else if(shape == VisualMarker::TRIANGLE)
@@ -99,7 +101,7 @@ void LocationPropertiesDlg::InitSymbology()
 	else if(shape == VisualMarker::PLUS_SIGN)
 		m_cboSymbolShape->SetValue(_T("Plus sign"));
 	else if(shape == VisualMarker::OCTAGON)
-		m_cboSymbolShape->SetValue(_T("octagon"));
+		m_cboSymbolShape->SetValue(_T("Octagon"));
 	else if(shape == VisualMarker::DIAMOND)
 		m_cboSymbolShape->SetValue(_T("Diamond"));
 	else if(shape == VisualMarker::INVERTED_TRIANGLE)
@@ -169,6 +171,8 @@ void LocationPropertiesDlg::ApplySymbology()
 	VisualMarker::MARKER_SHAPE shape;
 	if(m_cboSymbolShape->GetValue() == _T("Circle"))
 		shape = VisualMarker::CIRCLE;
+	else if(m_cboSymbolShape->GetValue() == _T("Circle (fast)"))
+		shape = VisualMarker::CIRCLE_FAST;
 	else if(m_cboSymbolShape->GetValue() == _T("Square"))
 		shape = VisualMarker::SQUARE;
 	else if(m_cboSymbolShape->GetValue() == _T("Triangle"))
@@ -177,7 +181,7 @@ void LocationPropertiesDlg::ApplySymbology()
 		shape = VisualMarker::STAR;
 	else if(m_cboSymbolShape->GetValue() == _T("Plus sign"))
 		shape = VisualMarker::PLUS_SIGN;
-	else if(m_cboSymbolShape->GetValue() == _T("octagon"))
+	else if(m_cboSymbolShape->GetValue() == _T("Octagon"))
 		shape = VisualMarker::OCTAGON;
 	else if(m_cboSymbolShape->GetValue() == _T("Diamond"))
 		shape = VisualMarker::DIAMOND;

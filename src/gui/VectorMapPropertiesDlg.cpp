@@ -106,6 +106,8 @@ void VectorMapPropertiesDlg::InitPointSymbology()
 	VisualMarker::MARKER_SHAPE pointShape = vectorMapView->GetPointShape();
 	if(pointShape == VisualMarker::CIRCLE)
 		m_CboPointShape->SetValue(_T("Circle"));
+	else if(pointShape == VisualMarker::CIRCLE_FAST)
+		m_CboPointShape->SetValue(_T("Circle (fast)"));
 	else if(pointShape == VisualMarker::SQUARE)
 		m_CboPointShape->SetValue(_T("Square"));
 	else if(pointShape == VisualMarker::TRIANGLE)
@@ -314,6 +316,8 @@ void VectorMapPropertiesDlg::ApplyPointSymbology()
 	VisualMarker::MARKER_SHAPE pShape;
 	if(m_CboPointShape->GetValue() == _T("Circle"))
 		pShape = VisualMarker::CIRCLE;
+	else if(m_CboPointShape->GetValue() == _T("Circle (fast)"))
+		pShape = VisualMarker::CIRCLE_FAST;
 	else if(m_CboPointShape->GetValue() == _T("Square"))
 		pShape = VisualMarker::SQUARE;
 	else if(m_CboPointShape->GetValue() == _T("Triangle"))
