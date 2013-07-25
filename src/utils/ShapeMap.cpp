@@ -90,7 +90,7 @@ const VisualMarker::MARKER_SHAPE ShapeMap::GetShape(uint index) const
 		return m_shapeMap.at(index);
 	}
 
-	return VisualMarker::CIRCLE_FAST;
+	return VisualMarker::CIRCLE;
 }
 
 void ShapeMap::SetCustom(bool custom) 

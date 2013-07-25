@@ -122,10 +122,15 @@ void ShapeMapWidget::SetFieldValues(wxScrolledWindow* scrolledWindow, const std:
 
 		// get colour from colour map unless field values have already been associated with colours
 		VisualMarker::MARKER_SHAPE shape;
-		if(!m_shapeMap->GetShape(*setIt, shape))
+		do
 		{
-			shape = m_shapeMap->GetShape(i);
-		}
+			if(!m_shapeMap->GetShape(*setIt, shape))
+			{
+				shape = m_shapeMap->GetShape(i);
+				i++;
+			}
+		} while ( shape == VisualMarker::CIRCLE_FAST );
+		// Avoid using CIRCLE_FAST in this case due to its similarity to CIRCLE
 
 		wxComboBox* cbo = new wxComboBox( scrolledWindow, wxID_ANY, wxString(m_shapeMap->ToStringW(shape).c_str()),
 			wxDefaultPosition, wxDefaultSize, 0, NULL, wxCB_READONLY|wxCB_SORT  );
@@ -147,8 +152,6 @@ void ShapeMapWidget::SetFieldValues(wxScrolledWindow* scrolledWindow, const std:
 		sizerScrollWindow->Add( staticLine, 0, wxEXPAND | wxALL, 0 );	
 
 		m_shapeMap->SetShape((*setIt), shape);
-
-		i++;
 	}
 
 	ConnectShapeComboBoxEvents();
