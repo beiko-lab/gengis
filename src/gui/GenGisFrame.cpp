@@ -606,7 +606,7 @@ void GenGisFrame::FillSamplesLegend()
 	if ( m_legendLocationsSizerShape2 != NULL)
 		m_legendLocationsSizerShape2->Clear(true);
 
-	std::string filenames[] = { "circle.xpm", "square.xpm", "triangle.xpm", "star.xpm", 
+	std::string filenames[] = { "circle.xpm", "circle_fast.xpm", "square.xpm", "triangle.xpm", "star.xpm", 
 				"plus_sign.xpm", "octagon.xpm", "diamond.xpm", "inverted_triangle.xpm" };
 
 	if ( locationSetController->ModifiedShape() == true )

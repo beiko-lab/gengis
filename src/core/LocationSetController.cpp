@@ -41,7 +41,7 @@ using namespace GenGIS;
 
 LocationSetController::LocationSetController() :
 	m_bLocationSetVisibility(true), m_bUniformColour(true), m_uniformColour(Colour(217, 95, 2)),
-	m_minLocationSize(6), m_maxLocationSize(6), m_bUniformShape(true), m_uniformShape(VisualMarker::CIRCLE),
+	m_minLocationSize(6), m_maxLocationSize(6), m_bUniformShape(true), m_uniformShape(VisualMarker::CIRCLE_FAST),
 	m_labelColour(Colour(255,255,255)), m_labelSize(12), m_bLabelVisible(false), m_labelPosition(_T("Right")),
 	m_labelStyle(_T("Dynamic")),m_bLabelBindToChart(false), m_borderSize(1), m_borderColour(Colour(0,0,0)), m_bActive(true)
 {

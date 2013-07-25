@@ -63,6 +63,7 @@ ShapeMapPtr ShapeMapManager::BuildStandardShapeMap()
 
 	// set all possible shapes supported by shape map
 	shapeMap->AddShape(VisualMarker::CIRCLE);
+	shapeMap->AddShape(VisualMarker::CIRCLE_FAST);
 	shapeMap->AddShape(VisualMarker::SQUARE);
 	shapeMap->AddShape(VisualMarker::TRIANGLE);
 	shapeMap->AddShape(VisualMarker::DIAMOND);
