@@ -41,7 +41,6 @@ class GBIFQuery(GBIFQueryLayout):
 	__description__=""
 	
 	def __init__(self,parent=None):
-#		import pdb; pdb.set_trace()
 		MaxLon,MinLon,MaxLat,MinLat = 180,-180,90,-90
 		self.GBIFSpecific = GBIFSpecific()
 		self.GBIFGeneric = GBIFGeneric()
@@ -78,7 +77,7 @@ class GBIFQuery(GBIFQueryLayout):
 			#check if geographic coordinates are used or some other measure; only geographic are compatible
 			geographic = GenGIS.StudyController.IsGeographic(GenGIS.study.GetController())
 			if(not geographic):
-				wx.MessageBox("Geographic coordinates are not being used in the current map file. Only geographic coordinates are compatible with GBIF. Geographic range will need to be manually set, and any returned data will not display correctly.","!!!!!!!Warning!!!!!!!")
+				wx.MessageBox("Geographic coordinates are not being used in the current map file. Only geographic coordinates are compatible with GBIF. Geographic range will need to be manually set, and any returned data will not display correctly.","Warning")
 				self.m_AddData.Disable()
 				self.m_MinLat.SetValue(str(MinLat))
 				self.m_MaxLat.SetValue(str(MaxLat))
@@ -152,9 +151,9 @@ class GBIFQuery(GBIFQueryLayout):
 			count=0
 			for tax in self.__selectedTaxon__:
 				count+=self.GBIFSpecific.GETCOUNT(tax[1].split(),tax[0],minLatitude,maxLatitude,minLongitude,maxLongitude,self.m_Progress)
+			self.m_Summary.SetLabel("There were %d records for the given location." % count)
 		else:
 			wx.MessageBox("Please select some Taxa.")
-		self.m_Summary.SetLabel("There were %d records for the given location." % count) 
 		wx.EndBusyCursor()
 		
 	#	Redirects User to Wiki page for this plugin

@@ -19,7 +19,6 @@
 # along with GenGIS.  If not, see <http://www.gnu.org/licenses/>.
 #=======================================================================
 
-
 import re
 import wx
 import sys
@@ -30,10 +29,16 @@ from xml.dom import minidom
 
 class GBIFSpecific:
 	# get source of data sets as well as rights and citation
+	__description__ = ""
+	__warnings__=[0,0]
+	__uniqueNodeList__=set()
 	
 	def __init__(self):
 		self.GBIFGeneric = GBIFGeneric()
-	
+		self.__description__ = ""
+		self.__warnings__=[0,0]
+		self.__uniqueNodeList__=set()
+		
 	def GETRIGHTS(self,fh):
 		desc=""
 		resource=fh.getElementsByTagName("gbif:dataResources")
@@ -57,7 +62,6 @@ class GBIFSpecific:
 	#	Queries GBIF to find the number of results for given boundary 
 	def GETCOUNT(self,taxon_name,cID,minLat,maxLat,minLon,maxLon,m_Progress):
 		taxonReq = '+'.join(taxon_name)			
-	#	cID = self.GETTAXID(taxonReq,m_Progress)
 		url= " http://data.gbif.org/ws/rest/occurrence/count?taxonconceptkey=%d&maxlatitude=%f&minlatitude=%f&maxlongitude=%f&minlongitude=%f" % (cID,maxLat,minLat,maxLon,minLon) 
 		try:	
 			response=urllib2.urlopen(url).read()
@@ -125,35 +129,12 @@ class GBIFSpecific:
 		name = re.sub(r'[^A-Za-z ]+','',name)
 		name = re.sub(r' *$','',name)
 		return name
-	
-	#	Convert TaxonName to a Concept ID for GBIF
-	def GETTAXID (self,taxonName,m_Progress):
-		taxConceptID=100000000
-		url="http://data.gbif.org/ws/rest/taxon/list?scientificname="+taxonName+"*&dataproviderkey=1&dataresourcekey=1"
-		try:	
-			html=urllib2.urlopen(url)
-		except urllib2.HTTPError as e:
-			m_Progress.WriteText("%s\n" % e.code)
-			wx.MessageBox("The server is temporarily unreachable.\nPlease try again later.")
-			self.Close()
-		taxResponse=html.read()
-		taxxmldoc=minidom.parseString(taxResponse)
-		taxNodeList=taxxmldoc.getElementsByTagName("tc:TaxonConcept")
-		for taxResult in taxNodeList:
-			string = taxResult.toprettyxml(indent=' ')
-			key_string = re.search('gbifKey="(\d+)"',string)
-			if key_string:
-				id_string=re.search('\d+',key_string.group())
-				id = int(id_string.group())
-				if id < taxConceptID:
-					taxConceptID = id
-		if taxConceptID == 100000000:
-	#		sys.exit("No frigging taxon concept found")
-			return(-1)
-		return(taxConceptID)
 		
 	# Search for a Taxon Name in a Geographic boundary
 	def GETOBSENTIRERANGE(self,taxon_name,cID,minLatitude,maxLatitude,minLongitude,maxLongitude,m_Progress):
+		self.__description__ = ""
+		self.__warnings__=[0,0]
+		self.__uniqueNodeList__=set()
 		warningsFlag = 0
 		records=0
 		distLocations=set()
@@ -184,10 +165,6 @@ class GBIFSpecific:
 		description=""
 		for taxonName in taxonList:
 			m_Progress.WriteText("########### Querying GBIF for %s ######\n" % taxonName)
-#			cID = self.GETTAXID(taxonName,m_Progress)
-#			if(cID == -1):
-#				m_Progress.WriteText("No concept ID found for %s. Skipping...\n" % taxonName)
-#				continue
 			m_Progress.WriteText("Concept ID: %d\n" % cID)
 			### The set of observations
 			### hash key #1 = grid cell
@@ -196,118 +173,15 @@ class GBIFSpecific:
 
 			fullTaxonomy={}
 			resultCount =self.GETCOUNT(taxon_name,cID,minLatitude,maxLatitude,minLongitude,maxLongitude,m_Progress)
-			#chek if whole window fits: if not divide into columns
 			nodeList=[]
-			if resultCount>1000 :
-				newCoords = self.GBIFGeneric.SUBDIVIDECOL(minLatitude,maxLatitude,minLongitude,maxLongitude)
-				for coords in newCoords:
-					colMinLongitude = coords[2]
-					colMaxLongitude = coords[3]
-					colMinLatitude = coords[0]
-					colMaxLatitude = coords[1]
-					
-					resultCount =self.GETCOUNT(taxon_name,cID,colMinLatitude,colMaxLatitude,colMinLongitude,colMaxLongitude,m_Progress)
-					#check if col fits: if not divide into cells
-					if resultCount > 1000:
-						newCoords = self.GBIFGeneric.SUBDIVIDEROW(colMinLatitude,colMaxLatitude,colMinLongitude,colMaxLongitude)
-						for coords in newCoords:
-							cellMinLongitude = coords[2]
-							cellMaxLongitude = coords[3]
-							cellMinLatitude = coords[0]
-							cellMaxLatitude = coords[1]
-							resultCount =self.GETCOUNT(taxon_name,cID,cellMinLatitude,cellMaxLatitude,cellMinLongitude,cellMaxLongitude,m_Progress)
-							#check if cell fits: if not divide into centicells
-						#	print "stage 3"
-							if resultCount >1000:
-								newCoords = self.GBIFGeneric.SUBDIVIDECOL(cellMinLatitude,cellMaxLatitude,cellMinLongitude,cellMaxLongitude)
-								for coords in newCoords:
-									ccellMinLongitude = coords[2]
-									ccellMaxLongitude = coords[3]
-									ccellMinLatitude = coords[0]
-									ccellMaxLatitude = coords[1]
-									resultCount =self.GETCOUNT(taxon_name,cID,ccellMinLatitude,ccellMaxLatitude,ccellMinLongitude,ccellMaxLongitude,m_Progress)
-						#			print "stage 4"
-									if resultCount>1000:
-										m_Progress.WriteText("!!!!!!!!!!!!WARNING!!!!!!!!!!!!!!!\nMaximum number of records exceeded, only retrieving the first 1000\n")
-										warningsFlag=1
-										m_Progress.WriteText("Latitude: %0.2f to %0.2f\tLongitude: %0.2f to %0.2f\n" % (ccellMinLatitude,ccellMaxLatitude,ccellMinLongitude,ccellMaxLongitude))
-										url="http://data.gbif.org/ws/rest/occurrence/list?taxonconceptkey=%d&maxlatitude=%f&minlatitude=%f&maxlongitude=%f&minlongitude=%f" %(cID,ccellMaxLatitude,ccellMinLatitude,ccellMaxLongitude,ccellMinLongitude)
-										try:
-											response=urllib2.urlopen(url).read()
-										except urllob2.URLError:
-											m_Progress.WriteText("%s\n" % e.code)
-											wx.MessageBox("The server is temporarily unreachable.\nPlease try again later.")
-											self.Close()
-										parser=minidom.parseString(response)
-										description+=self.GETRIGHTS(parser)
-										temper=parser.getElementsByTagName("to:TaxonOccurrence")
-										nodeList.extend(temper)
-										m_Progress.WriteText("%d records found\n" % len(temper))
-									#centicells worked
-									else:
-										m_Progress.WriteText("Latitude: %0.2f to %0.2f\tLongitude: %0.2f to %0.2f\n" % (ccellMinLatitude,ccellMaxLatitude,ccellMinLongitude,ccellMaxLongitude))
-										url="http://data.gbif.org/ws/rest/occurrence/list?taxonconceptkey=%d&maxlatitude=%f&minlatitude=%f&maxlongitude=%f&minlongitude=%f" %(cID,ccellMaxLatitude,ccellMinLatitude,ccellMaxLongitude,ccellMinLongitude)
-										try:
-											response=urllib2.urlopen(url).read()
-										except urllob2.URLError:
-											m_Progress.WriteText("%s\n" % e.code)
-											wx.MessageBox("The server is temporarily unreachable.\nPlease try again later.")
-											self.Close()
-										parser=minidom.parseString(response)
-										description+=self.GETRIGHTS(parser)
-										temper=parser.getElementsByTagName("to:TaxonOccurrence")
-										nodeList.extend(temper)
-										m_Progress.WriteText("%d records found\n" % len(temper))
-							
-							#cells worked
-							else:
-								m_Progress.WriteText("Latitude: %0.2f to %0.2f\tLongitude: %0.2f to %0.2f\n" % (cellMinLatitude,cellMaxLatitude,cellMinLongitude,cellMaxLongitude))
-								url="http://data.gbif.org/ws/rest/occurrence/list?taxonconceptkey=%d&maxlatitude=%f&minlatitude=%f&maxlongitude=%f&minlongitude=%f" %(cID,cellMaxLatitude,cellMinLatitude,cellMaxLongitude,cellMinLongitude)
-								try:
-									response=urllib2.urlopen(url).read()
-								except urllob2.URLError:
-									m_Progress.WriteText("%s\n" % e.code)
-									wx.MessageBox("The server is temporarily unreachable.\nPlease try again later.")
-									self.Close()
-								parser=minidom.parseString(response)
-								description+=self.GETRIGHTS(parser)
-								temper=parser.getElementsByTagName("to:TaxonOccurrence")
-								nodeList.extend(temper)
-								m_Progress.WriteText("%d records found\n" % len(temper))
-					#cols worked
-					else:
-						m_Progress.WriteText("Latitude: %0.2f to %0.2f\tLongitude: %0.2f to %0.2f\n" % (colMinLatitude,colMaxLatitude,colMinLongitude,colMaxLongitude))
-						url="http://data.gbif.org/ws/rest/occurrence/list?taxonconceptkey=%d&maxlatitude=%f&minlatitude=%f&maxlongitude=%f&minlongitude=%f" %(cID,colMaxLatitude,colMinLatitude,colMaxLongitude,colMinLongitude)
-						try:
-							response=urllib2.urlopen(url).read()
-						except urllob2.URLError:
-							m_Progress.WriteText("%s\n" % e.code)
-							wx.MessageBox("The server is temporarily unreachable.\nPlease try again later.")
-							self.Close()
-						parser=minidom.parseString(response)
-						description+=self.GETRIGHTS(parser)
-						temp=parser.getElementsByTagName("to:TaxonOccurrence")
-						m_Progress.WriteText("%d records found\n" % len(temp))
-						nodeList.extend(temp)
-						
-			#whole thing worked
-			else:
-				m_Progress.WriteText("Latitude: %0.2f to %0.2f\tLongitude: %0.2f to %0.2f\n" % (minLatitude,maxLatitude,minLongitude,maxLongitude))
-				url="http://data.gbif.org/ws/rest/occurrence/list?taxonconceptkey=%d&maxlatitude=%f&minlatitude=%f&maxlongitude=%f&minlongitude=%f" %(cID,maxLatitude,minLatitude,maxLongitude,minLongitude)
-				try:
-					response=urllib2.urlopen(url).read()
-				except urllob2.URLError:
-					m_Progress.WriteText("%s\n" % e.code)
-					wx.MessageBox("The server is temporarily unreachable.\nPlease try again later.")
-					self.Close()
-				parser=minidom.parseString(response)
-				description+=self.GETRIGHTS(parser)
-				nodeList=parser.getElementsByTagName("to:TaxonOccurrence")
-				m_Progress.WriteText("%d records found\n" % len(nodeList))
-			if warningsFlag==1:
-				m_Progress.WriteText("!!!!!!!!!!!!!!!!!!!!\nWarnings were created. Please review progress bar for more information.\n!!!!!!!!!!!!!!!!!!!!\n")
-			if len(nodeList) > 0:
-				records += len(nodeList)
+			#this will mine GBIF database for the raw information to process
+			nodeList = self.recursiveQuery(taxon_name,cID,minLatitude,maxLatitude,minLongitude,maxLongitude,m_Progress,nodeList,1)
+			description = self.__description__
+			# checks if minimum granularity was met while querying GBIF
+			if self.__warnings__[0]==1:
+				self.__warnings__[0]=0
+				m_Progress.WriteText("\nWarnings were created. Please review progress bar for more information.\n")
+			uniqueRID=set()
 			for node in nodeList:
 				string = node.toprettyxml(indent=' ')
 				rID=-1
@@ -316,6 +190,7 @@ class GBIFSpecific:
 					id_string=re.search('\d+',key_string.group())
 					id = int(id_string.group())
 					rID=id
+					uniqueRID.add(rID)
 				else:
 					sys.exit("Could not find a friggin GBIF key")
 				name=node.getElementsByTagName("tn:nameComplete")[0].toxml()
@@ -337,5 +212,81 @@ class GBIFSpecific:
 						obs[currGrid].update({genus: [(rID,lat_tem,long_tem,name)] })
 					except KeyError:
 						obs[currGrid] = {genus: [(rID,lat_tem,long_tem,name)] }
+				records = len(uniqueRID)
 		return(obs,conversions,records,len(distLocations),description)
-
+		
+	#############################
+	#	Queries GBIF recursively
+	#	Case 1: Too many results
+	#	Case 2: Success
+	#############################
+	def recursiveQuery(self,taxon_name,cID,minLatitude,maxLatitude,minLongitude,maxLongitude,m_Progress,nodeList,rowColFlag):		
+		print len(nodeList)
+		stopCoords =0.1
+		#1=cols, 2=rows
+		resultCount =self.GETCOUNT(taxon_name,cID,minLatitude,maxLatitude,minLongitude,maxLongitude,m_Progress)
+		#check if too many resuslts received
+		if resultCount > 1000 and self.__warnings__[1]==0:
+			#if col division
+			if rowColFlag == 1:
+				print "col divide"
+				range = (maxLongitude - minLongitude)
+				base = range/10
+				#check granularity
+				if range/10 < stopCoords:
+					m_Progress.write("Warning: Maximum gradiant hit. If > 1000 records returned not all data was found")
+					self.__warnings__[0]=1
+					self.__warnings__[1]=1
+					range = (maxLongitude - minLongitude)
+					base = stopCoords
+				#divides the current geographic range
+				newCoords = self.GBIFGeneric.SUBDIVIDECOL(minLatitude,maxLatitude,minLongitude,maxLongitude,range,base)
+				rowColFlag = 2
+				for coords in newCoords:
+					self.recursiveQuery(taxon_name,cID,coords[0],coords[1],coords[2],coords[3],m_Progress,nodeList,rowColFlag)
+				return nodeList
+			#else row division
+			else:
+				print "row divide"
+				range = (maxLatitude - minLatitude)
+				base = range/10
+				#check granularity
+				if range/10 < stopCoords:
+					m_Progress.write("Warning: Maximum gradiant hit. If > 1000 records returned not all data was found\n")
+					self.__warnings__[0]=1
+					self.__warnings__[1]=1
+					range = (maxLatitude - minLatitude)
+					base = stopCoords
+				#divides the current geographic range
+				newCoords = self.GBIFGeneric.SUBDIVIDEROW(minLatitude,maxLatitude,minLongitude,maxLongitude,range,base)
+				rowColFlag = 1
+				for coords in newCoords:
+					self.recursiveQuery(taxon_name,cID,coords[0],coords[1],coords[2],coords[3],m_Progress,nodeList,rowColFlag)
+				return nodeList
+		#query GBIF and process returns
+		else:
+			self.__warnings__[1]=0
+			print "success case"
+			m_Progress.WriteText("Latitude: %0.2f to %0.2f\tLongitude: %0.2f to %0.2f\n" % (minLatitude,maxLatitude,minLongitude,maxLongitude))
+			url="http://data.gbif.org/ws/rest/occurrence/list?taxonconceptkey=%d&maxlatitude=%f&minlatitude=%f&maxlongitude=%f&minlongitude=%f" %(cID,maxLatitude,minLatitude,maxLongitude,minLongitude)
+			try:
+				response=urllib2.urlopen(url).read()
+			except urllib2.URLError:
+				m_Progress.WriteText("%s\n" % e.code)
+				wx.MessageBox("The server is temporarily unreachable.\nPlease try again later.")
+				self.Close()
+			parser=minidom.parseString(response)
+			self.__description__+=self.GETRIGHTS(parser)
+			temper=parser.getElementsByTagName("to:TaxonOccurrence")
+			print "first %d" %len(temper)
+			#matches if whole content is the same. might be good to be more specific in the future if memory gets tighter
+			for node in temper:
+				text = node.toxml()
+				if text in self.__uniqueNodeList__:
+					temper.remove(node)
+				else:
+					self.__uniqueNodeList__.add(text)
+			print "second %d" %len(temper)
+			nodeList.extend(temper)
+			m_Progress.WriteText("%d records found\n" % len(temper))
+			return(nodeList)
