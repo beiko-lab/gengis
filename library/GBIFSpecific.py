@@ -175,6 +175,7 @@ class GBIFSpecific:
 			resultCount =self.GETCOUNT(taxon_name,cID,minLatitude,maxLatitude,minLongitude,maxLongitude,m_Progress)
 			nodeList=[]
 			#this will mine GBIF database for the raw information to process
+			m_Progress.WriteText("Latitude: %0.2f to %0.2f\tLongitude: %0.2f to %0.2f\n" % (minLatitude,maxLatitude,minLongitude,maxLongitude))
 			nodeList = self.recursiveQuery(taxon_name,cID,minLatitude,maxLatitude,minLongitude,maxLongitude,m_Progress,nodeList,1)
 			description = self.__description__
 			# checks if minimum granularity was met while querying GBIF
@@ -227,6 +228,7 @@ class GBIFSpecific:
 		resultCount =self.GETCOUNT(taxon_name,cID,minLatitude,maxLatitude,minLongitude,maxLongitude,m_Progress)
 		#check if too many resuslts received
 		if resultCount > 1000 and self.__warnings__[1]==0:
+			m_Progress.WriteText("Too many records, subdividing location.\n")
 			#if col division
 			if rowColFlag == 1:
 				print "col divide"
@@ -234,13 +236,15 @@ class GBIFSpecific:
 				base = range/10
 				#check granularity
 				if range/10 < stopCoords:
-					m_Progress.write("Warning: Maximum gradiant hit. If > 1000 records returned not all data was found")
+			#		m_Progress.write("Warning: Maximum gradiant hit. If > 1000 records returned not all data was found")
 					self.__warnings__[0]=1
 					self.__warnings__[1]=1
 					range = (maxLongitude - minLongitude)
 					base = stopCoords
 				#divides the current geographic range
 				newCoords = self.GBIFGeneric.SUBDIVIDECOL(minLatitude,maxLatitude,minLongitude,maxLongitude,range,base)
+				if self.__warnings__[1]==1:
+					print newCoords
 				rowColFlag = 2
 				for coords in newCoords:
 					self.recursiveQuery(taxon_name,cID,coords[0],coords[1],coords[2],coords[3],m_Progress,nodeList,rowColFlag)
@@ -252,19 +256,26 @@ class GBIFSpecific:
 				base = range/10
 				#check granularity
 				if range/10 < stopCoords:
-					m_Progress.write("Warning: Maximum gradiant hit. If > 1000 records returned not all data was found\n")
+			#		m_Progress.write("Warning: Maximum gradiant hit. If > 1000 records returned not all data was found\n")
 					self.__warnings__[0]=1
 					self.__warnings__[1]=1
 					range = (maxLatitude - minLatitude)
 					base = stopCoords
 				#divides the current geographic range
 				newCoords = self.GBIFGeneric.SUBDIVIDEROW(minLatitude,maxLatitude,minLongitude,maxLongitude,range,base)
+				if self.__warnings__[1]==1:
+					print newCoords
 				rowColFlag = 1
 				for coords in newCoords:
 					self.recursiveQuery(taxon_name,cID,coords[0],coords[1],coords[2],coords[3],m_Progress,nodeList,rowColFlag)
 				return nodeList
 		#query GBIF and process returns
 		else:
+			if self.__warnings__[1]==1:
+			#	resultCount =self.GETCOUNT(taxon_name,cID,minLatitude,maxLatitude,minLongitude,maxLongitude,m_Progress)
+				if resultCount==1000:
+					m_Progress.write("Warning: Maximum gradient division with maximum records returned. Some records might be omitted.\n")
+					
 			self.__warnings__[1]=0
 			print "success case"
 			m_Progress.WriteText("Latitude: %0.2f to %0.2f\tLongitude: %0.2f to %0.2f\n" % (minLatitude,maxLatitude,minLongitude,maxLongitude))
@@ -288,5 +299,5 @@ class GBIFSpecific:
 					self.__uniqueNodeList__.add(text)
 			print "second %d" %len(temper)
 			nodeList.extend(temper)
-			m_Progress.WriteText("%d records found\n" % len(temper))
+#			m_Progress.WriteText("%d records found\n" % len(temper))
 			return(nodeList)
