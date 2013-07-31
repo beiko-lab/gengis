@@ -649,12 +649,18 @@ void GenGisFrame::FillSamplesLegend()
 		wxString staticBoxTitle = wxT( "Shape (" ) + wxString( locationSetController->GetShapeField().c_str(), wxConvISO8859_1 ) + wxT( ")" );
 		m_legendLocationsSizerShape->GetStaticBox()->SetLabel( staticBoxTitle );
 
-		std::map<std::wstring, VisualMarker::MARKER_SHAPE> shapeMapValues =	locationSetController->GetShapeMap()->GetNameToShapeMap();
-		std::map<std::wstring, VisualMarker::MARKER_SHAPE>::const_iterator shapeIt;
+		// Retrieve the current set of field values
+		std::vector<std::wstring> fieldValues;
+		locationSetController->GetSortedFieldValues( locationSetController->GetShapeField(), fieldValues );
 
-		for (shapeIt = shapeMapValues.begin(); shapeIt != shapeMapValues.end(); ++shapeIt)
+		// Retrieve the current set of shape map values
+		std::map<std::wstring, VisualMarker::MARKER_SHAPE> shapeMapValues =	locationSetController->GetShapeMap()->GetNameToShapeMap();
+		
+		// Iterate through the field values
+		std::vector<std::wstring>::iterator it;
+		for ( it = fieldValues.begin(); it < fieldValues.end(); it++ )
 		{
-			wxString filename = wxString( filenames[shapeIt->second].c_str(), wxConvUTF8 );
+			wxString filename = wxString( filenames[shapeMapValues[(*it)]].c_str(), wxConvUTF8 );
 
 			// Load bitmap shape and insert into shape legend
 			wxBitmap bitmap;
@@ -667,7 +673,7 @@ void GenGisFrame::FillSamplesLegend()
 
 			// Load shape description and insert into legend
 			wxStaticText* id = new wxStaticText( m_legendLocations, wxID_ANY,
-				wxString( shapeIt->first.c_str(), wxConvISO8859_1 ), wxDefaultPosition, wxDefaultSize, wxALIGN_CENTRE );
+				wxString( (*it).c_str(), wxConvISO8859_1 ), wxDefaultPosition, wxDefaultSize, wxALIGN_CENTRE );
 			m_legendLocationsSizerShape2->Add(id, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5);
 		}
 	}
