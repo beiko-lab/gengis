@@ -281,6 +281,8 @@ std::vector<std::wstring> LocationSetController::GetMetadataFields() const
 
 void LocationSetController::GetSortedFieldValues(const std::wstring& field, std::vector<std::wstring>& fieldValues)
 {
+	if ( field.empty() ) return;
+
 	// get all unique field values within the given field
 	std::set<std::wstring> uniqueFieldValues;
 	for(unsigned int i = 0; i < m_locationLayers.size(); ++i)
@@ -294,7 +296,7 @@ void LocationSetController::GetSortedFieldValues(const std::wstring& field, std:
 	fieldValues.clear();
 	fieldValues = std::vector<std::wstring>(uniqueFieldValues.begin(), uniqueFieldValues.end());
 
-	//SortFieldValues(fieldValues);
+	StringTools::SortFieldValues( fieldValues );
 }
 
 std::vector<std::wstring> LocationSetController::GetNumericMetadataFields(bool bOnlyActiveLocs) const
