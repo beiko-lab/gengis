@@ -76,6 +76,7 @@ class GBIFQuery(GBIFQueryLayout):
 			
 			#check if geographic coordinates are used or some other measure; only geographic are compatible
 			geographic = GenGIS.StudyController.IsGeographic(GenGIS.study.GetController())
+			#GenGIS.StudyController.GetDatum(GenGIS.study.GetController())
 			if(not geographic):
 				wx.MessageBox("Geographic coordinates are not being used in the current map file. Only geographic coordinates are compatible with GBIF. Geographic range will need to be manually set, and any returned data will not display correctly.","Warning")
 				self.m_AddData.Disable()
