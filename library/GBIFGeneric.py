@@ -22,13 +22,13 @@
 
 import re
 import wx
+import decimal
 
 class GBIFGeneric:	
 	def GETTEXT (self,obs_list,conversions_list):
 		OUTL=""
 		OUTS=""
 		for obs,convs in zip(obs_list,conversions_list):
-	#		import pdb; pdb.set_trace()
 			locs, seqs = self.MAKEOUTS(obs,convs)
 			OUTL+=locs
 			OUTS+=seqs
@@ -60,30 +60,41 @@ class GBIFGeneric:
 		seqFileAgg_items = seqFileAgg.items()
 		seqFileAgg_items.sort(key=lambda x: x)
 		for outME,IDlist in seqFileAgg_items:
-			OUTSTEXT += ("%d,%s,%d,%s\n" %(IDlist[0],outME,len(IDlist),'|'.join(str(i) for i in IDlist)))
+			save = IDlist[0]
+			IDlist = set(IDlist)
+			OUTSTEXT += ("%d,%s,%d,%s\n" %(save,outME,len(IDlist),'|'.join(str(i) for i in IDlist)))
 		return(OUTLTEXT,OUTSTEXT)
 				
 	# Populate the Results Table using Taxa and Geographic boundaries
 	def CPPOUT (self,input):
 		array = input.split("\n")
 		return (array)
+		
+	# stolen from	http://stackoverflow.com/questions/477486/python-decimal-range-step-value written by gimel January 25 '09 11:57
+	def drange(self,start, stop, step):
+		r = start
+		while r < stop:
+			yield r
+			r += step
 	
 	#subdivide a given range by longitude
-	def SUBDIVIDECOL(self,minlatitude,maxlatitude,minlongitude,maxlongitude):
+	def SUBDIVIDECOL(self,minlatitude,maxlatitude,minlongitude,maxlongitude,numSubs,step):
 		longitudeRange = maxlongitude - minlongitude
 		new_coords = []
-		longitudeBase= float(longitudeRange)/float(10)
-		for i in range(0,10):
-			new_coords.append(( minlatitude,maxlatitude,minlongitude+longitudeBase * i,minlongitude+longitudeBase* (i+1)))
+		for i in self.drange(0,numSubs,step):
+			minl = round(decimal.Decimal(str(minlongitude+i)),1)
+			maxl = round(decimal.Decimal(str(minlongitude+i+step)),1)
+			new_coords.append((minlatitude,maxlatitude,minl,maxl))
 		return(new_coords)
 	
 	#subdivide a given range by latitude
-	def SUBDIVIDEROW(self,minlatitude,maxlatitude,minlongitude,maxlongitude):
+	def SUBDIVIDEROW(self,minlatitude,maxlatitude,minlongitude,maxlongitude,numSubs,step):
 		latitudeRange = maxlatitude - minlatitude
 		new_coords = []
-		latitudeBase= float(latitudeRange)/float(10)
-		for i in range(0,10):
-			new_coords.append((minlatitude + latitudeBase*i,minlatitude + latitudeBase *(i+1),minlongitude,maxlongitude))
+		for i in self.drange(0,numSubs,step):
+			minl = round(decimal.Decimal(str(minlatitude+i)),1)
+			maxl = round(decimal.Decimal(str(minlatitude+i+step)),1)
+			new_coords.append((minl,maxl,minlongitude,maxlongitude))
 		return(new_coords)	
 		
 	def WRITEEXPORT(self,outfile,outtext,header):

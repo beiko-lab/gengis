@@ -441,7 +441,9 @@ bool DemReader::SetupProjection(GDALDataset* gdalDataset, StudyControllerPtr stu
 		else
 		{
 			// Right now we assume that any 3-channel map (i.e., non-elevational) should be projected using the 
-			// the geographic projection (aka, plate carrée) 
+			// the geographic projection (aka, plate carrée)
+			studyController->SetProjectData(false);
+			studyController->SetGeographic(true);
 			Log::Inst().Write("Coordinate system information is not available for this map.");
 			Log::Inst().Write("As a result, the projection information for this study is being ignored.");
 			Log::Inst().Write("");
