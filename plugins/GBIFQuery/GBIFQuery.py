@@ -68,8 +68,8 @@ class GBIFQuery(GBIFQueryLayout):
 			self.m_AddData.Enable()
 			borders = GenGIS.layerTree.GetMapLayer(0).GetController().GetMapBorders()
 			#check if geographic coordinates are used or some other measure; only geographic are compatible
-			geographic = GenGIS.StudyController.IsGeographic(GenGIS.study.GetController())
-			projected = GenGIS.StudyController.IsProjectData(GenGIS.study.GetController())
+			geographic = GenGIS.StudyController.IsUsingGeographic(GenGIS.study.GetController())
+			projected = GenGIS.StudyController.IsUsingProjection(GenGIS.study.GetController())
 			#GenGIS.StudyController.GetDatum(GenGIS.study.GetController())
 			if(not (geographic or projected)):
 				wx.MessageBox("Geographic coordinates are not being used in the current map file. Only geographic coordinates are compatible with GBIF. Geographic range will need to be manually set, and any returned data will not display correctly.","Warning")

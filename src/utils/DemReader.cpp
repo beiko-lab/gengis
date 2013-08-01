@@ -18,7 +18,6 @@
 // You should have received a copy of the GNU General Public License
 // along with GenGIS.  If not, see <http://www.gnu.org/licenses/>.
 //=======================================================================
-#include <math.h>
 #include "../core/Precompiled.hpp"
 
 #include "../utils/DemReader.hpp"
@@ -395,6 +394,8 @@ bool DemReader::SetupProjection(GDALDataset* gdalDataset, StudyControllerPtr stu
 
 			studyController->SetProjectData(true);
 			studyController->SetGeographic(true);
+			studyController->SetUsingProjection(true);
+			studyController->SetUsingGeographic(true);
 
 			// determine centre of map
 			double longStart = adfGeoTransform[0];
@@ -414,6 +415,8 @@ bool DemReader::SetupProjection(GDALDataset* gdalDataset, StudyControllerPtr stu
 		{
 			studyController->SetProjectData(true);
 			studyController->SetGeographic(false);
+			studyController->SetUsingProjection(true);
+			studyController->SetUsingGeographic(false);
 			if (!App::Inst().GetLayerTreeController()->GetIsBlankRaster())
 				Log::Inst().Write("Loading map with projected coordinates.");
 			studyController->CalculateProjectionTool(&oSource);
@@ -429,6 +432,8 @@ bool DemReader::SetupProjection(GDALDataset* gdalDataset, StudyControllerPtr stu
 	{
 		studyController->SetProjectData(false);
 		studyController->SetGeographic(false);
+		studyController->SetUsingProjection(false);
+		studyController->SetUsingGeographic(false);
 
 		if(bElevationMap)
 		{
@@ -442,8 +447,8 @@ bool DemReader::SetupProjection(GDALDataset* gdalDataset, StudyControllerPtr stu
 		{
 			// Right now we assume that any 3-channel map (i.e., non-elevational) should be projected using the 
 			// the geographic projection (aka, plate carrée)
-			studyController->SetProjectData(false);
-			studyController->SetGeographic(true);
+			studyController->SetUsingProjection(false);
+			studyController->SetUsingGeographic(true);
 			Log::Inst().Write("Coordinate system information is not available for this map.");
 			Log::Inst().Write("As a result, the projection information for this study is being ignored.");
 			Log::Inst().Write("");
