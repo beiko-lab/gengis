@@ -36,10 +36,11 @@ namespace GenGIS
 	public:
 
 		//** Construction. */
-		explicit StudyModel(const std::wstring& datum = _T("WGS84"), const std::wstring& projection = _T("Plate Carree (Equirectangular)"), 
+		explicit StudyModel(
+			const std::wstring& datum = _T("WGS84"),const std::wstring& projection = _T("Plate Carree (Equirectangular)"), 
 			uint utmZone = 30, const std::wstring& utmHemisphere = _T("North") ) :
-				m_bProjectData(true), m_datum(datum), m_projection(projection), m_centreLat(INT_MIN),	m_centreLong(INT_MIN),
-				m_standardParallel1(INT_MIN), m_standardParallel2(INT_MIN), m_projectionTool(ProjectionToolPtr()), m_bActive(true) {}
+				m_bProjectData(true), m_bUsingGeographic(true), m_bUsingProjection(true), m_datum(datum), m_projection(projection), m_centreLat(INT_MIN),	
+				m_centreLong(INT_MIN), m_standardParallel1(INT_MIN), m_standardParallel2(INT_MIN), m_projectionTool(ProjectionToolPtr()), m_bActive(true) {}
 
 		/** Destructor. */
 		~StudyModel() {}
@@ -93,6 +94,28 @@ namespace GenGIS
 		{
 			return m_bProjectData;
 		}
+		
+		/** Get flag indicating if data is Geographic. For use with Python*/
+		bool IsUsingGeographic() const
+		{
+			return m_bUsingGeographic;
+		}
+		/** Get flag indicating if data is projected. For use with Python*/
+		bool IsUsingProjection() const
+		{
+			return m_bUsingProjection;
+		}
+		/** Set flag indicating if data is Geographic. For use with Python*/
+		void SetUsingGeographic(bool state)
+		{
+			m_bUsingGeographic=state;
+		}
+		/** Set flag indicating if data is projected. For use with Python*/
+		void SetUsingProjection(bool state)
+		{
+			m_bUsingProjection=state;
+		}
+
 
 		/** Set datum. */
 		void SetDatum(const std::wstring& datum)
@@ -225,6 +248,16 @@ namespace GenGIS
 
 		/** Second standard parallel to use for map projection. */
 		float m_standardParallel2;
+
+		/** Flag indicating if coordinates are geographic (i.e., lat/long) or projected (i.e., measures in meters or feet)
+		*   For Python use only
+		*/
+		bool m_bUsingGeographic;
+
+		/** Flag indicating if data should be projected.
+		*   For Python use only
+		*/
+		bool m_bUsingProjection;
 	};
 }
 
