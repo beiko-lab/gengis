@@ -5,9 +5,9 @@
 ; NOTE: The value of AppId uniquely identifies this application.
 ; Do not use the same AppId value in installers for other applications.
 ; (To generate a new GUID, click Tools | Generate GUID inside the IDE.)
-AppId={{7D15D73F-AD77-4FF2-8527-B1E7D3585812}
+AppId={{D337D489-365B-4131-B370-9A9BE14BEC28}
 AppName=GenGIS
-AppVerName=GenGIS v2.1.1 Pre-Release 2
+AppVerName=GenGIS v2.1.1
 ; Remember to update the APP_VERSION::CURRENT enum in 'App.hpp' to match the AppVerName number
 AppPublisher=Beiko Lab
 AppPublisherURL=http://kiwi.cs.dal.ca/GenGIS
