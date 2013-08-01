@@ -102,6 +102,27 @@ namespace GenGIS
 			return m_studyModel->IsProjectData();
 		}
 
+		/** Get flag indicating if data is Geographic. For use with Python*/
+		bool IsUsingGeographic() const
+		{
+			return m_studyModel->IsUsingGeographic();
+		}
+		/** Get flag indicating if data is projected. For use with Python*/
+		bool IsUsingProjection() const
+		{
+			return m_studyModel->IsUsingProjection();
+		}
+		/** Set flag indicating if data is Geographic. For use with Python*/
+		void SetUsingGeographic(bool state)
+		{
+			m_studyModel->SetUsingGeographic(state);
+		}
+		/** Set flag indicating if data is projected. For use with Python*/
+		void SetUsingProjection(bool state)
+		{
+			m_studyModel->SetUsingProjection(state);
+		}
+
 		/** Set datum. */
 		void SetDatum(const std::wstring& datum)
 		{
