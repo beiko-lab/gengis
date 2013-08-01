@@ -150,7 +150,7 @@ void SeqSelectionDlg::GetSortedFieldValues(const std::wstring& field, bool bActi
 
 void SeqSelectionDlg::SortFieldValues(std::vector<std::wstring>& fieldValues)
 {
-	// if all data is numerical, than sort in numerical as opposed to lexigraphical order
+	// if all data is numerical, then sort in numerical as opposed to lexigraphical order
 	bool bNumeric = true;
 	foreach(std::wstring str, fieldValues)
 	{

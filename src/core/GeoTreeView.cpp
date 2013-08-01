@@ -753,7 +753,7 @@ void GeoTreeView::RenderGeographicPts()
 			}
 
 			NodeGeoTree* node = m_tree->GetNode(m_geoPts.Ids().at(i));
-			RenderPoint(m_geoPts.Points().at(i), colour, m_geoPts.GetSize(), VisualMarker::CIRCLE,
+			RenderPoint(m_geoPts.Points().at(i), colour, m_geoPts.GetSize(), VisualMarker::CIRCLE_FAST,
 				0.0, depthCP, node->GetSelected(), m_geoPtsBorderColour, m_geoPtsBorderSize);
 		}
 
@@ -851,9 +851,9 @@ void GeoTreeView::RenderNode2D(const Point3D& pt, const Colour& colour, bool bLe
 		rotation = -90;
 
 	if(bLeafNode)
-		RenderPoint(pt, colour, nodeSize, VisualMarker::CIRCLE, rotation, NODE_DEPTH, bSelected, m_leafNodeBorderColour, m_leafNodeBorderSize);
+		RenderPoint(pt, colour, nodeSize, VisualMarker::CIRCLE_FAST, rotation, NODE_DEPTH, bSelected, m_leafNodeBorderColour, m_leafNodeBorderSize);
 	else
-		RenderPoint(pt, colour, nodeSize, VisualMarker::CIRCLE, rotation, NODE_DEPTH, bSelected, m_internalNodeBorderColour, m_internalNodeBorderSize);
+		RenderPoint(pt, colour, nodeSize, VisualMarker::CIRCLE_FAST, rotation, NODE_DEPTH, bSelected, m_internalNodeBorderColour, m_internalNodeBorderSize);
 }
 
 void GeoTreeView::RenderNode3D(const Point3D& pt, const Colour& colour, bool bLeafNode, bool bSelected)
@@ -861,7 +861,7 @@ void GeoTreeView::RenderNode3D(const Point3D& pt, const Colour& colour, bool bLe
 	// render node and dropline
 	if(!bLeafNode)
 	{
-		VisualMarker::Render3D(pt, colour, GetInternalNodeSize(), VisualMarker::CIRCLE, 0, bSelected);
+		VisualMarker::Render3D(pt, colour, GetInternalNodeSize(), VisualMarker::CIRCLE_FAST, 0, bSelected);
 
 		if(m_3dInternalDropLine.IsVisible())
 			RenderDropline3D(pt, m_3dInternalDropLine.GetColour(), m_3dInternalDropLine.GetLineStyle(), m_3dInternalDropLine.GetSize());
