@@ -41,7 +41,6 @@ class GBIFQuery(GBIFQueryLayout):
 	__description__=""
 	
 	def __init__(self,parent=None):
-#		import pdb; pdb.set_trace()
 		MaxLon,MinLon,MaxLat,MinLat = 180,-180,90,-90
 		self.GBIFSpecific = GBIFSpecific()
 		self.GBIFGeneric = GBIFGeneric()
@@ -68,22 +67,23 @@ class GBIFQuery(GBIFQueryLayout):
 		if GenGIS.layerTree.GetNumMapLayers() > 0 :
 			self.m_AddData.Enable()
 			borders = GenGIS.layerTree.GetMapLayer(0).GetController().GetMapBorders()
-			#Text boxes hate non String types. use int to round, and string to make them fit the container
-			
-			self.m_MinLat.SetValue(str(borders.y1))
-			self.m_MaxLat.SetValue(str(borders.dy))
-			self.m_MinLon.SetValue(str(borders.x1))
-			self.m_MaxLon.SetValue(str(borders.dx))
-			
 			#check if geographic coordinates are used or some other measure; only geographic are compatible
 			geographic = GenGIS.StudyController.IsGeographic(GenGIS.study.GetController())
-			if(not geographic):
-				wx.MessageBox("Geographic coordinates are not being used in the current map file. Only geographic coordinates are compatible with GBIF. Geographic range will need to be manually set, and any returned data will not display correctly.","!!!!!!!Warning!!!!!!!")
+			projected = GenGIS.StudyController.IsProjectData(GenGIS.study.GetController())
+			#GenGIS.StudyController.GetDatum(GenGIS.study.GetController())
+			if(not (geographic or projected)):
+				wx.MessageBox("Geographic coordinates are not being used in the current map file. Only geographic coordinates are compatible with GBIF. Geographic range will need to be manually set, and any returned data will not display correctly.","Warning")
 				self.m_AddData.Disable()
 				self.m_MinLat.SetValue(str(MinLat))
 				self.m_MaxLat.SetValue(str(MaxLat))
 				self.m_MinLon.SetValue(str(MinLon))
 				self.m_MaxLon.SetValue(str(MaxLon))
+			else:
+				#Text boxes hate non String types. use int to round, and string to make them fit the container
+				self.m_MinLat.SetValue(str(borders.y1))
+				self.m_MaxLat.SetValue(str(borders.dy))
+				self.m_MinLon.SetValue(str(borders.x1))
+				self.m_MaxLon.SetValue(str(borders.dx))
 		
 	#	Query GBIF for Taxa in Lat/Lon Boundary
 	def OnSearch(self,event):
@@ -152,9 +152,9 @@ class GBIFQuery(GBIFQueryLayout):
 			count=0
 			for tax in self.__selectedTaxon__:
 				count+=self.GBIFSpecific.GETCOUNT(tax[1].split(),tax[0],minLatitude,maxLatitude,minLongitude,maxLongitude,self.m_Progress)
+			self.m_Summary.SetLabel("There were %d records for the given location." % count)
 		else:
 			wx.MessageBox("Please select some Taxa.")
-		self.m_Summary.SetLabel("There were %d records for the given location." % count) 
 		wx.EndBusyCursor()
 		
 	#	Redirects User to Wiki page for this plugin
