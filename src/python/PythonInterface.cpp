@@ -613,7 +613,9 @@ BOOST_PYTHON_MODULE(GenGIS)
 			.def("GetProjection", &StudyController::GetProjection, "Get projection used by study.")
 			.def("SetProjection", &StudyController::SetProjection, "Set projection used by study (must be set before map is loaded).")
 			.def("IsGeographic", &StudyController::IsGeographic, "Flag indicating if data is in geographic (i.e. lat/long) coordinates.")
-			.def("IsProjectData", &StudyController::IsGeographic, "Get flag indicating if data should be projected.")
+			.def("IsProjectData", &StudyController::IsProjectData, "Get flag indicating if data should be projected.")
+			.def("IsUsingProjection", &StudyController::IsUsingProjection, "Flag indicating if data is in geographic (i.e. lat/long) coordinates. For use with Python")
+			.def("IsUsingGeographic", &StudyController::IsUsingGeographic, "Get flag indicating if data should be projected. For use with Python")
 			;
 
 		LocationSetLayerPtr (MapLayer::*GetLocationSetLayerByIndex)(unsigned int index) const = &MapLayer::GetLocationSetLayer;
