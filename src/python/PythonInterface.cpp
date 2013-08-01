@@ -215,11 +215,12 @@ BOOST_PYTHON_MODULE(GenGIS)
 
 		enum_<VisualMarker::MARKER_SHAPE>("MARKER_SHAPE")
 			.value("CIRCLE", VisualMarker::CIRCLE)
+			.value("CIRCLE_FAST", VisualMarker::CIRCLE_FAST)
 			.value("SQUARE", VisualMarker::SQUARE)
 			.value("TRIANGLE", VisualMarker::TRIANGLE)
 			.value("STAR", VisualMarker::STAR)
 			.value("PLUS_SIGN", VisualMarker::PLUS_SIGN)
-			.value("octagon", VisualMarker::OCTAGON)
+			.value("OCTAGON", VisualMarker::OCTAGON)
 			.value("DIAMOND", VisualMarker::DIAMOND)
 			.value("SQUARE", VisualMarker::SQUARE)
 			.value("INVERTED_TRIANGLE", VisualMarker::INVERTED_TRIANGLE)
@@ -612,6 +613,7 @@ BOOST_PYTHON_MODULE(GenGIS)
 			.def("GetProjection", &StudyController::GetProjection, "Get projection used by study.")
 			.def("SetProjection", &StudyController::SetProjection, "Set projection used by study (must be set before map is loaded).")
 			.def("IsGeographic", &StudyController::IsGeographic, "Flag indicating if data is in geographic (i.e. lat/long) coordinates.")
+			.def("IsProjectData, &StudyController::IsGeographic, "Get flag indicating if data should be projected.")
 			;
 
 		LocationSetLayerPtr (MapLayer::*GetLocationSetLayerByIndex)(unsigned int index) const = &MapLayer::GetLocationSetLayer;

@@ -105,6 +105,8 @@ VisualMarker::MARKER_SHAPE ShapeMap::ToShape(std::wstring str)
 {
 	if(str == _T("Circle"))
 		return VisualMarker::CIRCLE;
+	else if(str == _T("Circle (fast)"))
+		return VisualMarker::CIRCLE_FAST;
 	else if(str == _T("Square"))
 		return VisualMarker::SQUARE;
 	else if(str == _T("Triangle"))
@@ -113,7 +115,7 @@ VisualMarker::MARKER_SHAPE ShapeMap::ToShape(std::wstring str)
 		return VisualMarker::STAR;
 	else if(str == _T("Plus sign"))
 		return VisualMarker::PLUS_SIGN;
-	else if(str == _T("octagon"))
+	else if(str == _T("Octagon"))
 		return VisualMarker::OCTAGON;
 	else if(str == _T("Diamond"))
 		return VisualMarker::DIAMOND;
@@ -121,13 +123,15 @@ VisualMarker::MARKER_SHAPE ShapeMap::ToShape(std::wstring str)
 		return VisualMarker::INVERTED_TRIANGLE;
 
 	Log::Inst().Error("ShapeMap::ToShape(): unrecognized shape string.");
-	return VisualMarker::CIRCLE;
+	return VisualMarker::CIRCLE_FAST;
 }
 
 std::wstring ShapeMap::ToStringW(VisualMarker::MARKER_SHAPE shape)
 {
 	if(shape == VisualMarker::CIRCLE)
 		return _T("Circle");
+	else if(shape == VisualMarker::CIRCLE_FAST)
+		return _T("Circle (fast)");
 	else if(shape == VisualMarker::SQUARE)
 		return _T("Square");
 	else if(shape == VisualMarker::TRIANGLE)
@@ -137,12 +141,12 @@ std::wstring ShapeMap::ToStringW(VisualMarker::MARKER_SHAPE shape)
 	else if(shape == VisualMarker::PLUS_SIGN)
 		return _T("Plus sign");
 	else if(shape == VisualMarker::OCTAGON)
-		return _T("octagon");
+		return _T("Octagon");
 	else if(shape == VisualMarker::DIAMOND)
 		return _T("Diamond");
 	else if(shape == VisualMarker::INVERTED_TRIANGLE)
 		return _T("Inverted triangle");
 
 	Log::Inst().Error("ShapeMap::ToStringW(): unrecognized shape.");
-	return _T("Circle");
+	return _T("Circle (fast)");
 }

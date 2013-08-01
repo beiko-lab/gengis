@@ -93,13 +93,14 @@ VectorMapPropertiesLayout::VectorMapPropertiesLayout( wxWindow* parent, wxWindow
 	m_lblPointShape->Wrap( -1 );
 	m_sizerColour11->Add( m_lblPointShape, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 	
-	m_CboPointShape = new wxComboBox( m_pnlPoint, ID_CBO_POINT_SHAPE, wxT("Circle"), wxDefaultPosition, wxDefaultSize, 0, NULL, wxCB_READONLY );
+	m_CboPointShape = new wxComboBox( m_pnlPoint, ID_CBO_POINT_SHAPE, wxT("Circle (fast)"), wxDefaultPosition, wxDefaultSize, 0, NULL, wxCB_READONLY );
 	m_CboPointShape->Append( wxT("Circle") );
+	m_CboPointShape->Append( wxT("Circle (fast)") );
 	m_CboPointShape->Append( wxT("Square") );
 	m_CboPointShape->Append( wxT("Triangle") );
 	m_CboPointShape->Append( wxT("Star") );
 	m_CboPointShape->Append( wxT("Plus sign") );
-	m_CboPointShape->Append( wxT("octagon") );
+	m_CboPointShape->Append( wxT("Octagon") );
 	m_CboPointShape->Append( wxT("Diamond") );
 	m_CboPointShape->Append( wxT("Inverted triangle") );
 	m_sizerColour11->Add( m_CboPointShape, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );

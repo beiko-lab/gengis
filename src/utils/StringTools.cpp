@@ -380,3 +380,47 @@ uint StringTools::Count(const string & s, const string & pattern)
 	}
 	return count;
 }
+
+void StringTools::SortFieldValues(std::vector<std::wstring>& fieldValues)
+{
+	// if all data is numerical, then sort in numerical as opposed to lexigraphical order
+	bool bNumeric = true;
+	foreach(std::wstring str, fieldValues)
+	{
+		if(!StringTools::IsDecimalNumber(str))
+		{
+			bNumeric = false;
+			break;
+		}
+	}
+
+	// sort field values either numerically or lexigraphically
+	if(bNumeric)
+	{
+		// convert all data to its numeric equivalent, sort, and put back into string vector
+		// Note: this somewhate convoluted way of doing a numerical sort of strings is done to
+		// ensure that at the end the field values strings are exactly as they originally appeared.
+		// Any added training zeros or rounding may cause problems later on when exact string matching
+		// is attempted.
+		std::vector<NumericStringSorter> fieldNumeric;
+		for(uint i = 0; i < fieldValues.size(); ++i)
+		{
+			fieldNumeric.push_back(NumericStringSorter(StringTools::ToDouble(fieldValues.at(i)), i));
+		}
+
+		std::sort(fieldNumeric.begin(), fieldNumeric.end(), NumericStringSorter::NumericStringPredicate); 
+
+		std::vector<std::wstring> sortedFieldValues;
+		foreach(NumericStringSorter numeric, fieldNumeric)
+		{
+			sortedFieldValues.push_back(fieldValues.at(numeric.index));
+		}
+
+		fieldValues = sortedFieldValues;
+	}
+	else
+	{
+		// sort in lexigraphical order
+		std::sort(fieldValues.begin(), fieldValues.end());
+	}
+}

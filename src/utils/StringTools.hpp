@@ -469,6 +469,13 @@ namespace GenGIS
 		* @return The number of occurences of 'pattern' in 's'.
 		*/
 		static uint Count(const std::string & s, const std::string & pattern);
+
+		/**
+		* @brief Convert all data to its numeric equivalent, sort, and put back into string vector.
+		*
+		* @param fieldValues The std::wstring to sort.
+		*/
+		static void SortFieldValues(std::vector<std::wstring>& fieldValues);
 	};
 
 }

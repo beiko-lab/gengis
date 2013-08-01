@@ -50,7 +50,7 @@ using namespace GenGIS;
 
 LocationView::LocationView(LocationModelPtr locationModel, CameraPtr camera, uint id) :
 	m_location(locationModel), m_camera(camera), m_id(id), m_colour(Colour(217, 95, 2)),
-	m_size(6), m_shape(VisualMarker::CIRCLE),  m_label(new VisualLabel()), m_flags(NUM_FLAGS), m_renderingOrder(0),
+	m_size(6), m_shape(VisualMarker::CIRCLE_FAST),  m_label(new VisualLabel()), m_flags(NUM_FLAGS), m_renderingOrder(0),
 	m_borderSize(1), m_borderColour(Colour(0,0,0))
 {
 	m_depth = GEO_LOCATION_LAYER;

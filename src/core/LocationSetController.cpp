@@ -41,7 +41,7 @@ using namespace GenGIS;
 
 LocationSetController::LocationSetController() :
 	m_bLocationSetVisibility(true), m_bUniformColour(true), m_uniformColour(Colour(217, 95, 2)),
-	m_minLocationSize(6), m_maxLocationSize(6), m_bUniformShape(true), m_uniformShape(VisualMarker::CIRCLE),
+	m_minLocationSize(6), m_maxLocationSize(6), m_bUniformShape(true), m_uniformShape(VisualMarker::CIRCLE_FAST),
 	m_labelColour(Colour(255,255,255)), m_labelSize(12), m_bLabelVisible(false), m_labelPosition(_T("Right")),
 	m_labelStyle(_T("Dynamic")),m_bLabelBindToChart(false), m_borderSize(1), m_borderColour(Colour(0,0,0)), m_bActive(true)
 {
@@ -281,6 +281,8 @@ std::vector<std::wstring> LocationSetController::GetMetadataFields() const
 
 void LocationSetController::GetSortedFieldValues(const std::wstring& field, std::vector<std::wstring>& fieldValues)
 {
+	if ( field.empty() ) return;
+
 	// get all unique field values within the given field
 	std::set<std::wstring> uniqueFieldValues;
 	for(unsigned int i = 0; i < m_locationLayers.size(); ++i)
@@ -294,7 +296,7 @@ void LocationSetController::GetSortedFieldValues(const std::wstring& field, std:
 	fieldValues.clear();
 	fieldValues = std::vector<std::wstring>(uniqueFieldValues.begin(), uniqueFieldValues.end());
 
-	//SortFieldValues(fieldValues);
+	StringTools::SortFieldValues( fieldValues );
 }
 
 std::vector<std::wstring> LocationSetController::GetNumericMetadataFields(bool bOnlyActiveLocs) const

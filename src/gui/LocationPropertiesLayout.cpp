@@ -88,13 +88,14 @@ LocationPropertiesLayout::LocationPropertiesLayout( wxWindow* parent, wxWindowID
 	m_lblSymbolShape->Wrap( -1 );
 	m_sizerSymbolShape->Add( m_lblSymbolShape, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
 	
-	m_cboSymbolShape = new wxComboBox( m_pnlSymbology, wxID_ANY, wxT("Circle"), wxDefaultPosition, wxDefaultSize, 0, NULL, wxCB_READONLY );
+	m_cboSymbolShape = new wxComboBox( m_pnlSymbology, wxID_ANY, wxT("Circle (fast)"), wxDefaultPosition, wxDefaultSize, 0, NULL, wxCB_READONLY );
 	m_cboSymbolShape->Append( wxT("Circle") );
+	m_cboSymbolShape->Append( wxT("Circle (fast)") );
 	m_cboSymbolShape->Append( wxT("Square") );
 	m_cboSymbolShape->Append( wxT("Triangle") );
 	m_cboSymbolShape->Append( wxT("Star") );
 	m_cboSymbolShape->Append( wxT("Plus sign") );
-	m_cboSymbolShape->Append( wxT("octagon") );
+	m_cboSymbolShape->Append( wxT("Octagon") );
 	m_cboSymbolShape->Append( wxT("Diamond") );
 	m_cboSymbolShape->Append( wxT("Inverted triangle") );
 	m_sizerSymbolShape->Add( m_cboSymbolShape, 0, wxALL|wxEXPAND, 5 );
