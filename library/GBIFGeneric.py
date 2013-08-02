@@ -52,7 +52,7 @@ class GBIFGeneric:
 						siteID = re.sub(' ','_',siteID)
 						if siteID not in uniqueSiteID:
 							uniqueSiteID.add(siteID)
-							OUTLTEXT += ("%s,%f,%f,%d,%d,%s\n" % (siteID, fullLat, fullLon, len(obs[cellOut].keys()), cellOut,ent[3],taxOut ))
+							OUTLTEXT += ("%s,%f,%f,%d,%d,%s,%s\n" % (siteID, fullLat, fullLon, len(obs[cellOut].keys()), cellOut,ent[3],taxOut ))
 						toKey = "%s,%f,%f,%s,%s,%s,%s" %(siteID, conversions[cellOut][0],conversions[cellOut][1],ent[3],taxOut,ent[1],ent[2])
 						toKey = re.sub(r'\<.*?\>','',toKey)
 						try:
