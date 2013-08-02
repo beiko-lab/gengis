@@ -47,12 +47,12 @@ class GBIFGeneric:
 					for ent in thisList:
 						fullLat = float(re.sub(r'\<.*?\>','',ent[1]))
 						fullLon = float(re.sub(r'\<.*?\>','',ent[2]))
-						siteID = "%s_%f_%f" %(taxOut,fullLat,fullLon)
-					#	siteID = "%s_%f_%f" %(ent[3],fullLat,fullLon)
-					#	siteID = re.sub(' ','_',siteID)
+					#	siteID = "%s_%f_%f" %(taxOut,fullLat,fullLon)
+						siteID = "%s_%f_%f" %(ent[3],fullLat,fullLon)
+						siteID = re.sub(' ','_',siteID)
 						if siteID not in uniqueSiteID:
 							uniqueSiteID.add(siteID)
-							OUTLTEXT += ("%s,%f,%f,%d,%d,%s\n" % (siteID, fullLat, fullLon, len(obs[cellOut].keys()), cellOut,ent[3] ))
+							OUTLTEXT += ("%s,%f,%f,%d,%d,%s\n" % (siteID, fullLat, fullLon, len(obs[cellOut].keys()), cellOut,ent[3],taxOut ))
 						toKey = "%s,%f,%f,%s,%s,%s,%s" %(siteID, conversions[cellOut][0],conversions[cellOut][1],ent[3],taxOut,ent[1],ent[2])
 						toKey = re.sub(r'\<.*?\>','',toKey)
 						try:
