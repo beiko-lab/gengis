@@ -29,20 +29,22 @@ from xml.dom import minidom
 
 class GBIFSpecific:
 	# get source of data sets as well as rights and citation
-	__description__ = ""
+	__description__ = set()
 	__warnings__=[0,0]
 	__uniqueNodeList__=set()
 	
 	def __init__(self):
 		self.GBIFGeneric = GBIFGeneric()
-		self.__description__ = ""
+	#	self.__description__ = ""
+		self.__description__ = set()
 		self.__warnings__=[0,0]
 		self.__uniqueNodeList__=set()
 		
 	def GETRIGHTS(self,fh):
-		desc=""
+		description = set()
 		resource=fh.getElementsByTagName("gbif:dataResources")
 		for node in resource:
+			desc=""
 			name = node.getElementsByTagName("gbif:name")
 			rights = node.getElementsByTagName("gbif:rights")
 			citation = node.getElementsByTagName("gbif:citation")
@@ -57,7 +59,8 @@ class GBIFSpecific:
 				desc+= "\nCitation\n"
 				desc+= re.sub(r'<.*?\>','',tem.toprettyxml(' '))
 			desc+="\n"
-		return(desc)
+			description.add(desc)
+		return(description)
 
 	#	Queries GBIF to find the number of results for given boundary 
 	def GETCOUNT(self,taxon_name,cID,minLat,maxLat,minLon,maxLon,m_Progress):
@@ -132,7 +135,8 @@ class GBIFSpecific:
 		
 	# Search for a Taxon Name in a Geographic boundary
 	def GETOBSENTIRERANGE(self,taxon_name,cID,minLatitude,maxLatitude,minLongitude,maxLongitude,m_Progress):
-		self.__description__ = ""
+	#	self.__description__ = ""
+		self.__description__ = set()
 		self.__warnings__=[0,0]
 		self.__uniqueNodeList__=set()
 		warningsFlag = 0
@@ -177,7 +181,7 @@ class GBIFSpecific:
 			#this will mine GBIF database for the raw information to process
 			m_Progress.WriteText("Latitude: %0.2f to %0.2f\tLongitude: %0.2f to %0.2f\n" % (minLatitude,maxLatitude,minLongitude,maxLongitude))
 			nodeList = self.recursiveQuery(taxon_name,cID,minLatitude,maxLatitude,minLongitude,maxLongitude,m_Progress,nodeList,1)
-			description = self.__description__
+			description = '\n'.join(self.__description__)
 			# checks if minimum granularity was met while querying GBIF
 			if self.__warnings__[0]==1:
 				self.__warnings__[0]=0
@@ -275,7 +279,7 @@ class GBIFSpecific:
 				wx.MessageBox("The server is temporarily unreachable.\nPlease try again later.")
 				self.Close()
 			parser=minidom.parseString(response)
-			self.__description__+=self.GETRIGHTS(parser)
+			self.__description__.update(self.GETRIGHTS(parser))
 			temper=parser.getElementsByTagName("to:TaxonOccurrence")
 			#matches if whole content is the same. might be good to be more specific in the future if memory gets tighter
 			for node in temper:

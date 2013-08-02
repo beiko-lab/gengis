@@ -47,7 +47,6 @@ class GBIFGeneric:
 					for ent in thisList:
 						fullLat = float(re.sub(r'\<.*?\>','',ent[1]))
 						fullLon = float(re.sub(r'\<.*?\>','',ent[2]))
-					#	siteID = "%s_%f_%f" %(taxOut,fullLat,fullLon)
 						siteID = "%s_%f_%f" %(ent[3],fullLat,fullLon)
 						siteID = re.sub(' ','_',siteID)
 						if siteID not in uniqueSiteID:
