@@ -65,7 +65,7 @@ class GBIFQueryLayout ( wx.Frame ):
 		fgSizer1.AddSpacer( ( 0, 0), 1, wx.EXPAND|wx.ALIGN_CENTER_HORIZONTAL, 5 )
 		
 		self.m_MinLon = wx.TextCtrl( self, wx.ID_ANY, u"-180", wx.DefaultPosition, wx.Size( 70,-1 ), wx.TE_CENTRE )
-		fgSizer1.Add( self.m_MinLon, 0, wx.ALL|wx.ALIGN_CENTER_VERTICAL, 5 )
+		fgSizer1.Add( self.m_MinLon, 0, wx.ALL|wx.ALIGN_CENTER_VERTICAL|wx.ALIGN_RIGHT, 5 )
 		
 		self.m_Compass = wx.StaticBitmap( self, wx.ID_ANY, wx.NullBitmap, wx.DefaultPosition, wx.Size( 128,128 ), 0 )
 		fgSizer1.Add( self.m_Compass, 1, wx.ALIGN_CENTER_VERTICAL|wx.ALL|wx.ALIGN_CENTER_HORIZONTAL, 5 )
@@ -88,7 +88,10 @@ class GBIFQueryLayout ( wx.Frame ):
 		
 		sbSizer8 = wx.StaticBoxSizer( wx.StaticBox( self, wx.ID_ANY, u"Progress" ), wx.HORIZONTAL )
 		
+		sbSizer8.SetMinSize( wx.Size( 300,200 ) ) 
 		self.m_Progress = wx.TextCtrl( self, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size( -1,90 ), wx.TE_DONTWRAP|wx.TE_MULTILINE|wx.TE_READONLY|wx.CLIP_CHILDREN )
+		self.m_Progress.SetMinSize( wx.Size( 300,200 ) )
+		
 		sbSizer8.Add( self.m_Progress, 1, wx.ALL|wx.EXPAND, 5 )
 		
 		bSizer3.Add( sbSizer8, 1, wx.EXPAND|wx.ALL, 5 )
