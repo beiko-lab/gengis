@@ -83,7 +83,7 @@ class GBIFQuery(GBIFQueryLayout):
 				self.m_MinLat.SetValue(str(max(MinLat,borders.y1)))
 				self.m_MaxLat.SetValue(str(min(MaxLat,borders.dy)))
 				self.m_MinLon.SetValue(str(max(MinLon,borders.x1)))
-				self.m_MaxLon.SetValue(str(min(MaxLat,borders.dx)))
+				self.m_MaxLon.SetValue(str(min(MaxLon,borders.dx)))
 		
 	#	Query GBIF for Taxa in Lat/Lon Boundary
 	def OnSearch(self,event):
