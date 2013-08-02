@@ -222,7 +222,6 @@ class GBIFSpecific:
 	#	Case 2: Success
 	#############################
 	def recursiveQuery(self,taxon_name,cID,minLatitude,maxLatitude,minLongitude,maxLongitude,m_Progress,nodeList,rowColFlag):		
-	#	print len(nodeList)
 		stopCoords =0.1
 		#1=cols, 2=rows
 		resultCount =self.GETCOUNT(taxon_name,cID,minLatitude,maxLatitude,minLongitude,maxLongitude,m_Progress)
@@ -231,7 +230,6 @@ class GBIFSpecific:
 			m_Progress.WriteText("Too many records, subdividing location.\n")
 			#if col division
 			if rowColFlag == 1:
-	#			print "col divide"
 				range = (maxLongitude - minLongitude)
 				base = range/10
 				#check granularity
@@ -241,15 +239,12 @@ class GBIFSpecific:
 					base = stopCoords
 				#divides the current geographic range
 				newCoords = self.GBIFGeneric.SUBDIVIDECOL(minLatitude,maxLatitude,minLongitude,maxLongitude,range,base)
-	#			if self.__warnings__[1]==1:
-	#				print newCoords
 				rowColFlag = 2
 				for coords in newCoords:
 					self.recursiveQuery(taxon_name,cID,coords[0],coords[1],coords[2],coords[3],m_Progress,nodeList,rowColFlag)
 				return nodeList
 			#else row division
 			else:
-	#			print "row divide"
 				range = (maxLatitude - minLatitude)
 				base = range/10
 				#check granularity
@@ -259,8 +254,6 @@ class GBIFSpecific:
 					base = stopCoords
 				#divides the current geographic range
 				newCoords = self.GBIFGeneric.SUBDIVIDEROW(minLatitude,maxLatitude,minLongitude,maxLongitude,range,base)
-	#			if self.__warnings__[1]==1:
-	#				print newCoords
 				rowColFlag = 1
 				for coords in newCoords:
 					self.recursiveQuery(taxon_name,cID,coords[0],coords[1],coords[2],coords[3],m_Progress,nodeList,rowColFlag)
@@ -268,13 +261,11 @@ class GBIFSpecific:
 		#query GBIF and process returns
 		else:
 			if self.__warnings__[1]==1:
-			#	resultCount =self.GETCOUNT(taxon_name,cID,minLatitude,maxLatitude,minLongitude,maxLongitude,m_Progress)
 				if resultCount==1000:
 					m_Progress.write("Warning: Maximum gradient division with maximum records returned. Some records might be omitted.\n")
 					self.__warnings__[0]=1
 				
 			self.__warnings__[1]=0
-	#		print "success case"
 			m_Progress.WriteText("Latitude: %0.2f to %0.2f\tLongitude: %0.2f to %0.2f\n" % (minLatitude,maxLatitude,minLongitude,maxLongitude))
 			url="http://data.gbif.org/ws/rest/occurrence/list?taxonconceptkey=%d&maxlatitude=%f&minlatitude=%f&maxlongitude=%f&minlongitude=%f" %(cID,maxLatitude,minLatitude,maxLongitude,minLongitude)
 			try:
@@ -286,7 +277,6 @@ class GBIFSpecific:
 			parser=minidom.parseString(response)
 			self.__description__+=self.GETRIGHTS(parser)
 			temper=parser.getElementsByTagName("to:TaxonOccurrence")
-	#		print "first %d" %len(temper)
 			#matches if whole content is the same. might be good to be more specific in the future if memory gets tighter
 			for node in temper:
 				text = node.toxml()
@@ -294,6 +284,5 @@ class GBIFSpecific:
 					temper.remove(node)
 				else:
 					self.__uniqueNodeList__.add(text)
-	#		print "second %d" %len(temper)
 			nodeList.extend(temper)
 			return(nodeList)
