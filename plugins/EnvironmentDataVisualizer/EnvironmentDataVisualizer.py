@@ -71,14 +71,10 @@ class EnvironmentDataVisualizer( EnvironmentDataVisualizerLayout ):
 		# set site ids in first column
 		locationSetLayer = GenGIS.layerTree.GetLocationSetLayer(0)
 		numericFields = locationSetLayer.GetController().GetNumericMetadataFields(True)
-		
 		self.cboField.SetColumns = len(numericFields)
 		
-	#	self.table.DeleteRows(0, self.table.GetNumberRows());
-	#	self.table.AppendRows(len(numericFields))
 		for i in xrange(0, len(numericFields)):
-	#		self.table.SetCellValue(i, 0, numericFields[i])
-			self.cboField.SetString(i,numericFields[i])
+			self.cboField.Append(numericFields[i])
 		
 		self.cboField.SetSelection(0)
 		'''

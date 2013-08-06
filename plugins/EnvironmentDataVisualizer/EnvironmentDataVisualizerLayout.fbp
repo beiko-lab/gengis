@@ -183,7 +183,7 @@
                                             <property name="proportion">0</property>
                                             <object class="wxChoice" expanded="0">
                                                 <property name="bg"></property>
-                                                <property name="choices">&quot;Residuals&quot; &quot;Alpha Diversity&quot; &quot;Environmental Data&quot; &quot;&lt;none&gt;&quot;</property>
+                                                <property name="choices"></property>
                                                 <property name="context_help"></property>
                                                 <property name="context_menu">1</property>
                                                 <property name="enabled">1</property>
@@ -196,7 +196,7 @@
                                                 <property name="name">cboField</property>
                                                 <property name="permission">protected</property>
                                                 <property name="pos"></property>
-                                                <property name="selection">2</property>
+                                                <property name="selection">0</property>
                                                 <property name="size"></property>
                                                 <property name="subclass"></property>
                                                 <property name="tooltip"></property>

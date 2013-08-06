@@ -35,9 +35,9 @@ class EnvironmentDataVisualizerLayout ( wx.Frame ):
 		self.m_staticText3.Wrap( -1 )
 		fgSizer1.Add( self.m_staticText3, 0, wx.ALIGN_CENTER_VERTICAL|wx.ALL, 5 )
 		
-		cboFieldChoices = [ u"Residuals", u"Alpha Diversity", u"Environmental Data", u"<none>" ]
+		cboFieldChoices = []
 		self.cboField = wx.Choice( self, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, cboFieldChoices, 0 )
-		self.cboField.SetSelection( 2 )
+		self.cboField.SetSelection( 0 )
 		fgSizer1.Add( self.cboField, 0, wx.ALL|wx.EXPAND, 5 )
 		
 		self.m_staticText4 = wx.StaticText( self, wx.ID_ANY, u"Colour map:", wx.DefaultPosition, wx.DefaultSize, 0 )
