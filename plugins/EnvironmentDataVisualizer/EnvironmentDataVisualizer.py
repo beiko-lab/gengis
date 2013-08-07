@@ -198,7 +198,8 @@ class EnvironmentDataVisualizer( EnvironmentDataVisualizerLayout ):
 
 	def OnCalculate( self, event ):
 		wx.BeginBusyCursor()
-		
+		import pdb
+		pdb.set_trace()
 		# get dictionary indicating the number of times each field value is present
 		# in each location
 		sampleDict = {}
@@ -211,6 +212,7 @@ class EnvironmentDataVisualizer( EnvironmentDataVisualizerLayout ):
 			sampleDict[locName] = {}
 
 			seqLayers = loc.GetAllActiveSequenceLayers()
+			'''
 			for seqLayer in seqLayers:
 				data = seqLayer.GetController().GetData()
 				print data
@@ -221,6 +223,7 @@ class EnvironmentDataVisualizer( EnvironmentDataVisualizerLayout ):
 				#	count = data[self.cboCountField.GetStringSelection()]
 					count = data["AllRecords"]
 				sampleDict[locName][value] = sampleDict[locName].get(value, 0) + float(count)
+			'''
 		'''
 		if self.chkSubsample.IsChecked():
 			replicates = int(self.cboReplicates.GetStringSelection())
