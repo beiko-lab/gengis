@@ -16,9 +16,9 @@ import wx
 class EnvironmentDataVisualizerLayout ( wx.Frame ):
 	
 	def __init__( self, parent ):
-		wx.Frame.__init__ ( self, parent, id = wx.ID_ANY, title = u"Environment Data Visualizer", pos = wx.DefaultPosition, size = wx.Size( 266,341 ), style = wx.DEFAULT_FRAME_STYLE|wx.TAB_TRAVERSAL )
+		wx.Frame.__init__ ( self, parent, id = wx.ID_ANY, title = u"Environmental Data Visualizer", pos = wx.DefaultPosition, size = wx.Size( 300,349 ), style = wx.DEFAULT_FRAME_STYLE|wx.TAB_TRAVERSAL )
 		
-		self.SetSizeHintsSz( wx.DefaultSize, wx.DefaultSize )
+		self.SetSizeHintsSz( wx.Size( 300,349 ), wx.DefaultSize )
 		self.SetBackgroundColour( wx.SystemSettings.GetColour( wx.SYS_COLOUR_BTNFACE ) )
 		
 		bSizer5 = wx.BoxSizer( wx.HORIZONTAL )
