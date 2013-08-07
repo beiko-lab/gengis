@@ -148,7 +148,7 @@ class EnvironmentDataVisualizer( EnvironmentDataVisualizerLayout ):
 		event.Skip()
 
 	def OnHelp( self, event ):
-		wx.LaunchDefaultBrowser( 'http://kiwi.cs.dal.ca/GenGIS/Description_of_GenGIS_plugins#Alpha_Diversity_Visualizer' )
+		wx.LaunchDefaultBrowser( 'http://kiwi.cs.dal.ca/GenGIS/Description_of_GenGIS_plugins#Environmental_Data_Visualizer' )
 	'''	
 	def OnPerformSubsampling( self, event ):
 		self.cboReplicates.Enable(self.chkSubsample.IsChecked())
@@ -213,6 +213,7 @@ class EnvironmentDataVisualizer( EnvironmentDataVisualizerLayout ):
 			seqLayers = loc.GetAllActiveSequenceLayers()
 			for seqLayer in seqLayers:
 				data = seqLayer.GetController().GetData()
+				print data
 			#	value = data[self.cboCategoryField.GetStringSelection()]
 				value = data["AllRecords"]
 				count = 1

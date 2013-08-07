@@ -18,7 +18,7 @@
 # You should have received a copy of the GNU General Public License
 # along with GenGIS.  If not, see <http://www.gnu.org/licenses/>.
 #=======================================================================
-
+import pdb
 import re
 import wx
 import sys
@@ -32,6 +32,7 @@ class GBIFSpecific:
 	__description__ = set()
 	__warnings__=[0,0]
 	__uniqueNodeList__=set()
+	__MAXLATITUDE__,__MINLATITUDE__,__MAXLONGITUDE__,__MINLONGITUDE__ = 90,-90,180,-180
 	
 	def __init__(self):
 		self.GBIFGeneric = GBIFGeneric()
@@ -135,7 +136,6 @@ class GBIFSpecific:
 		
 	# Search for a Taxon Name in a Geographic boundary
 	def GETOBSENTIRERANGE(self,taxon_name,cID,minLatitude,maxLatitude,minLongitude,maxLongitude,m_Progress):
-	#	self.__description__ = ""
 		self.__description__ = set()
 		self.__warnings__=[0,0]
 		self.__uniqueNodeList__=set()
@@ -226,67 +226,68 @@ class GBIFSpecific:
 	#	Case 2: Success
 	#############################
 	def recursiveQuery(self,taxon_name,cID,minLatitude,maxLatitude,minLongitude,maxLongitude,m_Progress,nodeList,rowColFlag):		
-		stopCoords =0.1
-		#1=cols, 2=rows
-		resultCount =self.GETCOUNT(taxon_name,cID,minLatitude,maxLatitude,minLongitude,maxLongitude,m_Progress)
-		#check if too many resuslts received
-		if resultCount > 1000 and self.__warnings__[1]==0:
-			m_Progress.WriteText("Too many records, subdividing location.\n")
-			#if col division
-			if rowColFlag == 1:
-				range = (maxLongitude - minLongitude)
-				base = range/10
-				#check granularity
-				if range/10 < stopCoords:
-					self.__warnings__[1]=1
+		if minLatitude >= self.__MINLATITUDE__ and maxLatitude <= self.__MAXLATITUDE__ and minLongitude >= self.__MINLONGITUDE__ and maxLongitude <= self.__MAXLONGITUDE__:
+			stopCoords =0.1
+			#1=cols, 2=rows
+			resultCount =self.GETCOUNT(taxon_name,cID,minLatitude,maxLatitude,minLongitude,maxLongitude,m_Progress)
+			#check if too many resuslts received
+			if resultCount > 1000 and self.__warnings__[1]==0:
+				m_Progress.WriteText("Too many records, subdividing location.\n")
+				#if col division
+				if rowColFlag == 1:
 					range = (maxLongitude - minLongitude)
-					base = stopCoords
-				#divides the current geographic range
-				newCoords = self.GBIFGeneric.SUBDIVIDECOL(minLatitude,maxLatitude,minLongitude,maxLongitude,range,base)
-				rowColFlag = 2
-				for coords in newCoords:
-					self.recursiveQuery(taxon_name,cID,coords[0],coords[1],coords[2],coords[3],m_Progress,nodeList,rowColFlag)
-				return nodeList
-			#else row division
-			else:
-				range = (maxLatitude - minLatitude)
-				base = range/10
-				#check granularity
-				if range/10 < stopCoords:
-					self.__warnings__[1]=1
-					range = (maxLatitude - minLatitude)
-					base = stopCoords
-				#divides the current geographic range
-				newCoords = self.GBIFGeneric.SUBDIVIDEROW(minLatitude,maxLatitude,minLongitude,maxLongitude,range,base)
-				rowColFlag = 1
-				for coords in newCoords:
-					self.recursiveQuery(taxon_name,cID,coords[0],coords[1],coords[2],coords[3],m_Progress,nodeList,rowColFlag)
-				return nodeList
-		#query GBIF and process returns
-		else:
-			if self.__warnings__[1]==1:
-				if resultCount==1000:
-					m_Progress.write("Warning: Maximum gradient division with maximum records returned. Some records might be omitted.\n")
-					self.__warnings__[0]=1
-				
-			self.__warnings__[1]=0
-			m_Progress.WriteText("Latitude: %0.2f to %0.2f\tLongitude: %0.2f to %0.2f\n" % (minLatitude,maxLatitude,minLongitude,maxLongitude))
-			url="http://data.gbif.org/ws/rest/occurrence/list?taxonconceptkey=%d&maxlatitude=%f&minlatitude=%f&maxlongitude=%f&minlongitude=%f" %(cID,maxLatitude,minLatitude,maxLongitude,minLongitude)
-			try:
-				response=urllib2.urlopen(url).read()
-			except urllib2.URLError:
-				m_Progress.WriteText("%s\n" % e.code)
-				wx.MessageBox("The server is temporarily unreachable.\nPlease try again later.")
-				self.Close()
-			parser=minidom.parseString(response)
-			self.__description__.update(self.GETRIGHTS(parser))
-			temper=parser.getElementsByTagName("to:TaxonOccurrence")
-			#matches if whole content is the same. might be good to be more specific in the future if memory gets tighter
-			for node in temper:
-				text = node.toxml()
-				if text in self.__uniqueNodeList__:
-					temper.remove(node)
+					base = range/10
+					#check granularity
+					if range/10 < stopCoords:
+						self.__warnings__[1]=1
+						range = (maxLongitude - minLongitude)
+						base = stopCoords
+					#divides the current geographic range
+					newCoords = self.GBIFGeneric.SUBDIVIDECOL(minLatitude,maxLatitude,minLongitude,maxLongitude,range,base)
+					rowColFlag = 2
+					for coords in newCoords:
+						self.recursiveQuery(taxon_name,cID,coords[0],coords[1],coords[2],coords[3],m_Progress,nodeList,rowColFlag)
+					return nodeList
+				#else row division
 				else:
-					self.__uniqueNodeList__.add(text)
-			nodeList.extend(temper)
-			return(nodeList)
+					range = (maxLatitude - minLatitude)
+					base = range/10
+					#check granularity
+					if range/10 < stopCoords:
+						self.__warnings__[1]=1
+						range = (maxLatitude - minLatitude)
+						base = stopCoords
+					#divides the current geographic range
+					newCoords = self.GBIFGeneric.SUBDIVIDEROW(minLatitude,maxLatitude,minLongitude,maxLongitude,range,base)
+					rowColFlag = 1
+					for coords in newCoords:
+						self.recursiveQuery(taxon_name,cID,coords[0],coords[1],coords[2],coords[3],m_Progress,nodeList,rowColFlag)
+					return nodeList
+			#query GBIF and process returns
+			else:
+				if self.__warnings__[1]==1:
+					if resultCount==1000:
+						m_Progress.write("Warning: Maximum gradient division with maximum records returned. Some records might be omitted.\n")
+						self.__warnings__[0]=1
+					
+				self.__warnings__[1]=0
+				m_Progress.WriteText("Latitude: %0.2f to %0.2f\tLongitude: %0.2f to %0.2f\n" % (minLatitude,maxLatitude,minLongitude,maxLongitude))
+				url="http://data.gbif.org/ws/rest/occurrence/list?taxonconceptkey=%d&maxlatitude=%f&minlatitude=%f&maxlongitude=%f&minlongitude=%f" %(cID,maxLatitude,minLatitude,maxLongitude,minLongitude)
+				try:
+					response=urllib2.urlopen(url).read()
+				except urllib2.URLError:
+					m_Progress.WriteText("%s\n" % e.code)
+					wx.MessageBox("The server is temporarily unreachable.\nPlease try again later.")
+					self.Close()
+				parser=minidom.parseString(response)
+				self.__description__.update(self.GETRIGHTS(parser))
+				temper=parser.getElementsByTagName("to:TaxonOccurrence")
+				#matches if whole content is the same. might be good to be more specific in the future if memory gets tighter
+				for node in temper:
+					text = node.toxml()
+					if text in self.__uniqueNodeList__:
+						temper.remove(node)
+					else:
+						self.__uniqueNodeList__.add(text)
+				nodeList.extend(temper)
+				return(nodeList)

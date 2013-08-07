@@ -34,13 +34,13 @@
             <property name="hidden">0</property>
             <property name="id">wxID_ANY</property>
             <property name="maximum_size"></property>
-            <property name="minimum_size"></property>
+            <property name="minimum_size">300,349</property>
             <property name="name">EnvironmentDataVisualizerLayout</property>
             <property name="pos"></property>
-            <property name="size">266,341</property>
+            <property name="size">300,349</property>
             <property name="style">wxDEFAULT_FRAME_STYLE</property>
             <property name="subclass"></property>
-            <property name="title">Environment Data Visualizer</property>
+            <property name="title">Environmental Data Visualizer</property>
             <property name="tooltip"></property>
             <property name="validator_data_type"></property>
             <property name="validator_style">wxFILTER_NONE</property>

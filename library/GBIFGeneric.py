@@ -82,7 +82,8 @@ class GBIFGeneric:
 	def SUBDIVIDECOL(self,minlatitude,maxlatitude,minlongitude,maxlongitude,numSubs,step):
 		longitudeRange = maxlongitude - minlongitude
 		new_coords = []
-		for i in self.drange(0,numSubs,step):
+		tem = self.drange(0,numSubs,step)
+		for i in tem:
 			minl = round(decimal.Decimal(str(minlongitude+i)),1)
 			maxl = round(decimal.Decimal(str(minlongitude+i+step)),1)
 			new_coords.append((minlatitude,maxlatitude,minl,maxl))
@@ -92,7 +93,8 @@ class GBIFGeneric:
 	def SUBDIVIDEROW(self,minlatitude,maxlatitude,minlongitude,maxlongitude,numSubs,step):
 		latitudeRange = maxlatitude - minlatitude
 		new_coords = []
-		for i in self.drange(0,numSubs,step):
+		tem = self.drange(0,numSubs,step)
+		for i in tem:
 			minl = round(decimal.Decimal(str(minlatitude+i)),1)
 			maxl = round(decimal.Decimal(str(minlatitude+i+step)),1)
 			new_coords.append((minl,maxl,minlongitude,maxlongitude))
