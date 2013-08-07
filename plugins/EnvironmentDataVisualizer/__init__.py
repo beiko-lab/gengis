@@ -1,5 +1,5 @@
 def name():
-	return "Environment Data Visualizer"
+	return "Environmental Data Visualizer"
 
 def version():
 	return "Version 1.0"

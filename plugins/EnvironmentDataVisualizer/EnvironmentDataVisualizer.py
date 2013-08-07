@@ -43,6 +43,10 @@ class EnvironmentDataVisualizer( EnvironmentDataVisualizerLayout ):
 		self.selectedRows = []
 		self.regressionResults = {}
 		
+		self.spinLineWidth.SetValue(5)
+		self.txtScaleFactor.SetValue(str(1.0))
+		self.spinDotSize.SetValue(5)
+		
 		# check required data has been loaded
 		if GenGIS.layerTree.GetNumMapLayers() == 0 or GenGIS.layerTree.GetNumLocationSetLayers() == 0:
 			wx.MessageBox("This plugin requires map and location data to be loaded.", "Additional data required.")
@@ -198,8 +202,6 @@ class EnvironmentDataVisualizer( EnvironmentDataVisualizerLayout ):
 
 	def OnCalculate( self, event ):
 		wx.BeginBusyCursor()
-		import pdb
-		pdb.set_trace()
 		# get dictionary indicating the number of times each field value is present
 		# in each location
 		sampleDict = {}
