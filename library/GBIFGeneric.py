@@ -25,6 +25,9 @@ import wx
 import decimal
 
 class GBIFGeneric:	
+	def roundCoord(self,num):
+		return round(decimal.Decimal(str(num)),1)
+	
 	def GETTEXT (self,obs_list,conversions_list):
 		OUTL=""
 		OUTS=""
@@ -71,33 +74,57 @@ class GBIFGeneric:
 		array = input.split("\n")
 		return (array)
 		
-	# stolen from	http://stackoverflow.com/questions/477486/python-decimal-range-step-value written by gimel January 25 '09 11:57
-	def drange(self,start, stop, step):
-		r = start
-		while r < stop:
-			yield r
-			r += step
+	def drange(self,start,stop,step):
+		r = self.roundCoord(start)
+		list = []
+		print"###############"
+		print "start: %f stop: %f\n" %(start,stop)
+		while (r + step) <= (stop):
+			list.append(r)
+			print "%f : %f" %(r, r+step)
+			r+= self.roundCoord(step)
+			print "%f" %r
+		print "%f"%(r+step)
+		return(list)
 	
 	#subdivide a given range by longitude
 	def SUBDIVIDECOL(self,minlatitude,maxlatitude,minlongitude,maxlongitude,numSubs,step):
-		longitudeRange = maxlongitude - minlongitude
 		new_coords = []
-		tem = self.drange(0,numSubs,step)
+		tem = self.drange(minlongitude, maxlongitude,step)
+		#protecting for rounding errors
+		minlongitude = self.roundCoord(minlongitude)
+		maxlongitude = self.roundCoord(maxlongitude)
+		step = self.roundCoord(step)
 		for i in tem:
-			minl = round(decimal.Decimal(str(minlongitude+i)),1)
-			maxl = round(decimal.Decimal(str(minlongitude+i+step)),1)
+	#		minl = round(decimal.Decimal(str(i)),1)
+			minl = i
+	#		maxl = round(decimal.Decimal(str(i+step)),1)
+			maxl = i+step
 			new_coords.append((minlatitude,maxlatitude,minl,maxl))
+			logfh=open("C:/Users/Admin/Desktop/generator_log.txt","a")
+			logfh.write("%f "%i)
+		logfh.write("| maxLon: %f minLon: %f step: %f stop: %f \n" %(maxlongitude,minlongitude,step,maxlongitude-step))
+		logfh.close()
 		return(new_coords)
 	
 	#subdivide a given range by latitude
 	def SUBDIVIDEROW(self,minlatitude,maxlatitude,minlongitude,maxlongitude,numSubs,step):
-		latitudeRange = maxlatitude - minlatitude
 		new_coords = []
-		tem = self.drange(0,numSubs,step)
+		tem = self.drange(minlatitude,maxlatitude,step)
+		#protecting for rounding errors
+		minlatitude = self.roundCoord(minlatitude)
+		maxlatitude = self.roundCoord(maxlatitude)
+		step = round(decimal.Decimal(str(step)),1)
 		for i in tem:
-			minl = round(decimal.Decimal(str(minlatitude+i)),1)
-			maxl = round(decimal.Decimal(str(minlatitude+i+step)),1)
+		#	minl = round(decimal.Decimal(str(i)),1)
+			minl = i
+		#	maxl = round(decimal.Decimal(str(i+step)),1)
+			maxl = i+step
 			new_coords.append((minl,maxl,minlongitude,maxlongitude))
+			logfh=open("C:/Users/Admin/Desktop/generator_log.txt","a")
+			logfh.write("%f "%i)
+		logfh.write("| maxLat: %f minLat: %f step: %f stop: %f \n" %(maxlatitude,minlatitude,step, maxlatitude-step))
+		logfh.close()
 		return(new_coords)	
 		
 	def WRITEEXPORT(self,outfile,outtext,header):
