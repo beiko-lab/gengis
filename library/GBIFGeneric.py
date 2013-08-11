@@ -24,8 +24,20 @@ import re
 import wx
 import decimal
 
-class GBIFGeneric:	
+class GBIFGeneric:
+
 	def roundCoord(self,num):
+		string = str(num)
+		string = string.split('.')
+		#get first 3 numbers of string[1]
+		#find the floor of those numbers (nearest hundredth)
+		#cut off last digit
+		#put back together
+		backHalf = string[1][0:(min(len(string),2))]
+		num = string[0] + "." + backHalf
+		return(float(num))
+	
+	def DEFUNCTroundCoord(self,num):
 		return round(decimal.Decimal(str(num)),1)
 	
 	def GETTEXT (self,obs_list,conversions_list):
@@ -86,6 +98,9 @@ class GBIFGeneric:
 			print "%f" %r
 		print "%f"%(r+step)
 		return(list)
+	
+#	def myRange(self,num):
+		
 	
 	#subdivide a given range by longitude
 	def SUBDIVIDECOL(self,minlatitude,maxlatitude,minlongitude,maxlongitude,numSubs,step):
