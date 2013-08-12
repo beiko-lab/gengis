@@ -26,7 +26,7 @@ import decimal
 
 class GBIFGeneric:
 
-	def roundCoord(self,num):
+	def NOPEroundCoord(self,num):
 		string = str(num)
 		string = string.split('.')
 		#get first 3 numbers of string[1]
@@ -37,7 +37,7 @@ class GBIFGeneric:
 		num = string[0] + "." + backHalf
 		return(float(num))
 	
-	def DEFUNCTroundCoord(self,num):
+	def roundCoord(self,num):
 		return round(decimal.Decimal(str(num)),1)
 	
 	def GETTEXT (self,obs_list,conversions_list):
@@ -87,7 +87,8 @@ class GBIFGeneric:
 		return (array)
 		
 	def drange(self,start,stop,step):
-		r = self.roundCoord(start)
+	#	r = self.roundCoord(start)
+		r=start
 		list = []
 		print"###############"
 		print "start: %f stop: %f\n" %(start,stop)
@@ -129,7 +130,7 @@ class GBIFGeneric:
 		#protecting for rounding errors
 		minlatitude = self.roundCoord(minlatitude)
 		maxlatitude = self.roundCoord(maxlatitude)
-		step = round(decimal.Decimal(str(step)),1)
+		step = self.roundCoord(step)
 		for i in tem:
 		#	minl = round(decimal.Decimal(str(i)),1)
 			minl = i
