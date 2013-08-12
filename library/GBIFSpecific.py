@@ -180,12 +180,12 @@ class GBIFSpecific:
 			nodeList=[]
 			#this will mine GBIF database for the raw information to process
 			m_Progress.WriteText("Latitude: %0.2f to %0.2f\tLongitude: %0.2f to %0.2f\n" % (minLatitude,maxLatitude,minLongitude,maxLongitude))
-			logfh=open("C:/Users/Admin/Desktop/recursion_log.txt","w")
-			logfh.write("starting\n")
-			logfh.close()
-			logfh=open("C:/Users/Admin/Desktop/generator_log.txt","w")
-			logfh.write("starting\n")
-			logfh.close()
+	#		logfh=open("C:/Users/Admin/Desktop/recursion_log.txt","w")
+	#		logfh.write("starting\n")
+	#		logfh.close()
+	#		logfh=open("C:/Users/Admin/Desktop/generator_log.txt","w")
+	#		logfh.write("starting\n")
+	#		logfh.close()
 			nodeList = self.recursiveQuery(taxon_name,cID,minLatitude,maxLatitude,minLongitude,maxLongitude,m_Progress,nodeList,1)
 			description = '\n'.join(self.__description__)
 			# checks if minimum granularity was met while querying GBIF
