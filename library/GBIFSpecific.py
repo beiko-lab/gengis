@@ -213,16 +213,17 @@ class GBIFSpecific:
 				long_tem=node.getElementsByTagName("to:decimalLongitude")[0].toxml()
 				fullLat = float(re.sub(r'\<.*?\>','',lat_tem))
 				fullLon = float(re.sub(r'\<.*?\>','',long_tem))
-				currGrid = (int(fullLat)+90)*360 + (int(fullLon) +180)
+				#changed currGrid to Lat only for sorting purposes. Lon is added back in when written to file, so the user is none the wiser
+				currGrid = (int(fullLat)+90)*360# + (int(fullLon) +180)
 				conversions[currGrid]=	[fullLat,fullLon]
 				distLocations.add((fullLat,fullLon))
 				try:
-					obs[currGrid][genus].extend([(rID,lat_tem,long_tem,name)])
+					obs[currGrid][genus].extend([(rID,fullLat,fullLon,name)])
 				except KeyError:
 					try:
-						obs[currGrid].update({genus: [(rID,lat_tem,long_tem,name)] })
+						obs[currGrid].update({genus: [(rID,fullLat,fullLon,name)] })
 					except KeyError:
-						obs[currGrid] = {genus: [(rID,lat_tem,long_tem,name)] }
+						obs[currGrid] = {genus: [(rID,fullLat,fullLon,name)] }
 				records = len(uniqueRID)
 		return(obs,conversions,records,len(distLocations),description)
 		
