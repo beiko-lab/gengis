@@ -36,7 +36,6 @@ from GBIFSpecific import GBIFSpecific
 class GBIFQuery(GBIFQueryLayout):
 	#	Global variables to store queried information
 	__obs__ = []
-	__conversions__ = []
 	__selectedTaxon__= set()
 	__description__=""
 	
@@ -55,7 +54,6 @@ class GBIFQuery(GBIFQueryLayout):
 		self.graphicalElementIds=[]
 		self.__selectedTaxon__=set()
 		self.__obs__ = []
-		self.__conversions__ = []
 		self.m_IDList.Clear()
 		#fix to expand summary box enough to print two lines of text properly
 		self.m_Summary.SetLabel("\n\n")
@@ -84,7 +82,11 @@ class GBIFQuery(GBIFQueryLayout):
 				self.m_MaxLat.SetValue(str(min(MaxLat,borders.dy)))
 				self.m_MinLon.SetValue(str(max(MinLon,borders.x1)))
 				self.m_MaxLon.SetValue(str(min(MaxLon,borders.dx)))
-		
+			'''	self.m_MinLat.SetValue(str(max(MinLat,self.GBIFGeneric.roundCoord(borders.y1))))
+				self.m_MaxLat.SetValue(str(min(MaxLat,self.GBIFGeneric.roundCoord(borders.dy))))
+				self.m_MinLon.SetValue(str(max(MinLon,self.GBIFGeneric.roundCoord(borders.x1))))
+				self.m_MaxLon.SetValue(str(min(MaxLon,self.GBIFGeneric.roundCoord(borders.dx))))
+			'''
 	#	Query GBIF for Taxa in Lat/Lon Boundary
 	def OnSearch(self,event):
 		wx.BeginBusyCursor()
@@ -118,9 +120,8 @@ class GBIFQuery(GBIFQueryLayout):
 			maxLongitude= float(self.m_MaxLon.GetValue())
 			self.m_Progress.WriteText("Starting...\n")
 			for tax in self.__selectedTaxon__:
-				obs,con,recs,distLocs,description= self.GBIFSpecific.GETOBSENTIRERANGE(tax[1].split(),tax[0],minLatitude,maxLatitude,minLongitude,maxLongitude,self.m_Progress)
+				obs,recs,distLocs,description= self.GBIFSpecific.GETOBSENTIRERANGE(tax[1].split(),tax[0],minLatitude,maxLatitude,minLongitude,maxLongitude,self.m_Progress)
 				self.__obs__.append(obs)
-				self.__conversions__.append(con)
 				self.__description__+="%s\n" % description
 				records += recs
 				distLocations +=distLocs
@@ -164,7 +165,7 @@ class GBIFQuery(GBIFQueryLayout):
 	#	Adds Data to GenGIS
 	def OnAddData(self,event):
 		if (len(self.__obs__) > 0):
-			OUTLText, OUTSText = self.GBIFGeneric.GETTEXT(self.__obs__,self.__conversions__)
+			OUTLText, OUTSText = self.GBIFGeneric.GETTEXT(self.__obs__)
 			OUTLArray=self.GBIFGeneric.CPPOUT(OUTLText)
 			OUTSArray=self.GBIFGeneric.CPPOUT(OUTSText)
 			OUTLArray.insert(0,"Site ID,Latitude,Longitude,Richness,Cell ID,Taxon,Genus")
@@ -196,7 +197,7 @@ class GBIFQuery(GBIFQueryLayout):
 				OUTLfile = ("%s/%s_locs.csv" % (dir,file_split[0]))				
 				OUTSfile = ("%s/%s_seqs.csv" % (dir,file_split[0]))
 				OUTDfile = ("%s/%s_source.txt" % (dir,file_split[0]))
-				OUTLText, OUTSText = self.GBIFGeneric.GETTEXT(self.__obs__,self.__conversions__)
+				OUTLText, OUTSText = self.GBIFGeneric.GETTEXT(self.__obs__)
 				self.GBIFGeneric.WRITEEXPORT(OUTLfile,OUTLText,"Site ID,Latitude,Longitude,Richness,Cell ID,Taxon,Genus\n")
 				self.GBIFGeneric.WRITEEXPORT(OUTSfile,OUTSText,"Sequence ID,Site ID,CellLat,CellLong,Taxon,Genus,TrueLat,TrueLong,Count,AllRecords\n")
 				description = self.__description__.encode('utf-8')
