@@ -142,8 +142,6 @@ class GBIFSpecific:
 		warningsFlag = 0
 		records=0
 		distLocations=set()
-		
-		conversions = {}
 		taxonReq = '+'.join(taxon_name)
 		####################################
 		#	check if text file or command input
@@ -152,19 +150,7 @@ class GBIFSpecific:
 		####################################
 		taxonList=()
 		FAIL = 0
-		try:
-			taxonList = [line.strip() for line in open(taxonReq)]
-		except IOError:
-			FAIL=1
-		if(FAIL==1):
-			taxonReq_2 = taxonReq+".txt"
-			FAIL=0
-			try:
-				taxonList = [line.strip() for line in open(taxonReq_2)]
-			except IOError:
-				FAIL=1
-		if(FAIL==1):
-			taxonList=[taxonReq]
+		taxonList=[taxonReq]
 		obs={}
 		description=""
 		for taxonName in taxonList:
@@ -215,7 +201,6 @@ class GBIFSpecific:
 				fullLon = float(re.sub(r'\<.*?\>','',long_tem))
 				#changed currGrid to Lat only for sorting purposes. Lon is added back in when written to file, so the user is none the wiser
 				currGrid = (int(fullLat)+90)*360# + (int(fullLon) +180)
-				conversions[currGrid]=	[fullLat,fullLon]
 				distLocations.add((fullLat,fullLon))
 				try:
 					obs[currGrid][genus].extend([(rID,fullLat,fullLon,name)])
@@ -225,7 +210,7 @@ class GBIFSpecific:
 					except KeyError:
 						obs[currGrid] = {genus: [(rID,fullLat,fullLon,name)] }
 				records = len(uniqueRID)
-		return(obs,conversions,records,len(distLocations),description)
+		return(obs,records,len(distLocations),description)
 		
 	#############################
 	#	Queries GBIF recursively

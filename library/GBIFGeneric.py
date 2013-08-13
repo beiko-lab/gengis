@@ -30,34 +30,26 @@ class GBIFGeneric:
 	def roundCoord(self,num):
 		return round(decimal.Decimal(str(num)),1)
 	
-	def GETTEXT (self,obs_list,conversions_list):
+	def GETTEXT (self,obs_list):
 		OUTL=""
 		OUTS=""
-	#	for obs,convs in zip(obs_list,conversions_list):
-		print len(obs_list)
 		for obs in obs_list:
 			locs, seqs = self.MAKEOUTS(obs)
-		#	locs, seqs = self.MAKEOUTS(obs,convs)
 			OUTL+=locs
 			OUTS+=seqs
 		return(OUTL,OUTS)
 		
 	#	Transforms the mined data into text to be output
-#	def MAKEOUTS (self,obs,conversions):
 	def MAKEOUTS (self,obs):
 		uniqueSiteID = set()
 		OUTLTEXT=""
 		OUTSTEXT=""
 		seqFileAgg = {}
 		for cellOut in sorted(obs.keys()):
-			print cellOut
 			if len(obs[cellOut].keys()) > 0:
 				for taxOut in sorted(obs[cellOut].keys()):
 					thisList=obs[cellOut][taxOut]
-				#	print "%s\n"%thisList
-				#	for ent in thisList:
 					for ent in sorted(thisList,key=itemgetter(1,2)):
-						print ent
 						fullLat = ent[1]
 						fullLon = ent[2]
 						siteID = "%s_%f_%f" %(ent[3],fullLat,fullLon)
@@ -65,7 +57,6 @@ class GBIFGeneric:
 						if siteID not in uniqueSiteID:
 							uniqueSiteID.add(siteID)
 							OUTLTEXT += ("%s,%f,%f,%d,%d,%s,%s\n" % (siteID, fullLat, fullLon, len(obs[cellOut].keys()), cellOut+(int(fullLon) +180),ent[3],taxOut ))
-						#toKey = "%s,%f,%f,%s,%s,%s,%s" %(siteID, conversions[cellOut][0],conversions[cellOut][1],ent[3],taxOut,ent[1],ent[2])
 						toKey = "%s,%f,%f,%s,%s,%s,%s" %(siteID, fullLat,fullLon,ent[3],taxOut,ent[1],ent[2])
 						toKey = re.sub(r'\<.*?\>','',toKey)
 						try:
