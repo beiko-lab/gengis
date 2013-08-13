@@ -36,7 +36,6 @@ class GBIFSpecific:
 	
 	def __init__(self):
 		self.GBIFGeneric = GBIFGeneric()
-	#	self.__description__ = ""
 		self.__description__ = set()
 		self.__warnings__=[0,0]
 		self.__uniqueNodeList__=set()
@@ -142,8 +141,6 @@ class GBIFSpecific:
 		warningsFlag = 0
 		records=0
 		distLocations=set()
-		
-		conversions = {}
 		taxonReq = '+'.join(taxon_name)
 		####################################
 		#	check if text file or command input
@@ -152,19 +149,7 @@ class GBIFSpecific:
 		####################################
 		taxonList=()
 		FAIL = 0
-		try:
-			taxonList = [line.strip() for line in open(taxonReq)]
-		except IOError:
-			FAIL=1
-		if(FAIL==1):
-			taxonReq_2 = taxonReq+".txt"
-			FAIL=0
-			try:
-				taxonList = [line.strip() for line in open(taxonReq_2)]
-			except IOError:
-				FAIL=1
-		if(FAIL==1):
-			taxonList=[taxonReq]
+		taxonList=[taxonReq]
 		obs={}
 		description=""
 		for taxonName in taxonList:
@@ -191,13 +176,6 @@ class GBIFSpecific:
 				string = node.toprettyxml(indent=' ')
 				rID=-1
 				key_string = re.search('gbifKey="(\d+)"',string)
-				if key_string:
-					id_string=re.search('\d+',key_string.group())
-					id = int(id_string.group())
-					rID=id
-					uniqueRID.add(rID)
-				else:
-					sys.exit("Could not find a friggin GBIF key")
 				name=node.getElementsByTagName("tn:nameComplete")[0].toxml()
 				name = re.sub(r'<.*?\>','',name)
 				name = re.sub(r'[^A-Za-z ]+','',name)
@@ -207,18 +185,28 @@ class GBIFSpecific:
 				long_tem=node.getElementsByTagName("to:decimalLongitude")[0].toxml()
 				fullLat = float(re.sub(r'\<.*?\>','',lat_tem))
 				fullLon = float(re.sub(r'\<.*?\>','',long_tem))
-				currGrid = (int(fullLat)+90)*360 + (int(fullLon) +180)
-				conversions[currGrid]=	[fullLat,fullLon]
-				distLocations.add((fullLat,fullLon))
-				try:
-					obs[currGrid][genus].extend([(rID,lat_tem,long_tem,name)])
-				except KeyError:
+				#check for weird cases where GBIF gives elements outside of extents. 
+				if (minLatitude <= fullLat <= maxLatitude) and (minLongitude <= fullLon <= maxLongitude):
+					if key_string:
+						id_string=re.search('\d+',key_string.group())
+						id = int(id_string.group())
+						rID=id
+						uniqueRID.add(rID)
+					else:
+						sys.exit("Could not find a friggin GBIF key")
+					
+					#changed currGrid to Lat only for sorting purposes. Lon is added back in when written to file, so the user is none the wiser
+					currGrid = (int(fullLat)+90)*360# + (int(fullLon) +180)
+					distLocations.add((fullLat,fullLon))
 					try:
-						obs[currGrid].update({genus: [(rID,lat_tem,long_tem,name)] })
+						obs[currGrid][genus].extend([(rID,fullLat,fullLon,name)])
 					except KeyError:
-						obs[currGrid] = {genus: [(rID,lat_tem,long_tem,name)] }
-				records = len(uniqueRID)
-		return(obs,conversions,records,len(distLocations),description)
+						try:
+							obs[currGrid].update({genus: [(rID,fullLat,fullLon,name)] })
+						except KeyError:
+							obs[currGrid] = {genus: [(rID,fullLat,fullLon,name)] }
+					records = len(uniqueRID)
+		return(obs,records,len(distLocations),description)
 		
 	#############################
 	#	Queries GBIF recursively
@@ -226,7 +214,6 @@ class GBIFSpecific:
 	#	Case 2: Success
 	#############################
 	def recursiveQuery(self,taxon_name,cID,minLatitude,maxLatitude,minLongitude,maxLongitude,m_Progress,nodeList,rowColFlag):		
-		if minLatitude >= self.__MINLATITUDE__ and maxLatitude <= self.__MAXLATITUDE__ and minLongitude >= self.__MINLONGITUDE__ and maxLongitude <= self.__MAXLONGITUDE__:
 			stopCoords =0.1
 			#1=cols, 2=rows
 			resultCount =self.GETCOUNT(taxon_name,cID,minLatitude,maxLatitude,minLongitude,maxLongitude,m_Progress)
@@ -243,7 +230,7 @@ class GBIFSpecific:
 						range = (maxLongitude - minLongitude)
 						base = stopCoords
 					#divides the current geographic range
-					newCoords = self.GBIFGeneric.SUBDIVIDECOL(minLatitude,maxLatitude,minLongitude,maxLongitude,range,base)
+					newCoords= self.GBIFGeneric.SUBDIVIDECOL(minLatitude,maxLatitude,minLongitude,maxLongitude,range,base)
 					rowColFlag = 2
 					for coords in newCoords:
 						self.recursiveQuery(taxon_name,cID,coords[0],coords[1],coords[2],coords[3],m_Progress,nodeList,rowColFlag)

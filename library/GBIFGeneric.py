@@ -23,19 +23,24 @@
 import re
 import wx
 import decimal
+from operator import itemgetter
 
-class GBIFGeneric:	
-	def GETTEXT (self,obs_list,conversions_list):
+class GBIFGeneric:
+	
+	def roundCoord(self,num):
+		return round(decimal.Decimal(str(num)),1)
+	
+	def GETTEXT (self,obs_list):
 		OUTL=""
 		OUTS=""
-		for obs,convs in zip(obs_list,conversions_list):
-			locs, seqs = self.MAKEOUTS(obs,convs)
+		for obs in obs_list:
+			locs, seqs = self.MAKEOUTS(obs)
 			OUTL+=locs
 			OUTS+=seqs
 		return(OUTL,OUTS)
 		
 	#	Transforms the mined data into text to be output
-	def MAKEOUTS (self,obs,conversions):
+	def MAKEOUTS (self,obs):
 		uniqueSiteID = set()
 		OUTLTEXT=""
 		OUTSTEXT=""
@@ -44,15 +49,15 @@ class GBIFGeneric:
 			if len(obs[cellOut].keys()) > 0:
 				for taxOut in sorted(obs[cellOut].keys()):
 					thisList=obs[cellOut][taxOut]
-					for ent in thisList:
-						fullLat = float(re.sub(r'\<.*?\>','',ent[1]))
-						fullLon = float(re.sub(r'\<.*?\>','',ent[2]))
+					for ent in sorted(thisList,key=itemgetter(1,2)):
+						fullLat = ent[1]
+						fullLon = ent[2]
 						siteID = "%s_%f_%f" %(ent[3],fullLat,fullLon)
 						siteID = re.sub(' ','_',siteID)
 						if siteID not in uniqueSiteID:
 							uniqueSiteID.add(siteID)
-							OUTLTEXT += ("%s,%f,%f,%d,%d,%s,%s\n" % (siteID, fullLat, fullLon, len(obs[cellOut].keys()), cellOut,ent[3],taxOut ))
-						toKey = "%s,%f,%f,%s,%s,%s,%s" %(siteID, conversions[cellOut][0],conversions[cellOut][1],ent[3],taxOut,ent[1],ent[2])
+							OUTLTEXT += ("%s,%f,%f,%d,%d,%s,%s\n" % (siteID, fullLat, fullLon, len(obs[cellOut].keys()), cellOut+(int(fullLon) +180),ent[3],taxOut ))
+						toKey = "%s,%f,%f,%s,%s,%s,%s" %(siteID, fullLat,fullLon,ent[3],taxOut,ent[1],ent[2])
 						toKey = re.sub(r'\<.*?\>','',toKey)
 						try:
 							seqFileAgg[toKey].extend([ent[0]])
@@ -71,32 +76,40 @@ class GBIFGeneric:
 		array = input.split("\n")
 		return (array)
 		
-	# stolen from	http://stackoverflow.com/questions/477486/python-decimal-range-step-value written by gimel January 25 '09 11:57
-	def drange(self,start, stop, step):
-		r = start
-		while r < stop:
-			yield r
-			r += step
+	def drange(self,start,stop,step):
+		r=start
+		list = []
+		while (r + step) <= (stop):
+			list.append(r)
+			r+= self.roundCoord(step)
+		return(list)
+	
 	
 	#subdivide a given range by longitude
 	def SUBDIVIDECOL(self,minlatitude,maxlatitude,minlongitude,maxlongitude,numSubs,step):
-		longitudeRange = maxlongitude - minlongitude
 		new_coords = []
-		tem = self.drange(0,numSubs,step)
+		tem = self.drange(minlongitude, maxlongitude,step)
+		#protecting for rounding errors
+		minlongitude = self.roundCoord(minlongitude)
+		maxlongitude = self.roundCoord(maxlongitude)
+		step = self.roundCoord(step)
 		for i in tem:
-			minl = round(decimal.Decimal(str(minlongitude+i)),1)
-			maxl = round(decimal.Decimal(str(minlongitude+i+step)),1)
+			minl = i
+			maxl = i+step
 			new_coords.append((minlatitude,maxlatitude,minl,maxl))
 		return(new_coords)
 	
 	#subdivide a given range by latitude
 	def SUBDIVIDEROW(self,minlatitude,maxlatitude,minlongitude,maxlongitude,numSubs,step):
-		latitudeRange = maxlatitude - minlatitude
 		new_coords = []
-		tem = self.drange(0,numSubs,step)
+		tem = self.drange(minlatitude,maxlatitude,step)
+		#protecting for rounding errors
+		minlatitude = self.roundCoord(minlatitude)
+		maxlatitude = self.roundCoord(maxlatitude)
+		step = self.roundCoord(step)
 		for i in tem:
-			minl = round(decimal.Decimal(str(minlatitude+i)),1)
-			maxl = round(decimal.Decimal(str(minlatitude+i+step)),1)
+			minl = i
+			maxl = i+step
 			new_coords.append((minl,maxl,minlongitude,maxlongitude))
 		return(new_coords)	
 		
