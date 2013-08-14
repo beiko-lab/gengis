@@ -55,6 +55,8 @@ namespace GenGIS
 		void FillSequenceLegend();
 
 		void FillSamplesLegend();
+		void GenerateSamplesLegend();
+		void OnSamplesLegendLocationSetSelect( wxCommandEvent& event );
 		void OnSamplesLegendClick( wxMouseEvent& event );
 		void OnSamplesLegendPaint(wxPaintEvent& WXUNUSED(event));
 
