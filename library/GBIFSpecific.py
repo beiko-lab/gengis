@@ -36,6 +36,7 @@ class GBIFSpecific:
 	
 	def __init__(self):
 		self.GBIFGeneric = GBIFGeneric()
+	#	self.__description__ = ""
 		self.__description__ = set()
 		self.__warnings__=[0,0]
 		self.__uniqueNodeList__=set()
@@ -165,6 +166,12 @@ class GBIFSpecific:
 			nodeList=[]
 			#this will mine GBIF database for the raw information to process
 			m_Progress.WriteText("Latitude: %0.2f to %0.2f\tLongitude: %0.2f to %0.2f\n" % (minLatitude,maxLatitude,minLongitude,maxLongitude))
+#			logfh=open("C:/Users/Admin/Desktop/recursion_log.txt","w")
+#			logfh.write("starting\n")
+#			logfh.close()
+#			logfh=open("C:/Users/Admin/Desktop/generator_log.txt","w")
+#			logfh.write("starting\n")
+#			logfh.close()
 			nodeList = self.recursiveQuery(taxon_name,cID,minLatitude,maxLatitude,minLongitude,maxLongitude,m_Progress,nodeList,1)
 			description = '\n'.join(self.__description__)
 			# checks if minimum granularity was met while querying GBIF
@@ -214,6 +221,7 @@ class GBIFSpecific:
 	#	Case 2: Success
 	#############################
 	def recursiveQuery(self,taxon_name,cID,minLatitude,maxLatitude,minLongitude,maxLongitude,m_Progress,nodeList,rowColFlag):		
+	#	if minLatitude >= self.__MINLATITUDE__ and maxLatitude <= self.__MAXLATITUDE__ and minLongitude >= self.__MINLONGITUDE__ and maxLongitude <= self.__MAXLONGITUDE__:
 			stopCoords =0.1
 			#1=cols, 2=rows
 			resultCount =self.GETCOUNT(taxon_name,cID,minLatitude,maxLatitude,minLongitude,maxLongitude,m_Progress)
@@ -231,6 +239,9 @@ class GBIFSpecific:
 						base = stopCoords
 					#divides the current geographic range
 					newCoords= self.GBIFGeneric.SUBDIVIDECOL(minLatitude,maxLatitude,minLongitude,maxLongitude,range,base)
+			#		logfh=open("C:/Users/Admin/Desktop/recursion_log.txt","a")
+			#		logfh.write("minLat: %f maxLat: %f minLon: %f maxLon: %f range: %3f base: %f new:%s\n" %(minLatitude,maxLatitude,minLongitude,maxLongitude,range,base,newCoords))
+			#		logfh.close()
 					rowColFlag = 2
 					for coords in newCoords:
 						self.recursiveQuery(taxon_name,cID,coords[0],coords[1],coords[2],coords[3],m_Progress,nodeList,rowColFlag)
@@ -246,6 +257,9 @@ class GBIFSpecific:
 						base = stopCoords
 					#divides the current geographic range
 					newCoords = self.GBIFGeneric.SUBDIVIDEROW(minLatitude,maxLatitude,minLongitude,maxLongitude,range,base)
+			#		logfh=open("C:/Users/Admin/Desktop/recursion_log.txt","a")
+			#		logfh.write("minLat: %f maxLat: %f minLon: %f maxLon: %f range: %3f base: %f new:%s\n" %(minLatitude,maxLatitude,minLongitude,maxLongitude,range,base,newCoords))
+			#		logfh.close()
 					rowColFlag = 1
 					for coords in newCoords:
 						self.recursiveQuery(taxon_name,cID,coords[0],coords[1],coords[2],coords[3],m_Progress,nodeList,rowColFlag)
