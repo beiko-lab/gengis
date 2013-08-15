@@ -25,6 +25,7 @@ import sys
 from GBIFGeneric import GBIFGeneric
 import urllib2
 from xml.dom import minidom
+from decimal import Decimal
 #from GBIFQueryLayout import GBIFQueryLayout
 
 class GBIFSpecific:
@@ -273,7 +274,7 @@ class GBIFSpecific:
 					
 				self.__warnings__[1]=0
 				m_Progress.WriteText("Latitude: %0.2f to %0.2f\tLongitude: %0.2f to %0.2f\n" % (minLatitude,maxLatitude,minLongitude,maxLongitude))
-				url="http://data.gbif.org/ws/rest/occurrence/list?taxonconceptkey=%d&maxlatitude=%f&minlatitude=%f&maxlongitude=%f&minlongitude=%f" %(cID,maxLatitude,minLatitude,maxLongitude,minLongitude)
+				url="http://data.gbif.org/ws/rest/occurrence/list?taxonconceptkey=%d&maxlatitude=%2f&minlatitude=%2f&maxlongitude=%2f&minlongitude=%2f" %(cID,maxLatitude,minLatitude,maxLongitude,minLongitude)
 				try:
 					response=urllib2.urlopen(url).read()
 				except urllib2.URLError:

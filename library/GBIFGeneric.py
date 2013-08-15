@@ -78,17 +78,25 @@ class GBIFGeneric:
 		return (array)
 		
 	def drange(self,start,stop,step):
-	#	r = self.roundCoord(start)
-		r=start
+		r = self.roundCoord(start)
+	# 	step = self.roundCoord(step)
+	#	r=start
 		list = []
-#		print"###############"
-#		print "start: %f stop: %f\n" %(start,stop)
+		print"###############"
+		print "start: %s stop: %s\n" %(start,stop)
+		#possible to terminate before end criteria by 1. Eg. case of step =36, min=-180, max= 179.966667. Step rounded incorrectly.
 		while (r + step) <= (stop):
 			list.append(self.roundCoord(r))
-#			print "%f : %f" %(r, r+step)
+			print "%s : %s" %(r, r+step)
 			r+= self.roundCoord(step)
-#			print "%f" %r
-	#	print "%f"%(r+step)
+			print "%s" %r
+		if r < stop:
+			r -= self.roundCoord(step)
+			r += (stop-step-r)
+	#		tempR = float("%1f" %r)	#quick rounding to try and account for the innacuracy of floats
+			tempR = self.roundCoord(r)	#quick rounding to try and account for the innacuracy of floats
+			list.append(tempR)
+		print "%s"%(r+step)
 		return(list)
 	
 #	def myRange(self,num):
@@ -123,9 +131,9 @@ class GBIFGeneric:
 		maxlatitude = self.roundCoord(maxlatitude)
 		step = self.roundCoord(step)
 		for i in tem:
-		#	minl = round(Decimal(str(i)),1)
+	#		minl = round(Decimal(str(i)),1)
 			minl = i
-		#	maxl = round(Decimal(str(i+step)),1)
+	#		maxl = round(Decimal(str(i+step)),1)
 			maxl = i+step
 			new_coords.append((minl,maxl,minlongitude,maxlongitude))
 			logfh=open("C:/Users/Admin/Desktop/generator_log.txt","a")
