@@ -78,15 +78,15 @@ class GBIFQuery(GBIFQueryLayout):
 				self.m_MaxLon.SetValue(str(MaxLon))
 			else:
 				#Text boxes hate non String types. use int to round, and string to make them fit the container
-				self.m_MinLat.SetValue(str(max(MinLat,borders.y1)))
-				self.m_MaxLat.SetValue(str(min(MaxLat,borders.dy)))
-				self.m_MinLon.SetValue(str(max(MinLon,borders.x1)))
-				self.m_MaxLon.SetValue(str(min(MaxLon,borders.dx)))
-			'''	self.m_MinLat.SetValue(str(max(MinLat,self.GBIFGeneric.roundCoord(borders.y1))))
+			#	self.m_MinLat.SetValue(str(max(MinLat,borders.y1)))
+			#	self.m_MaxLat.SetValue(str(min(MaxLat,borders.dy)))
+			#	self.m_MinLon.SetValue(str(max(MinLon,borders.x1)))
+			#	self.m_MaxLon.SetValue(str(min(MaxLon,borders.dx)))
+				self.m_MinLat.SetValue(str(max(MinLat,self.GBIFGeneric.roundCoord(borders.y1))))
 				self.m_MaxLat.SetValue(str(min(MaxLat,self.GBIFGeneric.roundCoord(borders.dy))))
 				self.m_MinLon.SetValue(str(max(MinLon,self.GBIFGeneric.roundCoord(borders.x1))))
 				self.m_MaxLon.SetValue(str(min(MaxLon,self.GBIFGeneric.roundCoord(borders.dx))))
-			'''
+			
 	#	Query GBIF for Taxa in Lat/Lon Boundary
 	def OnSearch(self,event):
 		wx.BeginBusyCursor()
