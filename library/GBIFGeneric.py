@@ -79,28 +79,17 @@ class GBIFGeneric:
 		
 	def drange(self,start,stop,step):
 		r = self.roundCoord(start)
-	# 	step = self.roundCoord(step)
-	#	r=start
 		list = []
-		print"###############"
-		print "start: %s stop: %s\n" %(start,stop)
-		#possible to terminate before end criteria by 1. Eg. case of step =36, min=-180, max= 179.966667. Step rounded incorrectly.
 		while (r + step) <= (stop):
 			list.append(self.roundCoord(r))
-			print "%s : %s" %(r, r+step)
 			r+= self.roundCoord(step)
-			print "%s" %r
 		if r < stop:
 			r -= self.roundCoord(step)
 			r += (stop-step-r)
-	#		tempR = float("%1f" %r)	#quick rounding to try and account for the innacuracy of floats
 			tempR = self.roundCoord(r)	#quick rounding to try and account for the innacuracy of floats
 			list.append(tempR)
-		print "%s"%(r+step)
 		return(list)
 	
-#	def myRange(self,num):
-		
 	
 	#subdivide a given range by longitude
 	def SUBDIVIDECOL(self,minlatitude,maxlatitude,minlongitude,maxlongitude,numSubs,step):
@@ -116,10 +105,10 @@ class GBIFGeneric:
 	#		maxl = round(Decimal(str(i+step)),1)
 			maxl = i+step
 			new_coords.append((minlatitude,maxlatitude,minl,maxl))
-			logfh=open("C:/Users/Admin/Desktop/generator_log.txt","a")
-			logfh.write("%f "%i)
-		logfh.write("| maxLon: %f minLon: %f step: %f stop: %f \n" %(maxlongitude,minlongitude,step,maxlongitude-step))
-		logfh.close()
+	#		logfh=open("C:/Users/Admin/Desktop/generator_log.txt","a")
+	#		logfh.write("%f "%i)
+	#	logfh.write("| maxLon: %f minLon: %f step: %f stop: %f \n" %(maxlongitude,minlongitude,step,maxlongitude-step))
+	#	logfh.close()
 		return(new_coords)
 	
 	#subdivide a given range by latitude
@@ -136,10 +125,10 @@ class GBIFGeneric:
 	#		maxl = round(Decimal(str(i+step)),1)
 			maxl = i+step
 			new_coords.append((minl,maxl,minlongitude,maxlongitude))
-			logfh=open("C:/Users/Admin/Desktop/generator_log.txt","a")
-			logfh.write("%f "%i)
-		logfh.write("| maxLat: %f minLat: %f step: %f stop: %f \n" %(maxlatitude,minlatitude,step, maxlatitude-step))
-		logfh.close()
+	#		logfh=open("C:/Users/Admin/Desktop/generator_log.txt","a")
+	#		logfh.write("%f "%i)
+	#	logfh.write("| maxLat: %f minLat: %f step: %f stop: %f \n" %(maxlatitude,minlatitude,step, maxlatitude-step))
+	#	logfh.close()
 		return(new_coords)	
 		
 	def WRITEEXPORT(self,outfile,outtext,header):
