@@ -181,7 +181,7 @@ class GBIFSpecific:
 				self.__warnings__[0]=0
 				m_Progress.WriteText("\nWarnings were created. Please review progress bar for more information.\n")
 			uniqueRID=set()
-			print self.GBIFGeneric.roundCoord(maxLatitude), self.GBIFGeneric.roundCoord(minLatitude), self.GBIFGeneric.roundCoord(maxLongitude),self.GBIFGeneric.roundCoord(minLongitude)
+	#		print self.GBIFGeneric.roundCoord(maxLatitude), self.GBIFGeneric.roundCoord(minLatitude), self.GBIFGeneric.roundCoord(maxLongitude),self.GBIFGeneric.roundCoord(minLongitude)
 			for node in nodeList:
 				string = node.toprettyxml(indent=' ')
 				rID=-1
@@ -218,9 +218,9 @@ class GBIFSpecific:
 							obs[currGrid] = {genus: [(rID,fullLat,fullLon,name)] }
 					records = len(uniqueRID)
 				else:
-					print "!!!!!!!!!!!!!!!!!!!!"
-					print "Lat: %f | Lon: %f"%(fullLat, fullLon)
-					print "!!!!!!!!!!!!!!!!!!!!"
+		#			print "!!!!!!!!!!!!!!!!!!!!"
+		#			print "Lat: %f | Lon: %f"%(fullLat, fullLon)
+		#			print "!!!!!!!!!!!!!!!!!!!!"
 		return(obs,records,len(distLocations),description)
 		
 	#############################
