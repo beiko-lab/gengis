@@ -26,7 +26,6 @@ from GBIFGeneric import GBIFGeneric
 import urllib2
 from xml.dom import minidom
 from decimal import Decimal
-#from GBIFQueryLayout import GBIFQueryLayout
 
 class GBIFSpecific:
 	# get source of data sets as well as rights and citation
@@ -168,12 +167,6 @@ class GBIFSpecific:
 			nodeList=[]
 			#this will mine GBIF database for the raw information to process
 			m_Progress.WriteText("Latitude: %0.2f to %0.2f\tLongitude: %0.2f to %0.2f\n" % (minLatitude,maxLatitude,minLongitude,maxLongitude))
-	#		logfh=open("C:/Users/Admin/Desktop/recursion_log.txt","w")
-	#		logfh.write("starting\n")
-	#		logfh.close()
-	#		logfh=open("C:/Users/Admin/Desktop/generator_log.txt","w")
-	#		logfh.write("starting\n")
-	#		logfh.close()
 			nodeList = self.recursiveQuery(taxon_name,cID,minLatitude,maxLatitude,minLongitude,maxLongitude,m_Progress,nodeList,1)
 			description = '\n'.join(self.__description__)
 			# checks if minimum granularity was met while querying GBIF
@@ -181,7 +174,6 @@ class GBIFSpecific:
 				self.__warnings__[0]=0
 				m_Progress.WriteText("\nWarnings were created. Please review progress bar for more information.\n")
 			uniqueRID=set()
-	#		print self.GBIFGeneric.roundCoord(maxLatitude), self.GBIFGeneric.roundCoord(minLatitude), self.GBIFGeneric.roundCoord(maxLongitude),self.GBIFGeneric.roundCoord(minLongitude)
 			for node in nodeList:
 				string = node.toprettyxml(indent=' ')
 				rID=-1
@@ -196,7 +188,6 @@ class GBIFSpecific:
 				fullLat = float(re.sub(r'\<.*?\>','',lat_tem))
 				fullLon = float(re.sub(r'\<.*?\>','',long_tem))
 				#check for weird cases where GBIF gives elements outside of extents.
-			#	if (self.GBIFGeneric.roundCoord(minLatitude) <= self.GBIFGeneric.roundCoord(fullLat) <= self.GBIFGeneric.roundCoord(maxLatitude)) and (self.GBIFGeneric.roundCoord(minLongitude) <= self.GBIFGeneric.roundCoord(fullLon) <= self.GBIFGeneric.roundCoord(maxLongitude)):
 				if (minLatitude <= fullLat <= maxLatitude) and (minLongitude <= fullLon <= maxLongitude):
 					if key_string:
 						id_string=re.search('\d+',key_string.group())
@@ -217,10 +208,6 @@ class GBIFSpecific:
 						except KeyError:
 							obs[currGrid] = {genus: [(rID,fullLat,fullLon,name)] }
 					records = len(uniqueRID)
-				else:
-		#			print "!!!!!!!!!!!!!!!!!!!!"
-		#			print "Lat: %f | Lon: %f"%(fullLat, fullLon)
-		#			print "!!!!!!!!!!!!!!!!!!!!"
 		return(obs,records,len(distLocations),description)
 		
 	#############################
@@ -229,12 +216,6 @@ class GBIFSpecific:
 	#	Case 2: Success
 	#############################
 	def recursiveQuery(self,taxon_name,cID,minLatitude,maxLatitude,minLongitude,maxLongitude,m_Progress,nodeList,rowColFlag):	
-	#	maxLatitude = self.GBIFGeneric.roundCoord(maxLatitude)
-	#	minLatitude = self.GBIFGeneric.roundCoord(minLatitude)
-	#	maxLongitude = self.GBIFGeneric.roundCoord(maxLongitude)
-	#	minLongitude = self.GBIFGeneric.roundCoord(minLongitude)
-	
-	#	if minLatitude >= self.__MINLATITUDE__ and maxLatitude <= self.__MAXLATITUDE__ and minLongitude >= self.__MINLONGITUDE__ and maxLongitude <= self.__MAXLONGITUDE__:
 		stopCoords =0.1
 		#1=cols, 2=rows
 		resultCount =self.GETCOUNT(taxon_name,cID,minLatitude,maxLatitude,minLongitude,maxLongitude,m_Progress)
@@ -252,9 +233,6 @@ class GBIFSpecific:
 					base = stopCoords
 				#divides the current geographic range
 				newCoords= self.GBIFGeneric.SUBDIVIDECOL(minLatitude,maxLatitude,minLongitude,maxLongitude,range,base)
-		#		logfh=open("C:/Users/Admin/Desktop/recursion_log.txt","a")
-		#		logfh.write("minLat: %f maxLat: %f minLon: %f maxLon: %f range: %3f base: %f new:%s\n" %(minLatitude,maxLatitude,minLongitude,maxLongitude,range,base,newCoords))
-		#		logfh.close()
 				rowColFlag = 2
 				for coords in newCoords:
 					self.recursiveQuery(taxon_name,cID,coords[0],coords[1],coords[2],coords[3],m_Progress,nodeList,rowColFlag)
@@ -270,9 +248,6 @@ class GBIFSpecific:
 					base = stopCoords
 				#divides the current geographic range
 				newCoords = self.GBIFGeneric.SUBDIVIDEROW(minLatitude,maxLatitude,minLongitude,maxLongitude,range,base)
-		#		logfh=open("C:/Users/Admin/Desktop/recursion_log.txt","a")
-		#		logfh.write("minLat: %f maxLat: %f minLon: %f maxLon: %f range: %3f base: %f new:%s\n" %(minLatitude,maxLatitude,minLongitude,maxLongitude,range,base,newCoords))
-		#		logfh.close()
 				rowColFlag = 1
 				for coords in newCoords:
 					self.recursiveQuery(taxon_name,cID,coords[0],coords[1],coords[2],coords[3],m_Progress,nodeList,rowColFlag)
@@ -287,9 +262,6 @@ class GBIFSpecific:
 			self.__warnings__[1]=0
 			m_Progress.WriteText("Latitude: %0.2f to %0.2f\tLongitude: %0.2f to %0.2f\n" % (minLatitude,maxLatitude,minLongitude,maxLongitude))
 			url="http://data.gbif.org/ws/rest/occurrence/list?taxonconceptkey=%d&maxlatitude=%2f&minlatitude=%2f&maxlongitude=%2f&minlongitude=%2f" %(cID,maxLatitude,minLatitude,maxLongitude,minLongitude)
-		#	logfh=open("C:/Users/Admin/Desktop/url_log.txt","a")
-		#	logfh.write("%s\n"%url)
-		#	logfh.close()
 			try:
 				response=urllib2.urlopen(url).read()
 			except urllib2.URLError:
