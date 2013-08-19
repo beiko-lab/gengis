@@ -22,13 +22,13 @@
 
 import re
 import wx
-import decimal
+from decimal import Decimal
 from operator import itemgetter
 
 class GBIFGeneric:
 	
 	def roundCoord(self,num):
-		return round(decimal.Decimal(str(num)),1)
+		return round(Decimal(str(num)),1)
 	
 	def GETTEXT (self,obs_list):
 		OUTL=""
@@ -77,11 +77,16 @@ class GBIFGeneric:
 		return (array)
 		
 	def drange(self,start,stop,step):
-		r=start
+		r = self.roundCoord(start)
 		list = []
 		while (r + step) <= (stop):
-			list.append(r)
+			list.append(self.roundCoord(r))
 			r+= self.roundCoord(step)
+		if r < stop:
+			r -= self.roundCoord(step)
+			r += (stop-step-r)
+			tempR = self.roundCoord(r)	#quick rounding to try and account for the innacuracy of floats
+			list.append(tempR)
 		return(list)
 	
 	

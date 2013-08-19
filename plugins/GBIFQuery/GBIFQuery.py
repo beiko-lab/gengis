@@ -68,7 +68,6 @@ class GBIFQuery(GBIFQueryLayout):
 			#check if geographic coordinates are used or some other measure; only geographic are compatible
 			geographic = GenGIS.StudyController.IsUsingGeographic(GenGIS.study.GetController())
 			projected = GenGIS.StudyController.IsUsingProjection(GenGIS.study.GetController())
-			#GenGIS.StudyController.GetDatum(GenGIS.study.GetController())
 			if(not (geographic or projected)):
 				wx.MessageBox("Geographic coordinates are not being used in the current map file. Only geographic coordinates are compatible with GBIF. Geographic range will need to be manually set, and any returned data will not display correctly.","Warning")
 				self.m_AddData.Disable()
@@ -82,11 +81,7 @@ class GBIFQuery(GBIFQueryLayout):
 				self.m_MaxLat.SetValue(str(min(MaxLat,borders.dy)))
 				self.m_MinLon.SetValue(str(max(MinLon,borders.x1)))
 				self.m_MaxLon.SetValue(str(min(MaxLon,borders.dx)))
-			'''	self.m_MinLat.SetValue(str(max(MinLat,self.GBIFGeneric.roundCoord(borders.y1))))
-				self.m_MaxLat.SetValue(str(min(MaxLat,self.GBIFGeneric.roundCoord(borders.dy))))
-				self.m_MinLon.SetValue(str(max(MinLon,self.GBIFGeneric.roundCoord(borders.x1))))
-				self.m_MaxLon.SetValue(str(min(MaxLon,self.GBIFGeneric.roundCoord(borders.dx))))
-			'''
+			
 	#	Query GBIF for Taxa in Lat/Lon Boundary
 	def OnSearch(self,event):
 		wx.BeginBusyCursor()
@@ -146,10 +141,10 @@ class GBIFQuery(GBIFQueryLayout):
 		self.m_Progress.WriteText("Retrieving record counts.\n")
 		self.m_Summary.SetLabel("\n")
 		if(self.__selectedTaxon__):
-			minLatitude= float(self.m_MinLat.GetValue())
-			maxLatitude= float(self.m_MaxLat.GetValue())
-			minLongitude= float(self.m_MinLon.GetValue())
-			maxLongitude= float(self.m_MaxLon.GetValue())
+			minLatitude= self.GBIFGeneric.roundCoord(self.m_MinLat.GetValue())
+			maxLatitude= self.GBIFGeneric.roundCoord(self.m_MaxLat.GetValue())
+			minLongitude= self.GBIFGeneric.roundCoord(self.m_MinLon.GetValue())
+			maxLongitude= self.GBIFGeneric.roundCoord(self.m_MaxLon.GetValue())
 			count=0
 			for tax in self.__selectedTaxon__:
 				count+=self.GBIFSpecific.GETCOUNT(tax[1].split(),tax[0],minLatitude,maxLatitude,minLongitude,maxLongitude,self.m_Progress)
