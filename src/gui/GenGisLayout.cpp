@@ -78,6 +78,11 @@ GenGisLayout::GenGisLayout( wxWindow* parent, wxWindowID id, const wxString& tit
 	m_legendLocations->SetScrollRate( 5, 5 );
 	m_legendLocationsSizer = new wxBoxSizer( wxVERTICAL );
 	
+	wxArrayString m_locationSetChoiceChoices;
+	m_locationSetChoice = new wxChoice( m_legendLocations, wxID_LOCATION_SET_CHOICE, wxDefaultPosition, wxDefaultSize, m_locationSetChoiceChoices, 0 );
+	m_locationSetChoice->SetSelection( 0 );
+	m_legendLocationsSizer->Add( m_locationSetChoice, 0, wxALL, 5 );
+	
 	m_legendLocationsSizerColour = new wxStaticBoxSizer( new wxStaticBox( m_legendLocations, ID_LEGEND_LOCATIONS_SIZER_COLOUR, wxT("Colour") ), wxVERTICAL );
 	
 	m_legendLocationsSizerColour2 = new wxFlexGridSizer( 0, 2, 0, 0 );
@@ -493,6 +498,7 @@ GenGisLayout::GenGisLayout( wxWindow* parent, wxWindowID id, const wxString& tit
 	m_treeCtrlLayer->Connect( wxEVT_LEFT_DOWN, wxMouseEventHandler( GenGisLayout::OnLayerTreeClick ), NULL, this );
 	m_treeCtrlLayer->Connect( wxEVT_COMMAND_TREE_ITEM_MENU, wxTreeEventHandler( GenGisLayout::OnLayerTreePopupMenu ), NULL, this );
 	m_treeCtrlLayer->Connect( wxEVT_COMMAND_TREE_SEL_CHANGED, wxTreeEventHandler( GenGisLayout::OnLayerTreeSelect ), NULL, this );
+	m_locationSetChoice->Connect( wxEVT_COMMAND_CHOICE_SELECTED, wxCommandEventHandler( GenGisLayout::OnSamplesLegendLocationSetSelect ), NULL, this );
 	m_console->Connect( wxEVT_CHAR, wxKeyEventHandler( GenGisLayout::OnCharFromKeyboard ), NULL, this );
 	m_console->Connect( wxEVT_COMMAND_TEXT_ENTER, wxCommandEventHandler( GenGisLayout::OnConsoleEnter ), NULL, this );
 	this->Connect( m_mnuFileNewSession->GetId(), wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GenGisLayout::OnFileNewSession ) );
@@ -555,6 +561,7 @@ GenGisLayout::~GenGisLayout()
 	m_treeCtrlLayer->Disconnect( wxEVT_LEFT_DOWN, wxMouseEventHandler( GenGisLayout::OnLayerTreeClick ), NULL, this );
 	m_treeCtrlLayer->Disconnect( wxEVT_COMMAND_TREE_ITEM_MENU, wxTreeEventHandler( GenGisLayout::OnLayerTreePopupMenu ), NULL, this );
 	m_treeCtrlLayer->Disconnect( wxEVT_COMMAND_TREE_SEL_CHANGED, wxTreeEventHandler( GenGisLayout::OnLayerTreeSelect ), NULL, this );
+	m_locationSetChoice->Disconnect( wxEVT_COMMAND_CHOICE_SELECTED, wxCommandEventHandler( GenGisLayout::OnSamplesLegendLocationSetSelect ), NULL, this );
 	m_console->Disconnect( wxEVT_CHAR, wxKeyEventHandler( GenGisLayout::OnCharFromKeyboard ), NULL, this );
 	m_console->Disconnect( wxEVT_COMMAND_TEXT_ENTER, wxCommandEventHandler( GenGisLayout::OnConsoleEnter ), NULL, this );
 	this->Disconnect( ID_MNU_FILE_NEW_SESSION, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GenGisLayout::OnFileNewSession ) );
