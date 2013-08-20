@@ -32,6 +32,7 @@
 #include "../core/ChartView.hpp"
 #include "../core/LayerTreeController.hpp"
 #include "../core/SequenceController.hpp"
+#include "../core/LocationGrid.hpp"
 #include "../core/LocationSetLayer.hpp"
 #include "../core/LocationLayer.hpp"
 #include "../core/SequenceLayer.hpp"
@@ -66,6 +67,7 @@ LocationSetPropertiesDlg::LocationSetPropertiesDlg(wxWindow* parent, LocationSet
 	InitMetadata();
 	InitLocationSet();
 	InitChart();
+	InitLocationGrid();
 
 	m_pnlLocations->Fit();
 	m_pnlChart->Fit();
@@ -484,6 +486,12 @@ void LocationSetPropertiesDlg::InitChart()
 	OnChartTypeChanged(dummy);
 }
 
+void LocationSetPropertiesDlg::InitLocationGrid()
+{
+	LocationGridPtr locationGrid = m_locationSetLayer->GetLocationGrid();
+	m_chkShowGrid->SetValue(locationGrid->IsVisible());
+}
+
 void LocationSetPropertiesDlg::InitMetadata()
 {
 	m_txtLayerSource->SetValue(wxString(m_locationSetLayer->GetPath().c_str()) + _T("\\") + wxString(m_locationSetLayer->GetFilename().c_str()));
@@ -663,6 +671,8 @@ void LocationSetPropertiesDlg::Apply()
 	ApplyLocationLabel();
 
 	ApplyChart();
+
+	ApplyGrid();
 
 	((GenGisFrame*)App::Inst().GetMainWindow())->FillSamplesLegend(); 
 	((GenGisFrame*)App::Inst().GetMainWindow())->FillSequenceLegend();
@@ -845,6 +855,13 @@ void LocationSetPropertiesDlg::ApplyChart()
 		m_locationSetLayer->GetChartSetView()->UpdateCharts(m_cboChartField->GetValue().c_str());
 	}
 }
+
+void LocationSetPropertiesDlg::ApplyGrid()
+{
+	m_locationSetLayer->GetLocationGrid()->SetVisibility(m_chkShowGrid->GetValue());
+	//chartView->SetVisibility(m_chkShowCharts->GetValue());
+}
+
 
 void LocationSetPropertiesDlg::OnSpinAssignTaxa( wxSpinEvent& event )
 {

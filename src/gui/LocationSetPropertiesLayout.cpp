@@ -370,7 +370,7 @@ LocationSetPropertiesLayout::LocationSetPropertiesLayout( wxWindow* parent, wxWi
 	m_pnlLocations->SetSizer( m_sizerLocations );
 	m_pnlLocations->Layout();
 	m_sizerLocations->Fit( m_pnlLocations );
-	m_notebook->AddPage( m_pnlLocations, wxT("Location Set"), true );
+	m_notebook->AddPage( m_pnlLocations, wxT("Location Set"), false );
 	m_pnlChart = new wxPanel( m_notebook, ID_PNL_CHART, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL, wxT("Charts") );
 	wxBoxSizer* m_sizerLabels1;
 	m_sizerLabels1 = new wxBoxSizer( wxVERTICAL );
@@ -431,7 +431,7 @@ LocationSetPropertiesLayout::LocationSetPropertiesLayout( wxWindow* parent, wxWi
 	m_pnlChartColourMap->SetSizer( m_sizerChartGeneral );
 	m_pnlChartColourMap->Layout();
 	m_sizerChartGeneral->Fit( m_pnlChartColourMap );
-	m_notebookChart->AddPage( m_pnlChartColourMap, wxT("Colour Map"), true );
+	m_notebookChart->AddPage( m_pnlChartColourMap, wxT("Colour Map"), false );
 	m_pnlChartSymbology = new wxPanel( m_notebookChart, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL, wxT("Symbology") );
 	wxBoxSizer* m_sizerChartSymbology;
 	m_sizerChartSymbology = new wxBoxSizer( wxVERTICAL );
@@ -632,7 +632,7 @@ LocationSetPropertiesLayout::LocationSetPropertiesLayout( wxWindow* parent, wxWi
 	m_pnlChartSymbology->SetSizer( m_sizerChartSymbology );
 	m_pnlChartSymbology->Layout();
 	m_sizerChartSymbology->Fit( m_pnlChartSymbology );
-	m_notebookChart->AddPage( m_pnlChartSymbology, wxT("Symbology"), false );
+	m_notebookChart->AddPage( m_pnlChartSymbology, wxT("Symbology"), true );
 	
 	m_sizerLabels1->Add( m_notebookChart, 1, wxEXPAND | wxALL, 5 );
 	
@@ -651,6 +651,27 @@ LocationSetPropertiesLayout::LocationSetPropertiesLayout( wxWindow* parent, wxWi
 	m_pnlChart->Layout();
 	m_sizerLabels1->Fit( m_pnlChart );
 	m_notebook->AddPage( m_pnlChart, wxT("Charts"), false );
+	m_pnlGrid = new wxPanel( m_notebook, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL, wxT("Grid") );
+	wxBoxSizer* m_sizerGrid;
+	m_sizerGrid = new wxBoxSizer( wxVERTICAL );
+	
+	wxStaticBoxSizer* m_sizerGridProperties;
+	m_sizerGridProperties = new wxStaticBoxSizer( new wxStaticBox( m_pnlGrid, wxID_ANY, wxT("Grid Properties") ), wxVERTICAL );
+	
+	m_sizerGrid->Add( m_sizerGridProperties, 1, wxEXPAND, 5 );
+	
+	wxBoxSizer* m_sizerLayerSource1;
+	m_sizerLayerSource1 = new wxBoxSizer( wxVERTICAL );
+	
+	m_chkShowGrid = new wxCheckBox( m_pnlGrid, wxID_ANY, wxT("Show Grid"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_sizerLayerSource1->Add( m_chkShowGrid, 0, wxALL|wxALIGN_RIGHT, 5 );
+	
+	m_sizerGrid->Add( m_sizerLayerSource1, 0, wxEXPAND, 5 );
+	
+	m_pnlGrid->SetSizer( m_sizerGrid );
+	m_pnlGrid->Layout();
+	m_sizerGrid->Fit( m_pnlGrid );
+	m_notebook->AddPage( m_pnlGrid, wxT("Grid"), true );
 	m_pnlMetadata = new wxPanel( m_notebook, ID_PNL_METADATA, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL, wxT("Metadata") );
 	wxBoxSizer* m_sizerMetadata;
 	m_sizerMetadata = new wxBoxSizer( wxVERTICAL );

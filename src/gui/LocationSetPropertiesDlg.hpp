@@ -80,6 +80,9 @@ namespace GenGIS
 		/** Initialize controls on Chart page. */
 		void InitChart();
 
+		/** Initialize controls on Grid page. */
+		void InitLocationGrid();
+
 		/** Initialize controls on MetaData page. */
 		void InitMetadata();
 
@@ -106,6 +109,9 @@ namespace GenGIS
 
 		/** Apply parameter values of controls on Chart page. */
 		void ApplyChart();
+
+		/** Apply parameter values of controls on Grid page. */
+		void ApplyGrid();
 
 		/** User is requesting a new uniform colour for location sites. */
 		void OnUniformColourPicker( wxCommandEvent& event );
