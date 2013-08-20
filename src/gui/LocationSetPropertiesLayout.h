@@ -218,6 +218,8 @@ namespace GenGIS
 			wxColourPickerCtrl* m_colourChartDropLine;
 			
 			wxCheckBox* m_chkShowCharts;
+			wxPanel* m_pnlGrid;
+			wxCheckBox* m_chkShowGrid;
 			wxPanel* m_pnlMetadata;
 			wxStaticText* m_lblLayerSource;
 			wxTextCtrl* m_txtLayerSource;

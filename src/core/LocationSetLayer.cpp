@@ -26,6 +26,7 @@
 #include "../core/MapView.hpp"
 #include "../core/MapLayer.hpp"
 #include "../core/ChartSetView.hpp"
+#include "../core/LocationGrid.hpp"
 #include "../core/LocationLayer.hpp"
 #include "../core/SequenceLayer.hpp"
 #include "../core/SequenceController.hpp"
@@ -41,7 +42,8 @@
 using namespace GenGIS;
 
 LocationSetLayer::LocationSetLayer(uint id, LayerPtr parent, ChartSetViewPtr chartSetView) :
-	Layer(id, Layer::LOCATION_SET, parent), m_chartSetView(chartSetView), m_locationSetController(new LocationSetController())
+	Layer(id, Layer::LOCATION_SET, parent), m_chartSetView(chartSetView), m_locationGrid(new LocationGrid()),
+		m_locationSetController(new LocationSetController())
 {
 
 }
@@ -163,6 +165,7 @@ void LocationSetLayer::Render()
 		return;
 
 	m_chartSetView->Render();
+	m_locationGrid->Render();
 
 	foreach(LocationLayerPtr locationLayer, m_locationLayers)
 	{
