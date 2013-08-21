@@ -59,31 +59,91 @@ void LocationGrid::Render()
 	GLfloat CYAN[4]    = {0, 1, 1, 0.5};
 	GLfloat MAGENTA[4] = {1, 0, 1, 0.5};
 
+
+	uint   rowsCols  = 2;
+	double tileSize  = 1.0 / rowsCols;
+	double elevation = 0.05;
+
+	uint bit = 0;
+
 	glBegin( GL_QUADS );
-	//glBegin(GL_LINE_LOOP);
 
-		glColor4fv( GREEN );
-		glVertex3f(0.0, 0.0, 0.0);
-		glVertex3f(1.0, 0.0, 0.0);
-		glVertex3f(1.0, 0.0, 1.0);
-		glVertex3f(0.0, 0.0, 1.0);
+	uint col = 0;
+	uint row = 0;
+	//for ( uint col = 0; col < rowsCols; col++ )
+	//{
+	//	for ( uint row = 0; row < rowsCols; row++ )
+	//	{
+	//		if ( bit == 0 )
+	//		{
+	//			glColor4fv( GREEN );
+	//			bit = 1;
+	//		}
+	//		else
+	//		{
+	//			glColor4fv( YELLOW );
+	//			bit = 0;
+	//		}
 
-		glColor4fv( YELLOW );
-		glVertex3f(0.0, 0.0, 0.0);
-		glVertex3f(1.0, 0.0, 0.0);
-		glVertex3f(1.0, 0.0, -1.0);
-		glVertex3f(0.0, 0.0, -1.0);
+	//		if ( bit == 0 )
+	//		{
+				double x = tileSize * col;
+				double z = tileSize * row;
+				double dx = x + tileSize;
+				double dz = z + tileSize;
 
-		glColor4fv( RED );
-		glVertex3f(0.0, 0.0, 0.0);
-		glVertex3f(0.0, 0.0, 1.0);
-		glVertex3f(-1.0, 0.0, 1.0);
-		glVertex3f(-1.0, 0.0, 0.0);
+				glColor4fv( GREEN );
+				glVertex3f( x,        elevation, z       );
+				glVertex3f( (x + dx), elevation, z       );
+				glVertex3f( (x + dx), elevation, (z + dz));
+				glVertex3f( x,        elevation, (z + dz));
 
-		glColor4fv( BLUE );
-		glVertex3f(0.0, 0.0, 0.0);
-		glVertex3f(-1.0, 0.0, 0.0);
-		glVertex3f(-1.0, 0.0, -1.0);
-		glVertex3f(0.0, 0.0, -1.0);
+				glColor4fv( YELLOW );
+				glVertex3f( x,        elevation, z         );
+				glVertex3f( (x + dx), elevation, z         );
+				glVertex3f( (x + dx), elevation, -(z + dz) );
+				glVertex3f( x,        elevation, -(z + dz) );
+
+				glColor4fv( RED );
+				glVertex3f( x,         elevation, z       );
+				glVertex3f( x,         elevation, (z + dz));
+				glVertex3f( -(x + dx), elevation, (z + dz));
+				glVertex3f( -(x + dx), elevation, z       );
+
+				glColor4fv( BLUE );
+				glVertex3f( x,         elevation, z          );
+				glVertex3f( -(x + dx), elevation, z          );
+				glVertex3f( -(x + dx), elevation, -( z + dz ));
+				glVertex3f( x,         elevation, -( z + dz ));
+	//		}
+	//	}
+	//}
 	glEnd();
+
+	//glBegin( GL_QUADS );
+	////glBegin(GL_LINE_LOOP);
+	//	glColor4fv( GREEN );
+	//	glVertex3f(0.0, 0.1, 0.0);
+	//	glVertex3f(1.0, 0.1, 0.0);
+	//	glVertex3f(1.0, 0.1, 1.0);
+	//	glVertex3f(0.0, 0.1, 1.0);
+
+	//	glColor4fv( YELLOW );
+	//	glVertex3f(0.0, 0.2, 0.0);
+	//	glVertex3f(1.0, 0.2, 0.0);
+	//	glVertex3f(1.0, 0.2, -1.0);
+	//	glVertex3f(0.0, 0.2, -1.0);
+
+	//	glColor4fv( RED );
+	//	glVertex3f(0.0, 0.3, 0.0);
+	//	glVertex3f(0.0, 0.3, 1.0);
+	//	glVertex3f(-1.0, 0.3, 1.0);
+	//	glVertex3f(-1.0, 0.3, 0.0);
+
+	//	glColor4fv( BLUE );
+	//	glVertex3f(0.0, 0.4, 0.0);
+	//	glVertex3f(-1.0, 0.4, 0.0);
+	//	glVertex3f(-1.0, 0.4, -1.0);
+	//	glVertex3f(0.0, 0.4, -1.0);
+	//glEnd();
 }
