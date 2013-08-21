@@ -28,6 +28,8 @@
 #include <wx/statbox.h>
 #include <wx/spinctrl.h>
 #include <wx/notebook.h>
+#include <wx/choice.h>
+#include <wx/radiobut.h>
 #include <wx/richtext/richtextctrl.h>
 #include <wx/button.h>
 #include <wx/dialog.h>
@@ -219,6 +221,38 @@ namespace GenGIS
 			
 			wxCheckBox* m_chkShowCharts;
 			wxPanel* m_pnlGrid;
+			wxNotebook* m_notebook6;
+			wxPanel* m_panel13;
+			wxCheckBox* m_checkBox19;
+			wxColourPickerCtrl* m_colourPicker8;
+			wxStaticLine* m_staticline10;
+			wxStaticText* m_staticText31;
+			wxChoice* m_choice1;
+			wxStaticText* m_staticText32;
+			wxChoice* m_choice2;
+			wxScrolledWindow* m_scrolledWindow4;
+			wxCheckBox* m_checkBox18;
+			wxStaticLine* m_staticline9;
+			wxStaticText* m_staticText33;
+			wxComboBox* m_comboBox15;
+			wxColourPickerCtrl* m_colourPicker7;
+			wxStaticText* m_staticText35;
+			wxChoice* m_choice3;
+			wxPanel* m_panel12;
+			wxStaticText* m_staticText38;
+			wxComboBox* m_comboBox17;
+			wxRadioButton* m_radioBtn5;
+			wxRadioButton* m_radioBtn6;
+			wxRadioButton* m_radioBtn3;
+			wxChoice* m_choice4;
+			wxRadioButton* m_radioBtn4;
+			wxComboBox* m_comboBox16;
+			wxCheckBox* m_checkBox17;
+			wxStaticLine* m_staticline8;
+			wxStaticText* m_staticText30;
+			wxSpinCtrl* m_spinCtrl8;
+			wxRadioButton* m_radioBtn2;
+			wxRadioButton* m_radioBtn1;
 			wxCheckBox* m_chkShowGrid;
 			wxPanel* m_pnlMetadata;
 			wxStaticText* m_lblLayerSource;
