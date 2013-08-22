@@ -489,7 +489,39 @@ void LocationSetPropertiesDlg::InitChart()
 void LocationSetPropertiesDlg::InitLocationGrid()
 {
 	LocationGridPtr locationGrid = m_locationSetLayer->GetLocationGrid();
-	m_chkShowGrid->SetValue(locationGrid->IsVisible());
+
+	// Get visibility of grid
+	m_chkShowGrid->SetValue( locationGrid->IsVisible() );
+
+	// Get colour of grid borders
+	Colour borderColour = locationGrid->GetBorderColour();
+	m_gridBorderColour->SetColour( wxColour( borderColour.GetRedInt(),
+		borderColour.GetGreenInt(), borderColour.GetBlueInt() ) );
+
+	// Get alpha of grid borders
+	uint alpha = locationGrid->GetBorderAlpha()*10;
+	m_sliderBorderAlpha->SetValue( alpha );
+
+	// Get thickness of grid borders
+	m_spinGridBorderThickness->SetValue( locationGrid->GetBorderThickness() );
+
+	// Get style of grid borders
+	VisualLine::LINE_STYLE gridBorderStyle = locationGrid->GetBorderStyle();
+	if ( gridBorderStyle == VisualLine::SOLID )
+		m_cboGridBorderStyle->SetValue( _T("Solid") );
+	else if ( gridBorderStyle == VisualLine::SHORT_DASH )
+		m_cboGridBorderStyle->SetValue( _T("Short dash") );
+	else if ( gridBorderStyle == VisualLine::LONG_DASH )
+		m_cboGridBorderStyle->SetValue( _T("Long dash") );
+	else if ( gridBorderStyle == VisualLine::HIDDEN )
+		m_cboGridBorderStyle->SetValue( _T("Hidden") );	
+
+	// Get the number of divisions
+	m_spinGridDivisions->SetValue( locationGrid->GetNumberOfDivisions() );
+
+	// Get the grid elevation
+	m_textCtrlGridElevation->SetValue(
+		wxString( StringTools::ToStringW( locationGrid->GetElevation(), 2 ).c_str() ) );
 }
 
 void LocationSetPropertiesDlg::InitMetadata()
@@ -858,8 +890,38 @@ void LocationSetPropertiesDlg::ApplyChart()
 
 void LocationSetPropertiesDlg::ApplyGrid()
 {
-	m_locationSetLayer->GetLocationGrid()->SetVisibility(m_chkShowGrid->GetValue());
-	//chartView->SetVisibility(m_chkShowCharts->GetValue());
+	LocationGridPtr locationGrid = m_locationSetLayer->GetLocationGrid();
+
+	// Set visibility of grid
+	locationGrid->SetVisibility( m_chkShowGrid->GetValue() );
+
+	// Set colour of grid borders
+	locationGrid->SetBorderColour( Colour( m_gridBorderColour->GetColour() ) );
+
+	// Set alpha of grid borders
+	float alpha = m_sliderBorderAlpha->GetValue();
+	locationGrid->SetBorderAlpha( alpha/10 );
+
+	// Set thickness of grid borders
+	locationGrid->SetBorderThickness( m_spinGridBorderThickness->GetValue() );
+
+	// Set style of grid borders
+	VisualLine::LINE_STYLE gridBorderStyle;
+	if ( m_cboGridBorderStyle->GetValue() == _T( "Hidden" ) )
+		gridBorderStyle = VisualLine::HIDDEN;
+	else if ( m_cboGridBorderStyle->GetValue() == _T( "Short dash" ) )
+		gridBorderStyle = VisualLine::SHORT_DASH;
+	else if( m_cboGridBorderStyle->GetValue() == _T( "Long dash" ) )
+		gridBorderStyle = VisualLine::LONG_DASH;
+	else if( m_cboGridBorderStyle->GetValue() == _T( "Solid" ) )
+		gridBorderStyle = VisualLine::SOLID;
+	locationGrid->SetBorderStyle( gridBorderStyle );
+
+	// Set the number of divisions
+	locationGrid->SetDivisions( m_spinGridDivisions->GetValue() );
+
+	// Set the grid elevation
+	locationGrid->SetElevation( StringTools::ToDouble( m_textCtrlGridElevation->GetValue().c_str() ) );
 }
 
 

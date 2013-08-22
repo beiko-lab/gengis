@@ -25,6 +25,9 @@
 #include "../core/Precompiled.hpp"
 
 #include "../core/View.hpp"
+#include "../core/VisualLine.hpp"
+
+#include "../utils/Colour.hpp"
 
 namespace GenGIS
 {
@@ -45,10 +48,49 @@ namespace GenGIS
 		/** Render location grid. */
 		void Render();
 
+		// General
+		uint   GetNumberOfDivisions() { return m_divisions; }
+		double GetElevation()         { return m_elevation; }
+
+		void SetDivisions( uint divisions )   { m_divisions = divisions; }
+		void SetElevation( double elevation ) { m_elevation = elevation; }
+
+		// Tiles
+		float GetTileAlpha()      { return m_uniformColourOfTiles.GetAlpha(); }
+		bool  GetTileFillStatus() { return m_showTiles; }
+
+		void SetTileAlpha( float alpha )    { m_uniformColourOfTiles.SetAlpha( alpha ); }
+		void ShowTiles( bool status )       { m_showTiles = status; }
+
+		// Borders
+		bool   GetBorderVisibility() { return m_showBorders; }
+		Colour GetBorderColour()     { return m_colourOfBorders; }
+		float  GetBorderAlpha()      { return m_colourOfBorders.GetAlpha(); }
+		uint   GetBorderThickness()  { return m_thicknessOfBorders; }
+		VisualLine::LINE_STYLE GetBorderStyle() { return m_styleOfBorders; }
+
+		void SetBorderVisibility( bool status ) { m_showBorders = status; }
+		void SetBorderColour( Colour colour )   { m_colourOfBorders = colour; }
+		void SetBorderAlpha( float alpha )      { m_colourOfBorders.SetAlpha( alpha ); }
+		void SetBorderThickness( uint width )   { m_thicknessOfBorders = width; }
+		void SetBorderStyle( VisualLine::LINE_STYLE style ) { m_styleOfBorders = style; }
+
 	private:
-		uint m_divisions;
-		double m_elevation;
-		double m_alpha;
+		// General
+		uint  m_divisions;
+		float m_elevation;
+
+		// Tiles
+		bool   m_showTiles;
+		Colour m_uniformColourOfTiles;
+		
+		// Border
+		bool   m_showBorders;
+		Colour m_colourOfBorders;
+		uint   m_thicknessOfBorders;
+		VisualLine::LINE_STYLE m_styleOfBorders;
+
+		// Point3D ...
 
 		// Add serialization stuff, blah
 	};
