@@ -45,8 +45,10 @@ namespace GenGIS
 		/** Render location grid. */
 		void Render();
 
-	//private:
-	//	Point3D vertex
+	private:
+		uint m_divisions;
+		double m_elevation;
+		double m_alpha;
 
 		// Add serialization stuff, blah
 	};
