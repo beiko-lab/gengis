@@ -19,47 +19,102 @@
 # along with GenGIS.  If not, see <http://www.gnu.org/licenses/>.
 #=======================================================================
 
-from GBIFQueryLayout import GBIFQueryLayout
-
+from MGRASTQueryLayout import MGRASTQueryLayout
+from MGRASTQueryLayout import OptionsFrame
 import GenGIS
 import wx
 import math
-#import pickle
-#import urllib2
+import pickle
+import urllib2
 import re
 import sys
-from xml.dom import minidom
-from dataHelper import isNumber
+import time
+from MGRastSpecific import MGRastSpecific
 from GBIFGeneric import GBIFGeneric
-from GBIFSpecific import GBIFSpecific
 
-class GBIFQuery(GBIFQueryLayout):
+class Options(OptionsFrame):
+	def __init__(self):
+		OptionsFrame.__init__(self,None)
+		self.SetIcon(wx.Icon(GenGIS.mainWindow.GetExeDir() + "images/CrazyEye.ico",wx.BITMAP_TYPE_ICO))
+	
+	def GetSearchType(self):
+		if self.m_searchTypeCheck.IsChecked():
+			return "%s" %self.m_searchType.GetString(self.m_searchType.GetSelection())
+		else:
+			return 'organism'
+	
+	def GetFilterLevel(self):
+		if self.m_filterLevelCheck.IsChecked():
+			return "&filter_level=%s" %self.m_filterLevel.GetString(self.m_filterLevel.GetSelection())
+		else:
+			return ""
+	
+	def GetFilterSource(self):	
+		if self.m_filterSourceCheck.IsChecked():
+			return "&filer_source=%s" %self.m_filterSource.GetString(self.m_filterSource.GetCurrentSelection())
+		else:
+			return ""
+			
+	def GetGroupLevel(self):
+		if self.m_groupLevelCheck.IsChecked():
+			return "&group_level=%s" %self.m_groupLevel.GetString(self.m_groupLevel.GetCurrentSelection())
+		else:
+			return ""
+			
+	def GetHitType(self):
+		if self.m_hitTypeCheck.IsChecked():
+			return "&hit_type=%s" %self.m_hitType.GetString(self.m_hitType.GetCurrentSelection())
+		else:
+			return ""
+			
+	def GetIdentity(self):		
+		if self.m_identityCheck.IsChecked():
+			return "&identity=%s" %self.m_identity.GetValue()
+		else:
+			return ""
+			
+	def GetLength(self):		
+		if self.m_lengthCheck.IsChecked():
+			return "&length=%s" %self.m_length.GetValue()
+		else:
+			return ""
+			
+	def GetSource(self):		
+		if self.m_sourceCheck.IsChecked():
+			return "&source=%s" %self.m_source.GetString(self.m_source.GetCurrentSelection())
+		else:
+			return ""
+			
+	def OnOK(self,event):
+		self.Hide()
+	
+	def OnClose(self):
+		self.Hide()
+		
+class MGRastQuery(MGRASTQueryLayout):
 	#	Global variables to store queried information
 	__obs__ = []
 	__selectedTaxon__= set()
 	__description__=""
+	__options__=""
 	
 	def __init__(self,parent=None):
-		MaxLon,MinLon,MaxLat,MinLat = 180,-180,90,-90
-		self.GBIFSpecific = GBIFSpecific()
+		self.__options__ = Options()
+		self.MGRastSpecific = MGRastSpecific()
+		MGRASTQueryLayout.__init__(self,parent)
 		self.GBIFGeneric = GBIFGeneric()
-		GBIFQueryLayout.__init__(self,parent)
 		self.SetIcon(wx.Icon(GenGIS.mainWindow.GetExeDir() + "images/CrazyEye.ico",wx.BITMAP_TYPE_ICO))
-		self.m_Compass.SetIcon(wx.Icon(GenGIS.mainWindow.GetExeDir() + "images/GBIF_compass_small.png",wx.BITMAP_TYPE_PNG))
 		self.m_Add.SetBitmapLabel(wx.Image(GenGIS.mainWindow.GetExeDir() + "images/green_arrow_down.png",wx.BITMAP_TYPE_PNG).ConvertToBitmap())
 		self.m_Add.SetBitmapHover(wx.Image(GenGIS.mainWindow.GetExeDir() + "images/green_arrow_down_hover.png",wx.BITMAP_TYPE_PNG).ConvertToBitmap())
 		self.m_Remove.SetBitmapLabel(wx.Image(GenGIS.mainWindow.GetExeDir() + "images/red_arrow_up.png",wx.BITMAP_TYPE_PNG).ConvertToBitmap())
 		self.m_Remove.SetBitmapHover(wx.Image(GenGIS.mainWindow.GetExeDir() + "images/red_arrow_up_hover.png",wx.BITMAP_TYPE_PNG).ConvertToBitmap())
+		self.m_Compass.SetIcon(wx.Icon(GenGIS.mainWindow.GetExeDir() + "images/GBIF_compass_small.png",wx.BITMAP_TYPE_PNG))
+		MaxLon,MinLon,MaxLat,MinLat = 180,-180,90,-90
 		
-		self.graphicalElementIds=[]
-		self.__selectedTaxon__=set()
-		self.__obs__ = []
 		self.m_IDList.Clear()
 		#fix to expand summary box enough to print two lines of text properly
 		self.m_Summary.SetLabel("\n\n")
 		
-		#No Map Data
-		self.m_AddData.Disable()
 		
 		#Map Data
 		if GenGIS.layerTree.GetNumMapLayers() > 0 :
@@ -81,6 +136,7 @@ class GBIFQuery(GBIFQueryLayout):
 				self.m_MaxLat.SetValue(str(min(MaxLat,borders.dy)))
 				self.m_MinLon.SetValue(str(max(MinLon,borders.x1)))
 				self.m_MaxLon.SetValue(str(min(MaxLon,borders.dx)))
+
 			
 	#	Query GBIF for Taxa in Lat/Lon Boundary
 	def OnSearch(self,event):
@@ -93,66 +149,46 @@ class GBIFQuery(GBIFQueryLayout):
 		if(len(taxon)==0):
 			wx.MessageBox("You did not enter a taxon name.")
 		else:
+		#	self.GBIFSpecific.GETTAXRESULT(taxon,self.m_Result)
 			minLatitude= float(self.m_MinLat.GetValue())
 			maxLatitude= float(self.m_MaxLat.GetValue())
 			minLongitude= float(self.m_MinLon.GetValue())
 			maxLongitude= float(self.m_MaxLon.GetValue())
-			result=self.GBIFSpecific.GETTAXRESULT(taxon,self.m_Result)
-			self.m_Result.InsertItems(result,0)
+			matches=self.MGRastSpecific.GETTAXRESULT(taxon,minLatitude,maxLatitude,minLongitude,maxLongitude,self.m_Summary)
+			if matches:
+				self.m_Result.InsertItems(matches,0)
 		wx.EndBusyCursor()
 		
 	#	Create Sequence and Location files for selected Taxa
+	######################
+	#
+	#	CAN NOT PERFORM MORE THAN ONE QUERY PER SECOND
+	#
+	######################
 	def OnCalculate(self,event):
+		self.__obs__=[]
 		self.m_Summary.SetLabel("\n")
 		records,distLocations = 0,0
-		self.__obs__=[]
-		self.__conversions__=[]
-		self.__description__=""
-		wx.BeginBusyCursor()
+		searchType = self.__options__.GetSearchType()
+		additFields = "%s%s%s%s%s%s%s"%(self.__options__.GetFilterLevel(),self.__options__.GetFilterSource(),self.__options__.GetGroupLevel(),self.__options__.GetHitType(),self.__options__.GetIdentity(),self.__options__.GetLength(),self.__options__.GetSource())
 		if(self.__selectedTaxon__):
-			minLatitude= float(self.m_MinLat.GetValue())
-			maxLatitude= float(self.m_MaxLat.GetValue())
-			minLongitude= float(self.m_MinLon.GetValue())
-			maxLongitude= float(self.m_MaxLon.GetValue())
 			self.m_Progress.WriteText("Starting...\n")
 			for tax in self.__selectedTaxon__:
-				obs,recs,distLocs,description= self.GBIFSpecific.GETOBSENTIRERANGE(tax[1].split(),tax[0],minLatitude,maxLatitude,minLongitude,maxLongitude,self.m_Progress)
-				self.__obs__.append(obs)
-				self.__description__+="%s\n" % description
-				records += recs
-				distLocations +=distLocs
-			self.m_Progress.WriteText("Done.\n")
+				startTime = time.time()
+				obs = self.MGRastSpecific.GETOBS(tax[0],searchType,additFields,self.m_Progress)
+				if obs:	
+					self.__obs__.append(obs)
+				if (time.time() - startTime) < 1:
+					sleep.time(1)
 		else:
 			wx.MessageBox("Please select some Taxa.")
-		summaryText = ("%d records retrieved.\n%d distinct locations." %(records,distLocations))
-		f = self.m_Summary.GetFont()
-		dc = wx.WindowDC(self.m_Summary)
-		dc.SetFont(f)
-		aSize = dc.GetMultiLineTextExtent(summaryText)
-		aSize = wx.Size(aSize[0],aSize[1])
-		self.m_Summary.SetSize(aSize)
+		self.m_Progress.WriteText("Done\n")
 		
-		self.m_Summary.SetLabel(summaryText)
-		wx.EndBusyCursor()
-	
 	#	Present the number of locations a user is about to query
 	#	Used as a check by the user to know they aren't going to produce way too much data.
 	def OnPreCalculate(self,event):
-		wx.BeginBusyCursor()
-		self.m_Progress.WriteText("Retrieving record counts.\n")
-		self.m_Summary.SetLabel("\n")
-		if(self.__selectedTaxon__):
-			minLatitude= self.GBIFGeneric.roundCoord(self.m_MinLat.GetValue())
-			maxLatitude= self.GBIFGeneric.roundCoord(self.m_MaxLat.GetValue())
-			minLongitude= self.GBIFGeneric.roundCoord(self.m_MinLon.GetValue())
-			maxLongitude= self.GBIFGeneric.roundCoord(self.m_MaxLon.GetValue())
-			count=0
-			for tax in self.__selectedTaxon__:
-				count+=self.GBIFSpecific.GETCOUNT(tax[1].split(),tax[0],minLatitude,maxLatitude,minLongitude,maxLongitude,self.m_Progress)
-			self.m_Summary.SetLabel("There were %d records for the given location." % count)
-		else:
-			wx.MessageBox("Please select some Taxa.")
-		wx.EndBusyCursor()
+		#stufstufstu
+		return 0
 		
 	#	Redirects User to Wiki page for this plugin
 	def OnHelp(self, event):
@@ -161,11 +197,11 @@ class GBIFQuery(GBIFQueryLayout):
 	#	Adds Data to GenGIS
 	def OnAddData(self,event):
 		if (len(self.__obs__) > 0):
-			OUTLText, OUTSText = self.GBIFGeneric.GETTEXT(self.__obs__)
+			OUTLText, OUTSText = self.MGRastSpecific.GETTEXT(self.__obs__)
 			OUTLArray=self.GBIFGeneric.CPPOUT(OUTLText)
 			OUTSArray=self.GBIFGeneric.CPPOUT(OUTSText)
-			OUTLArray.insert(0,"Site ID,Latitude,Longitude,Richness,Cell ID,Taxon,Genus")
-			OUTSArray.insert(0,"Sequence ID,Site ID,CellLat,CellLong,Taxon,Genus,TrueLat,TrueLong,Count,AllRecords")					
+			OUTLArray.insert(0,"Site ID,Latitude,Longitude,Richness,Cell ID")
+			OUTSArray.insert(0,"Sequence ID,Site ID,CellLat,CellLong,Taxonomy")					
 			OUTLArray.pop()
 			OUTSArray.pop()
 			layerName = "GBIFLayer_%d" % GenGIS.layerTree.GetNumLocationLayers()
@@ -175,7 +211,7 @@ class GBIFQuery(GBIFQueryLayout):
 			#Get the number of last location layer added (the gbif one)
 			numLocationLayers=GenGIS.layerTree.GetNumLocationSetLayers()
 			locationSetLayer = GenGIS.layerTree.GetLocationSetLayer(numLocationLayers-1)
-			locationSetLayer.SetDescription(self.__description__)
+		#	locationSetLayer.SetDescription(self.__description__)
 			
 		else:
 			wx.MessageBox("Please make a successful GBIF Query first.")
@@ -192,12 +228,9 @@ class GBIFQuery(GBIFQueryLayout):
 				#creates the directories
 				OUTLfile = ("%s/%s_locs.csv" % (dir,file_split[0]))				
 				OUTSfile = ("%s/%s_seqs.csv" % (dir,file_split[0]))
-				OUTDfile = ("%s/%s_source.txt" % (dir,file_split[0]))
-				OUTLText, OUTSText = self.GBIFGeneric.GETTEXT(self.__obs__)
-				self.GBIFGeneric.WRITEEXPORT(OUTLfile,OUTLText,"Site ID,Latitude,Longitude,Richness,Cell ID,Taxon,Genus\n")
-				self.GBIFGeneric.WRITEEXPORT(OUTSfile,OUTSText,"Sequence ID,Site ID,CellLat,CellLong,Taxon,Genus,TrueLat,TrueLong,Count,AllRecords\n")
-				description = self.__description__.encode('utf-8')
-				self.GBIFGeneric.WRITEEXPORT(OUTDfile,description,"")
+				OUTLText, OUTSText = self.MGRastSpecific.GETTEXT(self.__obs__)
+				self.GBIFGeneric.WRITEEXPORT(OUTLfile,OUTLText,"Site ID,Latitude,Longitude,Richness,Cell ID\n")
+				self.GBIFGeneric.WRITEEXPORT(OUTSfile,OUTSText,"Sequence ID,Site ID,CellLat,CellLong,Taxonomy\n")
 			dlg.Destroy()
 		else:
 			wx.MessageBox("Please make a successful GBIF Query first.")
@@ -209,9 +242,9 @@ class GBIFQuery(GBIFQueryLayout):
 		for index in self.m_Result.GetSelections():
 			selected = self.m_Result.GetString(index)
 			split = selected.split(" | ")
-			if (int(split[0]),split[1]) not in self.__selectedTaxon__:
+			if (split[0],split[1]) not in self.__selectedTaxon__:
 				self.m_IDList.InsertItems(["%s" % selected],IDCount+i)
-				self.__selectedTaxon__.add((int(split[0]),split[1]))
+				self.__selectedTaxon__.add((split[0],split[1]))
 				i+=1
 			
 	#	Remove Data from ID List
@@ -220,22 +253,17 @@ class GBIFQuery(GBIFQueryLayout):
 		for index in candidates:
 			selected = self.m_IDList.GetString(index)
 			split = selected.split(" | ")
-			self.__selectedTaxon__.remove((int(split[0]),split[1]))
+			self.__selectedTaxon__.remove((split[0],split[1]))
 			self.m_IDList.Delete(index)
 	
 	#	Close the Plugin
 	def OnClose(self, event):
-		# remove plotted lines
-		for id in self.graphicalElementIds:
-			GenGIS.graphics.RemoveLine(id)
-
-		GenGIS.viewport.Refresh()
 		event.Skip()
 	
 	#	Close the Plugin
 	def OnOK( self, event ):
 		self.Close()	
-		
+	
 	def OnLatEnter(self,event):
 		str = event.GetString()
 		str2 = re.sub('[^\d\.\-]','',str)
@@ -259,6 +287,7 @@ class GBIFQuery(GBIFQueryLayout):
 				str2 = str[:-1]
 		event.GetClientData().SetValue(str2)
 		event.GetClientData().SetInsertionPoint(len(str2))
-		
-		
+	
+	def OnOptions(self,event):
+		self.__options__.Show()
 		

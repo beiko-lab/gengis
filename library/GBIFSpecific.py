@@ -97,9 +97,10 @@ class GBIFSpecific:
 		if(FAIL==1):
 			taxonList=[taxonReq]
 		obs={}
-				
+		resultList=[]	
 		for taxonName in taxonList:	
-			pos=0
+	#		pos=0
+			
 			url="http://data.gbif.org/ws/rest/taxon/list?scientificname="+taxonName+"*&dataproviderkey=1&dataresourcekey=1"
 			try:	
 				html=urllib2.urlopen(url)
@@ -119,12 +120,14 @@ class GBIFSpecific:
 					name=self.Strip(string,"<tn:nameComplete>.*")
 					rank=self.Strip(string,"<tn:rankString>.*")
 					according=self.Strip(string,"<tc:accordingToString>.*")
-					queryLayout.InsertItems(["%d | %s | %s | %s"%(id,name,rank,according)],pos)
-					pos+=1
+				#	queryLayout.InsertItems(["%d | %s | %s | %s"%(id,name,rank,according)],pos)
+					resultList.append("%d | %s | %s | %s"%(id,name,rank,according))
+	#				pos+=1
 			else:
 				wx.MessageBox("No Tax Found.")
 				return(-1)
-			return(1)
+	#		return(1)
+			return resultList
 	
 	#	Get smallest TAX ID. 
 	def	Strip (self,Node,tag):
