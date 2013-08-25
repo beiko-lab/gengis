@@ -31,8 +31,8 @@
 #include <wx/radiobut.h>
 #include <wx/choice.h>
 #include <wx/slider.h>
-#include <wx/richtext/richtextctrl.h>
 #include <wx/button.h>
+#include <wx/richtext/richtextctrl.h>
 #include <wx/dialog.h>
 
 ///////////////////////////////////////////////////////////////////////////
@@ -254,12 +254,26 @@ namespace GenGIS
 			wxRadioButton* m_radioBtn6;
 			wxStaticText* m_staticText36;
 			wxSpinCtrl* m_spinGridDivisions;
+			wxRadioButton* m_radioBtnLatitude;
+			wxRadioButton* m_radioBtnLongitude;
 			wxRadioButton* m_radioBtn3;
 			wxChoice* m_choice4;
-			
 			wxRadioButton* m_radioBtn4;
-			wxSpinCtrl* m_spinCtrl13;
-			wxSpinCtrl* m_spinCtrl14;
+			wxStaticText* m_staticText41;
+			wxTextCtrl* m_textCtrl11;
+			wxTextCtrl* m_textCtrl12;
+			wxTextCtrl* m_textCtrl13;
+			wxTextCtrl* m_textCtrl10;
+			
+			
+			
+			wxTextCtrl* m_textCtrl14;
+			
+			
+			
+			wxTextCtrl* m_textCtrl15;
+			wxButton* m_button6;
+			wxButton* m_button5;
 			wxCheckBox* m_checkBox17;
 			wxStaticLine* m_staticline8;
 			wxStaticText* m_staticText30;

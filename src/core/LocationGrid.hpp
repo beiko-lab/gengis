@@ -34,6 +34,9 @@ namespace GenGIS
 	class LocationGrid : public View
 	{
 	public:
+		enum ALIGNMENT { LATITUDE, LONGITUDE, LOCATION, CUSTOM };
+
+	public:
 		/**
 		* @brief Constructor.
 		*/
@@ -77,8 +80,11 @@ namespace GenGIS
 
 	private:
 		// General
-		uint  m_divisions;
-		float m_elevation;
+		ALIGNMENT m_gridAlignment;
+		Box2D   m_mapOpenGLBoundaries;
+		Point2D m_mapOffset;
+		uint    m_divisions;
+		float   m_elevation;
 
 		// Tiles
 		bool   m_showTiles;
