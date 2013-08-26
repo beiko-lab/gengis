@@ -35,6 +35,7 @@ namespace GenGIS
 	{
 	public:
 		enum ALIGNMENT { LATITUDE, LONGITUDE, LOCATION, CUSTOM };
+		enum TILE_FILL { NONE, UNIFORM, MAPPED };
 
 	public:
 		/**
@@ -52,18 +53,22 @@ namespace GenGIS
 		void Render();
 
 		// General
-		uint   GetNumberOfDivisions() { return m_divisions; }
-		double GetElevation()         { return m_elevation; }
+		uint   GetNumberOfDivisions()          { return m_divisions; }
+		bool   GetAutoAdjustElevationStatus () { return m_autoAdjustElevation; }
+		double GetElevation()                  { return m_elevation; }
 
-		void SetDivisions( uint divisions )   { m_divisions = divisions; }
-		void SetElevation( double elevation ) { m_elevation = elevation; }
+		void SetDivisions( uint divisions )               { m_divisions = divisions; }
+		void SetAutoAdjustElevationStatus ( bool status ) { m_autoAdjustElevation = status; }
+		void SetElevation( double elevation )             { m_elevation = elevation; }
 
 		// Tiles
-		float GetTileAlpha()      { return m_uniformColourOfTiles.GetAlpha(); }
-		bool  GetTileFillStatus() { return m_showTiles; }
+		bool   GetTileFillStatus()    { return m_showTiles; }
+		float  GetTileAlpha()         { return m_uniformColourOfTiles.GetAlpha(); }
+		Colour GetTileUniformColour() { return m_uniformColourOfTiles; }
 
-		void SetTileAlpha( float alpha )    { m_uniformColourOfTiles.SetAlpha( alpha ); }
-		void ShowTiles( bool status )       { m_showTiles = status; }
+		void ShowTiles( bool status )              { m_showTiles = status; }
+		void SetTileAlpha( float alpha )           { m_uniformColourOfTiles.SetAlpha( alpha ); }
+		void SetTileUniformColour( Colour colour ) { m_uniformColourOfTiles = colour; }
 
 		// Borders
 		bool   GetBorderVisibility() { return m_showBorders; }
@@ -84,11 +89,13 @@ namespace GenGIS
 		Box2D   m_mapOpenGLBoundaries;
 		Point2D m_mapOffset;
 		uint    m_divisions;
+		bool    m_autoAdjustElevation;
 		float   m_elevation;
 
 		// Tiles
-		bool   m_showTiles;
-		Colour m_uniformColourOfTiles;
+		bool      m_showTiles;
+		TILE_FILL m_tileFillMode;
+		Colour    m_uniformColourOfTiles;
 		
 		// Border
 		bool   m_showBorders;
