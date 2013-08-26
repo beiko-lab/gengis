@@ -32,7 +32,7 @@ class MGRastSpecific:
 		#nothing to see here
 	#test =  Akkermansia	
 	
-	def GETTAXRESULT(self,taxon_name,minlatitude,maxlatitude,minlongitude,maxlongitude,Summary):
+	def GETTAXRESULT(self,taxon_name,searchType,minlatitude,maxlatitude,minlongitude,maxlongitude,Summary):
 		result=[]
 		totalRecords=0
 		limit=1000
@@ -42,7 +42,15 @@ class MGRastSpecific:
 		taxonList=[taxonReq]
 		obs={}
 		taxonName=taxonReq		
-		url="http://api.metagenomics.anl.gov/1/metagenome?status=public&organism=%s&limit=%s&verbosity=mixs"%(taxonName,limit)
+		if searchType == "organism":
+			url="http://api.metagenomics.anl.gov/1/metagenome?status=public&organism=%s&limit=%s&verbosity=mixs"%(taxonName,limit)
+			rowMeta = 'taxonomy'
+		elif searchType == "function":
+			url="http://api.metagenomics.anl.gov/1/metagenome?status=public&function=%s&limit=%s&verbosity=mixs"%(taxonName,limit)
+			rowMeta = 'ontology'
+		elif searchType == "feature":
+			url="http://api.metagenomics.anl.gov/1/metagenome?status=public&feature=%s&limit=%s&verbosity=mixs"%(taxonName,limit)
+			rowMeta = 'taxonomy'
 		try:	
 			html=urllib2.urlopen(url)
 			startTime = time.time()

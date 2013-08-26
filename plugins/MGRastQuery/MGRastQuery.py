@@ -143,7 +143,7 @@ class MGRastQuery(MGRASTQueryLayout):
 		wx.BeginBusyCursor()
 		#	Clear the results list
 		self.m_Result.Clear()
-		
+		searchType = self.__options__.GetSearchType()
 		taxon = self.m_TaxonName.GetLineText(0)
 		taxon=taxon.split()
 		if(len(taxon)==0):
@@ -154,7 +154,7 @@ class MGRastQuery(MGRASTQueryLayout):
 			maxLatitude= float(self.m_MaxLat.GetValue())
 			minLongitude= float(self.m_MinLon.GetValue())
 			maxLongitude= float(self.m_MaxLon.GetValue())
-			matches=self.MGRastSpecific.GETTAXRESULT(taxon,minLatitude,maxLatitude,minLongitude,maxLongitude,self.m_Summary)
+			matches=self.MGRastSpecific.GETTAXRESULT(taxon,searchType,minLatitude,maxLatitude,minLongitude,maxLongitude,self.m_Summary)
 			if matches:
 				self.m_Result.InsertItems(matches,0)
 		wx.EndBusyCursor()

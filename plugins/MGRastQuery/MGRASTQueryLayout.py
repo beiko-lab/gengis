@@ -288,9 +288,9 @@ class MGRASTQueryLayout ( wx.Frame ):
 class OptionsFrame ( wx.Frame ):
 	
 	def __init__( self, parent ):
-		wx.Frame.__init__ ( self, parent, id = wx.ID_ANY, title = wx.EmptyString, pos = wx.DefaultPosition, size = wx.Size( 502,314 ), style = wx.DEFAULT_FRAME_STYLE|wx.TAB_TRAVERSAL )
+		wx.Frame.__init__ ( self, parent, id = wx.ID_ANY, title = wx.EmptyString, pos = wx.DefaultPosition, size = wx.Size( 502,338 ), style = wx.DEFAULT_FRAME_STYLE|wx.TAB_TRAVERSAL )
 		
-		self.SetSizeHintsSz( wx.Size( 502,314 ), wx.DefaultSize )
+		self.SetSizeHintsSz( wx.Size( 502,338 ), wx.DefaultSize )
 		self.SetBackgroundColour( wx.SystemSettings.GetColour( wx.SYS_COLOUR_BTNFACE ) )
 		
 		sbSizer6 = wx.StaticBoxSizer( wx.StaticBox( self, wx.ID_ANY, u"Options" ), wx.VERTICAL )
@@ -320,7 +320,7 @@ class OptionsFrame ( wx.Frame ):
 		self.m_searchTypeText.Wrap( -1 )
 		fgSizer2.Add( self.m_searchTypeText, 0, wx.ALL|wx.ALIGN_CENTER_HORIZONTAL, 5 )
 		
-		m_searchTypeChoices = [ u"organism", u"function", u"feature" ]
+		m_searchTypeChoices = [ u"organism", u"function" ]
 		self.m_searchType = wx.Choice( self, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, m_searchTypeChoices, 0 )
 		self.m_searchType.SetSelection( 0 )
 		fgSizer2.Add( self.m_searchType, 0, wx.ALL|wx.EXPAND, 5 )
