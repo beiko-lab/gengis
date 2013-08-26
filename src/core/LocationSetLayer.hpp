@@ -142,6 +142,11 @@ namespace GenGIS
 			return m_chartSetView;
 		}
 
+		LocationGridPtr GetLocationGrid() const
+		{
+			return m_locationGrid;
+		}
+
 		/** 
 		* @brief Set active state of layer.
 		* @param state Active state of layer.
@@ -176,6 +181,9 @@ namespace GenGIS
 	protected:
 		/** Chart controller for laying out chart views associated with this location set. */
 		ChartSetViewPtr m_chartSetView;
+
+		/** Location grid associated with this location set. */
+		LocationGridPtr m_locationGrid;
 
 		/** Location layers beneath this location set layer. */
 		std::vector<LocationLayerPtr> m_locationLayers;

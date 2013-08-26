@@ -110,6 +110,9 @@ namespace GenGIS
 	class   LocationController;
 	typedef boost::shared_ptr<LocationController> LocationControllerPtr;
 
+	class   LocationGrid;
+	typedef boost::shared_ptr<LocationGrid> LocationGridPtr;
+
 	class   LocationLayer;
 	typedef boost::shared_ptr<LocationLayer> LocationLayerPtr;
 

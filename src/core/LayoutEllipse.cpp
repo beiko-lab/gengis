@@ -222,7 +222,7 @@ void LayoutEllipse::Render()
 void LayoutEllipse::ShowPropertiesDlg()
 {
 	LayoutObjectPropertiesDlg* dlg = new LayoutObjectPropertiesDlg(App::Inst().GetMainWindow());
-  dlg->Show();
+	dlg->Show();
 }
 
 Point3D LayoutEllipse::OrthoLineEndPt(const Line3D& primaryLayoutLine, const Point3D& midPt)

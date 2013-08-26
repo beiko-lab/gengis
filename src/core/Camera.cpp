@@ -121,9 +121,9 @@ void Camera::SetModelSpaceExtents(float minX, float maxX, float minY, float maxY
 void Camera::ZoomDelta(float fraction)
 {
 	//const float MIN_ZOOM = 0.25;
-	const float MIN_ZOOM = 0.03;
+	const float MIN_ZOOM = 0.03f;
 	//const float MAX_ZOOM = 10.0;
-	const float MAX_ZOOM = 20.0;
+	const float MAX_ZOOM = 20.0f;
 
 	m_translation.z += fraction	* m_translation.z;
 
