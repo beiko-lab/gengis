@@ -58,7 +58,6 @@ class MGRastSpecific:
 			wx.MessageBox("The server is temporarily unreachable.\nPlease try again later.")
 			return False
 		response=html.read()
-		#sleep here to adhere to MG-RAST's request that no more than a Query per second
 		searchRes = json.loads(response)
 		nodeList = searchRes['data']
 		next = str(searchRes['next'])
@@ -66,7 +65,6 @@ class MGRastSpecific:
 			wx.MessageBox("No Organism Found.")
 			return False
 		while True:
-		#	if (len(nodeList) > 0):
 			for node in nodeList:
 				#	REMOVE PRIVATE STUDIES: BE SURE TO TURN THIS OFF IF AUTHENTICATION IS ADDED
 				latitude,longitude=node['latitude'],node['longitude']
@@ -76,16 +74,11 @@ class MGRastSpecific:
 				name = node['project_name']
 				according = node['name']
 				result.append("%s | %s | %s"%(id,name,according))
-		#	else:
-		#		wx.MessageBox("No Organism Found.")
-		#		return False
 			totalRecords+=len(nodeList)
-		#	print next
 			if next != 'None':
 				url = next
 				#sleep here to adhere to MG-RAST's request that no more than a Query per second
 				runTime = time.time() - startTime
-		#		print runTime
 				if runTime < 1:
 					time.sleep(1)
 				try:	
