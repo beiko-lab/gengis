@@ -34,10 +34,12 @@ LocationGrid::LocationGrid() :
 	m_mapOpenGLBoundaries( -1.0, -1.0, 1.0, 1.0 ),
 	m_mapOffset( 0.0f, 0.0f ),
 	m_divisions( 15 ),
+	m_autoAdjustElevation( true ),
 	m_elevation( 0.05f ),
 
 	m_showTiles( true ),
-	m_uniformColourOfTiles( 0.0f, 0.0f, 0.0f, 0.3f ),
+	m_tileFillMode( MAPPED ),
+	m_uniformColourOfTiles( 0.0f, 0.5f, 0.0f, 0.3f ),
 
 	m_showBorders( true ),
 	m_colourOfBorders( 0.0f, 0.0f, 0.0f, 0.3f ),
@@ -71,6 +73,20 @@ void LocationGrid::Render()
 	m_mapOpenGLBoundaries.y  = -( mapController->GetHeight() / 2 );
 	m_mapOpenGLBoundaries.dy =  ( mapController->GetHeight() / 2 );
 
+	// Set the grid elevation
+	float elevation;
+	if ( m_autoAdjustElevation )
+	{
+		elevation  = mapController->GetMaxElevationGridSpace()
+		           * mapController->GetVerticalExaggeration()
+		           + 0.005; // Add a minimal amount to avoid colour
+		                    // clashing between grid and map
+	}
+	else
+	{
+		elevation = m_elevation;
+	}
+
 	// Determine appropriate tile size
 	double tileSize;
 	if ( m_gridAlignment == LATITUDE )
@@ -92,8 +108,8 @@ void LocationGrid::Render()
 	// Render borders (lines)
 	if ( m_showBorders )
 	{
-		m_mapOffset.x = 0.05f;
-		m_mapOffset.y = 0.03f;
+		m_mapOffset.x = fmod( 0.2, tileSize );
+		m_mapOffset.y = fmod( 0.3, tileSize );
 
 		double xCurrentPosition = m_mapOpenGLBoundaries.x + m_mapOffset.x;
 		double zCurrentPosition = m_mapOpenGLBoundaries.y + m_mapOffset.y;
@@ -114,15 +130,15 @@ void LocationGrid::Render()
 		// Render a first (left) column line if there is an offset
 		if ( m_mapOffset.x > 0)
 		{
-			glVertex3f( m_mapOpenGLBoundaries.x,  m_elevation, m_mapOpenGLBoundaries.y );
-			glVertex3f( m_mapOpenGLBoundaries.dx, m_elevation, m_mapOpenGLBoundaries.y );
+			glVertex3f( m_mapOpenGLBoundaries.x,  elevation, m_mapOpenGLBoundaries.y );
+			glVertex3f( m_mapOpenGLBoundaries.dx, elevation, m_mapOpenGLBoundaries.y );
 		}
 
 		// Render a first (top) row line if there is an offset
 		if ( m_mapOffset.y > 0)
 		{
-			glVertex3f( m_mapOpenGLBoundaries.x, m_elevation, m_mapOpenGLBoundaries.y  );
-			glVertex3f( m_mapOpenGLBoundaries.x, m_elevation, m_mapOpenGLBoundaries.dy );
+			glVertex3f( m_mapOpenGLBoundaries.x, elevation, m_mapOpenGLBoundaries.y  );
+			glVertex3f( m_mapOpenGLBoundaries.x, elevation, m_mapOpenGLBoundaries.dy );
 		}
 
 		// Render column lines
@@ -130,8 +146,8 @@ void LocationGrid::Render()
 		{
 			if ( xCurrentPosition > m_mapOpenGLBoundaries.dx )
 				break;
-			glVertex3f( xCurrentPosition, m_elevation, m_mapOpenGLBoundaries.y  );
-			glVertex3f( xCurrentPosition, m_elevation, m_mapOpenGLBoundaries.dy );
+			glVertex3f( xCurrentPosition, elevation, m_mapOpenGLBoundaries.y  );
+			glVertex3f( xCurrentPosition, elevation, m_mapOpenGLBoundaries.dy );
 			xCurrentPosition += tileSize;
 		}
 
@@ -140,46 +156,64 @@ void LocationGrid::Render()
 		{
 			if ( zCurrentPosition > m_mapOpenGLBoundaries.dy )
 				break;
-			glVertex3f( m_mapOpenGLBoundaries.x,  m_elevation, zCurrentPosition );
-			glVertex3f( m_mapOpenGLBoundaries.dx, m_elevation, zCurrentPosition );
+			glVertex3f( m_mapOpenGLBoundaries.x,  elevation, zCurrentPosition );
+			glVertex3f( m_mapOpenGLBoundaries.dx, elevation, zCurrentPosition );
 			zCurrentPosition += tileSize;
 		}
 
 		// Render last (right) column line
-		glVertex3f( m_mapOpenGLBoundaries.x,  m_elevation, m_mapOpenGLBoundaries.dy );
-		glVertex3f( m_mapOpenGLBoundaries.dx, m_elevation, m_mapOpenGLBoundaries.dy );
+		glVertex3f( m_mapOpenGLBoundaries.x,  elevation, m_mapOpenGLBoundaries.dy );
+		glVertex3f( m_mapOpenGLBoundaries.dx, elevation, m_mapOpenGLBoundaries.dy );
 
 		// Render last (bottom) row line
-		glVertex3f( m_mapOpenGLBoundaries.dx, m_elevation, m_mapOpenGLBoundaries.y  );
-		glVertex3f( m_mapOpenGLBoundaries.dx, m_elevation, m_mapOpenGLBoundaries.dy );
+		glVertex3f( m_mapOpenGLBoundaries.dx, elevation, m_mapOpenGLBoundaries.y  );
+		glVertex3f( m_mapOpenGLBoundaries.dx, elevation, m_mapOpenGLBoundaries.dy );
 
 		glEnd();
 	}
 
 	// Render tiles
-	//if ( m_showTiles )
-	//{
-	//	uint   iterator = 0;
-	//	double x = m_mapOpenGLBoundaries.x;
-	//	double z;
-	//	glBegin( GL_QUADS );
-	//	for ( uint col = 0; col < m_divisions; col++ )
-	//	{
-	//		z = m_mapOpenGLBoundaries.y;
-	//		for ( uint row = 0; row < m_divisions; row++ )
-	//		{
-	//			glColor4fv( COLOUR[iterator] );
-	//			( iterator < 7 ) ? iterator++ : iterator = 0;
+	if ( m_showTiles )
+	{
+		if ( m_tileFillMode == UNIFORM )
+		{
+			glBegin( GL_QUADS );
 
-	//			glVertex3f( x,            m_elevation, z            );
-	//			glVertex3f( x + tileSize, m_elevation, z            );
-	//			glVertex3f( x + tileSize, m_elevation, z + tileSize );
-	//			glVertex3f( x,            m_elevation, z + tileSize );
+			glColor4f( m_uniformColourOfTiles.GetRed(), m_uniformColourOfTiles.GetGreen(),
+				m_uniformColourOfTiles.GetBlue(), m_uniformColourOfTiles.GetAlpha() );
 
-	//			z += tileSize;
-	//		}
-	//		x += tileSize;
-	//	}
-	//	glEnd();
-	//}
+			glVertex3f( m_mapOpenGLBoundaries.x,  elevation, m_mapOpenGLBoundaries.y  );
+			glVertex3f( m_mapOpenGLBoundaries.x,  elevation, m_mapOpenGLBoundaries.dy );
+			glVertex3f( m_mapOpenGLBoundaries.dx, elevation, m_mapOpenGLBoundaries.dy );
+			glVertex3f( m_mapOpenGLBoundaries.dx, elevation, m_mapOpenGLBoundaries.y  );
+
+			glEnd();
+		}
+		else if ( m_tileFillMode == MAPPED )
+		{
+			uint   iterator = 0;
+			double xCurrentPosition = m_mapOpenGLBoundaries.x + m_mapOffset.x;
+			double zCurrentPosition = m_mapOpenGLBoundaries.y + m_mapOffset.y;
+
+			glBegin( GL_QUADS );
+			for ( uint col = 0; col < m_divisions; col++ )
+			{
+				for ( uint row = 0; row < m_divisions; row++ )
+				{
+					glColor4fv( COLOUR[iterator] );
+					( iterator < 7 ) ? iterator++ : iterator = 0;
+
+					glVertex3f( xCurrentPosition,            elevation, zCurrentPosition            );
+					glVertex3f( xCurrentPosition + tileSize, elevation, zCurrentPosition            );
+					glVertex3f( xCurrentPosition + tileSize, elevation, zCurrentPosition + tileSize );
+					glVertex3f( xCurrentPosition,            elevation, zCurrentPosition + tileSize );
+
+					zCurrentPosition += tileSize;
+				}
+				zCurrentPosition  = m_mapOpenGLBoundaries.y + m_mapOffset.y;
+				xCurrentPosition += tileSize;
+			}
+			glEnd();
+		}
+	}
 }

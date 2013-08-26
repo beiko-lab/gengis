@@ -493,14 +493,36 @@ void LocationSetPropertiesDlg::InitLocationGrid()
 	// Get visibility of grid
 	m_chkShowGrid->SetValue( locationGrid->IsVisible() );
 
+	// Get uniform colour of tiles
+	Colour tileColour = locationGrid->GetTileUniformColour();
+	m_gridTileColour->SetColour( wxColour( tileColour.GetRedInt(),
+		tileColour.GetGreenInt(), tileColour.GetBlueInt() ) );
+
+	// Get alpha of tiles
+	uint alphaTiles = locationGrid->GetTileAlpha()*10;
+	m_sliderTileAlpha->SetValue( alphaTiles );
+
+	// Enable/Disable grid border controls
+	bool borderVisibility = locationGrid->GetBorderVisibility();
+
+	m_chkShowGridBorders->SetValue( borderVisibility );
+	m_txtGridBorderColour->Enable( borderVisibility );
+	m_txtGridBorderAlpha->Enable( borderVisibility );
+	m_txtGridBorderThickness->Enable( borderVisibility );
+	m_txtGridBorderStyle->Enable( borderVisibility );
+	m_gridBorderColour->Enable( borderVisibility );
+	m_sliderBorderAlpha->Enable( borderVisibility );
+	m_spinGridBorderThickness->Enable( borderVisibility );
+	m_cboGridBorderStyle->Enable( borderVisibility );
+
 	// Get colour of grid borders
 	Colour borderColour = locationGrid->GetBorderColour();
 	m_gridBorderColour->SetColour( wxColour( borderColour.GetRedInt(),
 		borderColour.GetGreenInt(), borderColour.GetBlueInt() ) );
 
 	// Get alpha of grid borders
-	uint alpha = locationGrid->GetBorderAlpha()*10;
-	m_sliderBorderAlpha->SetValue( alpha );
+	uint alphaGridBorders = locationGrid->GetBorderAlpha()*10;
+	m_sliderBorderAlpha->SetValue( alphaGridBorders );
 
 	// Get thickness of grid borders
 	m_spinGridBorderThickness->SetValue( locationGrid->GetBorderThickness() );
@@ -519,9 +541,47 @@ void LocationSetPropertiesDlg::InitLocationGrid()
 	// Get the number of divisions
 	m_spinGridDivisions->SetValue( locationGrid->GetNumberOfDivisions() );
 
+	// Get 'auto adjust to map elevation' status
+	bool autoAdjustElevationStatus = locationGrid->GetAutoAdjustElevationStatus();
+	m_chkAutoAdjustElevation->SetValue( autoAdjustElevationStatus );
+
+	// Enable/Disable grid elevation controls
+	m_lblVerticalElevation->Enable( !autoAdjustElevationStatus );
+	m_textCtrlGridElevation->Enable( !autoAdjustElevationStatus );
+	m_radioVerticalElevationDegrees->Enable( !autoAdjustElevationStatus );
+	m_radioVerticalElevationPixels->Enable( !autoAdjustElevationStatus );
+
 	// Get the grid elevation
 	m_textCtrlGridElevation->SetValue(
 		wxString( StringTools::ToStringW( locationGrid->GetElevation(), 2 ).c_str() ) );
+}
+
+void LocationSetPropertiesDlg::OnShowGridBorders( wxCommandEvent& event )
+{
+	bool borderVisibility = m_chkShowGridBorders->GetValue();
+
+	m_txtGridBorderColour->Enable( borderVisibility );
+	m_txtGridBorderAlpha->Enable( borderVisibility );
+	m_txtGridBorderThickness->Enable( borderVisibility );
+	m_txtGridBorderStyle->Enable( borderVisibility );
+	m_gridBorderColour->Enable( borderVisibility );
+	m_sliderBorderAlpha->Enable( borderVisibility );
+	m_spinGridBorderThickness->Enable( borderVisibility );
+	m_cboGridBorderStyle->Enable( borderVisibility );
+
+	m_locationSetLayer->GetLocationGrid()->SetBorderVisibility( borderVisibility );
+}
+
+void LocationSetPropertiesDlg::OnAutoAdjustElevation( wxCommandEvent& event )
+{
+	bool status = m_chkAutoAdjustElevation->GetValue();
+
+	m_lblVerticalElevation->Enable( !status );
+	m_textCtrlGridElevation->Enable( !status );
+	m_radioVerticalElevationDegrees->Enable( !status );
+	m_radioVerticalElevationPixels->Enable( !status );
+
+	m_locationSetLayer->GetLocationGrid()->SetAutoAdjustElevationStatus( status );
 }
 
 void LocationSetPropertiesDlg::InitMetadata()
@@ -895,12 +955,19 @@ void LocationSetPropertiesDlg::ApplyGrid()
 	// Set visibility of grid
 	locationGrid->SetVisibility( m_chkShowGrid->GetValue() );
 
+	// Set uniform colour of tiles
+	locationGrid->SetTileUniformColour( Colour( m_gridTileColour->GetColour() ) );
+
+	// Set alpha of tiles
+	float tileAlpha = m_sliderTileAlpha->GetValue();
+	locationGrid->SetTileAlpha( tileAlpha/10 );
+
 	// Set colour of grid borders
 	locationGrid->SetBorderColour( Colour( m_gridBorderColour->GetColour() ) );
 
 	// Set alpha of grid borders
-	float alpha = m_sliderBorderAlpha->GetValue();
-	locationGrid->SetBorderAlpha( alpha/10 );
+	float gridBorderAlpha = m_sliderBorderAlpha->GetValue();
+	locationGrid->SetBorderAlpha( gridBorderAlpha/10 );
 
 	// Set thickness of grid borders
 	locationGrid->SetBorderThickness( m_spinGridBorderThickness->GetValue() );

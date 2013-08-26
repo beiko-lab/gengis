@@ -29,8 +29,8 @@
 #include <wx/spinctrl.h>
 #include <wx/notebook.h>
 #include <wx/radiobut.h>
-#include <wx/choice.h>
 #include <wx/slider.h>
+#include <wx/choice.h>
 #include <wx/button.h>
 #include <wx/richtext/richtextctrl.h>
 #include <wx/dialog.h>
@@ -226,23 +226,25 @@ namespace GenGIS
 			wxPanel* m_panel13;
 			wxRadioButton* m_radioGridNoFill;
 			
-			
-			
 			wxRadioButton* m_radioGridUniformColour;
-			wxColourPickerCtrl* m_colourPicker8;
-			wxStaticText* m_staticText39;
-			wxSpinCtrl* m_spinCtrl12;
-			wxStaticLine* m_staticline10;
+			wxColourPickerCtrl* m_gridTileColour;
 			wxRadioButton* m_radioGridColourMap;
+			
+			wxStaticLine* m_staticline12;
+			wxStaticText* m_txtTileAlpha;
+			wxSlider* m_sliderTileAlpha;
+			wxStaticLine* m_staticline13;
 			wxStaticText* m_staticText31;
 			wxChoice* m_choice1;
 			wxStaticText* m_staticText32;
 			wxChoice* m_choice2;
 			wxScrolledWindow* m_scrolledWindow4;
-			wxStaticText* m_staticText37;
-			wxStaticText* m_staticText381;
-			wxStaticText* m_staticText33;
-			wxStaticText* m_staticText35;
+			wxCheckBox* m_chkShowGridBorders;
+			wxStaticLine* m_staticline101;
+			wxStaticText* m_txtGridBorderColour;
+			wxStaticText* m_txtGridBorderAlpha;
+			wxStaticText* m_txtGridBorderThickness;
+			wxStaticText* m_txtGridBorderStyle;
 			wxColourPickerCtrl* m_gridBorderColour;
 			wxSlider* m_sliderBorderAlpha;
 			wxSpinCtrl* m_spinGridBorderThickness;
@@ -274,12 +276,12 @@ namespace GenGIS
 			wxTextCtrl* m_textCtrl15;
 			wxButton* m_button6;
 			wxButton* m_button5;
-			wxCheckBox* m_checkBox17;
+			wxCheckBox* m_chkAutoAdjustElevation;
 			wxStaticLine* m_staticline8;
-			wxStaticText* m_staticText30;
+			wxStaticText* m_lblVerticalElevation;
 			wxTextCtrl* m_textCtrlGridElevation;
-			wxRadioButton* m_radioBtn2;
-			wxRadioButton* m_radioBtn1;
+			wxRadioButton* m_radioVerticalElevationDegrees;
+			wxRadioButton* m_radioVerticalElevationPixels;
 			wxCheckBox* m_chkShowGrid;
 			wxPanel* m_pnlMetadata;
 			wxStaticText* m_lblLayerSource;
@@ -313,6 +315,8 @@ namespace GenGIS
 			virtual void OnSpinAssignTaxa( wxSpinEvent& event ) { event.Skip(); }
 			virtual void OnCboFieldChange( wxCommandEvent& event ) { event.Skip(); }
 			virtual void OnSpinLineThickness( wxSpinEvent& event ) { event.Skip(); }
+			virtual void OnShowGridBorders( wxCommandEvent& event ) { event.Skip(); }
+			virtual void OnAutoAdjustElevation( wxCommandEvent& event ) { event.Skip(); }
 			virtual void OnHelp( wxCommandEvent& event ) { event.Skip(); }
 			virtual void OnOK( wxCommandEvent& event ) { event.Skip(); }
 			virtual void OnApply( wxCommandEvent& event ) { event.Skip(); }
