@@ -278,6 +278,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\..\src\core\LocationGrid.cpp"
+					>
+				</File>
+				<File
 					RelativePath="..\..\..\src\core\LocationLayer.cpp"
 					>
 				</File>
@@ -889,6 +893,10 @@
 				</File>
 				<File
 					RelativePath="..\..\..\src\core\LocationController.hpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\src\core\LocationGrid.hpp"
 					>
 				</File>
 				<File

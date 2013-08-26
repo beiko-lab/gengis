@@ -45,7 +45,6 @@ namespace GenGIS
 	public:
 		/**
 		* @brief Constructor.
-		* @param mapController Controller for terrain layout line will be rendered on. 
 		*/
 		explicit LayoutLine();
 

@@ -28,8 +28,11 @@
 #include <wx/statbox.h>
 #include <wx/spinctrl.h>
 #include <wx/notebook.h>
-#include <wx/richtext/richtextctrl.h>
+#include <wx/radiobut.h>
+#include <wx/choice.h>
+#include <wx/slider.h>
 #include <wx/button.h>
+#include <wx/richtext/richtextctrl.h>
 #include <wx/dialog.h>
 
 ///////////////////////////////////////////////////////////////////////////
@@ -218,6 +221,66 @@ namespace GenGIS
 			wxColourPickerCtrl* m_colourChartDropLine;
 			
 			wxCheckBox* m_chkShowCharts;
+			wxPanel* m_pnlGrid;
+			wxNotebook* m_notebook6;
+			wxPanel* m_panel13;
+			wxRadioButton* m_radioGridNoFill;
+			
+			
+			
+			wxRadioButton* m_radioGridUniformColour;
+			wxColourPickerCtrl* m_colourPicker8;
+			wxStaticText* m_staticText39;
+			wxSpinCtrl* m_spinCtrl12;
+			wxStaticLine* m_staticline10;
+			wxRadioButton* m_radioGridColourMap;
+			wxStaticText* m_staticText31;
+			wxChoice* m_choice1;
+			wxStaticText* m_staticText32;
+			wxChoice* m_choice2;
+			wxScrolledWindow* m_scrolledWindow4;
+			wxStaticText* m_staticText37;
+			wxStaticText* m_staticText381;
+			wxStaticText* m_staticText33;
+			wxStaticText* m_staticText35;
+			wxColourPickerCtrl* m_gridBorderColour;
+			wxSlider* m_sliderBorderAlpha;
+			wxSpinCtrl* m_spinGridBorderThickness;
+			wxComboBox* m_cboGridBorderStyle;
+			wxPanel* m_panel12;
+			wxStaticText* m_staticText38;
+			wxComboBox* m_comboBox17;
+			wxRadioButton* m_radioBtn5;
+			wxRadioButton* m_radioBtn6;
+			wxStaticText* m_staticText36;
+			wxSpinCtrl* m_spinGridDivisions;
+			wxRadioButton* m_radioBtnLatitude;
+			wxRadioButton* m_radioBtnLongitude;
+			wxRadioButton* m_radioBtn3;
+			wxChoice* m_choice4;
+			wxRadioButton* m_radioBtn4;
+			wxStaticText* m_staticText41;
+			wxTextCtrl* m_textCtrl11;
+			wxTextCtrl* m_textCtrl12;
+			wxTextCtrl* m_textCtrl13;
+			wxTextCtrl* m_textCtrl10;
+			
+			
+			
+			wxTextCtrl* m_textCtrl14;
+			
+			
+			
+			wxTextCtrl* m_textCtrl15;
+			wxButton* m_button6;
+			wxButton* m_button5;
+			wxCheckBox* m_checkBox17;
+			wxStaticLine* m_staticline8;
+			wxStaticText* m_staticText30;
+			wxTextCtrl* m_textCtrlGridElevation;
+			wxRadioButton* m_radioBtn2;
+			wxRadioButton* m_radioBtn1;
+			wxCheckBox* m_chkShowGrid;
 			wxPanel* m_pnlMetadata;
 			wxStaticText* m_lblLayerSource;
 			wxTextCtrl* m_txtLayerSource;

@@ -49,7 +49,6 @@ namespace GenGIS
 	public:
 		/**
 		* @brief Constructor.
-		* @param mapController Controller for terrain layout ellipse will be rendered on. 
 		*/
 		explicit LayoutEllipse();
 
