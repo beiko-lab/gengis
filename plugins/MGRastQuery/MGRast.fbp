@@ -1618,10 +1618,10 @@
             <property name="hidden">0</property>
             <property name="id">wxID_ANY</property>
             <property name="maximum_size"></property>
-            <property name="minimum_size">502,314</property>
+            <property name="minimum_size">502,338</property>
             <property name="name">OptionsFrame</property>
             <property name="pos"></property>
-            <property name="size">502,314</property>
+            <property name="size">502,338</property>
             <property name="style">wxDEFAULT_FRAME_STYLE</property>
             <property name="subclass"></property>
             <property name="title"></property>
@@ -1806,7 +1806,7 @@
                             <property name="proportion">0</property>
                             <object class="wxChoice" expanded="1">
                                 <property name="bg"></property>
-                                <property name="choices">&quot;organism&quot; &quot;function&quot; &quot;feature&quot;</property>
+                                <property name="choices">&quot;organism&quot; &quot;function&quot;</property>
                                 <property name="context_help"></property>
                                 <property name="context_menu">1</property>
                                 <property name="enabled">1</property>
