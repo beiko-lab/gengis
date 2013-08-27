@@ -684,15 +684,12 @@ LocationSetPropertiesLayout::LocationSetPropertiesLayout( wxWindow* parent, wxWi
 	fgSizer10->Add( m_gridTileColour, 1, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
 	
 	m_radioGridColourMap = new wxRadioButton( m_panel13, wxID_ANY, wxT("Colour Map"), wxDefaultPosition, wxDefaultSize, 0 );
-	fgSizer10->Add( m_radioGridColourMap, 0, wxALL, 5 );
+	fgSizer10->Add( m_radioGridColourMap, 1, wxALL, 5 );
 	
 	bSizer452->Add( fgSizer10, 0, 0, 5 );
 	
 	
 	bSizer452->Add( 0, 0, 1, wxEXPAND, 5 );
-	
-	m_staticline12 = new wxStaticLine( m_panel13, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL|wxLI_VERTICAL );
-	bSizer452->Add( m_staticline12, 0, wxALL|wxEXPAND, 5 );
 	
 	wxFlexGridSizer* fgSizer14;
 	fgSizer14 = new wxFlexGridSizer( 2, 2, 0, 0 );
@@ -704,43 +701,43 @@ LocationSetPropertiesLayout::LocationSetPropertiesLayout( wxWindow* parent, wxWi
 	fgSizer14->Add( m_txtTileAlpha, 0, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5 );
 	
 	m_sliderTileAlpha = new wxSlider( m_panel13, wxID_ANY, 8, 0, 10, wxDefaultPosition, wxDefaultSize, wxSL_HORIZONTAL );
-	fgSizer14->Add( m_sliderTileAlpha, 0, wxALL|wxALIGN_CENTER_VERTICAL|wxALIGN_CENTER_HORIZONTAL, 5 );
+	fgSizer14->Add( m_sliderTileAlpha, 0, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5 );
 	
-	bSizer452->Add( fgSizer14, 0, wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL, 5 );
+	bSizer452->Add( fgSizer14, 1, wxALIGN_RIGHT|wxALIGN_BOTTOM, 5 );
 	
 	sbSizer12->Add( bSizer452, 0, wxEXPAND, 5 );
 	
-	m_staticline13 = new wxStaticLine( m_panel13, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL );
-	sbSizer12->Add( m_staticline13, 0, wxEXPAND | wxALL, 5 );
+	m_staticline13 = new wxStaticLine( m_panel13, wxID_ANY, wxDefaultPosition, wxSize( -1,-1 ), wxLI_HORIZONTAL );
+	sbSizer12->Add( m_staticline13, 0, wxALL|wxEXPAND, 5 );
 	
 	wxFlexGridSizer* fgSizer7;
 	fgSizer7 = new wxFlexGridSizer( 2, 2, 0, 0 );
 	fgSizer7->SetFlexibleDirection( wxBOTH );
 	fgSizer7->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
 	
-	m_staticText31 = new wxStaticText( m_panel13, wxID_ANY, wxT("Field to chart:"), wxDefaultPosition, wxDefaultSize, 0 );
-	m_staticText31->Wrap( -1 );
-	fgSizer7->Add( m_staticText31, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
+	m_txtGridFieldToChart = new wxStaticText( m_panel13, wxID_ANY, wxT("Field to chart:"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_txtGridFieldToChart->Wrap( -1 );
+	fgSizer7->Add( m_txtGridFieldToChart, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
 	
-	wxArrayString m_choice1Choices;
-	m_choice1 = new wxChoice( m_panel13, wxID_ANY, wxDefaultPosition, wxDefaultSize, m_choice1Choices, 0 );
-	m_choice1->SetSelection( 0 );
-	fgSizer7->Add( m_choice1, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
+	wxArrayString m_choiceGridFieldToChartChoices;
+	m_choiceGridFieldToChart = new wxChoice( m_panel13, wxID_ANY, wxDefaultPosition, wxDefaultSize, m_choiceGridFieldToChartChoices, 0 );
+	m_choiceGridFieldToChart->SetSelection( 0 );
+	fgSizer7->Add( m_choiceGridFieldToChart, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
 	
-	m_staticText32 = new wxStaticText( m_panel13, wxID_ANY, wxT("Colour map:"), wxDefaultPosition, wxDefaultSize, 0 );
-	m_staticText32->Wrap( -1 );
-	fgSizer7->Add( m_staticText32, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
+	m_txtGridColourMap = new wxStaticText( m_panel13, wxID_ANY, wxT("Colour map:"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_txtGridColourMap->Wrap( -1 );
+	fgSizer7->Add( m_txtGridColourMap, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
 	
-	wxArrayString m_choice2Choices;
-	m_choice2 = new wxChoice( m_panel13, wxID_ANY, wxDefaultPosition, wxDefaultSize, m_choice2Choices, 0 );
-	m_choice2->SetSelection( 0 );
-	fgSizer7->Add( m_choice2, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
+	wxArrayString m_choiceGridColourMapChoices;
+	m_choiceGridColourMap = new wxChoice( m_panel13, wxID_ANY, wxDefaultPosition, wxDefaultSize, m_choiceGridColourMapChoices, 0 );
+	m_choiceGridColourMap->SetSelection( 0 );
+	fgSizer7->Add( m_choiceGridColourMap, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
 	
 	sbSizer12->Add( fgSizer7, 0, wxEXPAND, 5 );
 	
-	m_scrolledWindow4 = new wxScrolledWindow( m_panel13, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxHSCROLL|wxVSCROLL );
-	m_scrolledWindow4->SetScrollRate( 5, 5 );
-	sbSizer12->Add( m_scrolledWindow4, 1, wxALL|wxEXPAND, 5 );
+	m_scrolledWindowGridColour = new wxScrolledWindow( m_panel13, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxHSCROLL|wxVSCROLL );
+	m_scrolledWindowGridColour->SetScrollRate( 5, 5 );
+	sbSizer12->Add( m_scrolledWindowGridColour, 1, wxALL|wxEXPAND, 5 );
 	
 	bSizer431->Add( sbSizer12, 1, wxEXPAND, 5 );
 	
@@ -797,7 +794,7 @@ LocationSetPropertiesLayout::LocationSetPropertiesLayout( wxWindow* parent, wxWi
 	m_panel13->SetSizer( bSizer431 );
 	m_panel13->Layout();
 	bSizer431->Fit( m_panel13 );
-	m_notebook6->AddPage( m_panel13, wxT("Colour"), true );
+	m_notebook6->AddPage( m_panel13, wxT("Colour"), false );
 	m_panel12 = new wxPanel( m_notebook6, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
 	wxBoxSizer* bSizer451;
 	bSizer451 = new wxBoxSizer( wxVERTICAL );
@@ -850,71 +847,87 @@ LocationSetPropertiesLayout::LocationSetPropertiesLayout( wxWindow* parent, wxWi
 	bSizer451->Add( sbSizer16, 0, wxEXPAND, 5 );
 	
 	wxStaticBoxSizer* sbSizer17;
-	sbSizer17 = new wxStaticBoxSizer( new wxStaticBox( m_panel12, wxID_ANY, wxT("Alignment") ), wxVERTICAL );
+	sbSizer17 = new wxStaticBoxSizer( new wxStaticBox( m_panel12, wxID_ANY, wxT("Grid Alignment") ), wxVERTICAL );
 	
 	wxFlexGridSizer* fgSizer11;
-	fgSizer11 = new wxFlexGridSizer( 2, 2, 0, 0 );
+	fgSizer11 = new wxFlexGridSizer( 3, 2, 0, 0 );
 	fgSizer11->SetFlexibleDirection( wxBOTH );
 	fgSizer11->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
 	
-	m_radioBtn3 = new wxRadioButton( m_panel12, wxID_ANY, wxT("Align to location:"), wxDefaultPosition, wxDefaultSize, wxRB_GROUP );
-	m_radioBtn3->SetValue( true ); 
-	fgSizer11->Add( m_radioBtn3, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
+	m_radioAlignToOrigin = new wxRadioButton( m_panel12, wxID_RADIO_GRID_ALIGN_TO_ORIGIN, wxT("Align to origin"), wxDefaultPosition, wxDefaultSize, wxRB_GROUP );
+	fgSizer11->Add( m_radioAlignToOrigin, 0, wxALL, 5 );
 	
-	wxArrayString m_choice4Choices;
-	m_choice4 = new wxChoice( m_panel12, wxID_ANY, wxDefaultPosition, wxDefaultSize, m_choice4Choices, 0 );
-	m_choice4->SetSelection( 0 );
-	fgSizer11->Add( m_choice4, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
 	
-	m_radioBtn4 = new wxRadioButton( m_panel12, wxID_ANY, wxT("Align to position:"), wxDefaultPosition, wxDefaultSize, 0 );
-	fgSizer11->Add( m_radioBtn4, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
+	fgSizer11->Add( 0, 0, 1, wxEXPAND, 5 );
+	
+	m_radioAlignToLocation = new wxRadioButton( m_panel12, wxID_RADIO_GRID_ALIGN_TO_LOCATION, wxT("Align to location:"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_radioAlignToLocation->SetValue( true ); 
+	fgSizer11->Add( m_radioAlignToLocation, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
+	
+	wxArrayString m_choiceAlignToLocationChoices;
+	m_choiceAlignToLocation = new wxChoice( m_panel12, wxID_ANY, wxDefaultPosition, wxDefaultSize, m_choiceAlignToLocationChoices, 0 );
+	m_choiceAlignToLocation->SetSelection( 0 );
+	fgSizer11->Add( m_choiceAlignToLocation, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
+	
+	m_radioAlignToCoordinates = new wxRadioButton( m_panel12, wxID_RADIO_GRID_ALIGN_TO_COORDINATES, wxT("Align to coordinates:"), wxDefaultPosition, wxDefaultSize, 0 );
+	fgSizer11->Add( m_radioAlignToCoordinates, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
 	
 	sbSizer17->Add( fgSizer11, 0, wxEXPAND, 5 );
 	
 	wxFlexGridSizer* fgSizer121;
-	fgSizer121 = new wxFlexGridSizer( 4, 4, 0, 0 );
+	fgSizer121 = new wxFlexGridSizer( 2, 6, 0, 0 );
 	fgSizer121->SetFlexibleDirection( wxBOTH );
 	fgSizer121->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
 	
-	m_staticText41 = new wxStaticText( m_panel12, wxID_ANY, wxT("(x, y)"), wxDefaultPosition, wxDefaultSize, 0 );
-	m_staticText41->Wrap( -1 );
-	fgSizer121->Add( m_staticText41, 0, wxALL|wxALIGN_CENTER_VERTICAL|wxALIGN_CENTER_HORIZONTAL, 5 );
+	m_txtLatitude = new wxStaticText( m_panel12, wxID_ANY, wxT("Latitude:"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_txtLatitude->Wrap( -1 );
+	m_txtLatitude->SetFont( wxFont( wxNORMAL_FONT->GetPointSize(), 70, 90, 92, false, wxEmptyString ) );
 	
-	m_textCtrl11 = new wxTextCtrl( m_panel12, wxID_ANY, wxT("-180"), wxDefaultPosition, wxSize( 60,-1 ), wxTE_CENTRE|wxTE_READONLY );
-	fgSizer121->Add( m_textCtrl11, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
+	fgSizer121->Add( m_txtLatitude, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
 	
-	m_textCtrl12 = new wxTextCtrl( m_panel12, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( 60,-1 ), 0 );
-	fgSizer121->Add( m_textCtrl12, 0, wxALL, 5 );
+	m_txtMinLatitude = new wxStaticText( m_panel12, wxID_ANY, wxT("-180"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_txtMinLatitude->Wrap( -1 );
+	fgSizer121->Add( m_txtMinLatitude, 0, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5 );
 	
-	m_textCtrl13 = new wxTextCtrl( m_panel12, wxID_ANY, wxT("180"), wxDefaultPosition, wxSize( 60,-1 ), wxTE_CENTRE|wxTE_READONLY );
-	fgSizer121->Add( m_textCtrl13, 0, wxALL, 5 );
+	m_txtLatitudeLessEqualThan1 = new wxStaticText( m_panel12, wxID_ANY, wxT("<="), wxDefaultPosition, wxDefaultSize, 0 );
+	m_txtLatitudeLessEqualThan1->Wrap( -1 );
+	fgSizer121->Add( m_txtLatitudeLessEqualThan1, 0, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5 );
 	
-	m_textCtrl10 = new wxTextCtrl( m_panel12, wxID_ANY, wxT("90"), wxDefaultPosition, wxSize( 60,-1 ), wxTE_CENTRE|wxTE_READONLY );
-	fgSizer121->Add( m_textCtrl10, 0, wxALL, 5 );
+	m_textCtrlLatitude = new wxTextCtrl( m_panel12, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	fgSizer121->Add( m_textCtrlLatitude, 0, wxALL|wxALIGN_CENTER_VERTICAL|wxALIGN_CENTER_HORIZONTAL, 5 );
 	
+	m_txtLatitudeLessEqualThan2 = new wxStaticText( m_panel12, wxID_ANY, wxT("<="), wxDefaultPosition, wxDefaultSize, 0 );
+	m_txtLatitudeLessEqualThan2->Wrap( -1 );
+	fgSizer121->Add( m_txtLatitudeLessEqualThan2, 0, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5 );
 	
-	fgSizer121->Add( 0, 0, 1, wxEXPAND, 5 );
+	m_txtMaxLatitude = new wxStaticText( m_panel12, wxID_ANY, wxT("180"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_txtMaxLatitude->Wrap( -1 );
+	fgSizer121->Add( m_txtMaxLatitude, 0, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5 );
 	
+	m_txtLongitude = new wxStaticText( m_panel12, wxID_ANY, wxT("Longitude:"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_txtLongitude->Wrap( -1 );
+	m_txtLongitude->SetFont( wxFont( wxNORMAL_FONT->GetPointSize(), 70, 90, 92, false, wxEmptyString ) );
 	
-	fgSizer121->Add( 0, 0, 1, wxEXPAND, 5 );
+	fgSizer121->Add( m_txtLongitude, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
 	
+	m_txtMinLongitude = new wxStaticText( m_panel12, wxID_ANY, wxT("-90"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_txtMinLongitude->Wrap( -1 );
+	fgSizer121->Add( m_txtMinLongitude, 0, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5 );
 	
-	fgSizer121->Add( 0, 0, 1, wxEXPAND, 5 );
+	m_txtLongitudeLessEqualThan1 = new wxStaticText( m_panel12, wxID_ANY, wxT("<="), wxDefaultPosition, wxDefaultSize, 0 );
+	m_txtLongitudeLessEqualThan1->Wrap( -1 );
+	fgSizer121->Add( m_txtLongitudeLessEqualThan1, 0, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5 );
 	
-	m_textCtrl14 = new wxTextCtrl( m_panel12, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( 60,-1 ), 0 );
-	fgSizer121->Add( m_textCtrl14, 0, wxALL, 5 );
+	m_textCtrlLongitude = new wxTextCtrl( m_panel12, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	fgSizer121->Add( m_textCtrlLongitude, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
 	
+	m_txtLongitudeLessEqualThan2 = new wxStaticText( m_panel12, wxID_ANY, wxT("<="), wxDefaultPosition, wxDefaultSize, 0 );
+	m_txtLongitudeLessEqualThan2->Wrap( -1 );
+	fgSizer121->Add( m_txtLongitudeLessEqualThan2, 0, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5 );
 	
-	fgSizer121->Add( 0, 0, 1, wxEXPAND, 5 );
-	
-	
-	fgSizer121->Add( 0, 0, 1, wxEXPAND, 5 );
-	
-	
-	fgSizer121->Add( 0, 0, 1, wxEXPAND, 5 );
-	
-	m_textCtrl15 = new wxTextCtrl( m_panel12, wxID_ANY, wxT("-90"), wxDefaultPosition, wxSize( 60,-1 ), wxTE_CENTRE|wxTE_READONLY );
-	fgSizer121->Add( m_textCtrl15, 0, wxALL, 5 );
+	m_txtMaxLongitude = new wxStaticText( m_panel12, wxID_ANY, wxT("90"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_txtMaxLongitude->Wrap( -1 );
+	fgSizer121->Add( m_txtMaxLongitude, 0, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5 );
 	
 	sbSizer17->Add( fgSizer121, 0, wxALIGN_CENTER_HORIZONTAL, 5 );
 	
@@ -923,22 +936,18 @@ LocationSetPropertiesLayout::LocationSetPropertiesLayout( wxWindow* parent, wxWi
 	fgSizer13->SetFlexibleDirection( wxHORIZONTAL );
 	fgSizer13->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
 	
-	m_button6 = new wxButton( m_panel12, wxID_ANY, wxT("Reset"), wxDefaultPosition, wxDefaultSize, 0 );
-	m_button6->Enable( false );
+	m_buttonGridPositionReset = new wxButton( m_panel12, wxID_ANY, wxT("Reset"), wxDefaultPosition, wxDefaultSize, 0 );
+	fgSizer13->Add( m_buttonGridPositionReset, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
 	
-	fgSizer13->Add( m_button6, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
+	m_buttonClickMapToAlign = new wxButton( m_panel12, wxID_ANY, wxT("Click map to align"), wxDefaultPosition, wxDefaultSize, 0 );
+	fgSizer13->Add( m_buttonClickMapToAlign, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
 	
-	m_button5 = new wxButton( m_panel12, wxID_ANY, wxT("Click map to align"), wxDefaultPosition, wxDefaultSize, 0 );
-	m_button5->Enable( false );
-	
-	fgSizer13->Add( m_button5, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
-	
-	sbSizer17->Add( fgSizer13, 0, wxALIGN_RIGHT, 5 );
+	sbSizer17->Add( fgSizer13, 0, wxALIGN_CENTER_HORIZONTAL, 5 );
 	
 	bSizer451->Add( sbSizer17, 0, wxEXPAND, 5 );
 	
 	wxStaticBoxSizer* m_sizerGridPositionProperties;
-	m_sizerGridPositionProperties = new wxStaticBoxSizer( new wxStaticBox( m_panel12, wxID_ANY, wxT("Elevation (Altitude)") ), wxVERTICAL );
+	m_sizerGridPositionProperties = new wxStaticBoxSizer( new wxStaticBox( m_panel12, wxID_ANY, wxT("Grid Elevation (Altitude)") ), wxVERTICAL );
 	
 	m_chkAutoAdjustElevation = new wxCheckBox( m_panel12, wxID_ANY, wxT("Auto adjust to map elevation"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_chkAutoAdjustElevation->SetValue(true); 
@@ -973,7 +982,7 @@ LocationSetPropertiesLayout::LocationSetPropertiesLayout( wxWindow* parent, wxWi
 	m_panel12->SetSizer( bSizer451 );
 	m_panel12->Layout();
 	bSizer451->Fit( m_panel12 );
-	m_notebook6->AddPage( m_panel12, wxT("Size and Position"), false );
+	m_notebook6->AddPage( m_panel12, wxT("Size and Position"), true );
 	
 	m_sizerGrid->Add( m_notebook6, 1, wxEXPAND | wxALL, 5 );
 	
@@ -1069,7 +1078,13 @@ LocationSetPropertiesLayout::LocationSetPropertiesLayout( wxWindow* parent, wxWi
 	m_spinChartFilterTaxaPercentage->Connect( wxEVT_COMMAND_SPINCTRL_UPDATED, wxSpinEventHandler( LocationSetPropertiesLayout::OnSpinAssignTaxa ), NULL, this );
 	m_cboChartDropLineStyle->Connect( wxEVT_COMMAND_COMBOBOX_SELECTED, wxCommandEventHandler( LocationSetPropertiesLayout::OnCboFieldChange ), NULL, this );
 	m_spinChartDropLineThickness->Connect( wxEVT_COMMAND_SPINCTRL_UPDATED, wxSpinEventHandler( LocationSetPropertiesLayout::OnSpinLineThickness ), NULL, this );
+	m_radioGridNoFill->Connect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( LocationSetPropertiesLayout::OnRadioNoFill ), NULL, this );
+	m_radioGridUniformColour->Connect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( LocationSetPropertiesLayout::OnRadioUniformColour ), NULL, this );
+	m_radioGridColourMap->Connect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( LocationSetPropertiesLayout::OnRadioGridColourMap ), NULL, this );
 	m_chkShowGridBorders->Connect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( LocationSetPropertiesLayout::OnShowGridBorders ), NULL, this );
+	m_radioAlignToOrigin->Connect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( LocationSetPropertiesLayout::OnRadioAlignTo ), NULL, this );
+	m_radioAlignToLocation->Connect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( LocationSetPropertiesLayout::OnRadioAlignTo ), NULL, this );
+	m_radioAlignToCoordinates->Connect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( LocationSetPropertiesLayout::OnRadioAlignTo ), NULL, this );
 	m_chkAutoAdjustElevation->Connect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( LocationSetPropertiesLayout::OnAutoAdjustElevation ), NULL, this );
 	m_btnHelp->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( LocationSetPropertiesLayout::OnHelp ), NULL, this );
 	m_btnOK->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( LocationSetPropertiesLayout::OnOK ), NULL, this );
@@ -1101,7 +1116,13 @@ LocationSetPropertiesLayout::~LocationSetPropertiesLayout()
 	m_spinChartFilterTaxaPercentage->Disconnect( wxEVT_COMMAND_SPINCTRL_UPDATED, wxSpinEventHandler( LocationSetPropertiesLayout::OnSpinAssignTaxa ), NULL, this );
 	m_cboChartDropLineStyle->Disconnect( wxEVT_COMMAND_COMBOBOX_SELECTED, wxCommandEventHandler( LocationSetPropertiesLayout::OnCboFieldChange ), NULL, this );
 	m_spinChartDropLineThickness->Disconnect( wxEVT_COMMAND_SPINCTRL_UPDATED, wxSpinEventHandler( LocationSetPropertiesLayout::OnSpinLineThickness ), NULL, this );
+	m_radioGridNoFill->Disconnect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( LocationSetPropertiesLayout::OnRadioNoFill ), NULL, this );
+	m_radioGridUniformColour->Disconnect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( LocationSetPropertiesLayout::OnRadioUniformColour ), NULL, this );
+	m_radioGridColourMap->Disconnect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( LocationSetPropertiesLayout::OnRadioGridColourMap ), NULL, this );
 	m_chkShowGridBorders->Disconnect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( LocationSetPropertiesLayout::OnShowGridBorders ), NULL, this );
+	m_radioAlignToOrigin->Disconnect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( LocationSetPropertiesLayout::OnRadioAlignTo ), NULL, this );
+	m_radioAlignToLocation->Disconnect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( LocationSetPropertiesLayout::OnRadioAlignTo ), NULL, this );
+	m_radioAlignToCoordinates->Disconnect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( LocationSetPropertiesLayout::OnRadioAlignTo ), NULL, this );
 	m_chkAutoAdjustElevation->Disconnect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( LocationSetPropertiesLayout::OnAutoAdjustElevation ), NULL, this );
 	m_btnHelp->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( LocationSetPropertiesLayout::OnHelp ), NULL, this );
 	m_btnOK->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( LocationSetPropertiesLayout::OnOK ), NULL, this );

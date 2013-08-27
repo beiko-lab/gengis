@@ -30,22 +30,27 @@
 using namespace GenGIS;
 
 LocationGrid::LocationGrid() :
-	m_gridAlignment( LONGITUDE ),
+	// General
+	m_divideTilesAlong( LONGITUDE ),
+	m_gridAlignmentStyle( ORIGIN ),
 	m_mapOpenGLBoundaries( -1.0, -1.0, 1.0, 1.0 ),
 	m_mapOffset( 0.0f, 0.0f ),
 	m_divisions( 15 ),
 	m_autoAdjustElevation( true ),
 	m_elevation( 0.05f ),
 
+	// Tiles
 	m_showTiles( true ),
-	m_tileFillMode( MAPPED ),
+	m_tileFillMode( NONE ),
 	m_uniformColourOfTiles( 0.0f, 0.5f, 0.0f, 0.3f ),
 
+	// Border
 	m_showBorders( true ),
 	m_colourOfBorders( 0.0f, 0.0f, 0.0f, 0.3f ),
 	m_thicknessOfBorders( 1 ),
 	m_styleOfBorders( VisualLine::SOLID )
 {
+	// Property of 'Layer' class
 	m_bVisible = false;
 }
 
@@ -89,9 +94,9 @@ void LocationGrid::Render()
 
 	// Determine appropriate tile size
 	double tileSize;
-	if ( m_gridAlignment == LATITUDE )
+	if ( m_divideTilesAlong == LATITUDE )
 		tileSize = m_mapOpenGLBoundaries.Height() / m_divisions;
-	else if ( m_gridAlignment == LONGITUDE )
+	else if ( m_divideTilesAlong == LONGITUDE )
 		tileSize = m_mapOpenGLBoundaries.Width() / m_divisions;
 	else // there will be other cases, this is just a safe 'else' for now
 		tileSize = 2.0 / m_divisions;

@@ -490,6 +490,35 @@ void LocationSetPropertiesDlg::InitLocationGrid()
 {
 	LocationGridPtr locationGrid = m_locationSetLayer->GetLocationGrid();
 
+	// Disable colour fill controls based on radio button selection
+	LocationGrid::TILE_FILL colourFillStyle = locationGrid->GetTileFillMode();
+	if ( colourFillStyle == LocationGrid::NONE )
+	{
+		m_radioGridNoFill->SetValue( true );
+		m_gridTileColour->Disable();
+		m_txtTileAlpha->Disable();
+		m_sliderTileAlpha->Disable();
+		m_txtGridFieldToChart->Disable();
+		m_choiceGridFieldToChart->Disable();
+		m_txtGridColourMap->Disable();
+		m_choiceGridColourMap->Disable();
+		m_scrolledWindowGridColour->Disable();
+	}
+	else if ( colourFillStyle == LocationGrid::UNIFORM )
+	{
+		m_radioGridUniformColour->SetValue( true );
+		m_txtGridFieldToChart->Disable();
+		m_choiceGridFieldToChart->Disable();
+		m_txtGridColourMap->Disable();
+		m_choiceGridColourMap->Disable();
+		m_scrolledWindowGridColour->Disable();
+	}
+	else if ( colourFillStyle == LocationGrid::MAPPED )
+	{
+		m_radioGridColourMap->SetValue( true );
+		m_gridTileColour->Disable();
+	}
+
 	// Get visibility of grid
 	m_chkShowGrid->SetValue( locationGrid->IsVisible() );
 
@@ -504,7 +533,6 @@ void LocationSetPropertiesDlg::InitLocationGrid()
 
 	// Enable/Disable grid border controls
 	bool borderVisibility = locationGrid->GetBorderVisibility();
-
 	m_chkShowGridBorders->SetValue( borderVisibility );
 	m_txtGridBorderColour->Enable( borderVisibility );
 	m_txtGridBorderAlpha->Enable( borderVisibility );
@@ -529,7 +557,7 @@ void LocationSetPropertiesDlg::InitLocationGrid()
 
 	// Get style of grid borders
 	VisualLine::LINE_STYLE gridBorderStyle = locationGrid->GetBorderStyle();
-	if ( gridBorderStyle == VisualLine::SOLID )
+	if      ( gridBorderStyle == VisualLine::SOLID )
 		m_cboGridBorderStyle->SetValue( _T("Solid") );
 	else if ( gridBorderStyle == VisualLine::SHORT_DASH )
 		m_cboGridBorderStyle->SetValue( _T("Short dash") );
@@ -540,6 +568,41 @@ void LocationSetPropertiesDlg::InitLocationGrid()
 
 	// Get the number of divisions
 	m_spinGridDivisions->SetValue( locationGrid->GetNumberOfDivisions() );
+
+	LocationGrid::ALIGNMENT gridAlignmentStyle = locationGrid->GetGridAlignmentStyle();
+	if      ( gridAlignmentStyle == LocationGrid::ORIGIN )
+		m_radioAlignToOrigin->SetValue( true );
+	else if ( gridAlignmentStyle == LocationGrid::LOCATIONS )
+		m_radioAlignToLocation->SetValue( true );
+	else if ( gridAlignmentStyle == LocationGrid::COORDINATES )
+		m_radioAlignToCoordinates->SetValue( true );
+
+	// Disable alignment controls based on radio button selection
+	if ( ( gridAlignmentStyle == LocationGrid::ORIGIN ) ||
+		 ( gridAlignmentStyle == LocationGrid::COORDINATES ) )
+	{
+		m_choiceAlignToLocation->Disable();
+	}
+	if ( ( gridAlignmentStyle == LocationGrid::ORIGIN ) ||
+		 ( gridAlignmentStyle == LocationGrid::LOCATIONS ) )
+	{
+		m_txtLatitude->Disable();
+		m_txtMinLatitude->Disable();
+		m_txtLatitudeLessEqualThan1->Disable();
+		m_textCtrlLatitude->Disable();
+		m_txtLatitudeLessEqualThan2->Disable();
+		m_txtMaxLatitude->Disable();
+
+		m_txtLongitude->Disable();
+		m_txtMinLongitude->Disable();
+		m_txtLongitudeLessEqualThan1->Disable();
+		m_textCtrlLongitude->Disable();
+		m_txtLongitudeLessEqualThan2->Disable();
+		m_txtMaxLongitude->Disable();
+
+		m_buttonGridPositionReset->Disable();
+		m_buttonClickMapToAlign->Disable();
+	}
 
 	// Get 'auto adjust to map elevation' status
 	bool autoAdjustElevationStatus = locationGrid->GetAutoAdjustElevationStatus();
@@ -556,6 +619,53 @@ void LocationSetPropertiesDlg::InitLocationGrid()
 		wxString( StringTools::ToStringW( locationGrid->GetElevation(), 2 ).c_str() ) );
 }
 
+void LocationSetPropertiesDlg::OnRadioNoFill( wxCommandEvent& event )
+{
+	//bool status = m_radioGridNoFill->GetValue();
+	m_gridTileColour->Disable();
+	m_txtTileAlpha->Disable();
+	m_sliderTileAlpha->Disable();
+	m_txtGridFieldToChart->Disable();
+	m_choiceGridFieldToChart->Disable();
+	m_txtGridColourMap->Disable();
+	m_choiceGridColourMap->Disable();
+	m_scrolledWindowGridColour->Disable();
+
+	m_locationSetLayer->GetLocationGrid()->SetTileFillMode( LocationGrid::NONE );
+}
+
+void LocationSetPropertiesDlg::OnRadioUniformColour( wxCommandEvent& event )
+{
+	//bool status = m_radioGridUniformColour->GetValue();
+	m_gridTileColour->Enable();
+	m_txtTileAlpha->Enable();
+	m_sliderTileAlpha->Enable();
+
+	m_txtGridFieldToChart->Disable();
+	m_choiceGridFieldToChart->Disable();
+	m_txtGridColourMap->Disable();
+	m_choiceGridColourMap->Disable();
+	m_scrolledWindowGridColour->Disable();
+
+	m_locationSetLayer->GetLocationGrid()->SetTileFillMode( LocationGrid::UNIFORM );
+}
+
+void LocationSetPropertiesDlg::OnRadioGridColourMap( wxCommandEvent& event )
+{
+	//bool status = m_radioGridColourMap->GetValue();
+	m_gridTileColour->Disable();
+
+	m_txtTileAlpha->Enable();
+	m_sliderTileAlpha->Enable();
+	m_txtGridFieldToChart->Enable();
+	m_choiceGridFieldToChart->Enable();
+	m_txtGridColourMap->Enable();
+	m_choiceGridColourMap->Enable();
+	m_scrolledWindowGridColour->Enable();
+
+	m_locationSetLayer->GetLocationGrid()->SetTileFillMode( LocationGrid::MAPPED );
+}
+
 void LocationSetPropertiesDlg::OnShowGridBorders( wxCommandEvent& event )
 {
 	bool borderVisibility = m_chkShowGridBorders->GetValue();
@@ -570,6 +680,49 @@ void LocationSetPropertiesDlg::OnShowGridBorders( wxCommandEvent& event )
 	m_cboGridBorderStyle->Enable( borderVisibility );
 
 	m_locationSetLayer->GetLocationGrid()->SetBorderVisibility( borderVisibility );
+}
+
+void LocationSetPropertiesDlg::OnRadioAlignTo( wxCommandEvent& event )
+{
+	int wxID = event.GetId();
+	bool set1 = true;
+	bool set2 = true;
+
+	if ( wxID == wxID_RADIO_GRID_ALIGN_TO_ORIGIN )
+	{
+		m_locationSetLayer->GetLocationGrid()->SetGridAlignmentStyle( LocationGrid::ORIGIN );
+		set1 = false;
+		set2 = false;
+	}
+	else if ( wxID == wxID_RADIO_GRID_ALIGN_TO_LOCATION )
+	{
+		m_locationSetLayer->GetLocationGrid()->SetGridAlignmentStyle( LocationGrid::LOCATIONS );
+		set2 = false;
+	}
+	else if ( wxID == wxID_RADIO_GRID_ALIGN_TO_COORDINATES )
+	{
+		m_locationSetLayer->GetLocationGrid()->SetGridAlignmentStyle( LocationGrid::COORDINATES );
+		set1 = false;
+	}
+
+	m_choiceAlignToLocation->Enable( set1 );
+
+	m_txtLatitude->Enable( set2 );
+	m_txtMinLatitude->Enable( set2 );
+	m_txtLatitudeLessEqualThan1->Enable( set2 );
+	m_textCtrlLatitude->Enable( set2 );
+	m_txtLatitudeLessEqualThan2->Enable( set2 );
+	m_txtMaxLatitude->Enable( set2 );
+
+	m_txtLongitude->Enable( set2 );
+	m_txtMinLongitude->Enable( set2 );
+	m_txtLongitudeLessEqualThan1->Enable( set2 );
+	m_textCtrlLongitude->Enable( set2 );
+	m_txtLongitudeLessEqualThan2->Enable( set2 );
+	m_txtMaxLongitude->Enable( set2 );
+
+	m_buttonGridPositionReset->Enable( set2 );
+	m_buttonClickMapToAlign->Enable( set2 );
 }
 
 void LocationSetPropertiesDlg::OnAutoAdjustElevation( wxCommandEvent& event )

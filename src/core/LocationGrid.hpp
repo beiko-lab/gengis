@@ -34,8 +34,16 @@ namespace GenGIS
 	class LocationGrid : public View
 	{
 	public:
-		enum ALIGNMENT { LATITUDE, LONGITUDE, LOCATION, CUSTOM };
+		// Fill style for tiles
 		enum TILE_FILL { NONE, UNIFORM, MAPPED };
+
+		// Whether size of tiles is determined by dividing along
+		// latitude or longitude
+		enum DIVISION_AXIS { LATITUDE, LONGITUDE };
+
+		// Whether tiles/grid are alied at the map origin, along
+		// a location, or at specific coordinates
+		enum ALIGNMENT { ORIGIN, LOCATIONS, COORDINATES };
 
 	public:
 		/**
@@ -52,25 +60,31 @@ namespace GenGIS
 		/** Render location grid. */
 		void Render();
 
-		// General
-		uint   GetNumberOfDivisions()          { return m_divisions; }
-		bool   GetAutoAdjustElevationStatus () { return m_autoAdjustElevation; }
-		double GetElevation()                  { return m_elevation; }
+		// Functions for accessing 'general' variables
+		ALIGNMENT GetGridAlignmentStyle()      { return m_gridAlignmentStyle; }
+		uint      GetNumberOfDivisions()          { return m_divisions; }
+		bool      GetAutoAdjustElevationStatus () { return m_autoAdjustElevation; }
+		double    GetElevation()                  { return m_elevation; }
 
+		void SetGridAlignmentStyle( ALIGNMENT alignment ) { m_gridAlignmentStyle = alignment; }
 		void SetDivisions( uint divisions )               { m_divisions = divisions; }
 		void SetAutoAdjustElevationStatus ( bool status ) { m_autoAdjustElevation = status; }
 		void SetElevation( double elevation )             { m_elevation = elevation; }
 
-		// Tiles
-		bool   GetTileFillStatus()    { return m_showTiles; }
-		float  GetTileAlpha()         { return m_uniformColourOfTiles.GetAlpha(); }
-		Colour GetTileUniformColour() { return m_uniformColourOfTiles; }
+
+		// Functions for accessing 'tile' variables
+		bool      GetTileFillStatus()    { return m_showTiles; }
+		TILE_FILL GetTileFillMode()      { return m_tileFillMode; }
+		float     GetTileAlpha()         { return m_uniformColourOfTiles.GetAlpha(); }
+		Colour    GetTileUniformColour() { return m_uniformColourOfTiles; }
 
 		void ShowTiles( bool status )              { m_showTiles = status; }
+		void SetTileFillMode( TILE_FILL mode )     { m_tileFillMode = mode; }
 		void SetTileAlpha( float alpha )           { m_uniformColourOfTiles.SetAlpha( alpha ); }
 		void SetTileUniformColour( Colour colour ) { m_uniformColourOfTiles = colour; }
 
-		// Borders
+
+		// Functions for accessing 'border' variables
 		bool   GetBorderVisibility() { return m_showBorders; }
 		Colour GetBorderColour()     { return m_colourOfBorders; }
 		float  GetBorderAlpha()      { return m_colourOfBorders.GetAlpha(); }
@@ -84,20 +98,21 @@ namespace GenGIS
 		void SetBorderStyle( VisualLine::LINE_STYLE style ) { m_styleOfBorders = style; }
 
 	private:
-		// General
-		ALIGNMENT m_gridAlignment;
-		Box2D   m_mapOpenGLBoundaries;
-		Point2D m_mapOffset;
-		uint    m_divisions;
-		bool    m_autoAdjustElevation;
-		float   m_elevation;
+		// General variables
+		DIVISION_AXIS m_divideTilesAlong;
+		ALIGNMENT     m_gridAlignmentStyle;
+		Box2D         m_mapOpenGLBoundaries;
+		Point2D       m_mapOffset;
+		uint          m_divisions;
+		bool          m_autoAdjustElevation;
+		float         m_elevation;
 
-		// Tiles
+		// Tile variables
 		bool      m_showTiles;
 		TILE_FILL m_tileFillMode;
 		Colour    m_uniformColourOfTiles;
 		
-		// Border
+		// Border variables
 		bool   m_showBorders;
 		Colour m_colourOfBorders;
 		uint   m_thicknessOfBorders;
