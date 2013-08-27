@@ -155,8 +155,20 @@ namespace GenGIS
 		/** Quantitative field changed. */
 		void OnQuantitativeFieldChanged( wxCommandEvent& event );
 
+		/** Handler for 'No fill' radio control. */
+		void OnRadioNoFill( wxCommandEvent& event );
+
+		/** Handler for 'Uniform colour' radio control. */
+		void OnRadioUniformColour( wxCommandEvent& event );
+
+		/** Handler for 'Colour map' radio control. */
+		void OnRadioGridColourMap( wxCommandEvent& event );
+
 		/** Show grid borders check box handler. */
 		void OnShowGridBorders( wxCommandEvent& event );
+
+		/** Handler for 'Align to' radio controls (origin, location, or coordinates). */
+		void OnRadioAlignTo( wxCommandEvent& event );
 
 		/** Auto adjust to map elevation check box handler. */
 		void OnAutoAdjustElevation( wxCommandEvent& event );
