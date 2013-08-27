@@ -118,10 +118,15 @@ class MGRastSpecific:
 			return False
 		response=html.read()
 		matrix = json.loads(response)
+		if matrix['type'] != "Taxon table":
+			wx.MessageBox("Unexpected data format.")
+			return False
 		if matrix['matrix_type'] == 'dense':
 			nodeList = self.DENSEHANDLER(matrix)
 		else:
-			nodeList = self.SPARSEHANDLER(matrix)	
+			nodeList = self.SPARSEHANDLER(matrix)
+		if nodeList == False:
+			return {}
 		for node in nodeList:
 			id = node[0]['id']
 			lat = node[1]['metadata']['sample']['data']['latitude']
@@ -156,7 +161,8 @@ class MGRastSpecific:
 		return nodeList
 	
 	def DENSEHANDLER(self,matrix):
-
+		wx.MessageBox("Unexpected data format.")
+		return False
 		metaData = matrix['columns']
 		data = matrix['data']
 		id = matrix['rows']
