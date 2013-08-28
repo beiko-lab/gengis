@@ -57,6 +57,9 @@ namespace GenGIS
 		/** Determine if object is visible. */
 		bool IsVisible();
 
+		/** Generate coordinates or grid. */
+		void GenerateTileCoordinates();
+
 		/** Render location grid. */
 		void Render();
 
@@ -104,8 +107,11 @@ namespace GenGIS
 		Box2D         m_mapOpenGLBoundaries;
 		Point2D       m_mapOffset;
 		uint          m_divisions;
+		uint          m_divisionsX;
+		uint          m_divisionsY;
 		bool          m_autoAdjustElevation;
 		float         m_elevation;
+		std::list<Box2D> m_tileCoordinates;
 
 		// Tile variables
 		bool      m_showTiles;
@@ -117,8 +123,6 @@ namespace GenGIS
 		Colour m_colourOfBorders;
 		uint   m_thicknessOfBorders;
 		VisualLine::LINE_STYLE m_styleOfBorders;
-
-		// Point3D ...
 
 		// Add serialization stuff, blah
 	};
