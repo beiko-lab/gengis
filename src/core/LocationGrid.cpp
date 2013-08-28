@@ -51,7 +51,7 @@ LocationGrid::LocationGrid() :
 	m_styleOfBorders( VisualLine::SOLID )
 {
 	// Property of 'Layer' class
-	//m_bVisible = false;
+	m_bVisible = false;
 }
 
 LocationGrid::~LocationGrid()
