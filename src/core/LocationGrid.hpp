@@ -107,11 +107,11 @@ namespace GenGIS
 		Box2D         m_mapOpenGLBoundaries;
 		Point2D       m_mapOffset;
 		uint          m_divisions;
-		uint          m_divisionsX;
-		uint          m_divisionsY;
 		bool          m_autoAdjustElevation;
 		float         m_elevation;
-		std::list<Box2D> m_tileCoordinates;
+		float         m_elevationUsed;
+		std::list<double> m_xCoordinates;
+		std::list<double> m_yCoordinates;
 
 		// Tile variables
 		bool      m_showTiles;
