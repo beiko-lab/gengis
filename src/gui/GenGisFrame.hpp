@@ -229,6 +229,9 @@ namespace GenGIS
 		/** Layer->Open tree layer event handler. */
 		void OnLayerOpenTree( wxCommandEvent& event );
 
+		/** Layer->Merge location layer event handler. */
+		void OnLocationMerge(wxCommandEvent& event);
+
 		/** Layer->Open sequence data event handler. */
 		void OnLayerOpenSequenceData( wxCommandEvent& event );
 
