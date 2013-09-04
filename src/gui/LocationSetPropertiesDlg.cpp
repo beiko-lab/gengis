@@ -490,8 +490,61 @@ void LocationSetPropertiesDlg::InitLocationGrid()
 {
 	LocationGridPtr locationGrid = m_locationSetLayer->GetLocationGrid();
 
+	// Disable colour fill controls based on radio button selection
+	LocationGrid::TILE_FILL colourFillStyle = locationGrid->GetTileFillMode();
+	if ( colourFillStyle == LocationGrid::NONE )
+	{
+		m_radioGridNoFill->SetValue( true );
+
+		m_gridTileColour->Disable();
+		m_txtTileAlpha->Disable();
+		m_sliderTileAlpha->Disable();
+		m_txtGridFieldToChart->Disable();
+		m_choiceGridFieldToChart->Disable();
+		m_txtGridColourMap->Disable();
+		m_choiceGridColourMap->Disable();
+		m_scrolledWindowGridColour->Disable();
+	}
+	else if ( colourFillStyle == LocationGrid::UNIFORM )
+	{
+		m_radioGridUniformColour->SetValue( true );
+
+		m_txtGridFieldToChart->Disable();
+		m_choiceGridFieldToChart->Disable();
+		m_txtGridColourMap->Disable();
+		m_choiceGridColourMap->Disable();
+		m_scrolledWindowGridColour->Disable();
+	}
+	else if ( colourFillStyle == LocationGrid::MAPPED )
+	{
+		m_radioGridColourMap->SetValue( true );
+
+		m_gridTileColour->Disable();
+	}
+
 	// Get visibility of grid
 	m_chkShowGrid->SetValue( locationGrid->IsVisible() );
+
+	// Get uniform colour of tiles
+	Colour tileColour = locationGrid->GetTileUniformColour();
+	m_gridTileColour->SetColour( wxColour( tileColour.GetRedInt(),
+		tileColour.GetGreenInt(), tileColour.GetBlueInt() ) );
+
+	// Get alpha of tiles
+	uint alphaTiles = locationGrid->GetTileAlpha()*10;
+	m_sliderTileAlpha->SetValue( alphaTiles );
+
+	// Enable/Disable grid border controls
+	bool borderVisibility = locationGrid->GetBorderVisibility();
+	m_chkShowGridBorders->SetValue( borderVisibility );
+	m_txtGridBorderColour->Enable( borderVisibility );
+	m_txtGridBorderAlpha->Enable( borderVisibility );
+	m_txtGridBorderThickness->Enable( borderVisibility );
+	m_txtGridBorderStyle->Enable( borderVisibility );
+	m_gridBorderColour->Enable( borderVisibility );
+	m_sliderBorderAlpha->Enable( borderVisibility );
+	m_spinGridBorderThickness->Enable( borderVisibility );
+	m_cboGridBorderStyle->Enable( borderVisibility );
 
 	// Get colour of grid borders
 	Colour borderColour = locationGrid->GetBorderColour();
@@ -499,15 +552,15 @@ void LocationSetPropertiesDlg::InitLocationGrid()
 		borderColour.GetGreenInt(), borderColour.GetBlueInt() ) );
 
 	// Get alpha of grid borders
-	uint alpha = locationGrid->GetBorderAlpha()*10;
-	m_sliderBorderAlpha->SetValue( alpha );
+	uint alphaGridBorders = locationGrid->GetBorderAlpha()*10;
+	m_sliderBorderAlpha->SetValue( alphaGridBorders );
 
 	// Get thickness of grid borders
 	m_spinGridBorderThickness->SetValue( locationGrid->GetBorderThickness() );
 
 	// Get style of grid borders
 	VisualLine::LINE_STYLE gridBorderStyle = locationGrid->GetBorderStyle();
-	if ( gridBorderStyle == VisualLine::SOLID )
+	if      ( gridBorderStyle == VisualLine::SOLID )
 		m_cboGridBorderStyle->SetValue( _T("Solid") );
 	else if ( gridBorderStyle == VisualLine::SHORT_DASH )
 		m_cboGridBorderStyle->SetValue( _T("Short dash") );
@@ -519,9 +572,161 @@ void LocationSetPropertiesDlg::InitLocationGrid()
 	// Get the number of divisions
 	m_spinGridDivisions->SetValue( locationGrid->GetNumberOfDivisions() );
 
+	LocationGrid::ALIGNMENT gridAlignmentStyle = locationGrid->GetGridAlignmentStyle();
+	if      ( gridAlignmentStyle == LocationGrid::ORIGIN )
+		m_radioAlignToOrigin->SetValue( true );
+	else if ( gridAlignmentStyle == LocationGrid::LOCATIONS )
+		m_radioAlignToLocation->SetValue( true );
+	else if ( gridAlignmentStyle == LocationGrid::COORDINATES )
+		m_radioAlignToCoordinates->SetValue( true );
+
+	// Disable alignment controls based on radio button selection
+	if ( ( gridAlignmentStyle == LocationGrid::ORIGIN ) ||
+		 ( gridAlignmentStyle == LocationGrid::COORDINATES ) )
+	{
+		m_choiceAlignToLocation->Disable();
+	}
+	if ( ( gridAlignmentStyle == LocationGrid::ORIGIN ) ||
+		 ( gridAlignmentStyle == LocationGrid::LOCATIONS ) )
+	{
+		m_txtLatitude->Disable();
+		m_txtMinLatitude->Disable();
+		m_txtLatitudeLessEqualThan1->Disable();
+		m_textCtrlLatitude->Disable();
+		m_txtLatitudeLessEqualThan2->Disable();
+		m_txtMaxLatitude->Disable();
+
+		m_txtLongitude->Disable();
+		m_txtMinLongitude->Disable();
+		m_txtLongitudeLessEqualThan1->Disable();
+		m_textCtrlLongitude->Disable();
+		m_txtLongitudeLessEqualThan2->Disable();
+		m_txtMaxLongitude->Disable();
+
+		m_buttonGridPositionReset->Disable();
+		m_buttonClickMapToAlign->Disable();
+	}
+
+	// Get 'auto adjust to map elevation' status
+	bool autoAdjustElevationStatus = locationGrid->GetAutoAdjustElevationStatus();
+	m_chkAutoAdjustElevation->SetValue( autoAdjustElevationStatus );
+
+	// Enable/Disable grid elevation controls
+	m_lblVerticalElevation->Enable( !autoAdjustElevationStatus );
+	m_textCtrlGridElevation->Enable( !autoAdjustElevationStatus );
+	m_radioVerticalElevationDegrees->Enable( !autoAdjustElevationStatus );
+	m_radioVerticalElevationPixels->Enable( !autoAdjustElevationStatus );
+
 	// Get the grid elevation
 	m_textCtrlGridElevation->SetValue(
 		wxString( StringTools::ToStringW( locationGrid->GetElevation(), 2 ).c_str() ) );
+}
+
+void LocationSetPropertiesDlg::OnRadioColourFill( wxCommandEvent& event )
+{
+	int  wxID = event.GetId();
+	bool set1 = true;
+	bool set2 = true;
+	bool set3 = true;
+
+	if ( wxID == wxID_RADIO_TILE_COLOUR_NO_FILL )
+	{
+		m_locationSetLayer->GetLocationGrid()->SetTileFillMode( LocationGrid::NONE );
+		set1 = false;
+		set2 = false;
+		set3 = false;
+	}
+	else if ( wxID == wxID_RADIO_TILE_COLOUR_UNIFORM_FILL )
+	{
+		m_locationSetLayer->GetLocationGrid()->SetTileFillMode( LocationGrid::UNIFORM );
+		set3 = false;
+	}
+	else if ( wxID == wxID_RADIO_TILE_COLOUR_MAP_FILL )
+	{
+		m_locationSetLayer->GetLocationGrid()->SetTileFillMode( LocationGrid::MAPPED );
+		set1 = false;
+	}
+	m_gridTileColour->Enable( set1 );
+
+	m_txtTileAlpha->Enable( set2 );
+	m_sliderTileAlpha->Enable( set2 );
+
+	m_txtGridFieldToChart->Enable( set3 );
+	m_choiceGridFieldToChart->Enable( set3 );
+	m_txtGridColourMap->Enable( set3 );
+	m_choiceGridColourMap->Enable( set3 );
+	m_scrolledWindowGridColour->Enable( set3 );
+}
+
+void LocationSetPropertiesDlg::OnShowGridBorders( wxCommandEvent& event )
+{
+	bool borderVisibility = m_chkShowGridBorders->GetValue();
+
+	m_txtGridBorderColour->Enable( borderVisibility );
+	m_txtGridBorderAlpha->Enable( borderVisibility );
+	m_txtGridBorderThickness->Enable( borderVisibility );
+	m_txtGridBorderStyle->Enable( borderVisibility );
+	m_gridBorderColour->Enable( borderVisibility );
+	m_sliderBorderAlpha->Enable( borderVisibility );
+	m_spinGridBorderThickness->Enable( borderVisibility );
+	m_cboGridBorderStyle->Enable( borderVisibility );
+
+	m_locationSetLayer->GetLocationGrid()->SetBorderVisibility( borderVisibility );
+}
+
+void LocationSetPropertiesDlg::OnRadioAlignTo( wxCommandEvent& event )
+{
+	int wxID = event.GetId();
+	bool set1 = true;
+	bool set2 = true;
+
+	if ( wxID == wxID_RADIO_GRID_ALIGN_TO_ORIGIN )
+	{
+		m_locationSetLayer->GetLocationGrid()->SetGridAlignmentStyle( LocationGrid::ORIGIN );
+		set1 = false;
+		set2 = false;
+	}
+	else if ( wxID == wxID_RADIO_GRID_ALIGN_TO_LOCATION )
+	{
+		m_locationSetLayer->GetLocationGrid()->SetGridAlignmentStyle( LocationGrid::LOCATIONS );
+		set2 = false;
+	}
+	else if ( wxID == wxID_RADIO_GRID_ALIGN_TO_COORDINATES )
+	{
+		m_locationSetLayer->GetLocationGrid()->SetGridAlignmentStyle( LocationGrid::COORDINATES );
+		set1 = false;
+	}
+
+	m_choiceAlignToLocation->Enable( set1 );
+
+	m_txtLatitude->Enable( set2 );
+	m_txtMinLatitude->Enable( set2 );
+	m_txtLatitudeLessEqualThan1->Enable( set2 );
+	m_textCtrlLatitude->Enable( set2 );
+	m_txtLatitudeLessEqualThan2->Enable( set2 );
+	m_txtMaxLatitude->Enable( set2 );
+
+	m_txtLongitude->Enable( set2 );
+	m_txtMinLongitude->Enable( set2 );
+	m_txtLongitudeLessEqualThan1->Enable( set2 );
+	m_textCtrlLongitude->Enable( set2 );
+	m_txtLongitudeLessEqualThan2->Enable( set2 );
+	m_txtMaxLongitude->Enable( set2 );
+
+	m_buttonGridPositionReset->Enable( set2 );
+	m_buttonClickMapToAlign->Enable( set2 );
+}
+
+void LocationSetPropertiesDlg::OnAutoAdjustElevation( wxCommandEvent& event )
+{
+	bool status = m_chkAutoAdjustElevation->GetValue();
+
+	m_lblVerticalElevation->Enable( !status );
+	m_textCtrlGridElevation->Enable( !status );
+	m_radioVerticalElevationDegrees->Enable( !status );
+	m_radioVerticalElevationPixels->Enable( !status );
+
+	m_locationSetLayer->GetLocationGrid()->SetAutoAdjustElevationStatus( status );
 }
 
 void LocationSetPropertiesDlg::InitMetadata()
@@ -895,12 +1100,19 @@ void LocationSetPropertiesDlg::ApplyGrid()
 	// Set visibility of grid
 	locationGrid->SetVisibility( m_chkShowGrid->GetValue() );
 
+	// Set uniform colour of tiles
+	locationGrid->SetTileUniformColour( Colour( m_gridTileColour->GetColour() ) );
+
+	// Set alpha of tiles
+	float tileAlpha = m_sliderTileAlpha->GetValue();
+	locationGrid->SetTileAlpha( tileAlpha/10 );
+
 	// Set colour of grid borders
 	locationGrid->SetBorderColour( Colour( m_gridBorderColour->GetColour() ) );
 
 	// Set alpha of grid borders
-	float alpha = m_sliderBorderAlpha->GetValue();
-	locationGrid->SetBorderAlpha( alpha/10 );
+	float gridBorderAlpha = m_sliderBorderAlpha->GetValue();
+	locationGrid->SetBorderAlpha( gridBorderAlpha/10 );
 
 	// Set thickness of grid borders
 	locationGrid->SetBorderThickness( m_spinGridBorderThickness->GetValue() );
@@ -922,6 +1134,9 @@ void LocationSetPropertiesDlg::ApplyGrid()
 
 	// Set the grid elevation
 	locationGrid->SetElevation( StringTools::ToDouble( m_textCtrlGridElevation->GetValue().c_str() ) );
+
+	// Generate coordinates
+	locationGrid->GenerateTileCoordinates();
 }
 
 

@@ -30,21 +30,33 @@
 using namespace GenGIS;
 
 LocationGrid::LocationGrid() :
-	m_gridAlignment( LONGITUDE ),
+	// General
+	m_divideTilesAlong( LONGITUDE ),
+	m_gridAlignmentStyle( ORIGIN ),
 	m_mapOpenGLBoundaries( -1.0, -1.0, 1.0, 1.0 ),
+	//m_mapOffset( 0.2f, 0.3f ),
 	m_mapOffset( 0.0f, 0.0f ),
-	m_divisions( 15 ),
+	m_divisions( 12 ),
+	m_autoAdjustElevation( true ),
 	m_elevation( 0.05f ),
+	m_elevationUsed( 0.0f ),
 
+	// Tiles
 	m_showTiles( true ),
-	m_uniformColourOfTiles( 0.0f, 0.0f, 0.0f, 0.3f ),
+	m_tileFillMode( MAPPED ),
+	m_uniformColourOfTiles( 0.0f, 0.5f, 0.0f, 0.3f ),
 
+	// Border
 	m_showBorders( true ),
 	m_colourOfBorders( 0.0f, 0.0f, 0.0f, 0.3f ),
 	m_thicknessOfBorders( 1 ),
 	m_styleOfBorders( VisualLine::SOLID )
 {
+	// Property of 'Layer' class
 	m_bVisible = false;
+
+	m_xCoordinates.clear();
+	m_yCoordinates.clear();
 }
 
 LocationGrid::~LocationGrid()
@@ -56,7 +68,7 @@ bool LocationGrid::IsVisible()
 	return m_bVisible; 
 }
 
-void LocationGrid::Render()
+void LocationGrid::GenerateTileCoordinates()
 {
 	if( !IsVisible() )
 		return;
@@ -64,21 +76,96 @@ void LocationGrid::Render()
 	// Real terrain values of DEM map
 	//mapController->GetMapBorders();
 	//mapController->GetProjectionExtents();
-
+	
 	MapControllerPtr mapController = App::Inst().GetLayerTreeController()->GetMapLayer(0)->GetMapController();
-	m_mapOpenGLBoundaries.x  = -( mapController->GetWidth() / 2 );
-	m_mapOpenGLBoundaries.dx =  ( mapController->GetWidth() / 2 );
-	m_mapOpenGLBoundaries.y  = -( mapController->GetHeight() / 2 );
-	m_mapOpenGLBoundaries.dy =  ( mapController->GetHeight() / 2 );
+	m_mapOpenGLBoundaries = Box2D( -( mapController->GetWidth() / 2 ), -( mapController->GetHeight() / 2 ),
+		( mapController->GetWidth() / 2 ), ( mapController->GetHeight() / 2 ) );
 
-	// Determine appropriate tile size
+	// Set the grid elevation
+	if ( m_autoAdjustElevation )
+	{
+		m_elevationUsed = mapController->GetMaxElevationGridSpace()
+		                * mapController->GetVerticalExaggeration()
+		                + 0.005; // Add a minimal amount to avoid clashing
+		                         // between colours of grid and map
+	}
+	else
+	{
+		m_elevationUsed = m_elevation;
+	}
+
+	// Determine appropriate tile size according to whether the user
+	// wishes to divide the latitude or longitude 'n' number of times
 	double tileSize;
-	if ( m_gridAlignment == LATITUDE )
+	if ( m_divideTilesAlong == LATITUDE )
 		tileSize = m_mapOpenGLBoundaries.Height() / m_divisions;
-	else if ( m_gridAlignment == LONGITUDE )
+	else if ( m_divideTilesAlong == LONGITUDE )
 		tileSize = m_mapOpenGLBoundaries.Width() / m_divisions;
-	else // there will be other cases, this is just a safe 'else' for now
-		tileSize = 2.0 / m_divisions;
+
+	// Clear any previous tile coordinates
+	m_xCoordinates.clear();
+	m_yCoordinates.clear();
+
+	double currentX = m_mapOpenGLBoundaries.x;
+	double currentY = m_mapOpenGLBoundaries.y;
+
+	// Set initial coordinates 'x' and 'y' to the map origin
+	m_xCoordinates.push_back( currentX );
+	m_yCoordinates.push_back( currentY );
+
+	// [ OFFSET ] ( MIDDLE * N ) [ REMAINDER ] 
+
+	// Calculate map OFFSET for OpenGL; fmod is modulus for floats
+	double mapOffsetX = fmod( ( double )m_mapOffset.x, tileSize );
+	if ( mapOffsetX > 0 )
+	{
+		currentX += mapOffsetX;
+		m_xCoordinates.push_back( currentX );
+	}
+
+	double mapOffsetY = fmod( ( double )m_mapOffset.y, tileSize );
+	if ( mapOffsetY > 0 )
+	{
+		currentY += mapOffsetY;
+		m_yCoordinates.push_back( currentY );
+	}
+
+	uint numberOfMiddleTiles;
+	
+	// Calculate the number of MIDDLE divisions along each axis after the offset
+	numberOfMiddleTiles = floor( abs( ( m_mapOpenGLBoundaries.Width() - mapOffsetX ) / tileSize ) );
+	for ( uint col = 0; col < numberOfMiddleTiles; col++ )
+	{
+		currentX += tileSize;
+		m_xCoordinates.push_back( currentX );
+	}
+
+	numberOfMiddleTiles = floor( abs( ( m_mapOpenGLBoundaries.Height() - mapOffsetY ) / tileSize ) );
+	for ( uint row = 0; row < numberOfMiddleTiles; row++ )
+	{
+		currentY += tileSize;
+		m_yCoordinates.push_back( currentY );
+	}
+
+	// Add the remainder if currentX is smaller than map width
+	if ( currentX < m_mapOpenGLBoundaries.dx )
+	{
+		currentX += m_mapOpenGLBoundaries.dx - currentX;
+		m_xCoordinates.push_back( currentX );
+	}
+
+	// Add the remainder if currentY is smaller than map height
+	if ( currentY < m_mapOpenGLBoundaries.dy )
+	{
+		currentY += m_mapOpenGLBoundaries.dy - currentY;
+		m_yCoordinates.push_back( currentY );
+	}
+}
+
+void LocationGrid::Render()
+{
+	if( !IsVisible() )
+		return;
 
 	// Colour palette for tiles (temporary)
 	float alphaOfTile = m_uniformColourOfTiles.GetAlpha();
@@ -92,12 +179,6 @@ void LocationGrid::Render()
 	// Render borders (lines)
 	if ( m_showBorders )
 	{
-		m_mapOffset.x = 0.05f;
-		m_mapOffset.y = 0.03f;
-
-		double xCurrentPosition = m_mapOpenGLBoundaries.x + m_mapOffset.x;
-		double zCurrentPosition = m_mapOpenGLBoundaries.y + m_mapOffset.y;
-
 		// Set OpenGL options
 		glColor4f( m_colourOfBorders.GetRed(), m_colourOfBorders.GetGreen(),
 			m_colourOfBorders.GetBlue(), m_colourOfBorders.GetAlpha() );
@@ -110,76 +191,68 @@ void LocationGrid::Render()
 		glLineStipple( 2, m_styleOfBorders );
 
 		glBegin( GL_LINES );
-
-		// Render a first (left) column line if there is an offset
-		if ( m_mapOffset.x > 0)
+		std::list<double>::iterator col;
+		std::list<double>::iterator row;
+		for ( col = m_xCoordinates.begin(); col != m_xCoordinates.end(); ++col )
 		{
-			glVertex3f( m_mapOpenGLBoundaries.x,  m_elevation, m_mapOpenGLBoundaries.y );
-			glVertex3f( m_mapOpenGLBoundaries.dx, m_elevation, m_mapOpenGLBoundaries.y );
+			// Draw column borders
+			glVertex3f( *col,  m_elevationUsed, m_mapOpenGLBoundaries.y  );
+			glVertex3f( *col,  m_elevationUsed, m_mapOpenGLBoundaries.dy );
 		}
-
-		// Render a first (top) row line if there is an offset
-		if ( m_mapOffset.y > 0)
+		for ( row = m_yCoordinates.begin(); row != m_yCoordinates.end(); ++row )
 		{
-			glVertex3f( m_mapOpenGLBoundaries.x, m_elevation, m_mapOpenGLBoundaries.y  );
-			glVertex3f( m_mapOpenGLBoundaries.x, m_elevation, m_mapOpenGLBoundaries.dy );
+			// Draw row borders
+			glVertex3f( m_mapOpenGLBoundaries.x,  m_elevationUsed, *row );
+			glVertex3f( m_mapOpenGLBoundaries.dx, m_elevationUsed, *row );
 		}
-
-		// Render column lines
-		for ( uint col = 0; col < m_divisions; col++ )
-		{
-			if ( xCurrentPosition > m_mapOpenGLBoundaries.dx )
-				break;
-			glVertex3f( xCurrentPosition, m_elevation, m_mapOpenGLBoundaries.y  );
-			glVertex3f( xCurrentPosition, m_elevation, m_mapOpenGLBoundaries.dy );
-			xCurrentPosition += tileSize;
-		}
-
-		// Render row lines
-		for ( uint row = 0; row < m_divisions; row++ )
-		{
-			if ( zCurrentPosition > m_mapOpenGLBoundaries.dy )
-				break;
-			glVertex3f( m_mapOpenGLBoundaries.x,  m_elevation, zCurrentPosition );
-			glVertex3f( m_mapOpenGLBoundaries.dx, m_elevation, zCurrentPosition );
-			zCurrentPosition += tileSize;
-		}
-
-		// Render last (right) column line
-		glVertex3f( m_mapOpenGLBoundaries.x,  m_elevation, m_mapOpenGLBoundaries.dy );
-		glVertex3f( m_mapOpenGLBoundaries.dx, m_elevation, m_mapOpenGLBoundaries.dy );
-
-		// Render last (bottom) row line
-		glVertex3f( m_mapOpenGLBoundaries.dx, m_elevation, m_mapOpenGLBoundaries.y  );
-		glVertex3f( m_mapOpenGLBoundaries.dx, m_elevation, m_mapOpenGLBoundaries.dy );
-
 		glEnd();
 	}
 
 	// Render tiles
-	//if ( m_showTiles )
-	//{
-	//	uint   iterator = 0;
-	//	double x = m_mapOpenGLBoundaries.x;
-	//	double z;
-	//	glBegin( GL_QUADS );
-	//	for ( uint col = 0; col < m_divisions; col++ )
-	//	{
-	//		z = m_mapOpenGLBoundaries.y;
-	//		for ( uint row = 0; row < m_divisions; row++ )
-	//		{
-	//			glColor4fv( COLOUR[iterator] );
-	//			( iterator < 7 ) ? iterator++ : iterator = 0;
+	if ( m_showTiles )
+	{
+		if ( m_tileFillMode == UNIFORM )
+		{
+			glBegin( GL_QUADS );
 
-	//			glVertex3f( x,            m_elevation, z            );
-	//			glVertex3f( x + tileSize, m_elevation, z            );
-	//			glVertex3f( x + tileSize, m_elevation, z + tileSize );
-	//			glVertex3f( x,            m_elevation, z + tileSize );
+			glColor4f( m_uniformColourOfTiles.GetRed(), m_uniformColourOfTiles.GetGreen(),
+				m_uniformColourOfTiles.GetBlue(), m_uniformColourOfTiles.GetAlpha() );
 
-	//			z += tileSize;
-	//		}
-	//		x += tileSize;
-	//	}
-	//	glEnd();
-	//}
+			glVertex3f( m_mapOpenGLBoundaries.x,  m_elevationUsed, m_mapOpenGLBoundaries.y  );
+			glVertex3f( m_mapOpenGLBoundaries.x,  m_elevationUsed, m_mapOpenGLBoundaries.dy );
+			glVertex3f( m_mapOpenGLBoundaries.dx, m_elevationUsed, m_mapOpenGLBoundaries.dy );
+			glVertex3f( m_mapOpenGLBoundaries.dx, m_elevationUsed, m_mapOpenGLBoundaries.y  );
+
+			glEnd();
+		}
+		else if ( m_tileFillMode == MAPPED )
+		{
+			// Render tiles from a stored list of previously generated coordinates
+			uint iterator = 0;
+			glBegin( GL_QUADS );
+
+			std::list<double>::iterator row1, row2, col1, col2;
+			row2 = m_yCoordinates.begin(); row2++;
+
+			for ( row1 = m_yCoordinates.begin(); row2 != m_yCoordinates.end(); ++row1 )
+			{
+				col2 = m_xCoordinates.begin(); col2++;
+
+				for ( col1 = m_xCoordinates.begin(); col2 != m_xCoordinates.end(); ++col1 )
+				{
+					glColor4fv( COLOUR[iterator] );
+					( iterator < 7 ) ? iterator++ : iterator = 0;
+
+					glVertex3f( *col1, m_elevationUsed, *row1 );
+					glVertex3f( *col2, m_elevationUsed, *row1 );
+					glVertex3f( *col2, m_elevationUsed, *row2 );
+					glVertex3f( *col1, m_elevationUsed, *row2 );
+
+					col2++;
+				}
+				row2++;
+			}
+			glEnd();
+		}
+	}
 }

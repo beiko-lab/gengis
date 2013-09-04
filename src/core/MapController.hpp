@@ -223,6 +223,12 @@ namespace GenGIS
 			return m_mapModel->GetMaxElevation();
 		}
 
+		/** Get vertical exaggeration of elevation. */	
+		float GetVerticalExaggeration() const
+		{
+			return m_mapModel->GetVerticalExaggeration();
+		}
+
 		/** 
 		* @brief Set active state of layer.
 		* @param state Active state of layer.
