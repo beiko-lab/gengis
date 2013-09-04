@@ -48,8 +48,8 @@ namespace GenGIS
 		/** Close dialog. */
 		void OnClose( wxCommandEvent& event ) { Destroy(); }
 
+		/** Combines multiple location sets into one */
 		void LocationMergeDlg::CreateLocationSet( std::vector<LocationSetLayerPtr> LocationSets );
-	
 	};
 }
 
