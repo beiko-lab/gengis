@@ -110,6 +110,9 @@ namespace GenGIS
 				ID_SPIN_DROPLINE_THICKNESS,
 				ID_COLOUR_PICKER_DROPLINE,
 				ID_CHECK_SHOW_CHART,
+				wxID_RADIO_TILE_COLOUR_NO_FILL,
+				wxID_RADIO_TILE_COLOUR_UNIFORM_FILL,
+				wxID_RADIO_TILE_COLOUR_MAP_FILL,
 				wxID_RADIO_GRID_ALIGN_TO_ORIGIN,
 				wxID_RADIO_GRID_ALIGN_TO_LOCATION,
 				wxID_RADIO_GRID_ALIGN_TO_COORDINATES,
@@ -318,9 +321,7 @@ namespace GenGIS
 			virtual void OnSpinAssignTaxa( wxSpinEvent& event ) { event.Skip(); }
 			virtual void OnCboFieldChange( wxCommandEvent& event ) { event.Skip(); }
 			virtual void OnSpinLineThickness( wxSpinEvent& event ) { event.Skip(); }
-			virtual void OnRadioNoFill( wxCommandEvent& event ) { event.Skip(); }
-			virtual void OnRadioUniformColour( wxCommandEvent& event ) { event.Skip(); }
-			virtual void OnRadioGridColourMap( wxCommandEvent& event ) { event.Skip(); }
+			virtual void OnRadioColourFill( wxCommandEvent& event ) { event.Skip(); }
 			virtual void OnShowGridBorders( wxCommandEvent& event ) { event.Skip(); }
 			virtual void OnRadioAlignTo( wxCommandEvent& event ) { event.Skip(); }
 			virtual void OnAutoAdjustElevation( wxCommandEvent& event ) { event.Skip(); }

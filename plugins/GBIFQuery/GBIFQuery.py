@@ -167,7 +167,7 @@ class GBIFQuery(GBIFQueryLayout):
 			OUTSArray.insert(0,"Sequence ID,Site ID,CellLat,CellLong,Taxon,Genus,TrueLat,TrueLong,Count,AllRecords")					
 			OUTLArray.pop()
 			OUTSArray.pop()
-			layerName = "GBIFLayer_%d" % GenGIS.layerTree.GetNumLocationLayers()
+			layerName = "GBIFLayer_%d" % GenGIS.layerTree.GetNumLocationSetLayers()
 			GenGIS.mainWindow.OpenLocationsCSVFile(OUTLArray, layerName)
 			GenGIS.mainWindow.OpenSequenceCSVFile(OUTSArray, layerName)
 			
