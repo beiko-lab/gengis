@@ -30,11 +30,6 @@
 
 #include "../utils/StringTools.hpp"
 #include "../utils/UniqueId.hpp"
-//#include "../utils/ColourMap.hpp"
-//#include "../utils/ColourMapDiscrete.hpp"
-//#include "../utils/ColourMapManager.hpp"
-//#include "../core/StudyLayer.hpp"
-//#include "../gui/LocationSetPropertiesDlg.hpp"
 
 using namespace GenGIS;
 
@@ -73,9 +68,6 @@ void LocationMergeDlg::OnOK(wxCommandEvent& event)
 	{
 		int * checkedIndexes = new int [numItems];
 		LayerTreeControllerPtr layerTree = App::Inst().GetLayerTreeController();
-	//	std::vector<std::string> checkedLocations;
-		//map of all location data to be merged
-		std::map<std::wstring,std::vector<LocationLayerPtr>> locationData;
 		std::vector<LocationSetLayerPtr> LocationSets;
 		//Finds the indexes of all checked boxes
 		for(int locSet = 0; locSet < numItems; locSet++)
@@ -84,23 +76,13 @@ void LocationMergeDlg::OnOK(wxCommandEvent& event)
 			{
 				LocationSetLayerPtr locationSet = layerTree->GetLocationSetLayer( locSet );
 				LocationSets.push_back(locationSet);
-				std::wstring layerName = locationSet->GetName();
-				//uint layerID = layerTree->GetLocationSetLayer( locSet )->GetId();
-				LocationLayerPtr curLoc2 = locationSet->GetLocationLayer( layerName );
 				for(uint i = 0; i < locationSet->GetNumLocationLayers(); i++)
 				{
 					std::vector<LocationLayerPtr> locations = locationSet->GetAllActiveLocationLayers();
-					locationData.insert(std::pair<std::wstring,std::vector<LocationLayerPtr>>(layerName,locations));
 				}
 			}
 		}
 		CreateLocationSet(LocationSets);
-		locationData.size();
-		
-	//	LocationHandler(locationData);
-		
-
-
 
 		Destroy();
 	}
@@ -127,9 +109,7 @@ void LocationMergeDlg::CreateLocationSet( std::vector<LocationSetLayerPtr> Locat
 			locationLayers.push_back(locationLayer);
 		}
 	}
-	locationSet->GetLocationSetController()->SetLocationSetLayers(locationLayers);
-
 	App::Inst().GetLayerTreeController()->AddLocationSetLayer(locationSet);
+	App::Inst().GetLayerTreeController()->AddSequence(locationSet);
 	App::Inst().GetLayerTreeController()->GetTreeCtrl()->Thaw();
-
 }
