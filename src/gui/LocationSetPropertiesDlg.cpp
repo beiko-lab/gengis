@@ -495,6 +495,7 @@ void LocationSetPropertiesDlg::InitLocationGrid()
 	if ( colourFillStyle == LocationGrid::NONE )
 	{
 		m_radioGridNoFill->SetValue( true );
+
 		m_gridTileColour->Disable();
 		m_txtTileAlpha->Disable();
 		m_sliderTileAlpha->Disable();
@@ -507,6 +508,7 @@ void LocationSetPropertiesDlg::InitLocationGrid()
 	else if ( colourFillStyle == LocationGrid::UNIFORM )
 	{
 		m_radioGridUniformColour->SetValue( true );
+
 		m_txtGridFieldToChart->Disable();
 		m_choiceGridFieldToChart->Disable();
 		m_txtGridColourMap->Disable();
@@ -516,6 +518,7 @@ void LocationSetPropertiesDlg::InitLocationGrid()
 	else if ( colourFillStyle == LocationGrid::MAPPED )
 	{
 		m_radioGridColourMap->SetValue( true );
+
 		m_gridTileColour->Disable();
 	}
 
@@ -619,51 +622,40 @@ void LocationSetPropertiesDlg::InitLocationGrid()
 		wxString( StringTools::ToStringW( locationGrid->GetElevation(), 2 ).c_str() ) );
 }
 
-void LocationSetPropertiesDlg::OnRadioNoFill( wxCommandEvent& event )
+void LocationSetPropertiesDlg::OnRadioColourFill( wxCommandEvent& event )
 {
-	//bool status = m_radioGridNoFill->GetValue();
-	m_gridTileColour->Disable();
-	m_txtTileAlpha->Disable();
-	m_sliderTileAlpha->Disable();
-	m_txtGridFieldToChart->Disable();
-	m_choiceGridFieldToChart->Disable();
-	m_txtGridColourMap->Disable();
-	m_choiceGridColourMap->Disable();
-	m_scrolledWindowGridColour->Disable();
+	int  wxID = event.GetId();
+	bool set1 = true;
+	bool set2 = true;
+	bool set3 = true;
 
-	m_locationSetLayer->GetLocationGrid()->SetTileFillMode( LocationGrid::NONE );
-}
+	if ( wxID == wxID_RADIO_TILE_COLOUR_NO_FILL )
+	{
+		m_locationSetLayer->GetLocationGrid()->SetTileFillMode( LocationGrid::NONE );
+		set1 = false;
+		set2 = false;
+		set3 = false;
+	}
+	else if ( wxID == wxID_RADIO_TILE_COLOUR_UNIFORM_FILL )
+	{
+		m_locationSetLayer->GetLocationGrid()->SetTileFillMode( LocationGrid::UNIFORM );
+		set3 = false;
+	}
+	else if ( wxID == wxID_RADIO_TILE_COLOUR_MAP_FILL )
+	{
+		m_locationSetLayer->GetLocationGrid()->SetTileFillMode( LocationGrid::MAPPED );
+		set1 = false;
+	}
+	m_gridTileColour->Enable( set1 );
 
-void LocationSetPropertiesDlg::OnRadioUniformColour( wxCommandEvent& event )
-{
-	//bool status = m_radioGridUniformColour->GetValue();
-	m_gridTileColour->Enable();
-	m_txtTileAlpha->Enable();
-	m_sliderTileAlpha->Enable();
+	m_txtTileAlpha->Enable( set2 );
+	m_sliderTileAlpha->Enable( set2 );
 
-	m_txtGridFieldToChart->Disable();
-	m_choiceGridFieldToChart->Disable();
-	m_txtGridColourMap->Disable();
-	m_choiceGridColourMap->Disable();
-	m_scrolledWindowGridColour->Disable();
-
-	m_locationSetLayer->GetLocationGrid()->SetTileFillMode( LocationGrid::UNIFORM );
-}
-
-void LocationSetPropertiesDlg::OnRadioGridColourMap( wxCommandEvent& event )
-{
-	//bool status = m_radioGridColourMap->GetValue();
-	m_gridTileColour->Disable();
-
-	m_txtTileAlpha->Enable();
-	m_sliderTileAlpha->Enable();
-	m_txtGridFieldToChart->Enable();
-	m_choiceGridFieldToChart->Enable();
-	m_txtGridColourMap->Enable();
-	m_choiceGridColourMap->Enable();
-	m_scrolledWindowGridColour->Enable();
-
-	m_locationSetLayer->GetLocationGrid()->SetTileFillMode( LocationGrid::MAPPED );
+	m_txtGridFieldToChart->Enable( set3 );
+	m_choiceGridFieldToChart->Enable( set3 );
+	m_txtGridColourMap->Enable( set3 );
+	m_choiceGridColourMap->Enable( set3 );
+	m_scrolledWindowGridColour->Enable( set3 );
 }
 
 void LocationSetPropertiesDlg::OnShowGridBorders( wxCommandEvent& event )
@@ -1142,6 +1134,9 @@ void LocationSetPropertiesDlg::ApplyGrid()
 
 	// Set the grid elevation
 	locationGrid->SetElevation( StringTools::ToDouble( m_textCtrlGridElevation->GetValue().c_str() ) );
+
+	// Generate coordinates
+	locationGrid->GenerateTileCoordinates();
 }
 
 

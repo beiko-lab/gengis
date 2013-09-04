@@ -6414,7 +6414,7 @@
                                             <object class="notebookpage" expanded="1">
                                                 <property name="bitmap"></property>
                                                 <property name="label">Colour</property>
-                                                <property name="select">0</property>
+                                                <property name="select">1</property>
                                                 <object class="wxPanel" expanded="1">
                                                     <property name="bg"></property>
                                                     <property name="context_help"></property>
@@ -6516,7 +6516,7 @@
                                                                                         <property name="fg"></property>
                                                                                         <property name="font"></property>
                                                                                         <property name="hidden">0</property>
-                                                                                        <property name="id">wxID_ANY</property>
+                                                                                        <property name="id">wxID_RADIO_TILE_COLOUR_NO_FILL</property>
                                                                                         <property name="label">No fill</property>
                                                                                         <property name="maximum_size"></property>
                                                                                         <property name="minimum_size"></property>
@@ -6552,7 +6552,7 @@
                                                                                         <event name="OnMouseEvents"></event>
                                                                                         <event name="OnMouseWheel"></event>
                                                                                         <event name="OnPaint"></event>
-                                                                                        <event name="OnRadioButton">OnRadioNoFill</event>
+                                                                                        <event name="OnRadioButton">OnRadioColourFill</event>
                                                                                         <event name="OnRightDClick"></event>
                                                                                         <event name="OnRightDown"></event>
                                                                                         <event name="OnRightUp"></event>
@@ -6583,7 +6583,7 @@
                                                                                         <property name="fg"></property>
                                                                                         <property name="font"></property>
                                                                                         <property name="hidden">0</property>
-                                                                                        <property name="id">wxID_ANY</property>
+                                                                                        <property name="id">wxID_RADIO_TILE_COLOUR_UNIFORM_FILL</property>
                                                                                         <property name="label">Uniform colour:</property>
                                                                                         <property name="maximum_size"></property>
                                                                                         <property name="minimum_size"></property>
@@ -6619,7 +6619,7 @@
                                                                                         <event name="OnMouseEvents"></event>
                                                                                         <event name="OnMouseWheel"></event>
                                                                                         <event name="OnPaint"></event>
-                                                                                        <event name="OnRadioButton">OnRadioUniformColour</event>
+                                                                                        <event name="OnRadioButton">OnRadioColourFill</event>
                                                                                         <event name="OnRightDClick"></event>
                                                                                         <event name="OnRightDown"></event>
                                                                                         <event name="OnRightUp"></event>
@@ -6696,7 +6696,7 @@
                                                                                         <property name="fg"></property>
                                                                                         <property name="font"></property>
                                                                                         <property name="hidden">0</property>
-                                                                                        <property name="id">wxID_ANY</property>
+                                                                                        <property name="id">wxID_RADIO_TILE_COLOUR_MAP_FILL</property>
                                                                                         <property name="label">Colour Map</property>
                                                                                         <property name="maximum_size"></property>
                                                                                         <property name="minimum_size"></property>
@@ -6732,7 +6732,7 @@
                                                                                         <event name="OnMouseEvents"></event>
                                                                                         <event name="OnMouseWheel"></event>
                                                                                         <event name="OnPaint"></event>
-                                                                                        <event name="OnRadioButton">OnRadioGridColourMap</event>
+                                                                                        <event name="OnRadioButton">OnRadioColourFill</event>
                                                                                         <event name="OnRightDClick"></event>
                                                                                         <event name="OnRightDown"></event>
                                                                                         <event name="OnRightUp"></event>
@@ -7884,7 +7884,7 @@
                                             <object class="notebookpage" expanded="1">
                                                 <property name="bitmap"></property>
                                                 <property name="label">Size and Position</property>
-                                                <property name="select">1</property>
+                                                <property name="select">0</property>
                                                 <object class="wxPanel" expanded="1">
                                                     <property name="bg"></property>
                                                     <property name="context_help"></property>
