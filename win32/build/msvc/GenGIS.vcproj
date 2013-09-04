@@ -550,6 +550,14 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\..\src\gui\LocationMergeDlg.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\src\gui\LocationMergeLayout.cpp"
+					>
+				</File>
+				<File
 					RelativePath="..\..\..\src\gui\LocationPropertiesDlg.cpp"
 					>
 				</File>
@@ -1173,6 +1181,14 @@
 				</File>
 				<File
 					RelativePath="..\..\..\src\gui\LinearAnalysisPlotDlg.hpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\src\gui\LocationMergeDlg.hpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\src\gui\LocationMergeLayout.h"
 					>
 				</File>
 				<File

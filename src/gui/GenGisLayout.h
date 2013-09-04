@@ -175,6 +175,7 @@ namespace GenGIS
 			virtual void OnLayerOpenLocations( wxCommandEvent& event ) { event.Skip(); }
 			virtual void OnLayerOpenSequenceData( wxCommandEvent& event ) { event.Skip(); }
 			virtual void OnLayerOpenTree( wxCommandEvent& event ) { event.Skip(); }
+			virtual void OnLocationMerge( wxCommandEvent& event ) { event.Skip(); }
 			virtual void OnLayerRemove( wxCommandEvent& event ) { event.Skip(); }
 			virtual void OnAllLayersRemove( wxCommandEvent& event ) { event.Skip(); }
 			virtual void OnLayerHideAll( wxCommandEvent& event ) { event.Skip(); }

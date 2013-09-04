@@ -361,6 +361,10 @@ GenGisLayout::GenGisLayout( wxWindow* parent, wxWindowID id, const wxString& tit
 	#endif
 	m_mnuLayers->Append( m_mnuLayerTree );
 	
+	wxMenuItem* m_menuLocationMerger;
+	m_menuLocationMerger = new wxMenuItem( m_mnuLayers, wxID_ANY, wxString( wxT("Location Set &Merge") ) , wxT("Merge location set layers"), wxITEM_NORMAL );
+	m_mnuLayers->Append( m_menuLocationMerger );
+	
 	wxMenuItem* m_separator7;
 	m_separator7 = m_mnuLayers->AppendSeparator();
 	
@@ -524,6 +528,7 @@ GenGisLayout::GenGisLayout( wxWindow* parent, wxWindowID id, const wxString& tit
 	this->Connect( m_mnuLayerLocations->GetId(), wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GenGisLayout::OnLayerOpenLocations ) );
 	this->Connect( m_mnuLayerSequenceData->GetId(), wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GenGisLayout::OnLayerOpenSequenceData ) );
 	this->Connect( m_mnuLayerTree->GetId(), wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GenGisLayout::OnLayerOpenTree ) );
+	this->Connect( m_menuLocationMerger->GetId(), wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GenGisLayout::OnLocationMerge ) );
 	this->Connect( m_mnuLayerRemove->GetId(), wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GenGisLayout::OnLayerRemove ) );
 	this->Connect( m_mnuAllLayerRemove->GetId(), wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GenGisLayout::OnAllLayersRemove ) );
 	this->Connect( m_mnuLayerHideAll->GetId(), wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GenGisLayout::OnLayerHideAll ) );
@@ -587,6 +592,7 @@ GenGisLayout::~GenGisLayout()
 	this->Disconnect( ID_MNU_LAYER_ADD_LOCATIONS, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GenGisLayout::OnLayerOpenLocations ) );
 	this->Disconnect( ID_MNU_LAYER_SEQUENCE_DATA, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GenGisLayout::OnLayerOpenSequenceData ) );
 	this->Disconnect( ID_MNU_LAYER_ADD_TREE, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GenGisLayout::OnLayerOpenTree ) );
+	this->Disconnect( wxID_ANY, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GenGisLayout::OnLocationMerge ) );
 	this->Disconnect( ID_MNU_LAYER_REMOVE, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GenGisLayout::OnLayerRemove ) );
 	this->Disconnect( ID_MNU_ALL_LAYER_REMOVE, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GenGisLayout::OnAllLayersRemove ) );
 	this->Disconnect( ID_MNU_LAYER_HIDE_ALL, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GenGisLayout::OnLayerHideAll ) );
