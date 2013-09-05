@@ -85,6 +85,12 @@ namespace GenGIS
 		bool AddLocationSetLayer(LocationSetLayerPtr locationSet);
 
 		/**
+		* @brief Add new location set layer to currently selected node in layer tree at given position.
+		* @param Location set layer to add, position to add it at.		
+		*/
+		bool AddLocationSetLayerAtPosition(LocationSetLayerPtr locationSet, int pos);
+
+		/**
 		* @brief Add new sequence layer to currently selected node in layer tree. 
 		* @param Sequence layer to add.
 		*/

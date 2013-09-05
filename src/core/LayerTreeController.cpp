@@ -411,6 +411,79 @@ bool LayerTreeController::AddTreeLayer(TreeLayerPtr tree)
 	return true;
 }
 
+bool LayerTreeController::AddLocationSetLayerAtPosition(LocationSetLayerPtr locationSet, int pos)
+{
+	LayerPtr selectedLayer = GetSelectedLayer();
+
+	if(selectedLayer == LayerPtr() || selectedLayer->GetType() != Layer::MAP)
+	{
+		if( GetNumMapLayers() == 1 )
+		{
+			// select the first map by default
+			SetSelection( GetMapLayer(0) );
+			selectedLayer = GetSelectedLayer();
+		}
+	}
+
+	wxTreeItemId selectionId = m_treeView->GetTreeCtrl()->GetSelection();
+
+	if(selectedLayer != LayerPtr() && selectedLayer->GetType() == Layer::MAP)
+	{
+		// At this point during deserialization, the location set layer is already connected to the map layer
+		if (!App::Inst().IsCurrentlySerializing())
+		{
+			// add location set to tree controller so it can be easily access at begining
+			//	NEEDS TO BE CHANGED TO ADD IT AT GIVEN POSITION
+			m_locationSets.insert(m_locationSets.begin(),locationSet);
+
+			// add location set to tree model
+			MapLayerPtr mapPtr = boost::dynamic_pointer_cast<MapLayer>(selectedLayer);
+			mapPtr->AddLocationSetLayer(locationSet);
+		}
+
+		// add location set to tree control
+		LayerTreeItem* layerItem = new LayerTreeItem(locationSet);
+		wxString idStr(std::wstring(_T("Location Set : ") + locationSet->GetName()).c_str());
+		wxTreeItemId locationSetId = m_treeView->GetTreeCtrl()->PrependItem(selectionId, wxT(""),	//Change to add at position
+			locationSet->IsActive(), -1, layerItem);
+
+		m_treeView->GetTreeCtrl()->SetItemText(locationSetId, idStr);
+		locationSet->SetWXTreeItemId( locationSetId );
+
+		// select the location set layer
+		m_treeView->GetTreeCtrl()->SelectItem(locationSetId);
+
+		// add each location to tree control
+		for(unsigned int i = 0; i < locationSet->GetNumLocationLayers(); ++i)
+		{
+			LocationLayerPtr location = locationSet->GetLocationLayer(i);
+
+			if (!App::Inst().IsCurrentlySerializing())
+			{
+				m_locations.push_back(location);
+			}
+
+			LayerTreeItem* locationItem = new LayerTreeItem(location);
+			wxString idStr(std::wstring(_T("Location : ") + location->GetName()).c_str());
+			wxTreeItemId locationId = m_treeView->GetTreeCtrl()->AppendItem(locationSetId, wxT(""), 
+				location->IsActive(), -1, locationItem);
+			m_treeView->GetTreeCtrl()->SetItemText(locationId, idStr);
+			location->SetWXTreeItemId( locationId );
+		}
+
+		App::Inst().GetViewport()->Refresh(false);
+	}
+
+	else
+	{
+		wxMessageBox(wxT("Please select a map node before adding a new location set."),
+			wxT("Select map node"), wxOK | wxICON_INFORMATION);
+
+		return false;
+	}
+
+	return true;
+}
 bool LayerTreeController::AddLocationSetLayer(LocationSetLayerPtr locationSet)
 {
 	LayerPtr selectedLayer = GetSelectedLayer();
