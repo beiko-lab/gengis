@@ -90,16 +90,20 @@ void LocationMergeDlg::OnOK(wxCommandEvent& event)
 
 void LocationMergeDlg::CreateLocationSet( std::vector<LocationSetLayerPtr> LocationSets )
 {
+	// stop refreshing the tree until all sequences are loaded (this is purely for efficency)
 	App::Inst().GetLayerTreeController()->GetTreeCtrl()->Freeze();
 	ChartSetViewPtr chartSetCtrl(new ChartSetView());
 	LocationSetLayerPtr locationSet(new LocationSetLayer(UniqueId::Inst().GenerateId(), 
 			App::Inst().GetLayerTreeController()->GetSelectedLayer(),
 			chartSetCtrl));
+	
 	int numLayers = App::Inst().GetLayerTreeController()->GetNumLocationSetLayers();
+	// create name for new layer
 	std::string result = "Combined_" + boost::lexical_cast<std::string>(numLayers+1);
 	wxString mystring(result.c_str(),wxConvUTF8);
 	locationSet->SetName(mystring);
 	std::vector<LocationLayerPtr> locationLayers;
+	// add locations to new location set layer
 	foreach(LocationSetLayerPtr locpoint, LocationSets)
 	{
 		for(uint i = 0; i < locpoint->GetNumLocationLayers(); i++)
@@ -109,7 +113,9 @@ void LocationMergeDlg::CreateLocationSet( std::vector<LocationSetLayerPtr> Locat
 			locationLayers.push_back(locationLayer);
 		}
 	}
-	App::Inst().GetLayerTreeController()->AddLocationSetLayer(locationSet);
+	// link everything to the display
+	locationSet->GetLocationSetController()->SetLocationSetLayers(locationLayers);
+	App::Inst().GetLayerTreeController()->AddLocationSetLayerAtPosition(locationSet,0);
 	App::Inst().GetLayerTreeController()->AddSequence(locationSet);
 	App::Inst().GetLayerTreeController()->GetTreeCtrl()->Thaw();
 }
