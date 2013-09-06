@@ -50,6 +50,10 @@ namespace GenGIS
 
 		/** Combines multiple location sets into one */
 		void LocationMergeDlg::CreateLocationSet( std::vector<LocationSetLayerPtr> LocationSets );
+
+		void LocationMergeDlg::CreateLocationSet( std::vector<LocationModelPtr> locationModels, std::vector<ChartSetViewPtr> ChartViews );
+
+		void LocationMergeDlg::CreateSequenceSet( std::vector<SequenceModelPtr> sequenceModels );
 	};
 }
 
