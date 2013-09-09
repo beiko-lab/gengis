@@ -20,18 +20,19 @@
 //=======================================================================
 
 #include "../core/Precompiled.hpp"
-#include "../gui/LocationMergeDlg.hpp"
 #include "../core/App.hpp"
-#include "../utils/Log.hpp"
 #include "../core/LocationSetLayer.hpp"
 #include "../core/LocationLayer.hpp"
 #include "../core/LayerTreeController.hpp"
 #include "../core/LocationSetController.hpp"
 #include "../core/StudyLayer.hpp"
 #include "../core/SequenceLayer.hpp"
-#include "../utils/ColourMapManager.hpp"
 #include "../core/ChartSetView.hpp"
 
+#include "../gui/LocationMergeDlg.hpp"
+
+#include "../utils/Log.hpp"
+#include "../utils/ColourMapManager.hpp"
 #include "../utils/StringTools.hpp"
 #include "../utils/UniqueId.hpp"
 
@@ -64,72 +65,6 @@ void LocationMergeDlg::Init()
 	}
 	
 }
-/**
-void LocationMergeDlg::OnOK(wxCommandEvent& event)
-{
-	int numItems = m_locationSetCheckbox->GetCount();
-	if( numItems > 0)
-	{
-		int * checkedIndexes = new int [numItems];
-		LayerTreeControllerPtr layerTree = App::Inst().GetLayerTreeController();
-		std::vector<LocationSetLayerPtr> LocationSets;
-		//Finds the indexes of all checked boxes
-		for(int locSet = 0; locSet < numItems; locSet++)
-		{
-			if(m_locationSetCheckbox->IsChecked(locSet))
-			{
-				LocationSetLayerPtr locationSet = layerTree->GetLocationSetLayer( locSet );
-				LocationSets.push_back(locationSet);
-				for(uint i = 0; i < locationSet->GetNumLocationLayers(); i++)
-				{
-					std::vector<LocationLayerPtr> locations = locationSet->GetAllActiveLocationLayers();
-				}
-			}
-		}
-		CreateLocationSet(LocationSets);
-
-		Destroy();
-	}
-}
-
-void LocationMergeDlg::CreateLocationSet( std::vector<LocationSetLayerPtr> LocationSets )
-{
-	// stop refreshing the tree until all sequences are loaded (this is purely for efficency)
-	App::Inst().GetLayerTreeController()->GetTreeCtrl()->Freeze();
-	ChartSetViewPtr chartSetCtrl(new ChartSetView());
-	LocationSetLayerPtr locationSet(new LocationSetLayer(UniqueId::Inst().GenerateId(), 
-			App::Inst().GetLayerTreeController()->GetSelectedLayer(),
-			chartSetCtrl));
-	
-	int numLayers = App::Inst().GetLayerTreeController()->GetNumLocationSetLayers();
-	// create name for new layer
-	std::string result = "Combined_" + boost::lexical_cast<std::string>(numLayers+1);
-	wxString mystring(result.c_str(),wxConvUTF8);
-	locationSet->SetName(mystring);
-	locationSet->SetFullPath(mystring);
-	std::vector<LocationLayerPtr> locationLayers;
-	// add locations to new location set layer
-	foreach(LocationSetLayerPtr locpoint, LocationSets)
-	{
-		for(uint i = 0; i < locpoint->GetNumLocationLayers(); i++)
-		{
-			LocationLayerPtr locationLayerPointer = locpoint->GetLocationLayer(i);
-			LocationLayerPtr locationLayer(new LocationLayer(locationLayerPointer));
-			locationLayer->SetName(locationLayerPointer->GetName());
-
-			locationLayer->Render();
-			locationSet->AddLocationLayer(locationLayer);
-			locationLayers.push_back(locationLayer);
-		}
-	}
-	// link everything to the display
-	locationSet->GetLocationSetController()->SetLocationSetLayers(locationLayers);
-	App::Inst().GetLayerTreeController()->AddLocationSetLayerAtPosition(locationSet,0);
-	App::Inst().GetLayerTreeController()->AddSequence(locationSet);
-	App::Inst().GetLayerTreeController()->GetTreeCtrl()->Thaw();
-	App::Inst().GetLayerTreeController()->GetLocationSetLayer(0)->GetLocationSetController()->GetNumericMetadataFields();
-}
-*/
 void LocationMergeDlg::OnOK(wxCommandEvent& event)
 {
 	int numItems = m_locationSetCheckbox->GetCount();
@@ -163,7 +98,6 @@ void LocationMergeDlg::OnOK(wxCommandEvent& event)
 				}
 			}
 		}
-	//	CreateLocationSet(LocationSets);
 		CreateLocationSet(LocationModels,ChartViews);
 		CreateSequenceSet(SequenceModels);
 		Destroy();
@@ -171,13 +105,6 @@ void LocationMergeDlg::OnOK(wxCommandEvent& event)
 }
 void LocationMergeDlg::CreateLocationSet( std::vector<LocationModelPtr> locationModels, std::vector<ChartSetViewPtr> ChartViews )
 {
-	if ( App::Inst().GetLayerTreeController()->GetNumLocationSetLayers() > 0 )
-	{
-		//wxMessageBox( wxT( "GenGIS currently supports only a single location set." ),
-		//	wxT( "Multiple location sets not supported" ), wxOK | wxICON_INFORMATION );
-		//return;
-	}
-
 	// get selected layer
 	LayerPtr selectedLayer = App::Inst().GetLayerTreeController()->GetSelectedLayer();
 	if(selectedLayer == LayerPtr() || selectedLayer->GetType() != Layer::MAP)
@@ -194,74 +121,61 @@ void LocationMergeDlg::CreateLocationSet( std::vector<LocationModelPtr> location
 	{
 		std::vector<LocationModelPtr> copyLocationModels;
 		StudyControllerPtr studyController = App::Inst().GetLayerTreeController()->GetStudyLayer(0)->GetStudyController();
+		
+		// stop refreshing the tree until all sequences are loaded (this is purely for efficency)
+		App::Inst().GetLayerTreeController()->GetTreeCtrl()->Freeze();
 
-//		if( LocationSetIO::Read( fullPath.GetFullPath(), studyController, locationModels ) )
-//		{	
-			// stop refreshing the tree until all sequences are loaded (this is purely for efficency)
-			App::Inst().GetLayerTreeController()->GetTreeCtrl()->Freeze();
-
-			ChartSetViewPtr chartSetCtrl(new ChartSetView());
-			for(uint chartset =0; chartset < ChartViews.size(); chartset++)
+		ChartSetViewPtr chartSetCtrl(new ChartSetView());
+		for(uint chartset =0; chartset < ChartViews.size(); chartset++)
+		{
+			for(uint views = 0; views < ChartViews[chartset]->GetSize(); views++)
 			{
-				for(uint views = 0; views < ChartViews[chartset]->GetSize(); views++)
-				{
-					ChartViewPtr cView = ChartViews[chartset]->GetChart(views);
-					chartSetCtrl->AddChart(cView);
-				}
+				ChartViewPtr cView = ChartViews[chartset]->GetChart(views);
+				chartSetCtrl->AddChart(cView);
 			}
-			LocationSetLayerPtr locationSet(new LocationSetLayer(UniqueId::Inst().GenerateId(), 
-				App::Inst().GetLayerTreeController()->GetSelectedLayer(),
-				chartSetCtrl));
-			int numLayers = App::Inst().GetLayerTreeController()->GetNumLocationSetLayers();
-			std::string result = "Combined_" + boost::lexical_cast<std::string>(numLayers+1);
-			wxString mystring(result.c_str(),wxConvUTF8);
-			locationSet->SetName(mystring);
-			locationSet->SetFullPath(mystring);
-		//	m_locationSetLayer = locationSet;
+		}
+		LocationSetLayerPtr locationSet(new LocationSetLayer(UniqueId::Inst().GenerateId(), 
+			App::Inst().GetLayerTreeController()->GetSelectedLayer(),
+			chartSetCtrl));
+		int numLayers = App::Inst().GetLayerTreeController()->GetNumLocationSetLayers();
+		std::string result = "Combined_" + boost::lexical_cast<std::string>(numLayers+1);
+		wxString mystring(result.c_str(),wxConvUTF8);
+		locationSet->SetName(mystring);
+		locationSet->SetFullPath(mystring);
+		
+		// assign default colour map to location
+		ColourMapManagerPtr colourMapManager = App::Inst().GetColourMapManager();
+		ColourMapPtr defaultColourMap = colourMapManager->GetDefaultDiscreteColourMap();
+		ColourMapDiscretePtr newColourMap(new ColourMapDiscrete(defaultColourMap));
 
-		//	LocationSetIO::ReadSourceFile( fullPath.GetFullPath(), locationSet );
+		std::vector<LocationLayerPtr> locationLayers;
+		foreach(LocationModelPtr locationModel, locationModels)
+		{
+			LocationModelPtr copyLocationModel(new LocationModel(locationModel->GetId(),locationModel->GetNorthing(),locationModel->GetEasting(),locationModel->GetData()));
+			LocationViewPtr locationView(new LocationView(copyLocationModel, App::Inst().GetViewport()->GetCamera(), UniqueId::Inst().GenerateId()));
+			ChartViewPtr pieChartView(new ChartView(copyLocationModel, locationView, newColourMap));
+			chartSetCtrl->AddChart(pieChartView);
+			LocationControllerPtr locationController(new LocationController(copyLocationModel, locationView, pieChartView));
 
-			// assign default colour map to location
-			ColourMapManagerPtr colourMapManager = App::Inst().GetColourMapManager();
-			ColourMapPtr defaultColourMap = colourMapManager->GetDefaultDiscreteColourMap();
-			ColourMapDiscretePtr newColourMap(new ColourMapDiscrete(defaultColourMap));
+			LocationLayerPtr locationLayer(new LocationLayer(UniqueId::Inst().GenerateId(), locationSet, locationController));			
+			locationLayer->SetName(wxString(locationController->GetId().c_str()));
+			locationLayer->SetFullPath( mystring );
+			locationLayers.push_back(locationLayer);
 
-			std::vector<LocationLayerPtr> locationLayers;
-			foreach(LocationModelPtr locationModel, locationModels)
-			{
-				LocationModelPtr copyLocationModel(new LocationModel(locationModel->GetId(),locationModel->GetNorthing(),locationModel->GetEasting(),locationModel->GetData()));
-				LocationViewPtr locationView(new LocationView(copyLocationModel, App::Inst().GetViewport()->GetCamera(), UniqueId::Inst().GenerateId()));
-				ChartViewPtr pieChartView(new ChartView(copyLocationModel, locationView, newColourMap));
-				chartSetCtrl->AddChart(pieChartView);
-				LocationControllerPtr locationController(new LocationController(copyLocationModel, locationView, pieChartView));
+			locationView->SetLocationLayerId(locationLayer->GetId());
+			pieChartView->SetLocationLayerId(locationLayer->GetId());
 
-				LocationLayerPtr locationLayer(new LocationLayer(UniqueId::Inst().GenerateId(), locationSet, locationController));			
-				locationLayer->SetName(wxString(locationController->GetId().c_str()));
-				locationLayer->SetFullPath( mystring );
-				locationLayers.push_back(locationLayer);
+			locationSet->AddLocationLayer(locationLayer);
+		}
 
-				locationView->SetLocationLayerId(locationLayer->GetId());
-				pieChartView->SetLocationLayerId(locationLayer->GetId());
+		locationSet->GetLocationSetController()->SetLocationSetLayers(locationLayers);
 
-				locationSet->AddLocationLayer(locationLayer);
-			}
+		App::Inst().GetLayerTreeController()->AddLocationSetLayerAtPosition(locationSet,0);
 
-			locationSet->GetLocationSetController()->SetLocationSetLayers(locationLayers);
+		App::Inst().GetLayerTreeController()->GetTreeCtrl()->Thaw();
 
-			App::Inst().GetLayerTreeController()->AddLocationSetLayerAtPosition(locationSet,0);
-
-			App::Inst().GetLayerTreeController()->GetTreeCtrl()->Thaw();
-
-			// Update Samples legend on sidebar
-//			FillSamplesLegend();
-
-			App::Inst().GetLayerTreeController()->GetLocationSetLayer(0)->GetLocationSetController()->GetNumericMetadataFields();
-//		}
-//		else
-//		{
-//			wxMessageBox(wxT("Failed to read location sites from file. Check console window for warning messages."), 
-//				wxT("Failed to read file"), wxOK | wxICON_INFORMATION);
-//		}
+		// Update Samples legend on sidebar
+		App::Inst().GetLayerTreeController()->GetLocationSetLayer(0)->GetLocationSetController()->GetNumericMetadataFields();
 	}
 	else
 	{
@@ -283,11 +197,7 @@ void LocationMergeDlg::CreateSequenceSet( std::vector<SequenceModelPtr> sequence
 
 	selectedLayer = App::Inst().GetLayerTreeController()->GetSelectedLayer();
 	if(selectedLayer != LayerPtr() && selectedLayer->GetType() == Layer::LOCATION_SET)
-	{
-//		std::vector<SequenceModelPtr> sequenceModels;
-//		bool bCancel;
-//		if( SequenceIO::Read( fullPath.GetFullPath(), sequenceModels, bCancel ) )
-//		{	
+	{	
 			wxBusyCursor wait;
 
 			// stop refreshing the tree until all sequences are loaded (this is purely for efficency)
@@ -320,12 +230,6 @@ void LocationMergeDlg::CreateSequenceSet( std::vector<SequenceModelPtr> sequence
 
 			// all tree to refresh
 			App::Inst().GetLayerTreeController()->GetTreeCtrl()->Thaw();
-	//	}
-//		else
-//		{
-//			if(!bCancel)
-//				wxMessageBox(wxT("Failed to read sequence data from file. Check console window for warning messages."), wxT("Failed to read file"), wxOK | wxICON_INFORMATION);
-//		}
 	}
 	else
 	{
