@@ -58,6 +58,7 @@ namespace GenGIS
 		*/
 		void AddChart(ChartViewPtr chartView) { m_chartViews.push_back(chartView); }
 
+		unsigned int GetSize(){return (unsigned int)m_chartViews.size();}
 		/** 
 		* @brief Get chart associated with this controller. 
 		* @param index Index of chart of interest.
