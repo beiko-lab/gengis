@@ -67,6 +67,7 @@
 #include "../gui/LinearAnalysisPlotDlg.hpp"
 #include "../gui/NonlinearAxisTableDlg.hpp"
 #include "../gui/LightingPropertiesDlg.hpp"
+#include "../gui/LocationMergeDlg.hpp"
 #include "../gui/LocationPropertiesDlg.hpp"
 #include "../gui/LocationSetPropertiesDlg.hpp"
 #include "../gui/MapPropertiesDlg.hpp"
@@ -1703,6 +1704,29 @@ void GenGisFrame::LayerOpenVectorMap( wxFileName fullPath, uint mapIndex )
 	}
 }
 
+void GenGisFrame::OnLocationMerge( wxCommandEvent& event)
+{
+	if ( App::Inst().GetLayerTreeController()->GetNumMapLayers() != 1 )
+	{
+		wxMessageBox(wxT("Please load a map file before loading a location file."),
+					wxT("Load map file first"), wxOK | wxICON_INFORMATION);
+		return;
+	}
+	if ( App::Inst().GetLayerTreeController()->GetNumLocationSetLayers() <= 1 )
+	{
+		wxMessageBox(wxT("Please load more than one location set."),
+			wxT("Needs multiple location sets"), wxOK | wxICON_INFORMATION);
+		return;
+	}
+	//passed checks now need:
+	//launch check box
+	//populate box with N number of location layers
+	//Go and Close buttons
+	//take those selected and merge into one location layer
+	//add location layer to GenGIS as location[0]
+	LocationMergeDlg* dlg = new LocationMergeDlg(this);
+	dlg->Show();
+}
 void GenGisFrame::OnLayerOpenLocations( wxCommandEvent& event )
 {
 	if ( App::Inst().GetLayerTreeController()->GetNumMapLayers() != 1 )
