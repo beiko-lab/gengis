@@ -48,11 +48,17 @@ namespace GenGIS
 		/** Close dialog. */
 		void OnClose( wxCommandEvent& event ) { Destroy(); }
 
-		/** Combines multiple location sets into one */
-		void LocationMergeDlg::CreateLocationSet( std::vector<LocationSetLayerPtr> LocationSets );
-
+		/**
+		* @brief Copies the selected Location sets into a new set 
+		* @param Vector of Location Model pointeres
+		* @param Vector of Chart View pointers
+		*/
 		void LocationMergeDlg::CreateLocationSet( std::vector<LocationModelPtr> locationModels, std::vector<ChartSetViewPtr> ChartViews );
 
+		/**
+		* @brief Copies the selected Sequence sets into a new set 
+		* @param Vector of Sequence Model pointeres
+		*/
 		void LocationMergeDlg::CreateSequenceSet( std::vector<SequenceModelPtr> sequenceModels );
 	};
 }
