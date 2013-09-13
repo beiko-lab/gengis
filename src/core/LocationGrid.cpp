@@ -24,6 +24,8 @@
 #include "../core/App.hpp"
 #include "../core/MapController.hpp"
 #include "../core/LocationGrid.hpp"
+#include "../core/TileModel.hpp"
+#include "../core/LocationSetLayer.hpp"
 
 #include "../utils/ErrorGL.hpp"
 
@@ -160,6 +162,9 @@ void LocationGrid::GenerateTileCoordinates()
 		currentY += m_mapOpenGLBoundaries.dy - currentY;
 		m_yCoordinates.push_back( currentY );
 	}
+
+	InitTiles();
+	FillTiles();
 }
 
 void LocationGrid::Render()
@@ -253,6 +258,60 @@ void LocationGrid::Render()
 				row2++;
 			}
 			glEnd();
+		}
+	}
+}
+
+void LocationGrid::InitTiles()
+{
+	MapModelPtr mapModel = App::Inst().GetMapController()->GetMapModel();
+	std::list<double>::iterator row1, row2, col1, col2;
+	row2 = m_yCoordinates.begin(); row2++;
+	//row heads of each tile
+	for ( row1 = m_yCoordinates.begin(); row2 != m_yCoordinates.end(); ++row1 )
+	{
+		col2 = m_xCoordinates.begin(); col2++;
+			
+		//column heads of each tile
+		for ( col1 = m_xCoordinates.begin(); col2 != m_xCoordinates.end(); ++col1 )
+		{
+			Point3D topLeftCoord(*col1,m_elevationUsed,*row1);
+			Point3D bottomRightCoord(*col2,m_elevationUsed,*row2);
+			GeoCoord topLeftGeo;
+			GeoCoord bottomRightGeo;
+			mapModel->GridToGeo(topLeftCoord,topLeftGeo);
+			mapModel->GridToGeo(bottomRightCoord,bottomRightGeo);
+			std::wstring ID = StringTools::ToStringW(topLeftGeo.easting,2); 
+			ID.append(StringTools::ToStringW("_"));
+			ID.append(StringTools::ToStringW(topLeftGeo.northing,2));
+			std::map<std::wstring,std::wstring> data;
+			TileModelPtr tile(new TileModel(ID,std::make_pair(topLeftGeo.easting,topLeftGeo.northing),std::make_pair(bottomRightGeo.easting,bottomRightGeo.northing),data));
+			m_tileModels.push_back(tile);
+			col2++;
+		}
+		row2++;
+	}
+}
+
+void LocationGrid::FillTiles()
+{
+	std::vector<LocationLayerPtr> locationLayers = m_locationSetLayer->GetAllLocationLayers();
+	for( uint i = 0; i < locationLayers.size() ; i++)
+	{
+		for ( uint j = 0; j < m_tileModels.size(); j++)
+		{
+			std::pair<float,float> top = m_tileModels[j]->GetTopLeft();
+			std::pair<float,float> bottom = m_tileModels[j]->GetBottomRight();
+			float easting = locationLayers[i]->GetLocationController()->GetEasting();
+			float northing = locationLayers[i]->GetLocationController()->GetNorthing();
+
+			if ( top.first <= easting
+				&& top.second <= northing
+				&& bottom.first > easting
+				&& bottom.second > northing )
+			{
+				m_tileModels[i]->AddLocationLayer(locationLayers[i]);
+			}
 		}
 	}
 }

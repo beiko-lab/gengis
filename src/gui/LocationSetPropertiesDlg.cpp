@@ -52,6 +52,7 @@ LocationSetPropertiesDlg::LocationSetPropertiesDlg(wxWindow* parent, LocationSet
 	LocationSetPropertiesLayout(parent),
 	m_locationSetLayer(locationSetLayer), 
 	m_colourMapWidget(new ColourMapWidget(m_cboColourMap, m_scrolledWindowChart, m_scrolledWindowColour)),
+	m_gridColourMapWidget(new ColourMapWidget(m_choiceGridColourMap, m_scrolledWindowChart, m_scrolledWindowColour)),
 	m_chartColourMapWidget(new ColourMapWidget(m_cboChartColourMap, m_scrolledWindowChart, m_scrolledWindowColour)),
 	m_shapeMapWidget(new ShapeMapWidget(m_cboShapeMap))
 {
@@ -161,6 +162,68 @@ void LocationSetPropertiesDlg::InitLocationSetColour()
 	Colour borderColour = m_locationSetController->GetBorderColour();
 	m_colourBorders->SetColour(wxColour(borderColour.GetRedInt(), borderColour.GetGreenInt(), borderColour.GetBlueInt()));
 	ReplaceColourPicker( m_colourBorders, borderColour );
+}
+
+
+void LocationSetPropertiesDlg::InitLocationGridColour()
+{
+	// populate combo box with all fields associated with a location
+	std::vector<std::wstring> fields = m_locationSetController->GetNumericMetadataFields();
+	std::vector<std::wstring>::iterator it;
+	for(it = fields.begin(); it != fields.end(); ++it)
+	{
+		m_choiceGridFieldToChart->Append(wxString((*it).c_str()));
+	}
+
+	if(!m_locationSetController->GetColourField().empty())
+		m_choiceGridFieldToChart->SetValue(m_locationSetController->GetColourField().c_str());
+	else
+	{
+		if(!m_choiceGridFieldToChart->IsEmpty())
+			m_choiceGridFieldToChart->SetValue(m_choiceGridFieldToChart->GetString(0));
+	}
+
+	// Populate colour map combo box with all available colour maps
+	m_gridColourMapWidget->SetColourMap(m_locationSetController->GetColourMap());
+	m_gridColourMapWidget->PopulateColourMapComboBox();
+
+	// Set field values
+	wxCommandEvent dummy;
+	OnColourFieldChange(dummy);
+
+	Colour uniColour = m_locationSetController->GetUniformColour();
+	m_colourUniform->SetColour(wxColour(uniColour.GetRedInt(), uniColour.GetGreenInt(), uniColour.GetBlueInt()));
+	ReplaceColourPicker( m_colourUniform, uniColour );
+
+	// Set uniform colour checkbox and colour
+/**
+	if(!m_locationSetController->ModifiedColour())
+	{
+		m_chkUniformColour->SetValue(m_locationSetController->GetUniformColourFlag());
+
+		wxCommandEvent dummy;
+		OnUniformColour(dummy);
+	}
+	else
+	{
+		m_chkUniformColour->Set3StateValue(wxCHK_UNDETERMINED);
+
+		#ifdef WIN32
+		m_colourUniform->Enable(false);
+		#else
+		EnableButton( m_colourUniform, false );
+		#endif
+		m_scrolledWindowColour->Enable(false);
+		m_cboChoiceGridFieldToChart->Enable(false);
+		m_cboColourMap->Enable(false);
+	}
+*/
+/**	m_spinBorderSize->SetValue(m_locationSetController->GetBorderSize());
+
+	Colour borderColour = m_locationSetController->GetBorderColour();
+	m_colourBorders->SetColour(wxColour(borderColour.GetRedInt(), borderColour.GetGreenInt(), borderColour.GetBlueInt()));
+	ReplaceColourPicker( m_colourBorders, borderColour );
+*/
 }
 
 void LocationSetPropertiesDlg::InitLocationSetShape()
@@ -620,6 +683,8 @@ void LocationSetPropertiesDlg::InitLocationGrid()
 	// Get the grid elevation
 	m_textCtrlGridElevation->SetValue(
 		wxString( StringTools::ToStringW( locationGrid->GetElevation(), 2 ).c_str() ) );
+
+	InitLocationGridColour();
 }
 
 void LocationSetPropertiesDlg::OnRadioColourFill( wxCommandEvent& event )
@@ -1135,8 +1200,13 @@ void LocationSetPropertiesDlg::ApplyGrid()
 	// Set the grid elevation
 	locationGrid->SetElevation( StringTools::ToDouble( m_textCtrlGridElevation->GetValue().c_str() ) );
 
+	//Set location set layer
+	locationGrid->SetLocationSetLayer ( m_locationSetLayer);
+
 	// Generate coordinates
 	locationGrid->GenerateTileCoordinates();
+
+	
 }
 
 

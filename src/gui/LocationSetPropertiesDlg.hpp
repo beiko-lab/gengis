@@ -68,6 +68,8 @@ namespace GenGIS
 		/** Initialize controls on Location Set->Colour page. */
 		void InitLocationSetColour();
 
+		void InitLocationGridColour();
+
 		/** Initialize controls on Location Set->Size page. */
 		void InitLocationSetShape();
 
@@ -215,6 +217,8 @@ namespace GenGIS
 
 		/** Helper functions for interacting with colour maps on the Location Set->Colour page. */
 		ColourMapWidgetPtr m_colourMapWidget;
+
+		ColourMapWidgetPtr m_gridColourMapWidget;
 
 		/** Helper functions for interacting with colour maps on the chart page. */
 		ColourMapWidgetPtr m_chartColourMapWidget;
