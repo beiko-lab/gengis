@@ -240,9 +240,9 @@ namespace GenGIS
 			wxSlider* m_sliderTileAlpha;
 			wxStaticLine* m_staticline13;
 			wxStaticText* m_txtGridFieldToChart;
-			wxChoice* m_choiceGridFieldToChart;
+			wxComboBox* m_choiceGridFieldToChart;
 			wxStaticText* m_txtGridColourMap;
-			wxChoice* m_choiceGridColourMap;
+			wxComboBox* m_choiceGridColourMap;
 			wxScrolledWindow* m_scrolledWindowGridColour;
 			wxCheckBox* m_chkShowGridBorders;
 			wxStaticLine* m_staticline101;

@@ -719,19 +719,15 @@ LocationSetPropertiesLayout::LocationSetPropertiesLayout( wxWindow* parent, wxWi
 	m_txtGridFieldToChart->Wrap( -1 );
 	fgSizer7->Add( m_txtGridFieldToChart, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
 	
-	wxArrayString m_choiceGridFieldToChartChoices;
-	m_choiceGridFieldToChart = new wxChoice( m_panel13, wxID_ANY, wxDefaultPosition, wxDefaultSize, m_choiceGridFieldToChartChoices, 0 );
-	m_choiceGridFieldToChart->SetSelection( 0 );
-	fgSizer7->Add( m_choiceGridFieldToChart, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
+	m_choiceGridFieldToChart = new wxComboBox( m_panel13, wxID_ANY, wxT("Combo!"), wxDefaultPosition, wxDefaultSize, 0, NULL, wxCB_READONLY|wxCB_SORT ); 
+	fgSizer7->Add( m_choiceGridFieldToChart, 0, wxALL, 5 );
 	
 	m_txtGridColourMap = new wxStaticText( m_panel13, wxID_ANY, wxT("Colour map:"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_txtGridColourMap->Wrap( -1 );
 	fgSizer7->Add( m_txtGridColourMap, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
 	
-	wxArrayString m_choiceGridColourMapChoices;
-	m_choiceGridColourMap = new wxChoice( m_panel13, wxID_ANY, wxDefaultPosition, wxDefaultSize, m_choiceGridColourMapChoices, 0 );
-	m_choiceGridColourMap->SetSelection( 0 );
-	fgSizer7->Add( m_choiceGridColourMap, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
+	m_choiceGridColourMap = new wxComboBox( m_panel13, wxID_ANY, wxT("Combo!"), wxDefaultPosition, wxDefaultSize, 0, NULL, wxCB_READONLY|wxCB_SORT ); 
+	fgSizer7->Add( m_choiceGridColourMap, 0, wxALL, 5 );
 	
 	sbSizer12->Add( fgSizer7, 0, wxEXPAND, 5 );
 	

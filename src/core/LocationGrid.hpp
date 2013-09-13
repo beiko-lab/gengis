@@ -28,6 +28,7 @@
 #include "../core/VisualLine.hpp"
 
 #include "../utils/Colour.hpp"
+#include "../utils/StringTools.hpp"
 
 namespace GenGIS
 {
@@ -60,6 +61,12 @@ namespace GenGIS
 		/** Generate coordinates or grid. */
 		void GenerateTileCoordinates();
 
+		/** Generate tiles for grid. */
+		void InitTiles();
+
+		/** Fill tiles with location values. */
+		void FillTiles();
+
 		/** Render location grid. */
 		void Render();
 
@@ -69,6 +76,7 @@ namespace GenGIS
 		bool      GetAutoAdjustElevationStatus () { return m_autoAdjustElevation; }
 		double    GetElevation()                  { return m_elevation; }
 
+		void SetLocationSetLayer( LocationSetLayerPtr locationSetLayer) { m_locationSetLayer = locationSetLayer; } 
 		void SetGridAlignmentStyle( ALIGNMENT alignment ) { m_gridAlignmentStyle = alignment; }
 		void SetDivisions( uint divisions )               { m_divisions = divisions; }
 		void SetAutoAdjustElevationStatus ( bool status ) { m_autoAdjustElevation = status; }
@@ -112,11 +120,13 @@ namespace GenGIS
 		float         m_elevationUsed;
 		std::list<double> m_xCoordinates;
 		std::list<double> m_yCoordinates;
+		LocationSetLayerPtr m_locationSetLayer;
 
 		// Tile variables
 		bool      m_showTiles;
 		TILE_FILL m_tileFillMode;
 		Colour    m_uniformColourOfTiles;
+		std::vector<TileModelPtr> m_tileModels;
 		
 		// Border variables
 		bool   m_showBorders;
