@@ -635,6 +635,13 @@ void LocationSetPropertiesDlg::InitLocationGrid()
 	// Get the number of divisions
 	m_spinGridDivisions->SetValue( locationGrid->GetNumberOfDivisions() );
 
+	// Get the axis (longitude or latitude) along which the map is divided
+	bool latLong = true;
+	if ( locationGrid->GetTileDivisionAxis() == LocationGrid::LONGITUDE )
+		latLong = false;
+	m_radioBtnLatitude->SetValue( latLong );
+	m_radioBtnLongitude->SetValue( !latLong );
+
 	LocationGrid::ALIGNMENT gridAlignmentStyle = locationGrid->GetGridAlignmentStyle();
 	if      ( gridAlignmentStyle == LocationGrid::ORIGIN )
 		m_radioAlignToOrigin->SetValue( true );
@@ -721,6 +728,17 @@ void LocationSetPropertiesDlg::OnRadioColourFill( wxCommandEvent& event )
 	m_txtGridColourMap->Enable( set3 );
 	m_choiceGridColourMap->Enable( set3 );
 	m_scrolledWindowGridColour->Enable( set3 );
+}
+
+void LocationSetPropertiesDlg::OnRadioLatitudeLongitude( wxCommandEvent& event )
+{
+	int wxID = event.GetId();
+	bool set1 = true;
+
+	if ( wxID == wxID_RADIO_GRID_DIVIDE_ALONG_LATITUDE )
+		m_locationSetLayer->GetLocationGrid()->SetTileDivisionAxis( LocationGrid::LATITUDE );
+	else if ( wxID == wxID_RADIO_GRID_DIVIDE_ALONG_LONGITUDE )
+		m_locationSetLayer->GetLocationGrid()->SetTileDivisionAxis( LocationGrid::LONGITUDE );
 }
 
 void LocationSetPropertiesDlg::OnShowGridBorders( wxCommandEvent& event )

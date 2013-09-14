@@ -33,7 +33,7 @@ using namespace GenGIS;
 
 LocationGrid::LocationGrid() :
 	// General
-	m_divideTilesAlong( LONGITUDE ),
+	m_divideTilesAlong( LATITUDE ),
 	m_gridAlignmentStyle( ORIGIN ),
 	m_mapOpenGLBoundaries( -1.0, -1.0, 1.0, 1.0 ),
 	//m_mapOffset( 0.2f, 0.3f ),
