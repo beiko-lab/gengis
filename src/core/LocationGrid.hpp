@@ -71,16 +71,18 @@ namespace GenGIS
 		void Render();
 
 		// Functions for accessing 'general' variables
-		ALIGNMENT GetGridAlignmentStyle()      { return m_gridAlignmentStyle; }
-		uint      GetNumberOfDivisions()          { return m_divisions; }
-		bool      GetAutoAdjustElevationStatus () { return m_autoAdjustElevation; }
-		double    GetElevation()                  { return m_elevation; }
+		DIVISION_AXIS GetTileDivisionAxis()           { return m_divideTilesAlong; }
+		ALIGNMENT     GetGridAlignmentStyle()         { return m_gridAlignmentStyle; }
+		uint          GetNumberOfDivisions()          { return m_divisions; }
+		bool          GetAutoAdjustElevationStatus () { return m_autoAdjustElevation; }
+		double        GetElevation()                  { return m_elevation; }
 
-		void SetLocationSetLayer( LocationSetLayerPtr locationSetLayer) { m_locationSetLayer = locationSetLayer; } 
-		void SetGridAlignmentStyle( ALIGNMENT alignment ) { m_gridAlignmentStyle = alignment; }
-		void SetDivisions( uint divisions )               { m_divisions = divisions; }
-		void SetAutoAdjustElevationStatus ( bool status ) { m_autoAdjustElevation = status; }
-		void SetElevation( double elevation )             { m_elevation = elevation; }
+		void SetTileDivisionAxis( DIVISION_AXIS divideAlong )            { m_divideTilesAlong = divideAlong; }
+		void SetGridAlignmentStyle( ALIGNMENT alignment )                { m_gridAlignmentStyle = alignment; }
+		void SetDivisions( uint divisions )                              { m_divisions = divisions; }
+		void SetAutoAdjustElevationStatus ( bool status )                { m_autoAdjustElevation = status; }
+		void SetElevation( double elevation )                            { m_elevation = elevation; }
+		void SetLocationSetLayer( LocationSetLayerPtr locationSetLayer ) { m_locationSetLayer = locationSetLayer; } 
 
 
 		// Functions for accessing 'tile' variables

@@ -113,6 +113,8 @@ namespace GenGIS
 				wxID_RADIO_TILE_COLOUR_NO_FILL,
 				wxID_RADIO_TILE_COLOUR_UNIFORM_FILL,
 				wxID_RADIO_TILE_COLOUR_MAP_FILL,
+				wxID_RADIO_GRID_DIVIDE_ALONG_LATITUDE,
+				wxID_RADIO_GRID_DIVIDE_ALONG_LONGITUDE,
 				wxID_RADIO_GRID_ALIGN_TO_ORIGIN,
 				wxID_RADIO_GRID_ALIGN_TO_LOCATION,
 				wxID_RADIO_GRID_ALIGN_TO_COORDINATES,
@@ -323,6 +325,7 @@ namespace GenGIS
 			virtual void OnSpinLineThickness( wxSpinEvent& event ) { event.Skip(); }
 			virtual void OnRadioColourFill( wxCommandEvent& event ) { event.Skip(); }
 			virtual void OnShowGridBorders( wxCommandEvent& event ) { event.Skip(); }
+			virtual void OnRadioLatitudeLongitude( wxCommandEvent& event ) { event.Skip(); }
 			virtual void OnRadioAlignTo( wxCommandEvent& event ) { event.Skip(); }
 			virtual void OnAutoAdjustElevation( wxCommandEvent& event ) { event.Skip(); }
 			virtual void OnHelp( wxCommandEvent& event ) { event.Skip(); }
