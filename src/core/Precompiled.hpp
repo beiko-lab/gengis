@@ -120,6 +120,7 @@
 #include <boost/serialization/base_object.hpp>
 #include <boost/serialization/deque.hpp>
 #include <boost/serialization/level.hpp>
+#include <boost/serialization/list.hpp>
 #include <boost/serialization/map.hpp>
 #include <boost/serialization/scoped_ptr.hpp>
 #include <boost/serialization/serialization.hpp>

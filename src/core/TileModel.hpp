@@ -27,7 +27,18 @@
 #include "../core/Layer.hpp"
 #include "../core/LocationLayer.hpp"
 #include "../core/LocationModel.hpp"
+
 #include "../utils/StringTools.hpp"
+
+class GenGIS::TileModel;
+namespace boost
+{
+	namespace serialization
+	{
+		template<class Archive>
+		inline void save_construct_data(Archive & ar, const GenGIS::TileModel * t, const unsigned int file_version);
+	}
+}
 
 namespace GenGIS
 {
@@ -44,9 +55,17 @@ namespace GenGIS
 		* @param easting Easting coordinate of top left corner of tile.
 		* @param data Data associated with this location.
 		*/
-		explicit TileModel(std::wstring siteId, std::pair<float,float> topLeft, std::pair<float,float> bottomRight, std::map<std::wstring,std::wstring> data )
+		explicit TileModel(
+			std::wstring siteId,
+			std::pair<float,float> topLeft,
+			std::pair<float,float> bottomRight,
+			std::map<std::wstring,std::wstring> data
+		)
 			: LocationModel(siteId, topLeft.first, topLeft.second, data),
-			m_topLeft(topLeft), m_bottomRight(bottomRight), numLocations(0)
+			m_topLeft(topLeft),
+			m_bottomRight(bottomRight),
+			numLocations(0),
+			m_bActive(true)
 		{
 		}
 
@@ -128,6 +147,16 @@ namespace GenGIS
 		void UpdateSequences(std::vector<SequenceLayerPtr> sequences);
 
 	private:
+		/** Serialization. */
+		friend class boost::serialization::access;
+
+		template<class Archive>
+		friend void boost::serialization::save_construct_data(Archive & ar, const TileModel * t, const unsigned int file_version);
+
+		template<class Archive>
+		void serialize(Archive & ar, const unsigned int version);
+
+	private:
 
 		/** Number of locations located in the tile. */
 		uint numLocations;
@@ -141,6 +170,43 @@ namespace GenGIS
 		/** Flag indicating if this sequence is currently in the active set. */
 		bool m_bActive;
 	};
+}
+
+namespace boost
+{
+	namespace serialization
+	{
+		using namespace GenGIS;
+
+		template<class Archive>
+		inline void save_construct_data(Archive & ar, const TileModel * t, const unsigned int file_version)
+		{
+			// Save data required to construct instance
+			ar << t->m_id;          // std::wstring&
+			ar << t->m_topLeft;     // std::pair<float,float>
+			ar << t->m_bottomRight; // std::pair<float,float>
+			ar << t->m_data;        // std::map<std::wstring,std::wstring>
+		}
+
+		template<class Archive>
+		inline void load_construct_data(Archive & ar, TileModel * t, const unsigned int file_version)
+		{
+			// Retrieve data from archive required to construct new instance
+			std::wstring _id;
+			ar >> _id;
+
+			std::pair<float,float> _topLeft;
+			ar >> _topLeft;
+
+			std::pair<float,float> _bottomRight;
+			ar >> _bottomRight;
+
+			std::map<std::wstring,std::wstring> _data;
+			ar >> _data;
+
+			::new(t)TileModel( _id, _topLeft, _bottomRight, _data );
+		}
+	}
 }
 
 #endif
