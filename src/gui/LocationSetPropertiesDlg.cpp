@@ -1202,7 +1202,7 @@ void LocationSetPropertiesDlg::ApplyGrid()
 
 	//Set location set layer
 	locationGrid->SetLocationSetLayer ( m_locationSetLayer);
-
+	
 	// Generate coordinates
 	locationGrid->GenerateTileCoordinates();
 
