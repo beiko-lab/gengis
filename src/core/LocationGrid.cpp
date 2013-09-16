@@ -302,15 +302,16 @@ void LocationGrid::FillTiles()
 		{
 			std::pair<float,float> top = m_tileModels[j]->GetTopLeft();
 			std::pair<float,float> bottom = m_tileModels[j]->GetBottomRight();
-			float easting = locationLayers[i]->GetLocationController()->GetEasting();
-			float northing = locationLayers[i]->GetLocationController()->GetNorthing();
+			std::map<std::wstring,std::wstring> data = locationLayers[i]->GetLocationController()->GetData();
+			float easting = StringTools::ToDouble(data[StringTools::ToStringW("Longitude")]);
+			float northing = StringTools::ToDouble(data[StringTools::ToStringW("Latitude")]);
 
 			if ( top.first <= easting
-				&& top.second <= northing
+				&& top.second >= northing
 				&& bottom.first > easting
-				&& bottom.second > northing )
+				&& bottom.second < northing )
 			{
-				m_tileModels[i]->AddLocationLayer(locationLayers[i]);
+				m_tileModels[j]->AddLocationLayer(locationLayers[i]);
 			}
 		}
 	}
