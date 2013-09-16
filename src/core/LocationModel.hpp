@@ -195,7 +195,7 @@ namespace GenGIS
 		template<class Archive>
 		void serialize(Archive & ar, const unsigned int version);
 
-	private:
+	protected:
 		/** Flag indicating if this sequence is currently in the active set. */
 		bool m_bActive;
 

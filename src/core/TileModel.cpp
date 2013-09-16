@@ -29,7 +29,8 @@
 
 using namespace GenGIS;
 
-void TileModel::AddLocationLayer(LocationLayerPtr location){
+void TileModel::AddLocationLayer(LocationLayerPtr location)
+{
 	// Update number of locations in Tile
 	numLocations++;
 	// Add sequence layers to tile?
@@ -37,8 +38,19 @@ void TileModel::AddLocationLayer(LocationLayerPtr location){
 	UpdateSequences(sequences);
 	// Add fields to tile
 	UpdateData(location->GetLocationController()->GetData());
-
 }
+
+template<class Archive> 
+void TileModel::serialize(Archive & ar, const unsigned int version)
+{
+	// Serialize base class (LocationModel)
+	ar & boost::serialization::base_object<LocationModel>(*this);
+
+	ar & numLocations;  // uint
+	ar & m_bActive;     // bool
+}
+template void TileModel::serialize<boost::archive::text_woarchive>(boost::archive::text_woarchive& ar, const unsigned int version); 
+template void TileModel::serialize<boost::archive::text_wiarchive>(boost::archive::text_wiarchive& ar, const unsigned int version);
 
 void TileModel::UpdateData(std::map<std::wstring,std::wstring> newData)
 {

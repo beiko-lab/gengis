@@ -111,6 +111,12 @@ namespace GenGIS
 		void SetBorderStyle( VisualLine::LINE_STYLE style ) { m_styleOfBorders = style; }
 
 	private:
+		/* Serialization. */
+		friend class boost::serialization::access;
+		template<class Archive>
+		void serialize(Archive & ar, const unsigned int version);
+
+	private:
 		// General variables
 		DIVISION_AXIS m_divideTilesAlong;
 		ALIGNMENT     m_gridAlignmentStyle;
@@ -135,8 +141,6 @@ namespace GenGIS
 		Colour m_colourOfBorders;
 		uint   m_thicknessOfBorders;
 		VisualLine::LINE_STYLE m_styleOfBorders;
-
-		// Add serialization stuff, blah
 	};
 }
 #endif
