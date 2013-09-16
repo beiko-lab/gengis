@@ -164,6 +164,9 @@ namespace GenGIS
 		/** Show grid borders check box handler. */
 		void OnShowGridBorders( wxCommandEvent& event );
 
+		/** Handler for longitude / latitude divisions radio control. */
+		void OnRadioLatitudeLongitude( wxCommandEvent& event );
+
 		/** Handler for 'Align to' radio controls (origin, location, or coordinates). */
 		void OnRadioAlignTo( wxCommandEvent& event );
 

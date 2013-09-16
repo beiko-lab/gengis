@@ -33,7 +33,7 @@ using namespace GenGIS;
 
 LocationGrid::LocationGrid() :
 	// General
-	m_divideTilesAlong( LONGITUDE ),
+	m_divideTilesAlong( LATITUDE ),
 	m_gridAlignmentStyle( ORIGIN ),
 	m_mapOpenGLBoundaries( -1.0, -1.0, 1.0, 1.0 ),
 	//m_mapOffset( 0.2f, 0.3f ),
@@ -60,6 +60,41 @@ LocationGrid::LocationGrid() :
 	m_xCoordinates.clear();
 	m_yCoordinates.clear();
 }
+
+template<class Archive> 
+void LocationGrid::serialize(Archive & ar, const unsigned int version)
+{
+	// Serialize base class (View)
+	ar & boost::serialization::base_object<View>(*this);
+
+	// General variables
+	ar & m_divideTilesAlong;     // DIVISION_AXIS
+	ar & m_gridAlignmentStyle;   // ALIGNMENT
+	ar & m_mapOpenGLBoundaries;  // Box2D
+	ar & m_mapOffset;            // Point2D
+	ar & m_divisions;            // uint
+	ar & m_autoAdjustElevation;  // bool
+	ar & m_elevation;            // float
+	ar & m_elevationUsed;        // float
+	ar & m_xCoordinates;         // std::list<double>
+	ar & m_yCoordinates;         // std::list<double>
+	ar & m_locationSetLayer;     // LocationSetLayerPtr
+
+	// Tile variables
+	ar & m_showTiles;            // bool
+	ar & m_tileFillMode;         // TILE_FILL
+	ar & m_uniformColourOfTiles; // Colour
+	ar & m_tileModels;           // std::vector<TileModelPtr>
+
+	// Border variables
+	ar & m_showBorders;          // bool
+	ar & m_colourOfBorders;      // Colour
+	ar & m_thicknessOfBorders;   // uint
+	ar & m_styleOfBorders;       // VisualLine::LINE_STYLE
+}
+template void LocationGrid::serialize<boost::archive::text_woarchive>(boost::archive::text_woarchive& ar, const unsigned int version); 
+template void LocationGrid::serialize<boost::archive::text_wiarchive>(boost::archive::text_wiarchive& ar, const unsigned int version);
+
 
 LocationGrid::~LocationGrid()
 {
