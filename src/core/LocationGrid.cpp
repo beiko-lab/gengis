@@ -347,7 +347,9 @@ void LocationGrid::FillTiles()
 				&& bottom.second < northing )
 			{
 				m_tileModels[j]->AddLocationLayer(locationLayers[i]);
+				break;
 			}
 		}
 	}
+	m_tileModels;
 }
