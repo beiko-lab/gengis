@@ -911,6 +911,47 @@ void LocationSetPropertiesDlg::OnChartColourMapChange( wxCommandEvent& event )
 	m_chartColourMapWidget->SetColourMap(); 
 }
 
+void LocationSetPropertiesDlg::OnGridFieldChange( wxCommandEvent& event)
+{
+	bool bAccept = true;
+	std::set<std::wstring> uniqueFieldValues;
+	for(unsigned int i = 0; i < m_locationSetLayer->GetNumLocationLayers(); ++i)
+	{
+		ChartViewPtr chartView = m_locationSetLayer->GetLocationLayer(i)->GetLocationController()->GetChartView();
+
+		std::set<std::wstring> fieldValues;
+		chartView->GetValues(m_cboChartField->GetValue().c_str(), fieldValues);
+
+		if ( !m_cboQuantitativeField->IsEmpty() )
+			chartView->SetQuantitativeField(m_cboQuantitativeField->GetValue().c_str());
+		chartView->SetQuantitative(m_chkQuantitative->IsChecked());
+
+		bAccept = bAccept && chartView->UpdateChart(m_cboChartField->GetValue().c_str(), fieldValues);
+
+		foreach(const std::wstring& value, fieldValues)
+		{
+			if(chartView->GetPercentage(value) > float(m_spinChartFilterTaxaPercentage->GetValue())/100)
+				uniqueFieldValues.insert(value);
+		}
+	}
+
+	if(!bAccept)
+		wxMessageBox(wxT("None numeric type found in specific quantitative field."), wxT("Abundance count error"), wxOK | wxICON_INFORMATION);
+
+	std::vector<std::wstring> fieldValues(uniqueFieldValues.begin(), uniqueFieldValues.end());
+
+	SortFieldValues(fieldValues);
+
+	fieldValues.push_back(_T("Other"));
+
+	m_gridColourMapWidget->SetFieldValues(m_scrolledWindowChart, fieldValues);
+}
+
+void LocationSetPropertiesDlg::OnGridColourMapChange( wxCommandEvent& event)
+{
+	m_gridColourMapWidget->SetColourMap();
+}
+
 void LocationSetPropertiesDlg::OnProportionalChartSize( wxCommandEvent& event )
 {
 	m_spinChartWidth->Enable(!m_chkChartSizeBySeqCount->GetValue());

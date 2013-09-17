@@ -145,8 +145,14 @@ namespace GenGIS
 		/** Field combobox value on chart page has changed. */
 		void OnChartFieldChange( wxCommandEvent& event );
 
+		/** Field combobox value on grid page has changed. */
+		void OnGridFieldChange( wxCommandEvent& event);
+
 		/** Colourmap combobox value on chart page has changed. */
 		void OnChartColourMapChange( wxCommandEvent& event );
+
+		/** Colourmap combobox value on grid page has changed. */
+		void OnGridColourMapChange( wxCommandEvent& event);
 
 		/** Enable or disable controls based on wether labels are to be shown. */
 		void OnShowLabels( wxCommandEvent& event );
@@ -221,6 +227,7 @@ namespace GenGIS
 		/** Helper functions for interacting with colour maps on the Location Set->Colour page. */
 		ColourMapWidgetPtr m_colourMapWidget;
 
+		/** Helper functions for interacting with colour maps on the Location Set->Grid page. */
 		ColourMapWidgetPtr m_gridColourMapWidget;
 
 		/** Helper functions for interacting with colour maps on the chart page. */
