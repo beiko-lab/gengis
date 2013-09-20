@@ -61,16 +61,19 @@ void TileModel::UpdateData(std::map<std::wstring,std::wstring> newData)
 		std::wstring value = dataIter->second;
 		// check if tile's data currently has a value
 		// if not make a new one
-		try
+		
+		//	USE EMPLACE INSTEAD
+		
+		if( FindField(field) == 1 )
 		{
-			std::wstring curValue = GetData(field);
-			if(StringTools::IsDecimalNumber(value))
+			std::wstring curValue = GetData( field );
+			if(StringTools::IsDecimalNumber( value ))
 			{
 				curValue =  StringTools::ToStringW( ( StringTools::ToInt(curValue) + StringTools::ToInt(value) ) / 2 );
 				AddData(field, curValue);
 			}
 		}
-		catch(int e)
+		else
 		{
 			AddData(field,value);
 		}

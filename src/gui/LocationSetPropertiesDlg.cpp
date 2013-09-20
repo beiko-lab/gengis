@@ -52,7 +52,7 @@ LocationSetPropertiesDlg::LocationSetPropertiesDlg(wxWindow* parent, LocationSet
 	LocationSetPropertiesLayout(parent),
 	m_locationSetLayer(locationSetLayer), 
 	m_colourMapWidget(new ColourMapWidget(m_cboColourMap, m_scrolledWindowChart, m_scrolledWindowColour)),
-	m_gridColourMapWidget(new ColourMapWidget(m_choiceGridColourMap, m_scrolledWindowChart, m_scrolledWindowColour)),
+	m_gridColourMapWidget(new ColourMapWidget(m_choiceGridColourMap, m_scrolledWindowGridColour, m_scrolledWindowGridColour)),
 	m_chartColourMapWidget(new ColourMapWidget(m_cboChartColourMap, m_scrolledWindowChart, m_scrolledWindowColour)),
 	m_shapeMapWidget(new ShapeMapWidget(m_cboShapeMap))
 {
@@ -190,6 +190,7 @@ void LocationSetPropertiesDlg::InitLocationGridColour()
 	// Set field values
 	wxCommandEvent dummy;
 	OnColourFieldChange(dummy);
+	OnChoiceGridFieldToChartChange(dummy);
 
 	Colour uniColour = m_locationSetController->GetUniformColour();
 	m_colourUniform->SetColour(wxColour(uniColour.GetRedInt(), uniColour.GetGreenInt(), uniColour.GetBlueInt()));
@@ -223,8 +224,10 @@ void LocationSetPropertiesDlg::InitLocationGridColour()
 	Colour borderColour = m_locationSetController->GetBorderColour();
 	m_colourBorders->SetColour(wxColour(borderColour.GetRedInt(), borderColour.GetGreenInt(), borderColour.GetBlueInt()));
 	ReplaceColourPicker( m_colourBorders, borderColour );
+
 */
 }
+
 
 void LocationSetPropertiesDlg::InitLocationSetShape()
 {
@@ -831,6 +834,14 @@ void LocationSetPropertiesDlg::OnColourFieldChange( wxCommandEvent& event )
 	m_colourMapWidget->SetFieldValues(m_scrolledWindowColour, fieldValues);
 }
 
+void LocationSetPropertiesDlg::OnChoiceGridFieldToChartChange( wxCommandEvent& event )
+{
+	std::vector<std::wstring> fieldValues;
+	GetSortedFieldValues(m_choiceGridFieldToChart->GetValue().c_str(), fieldValues);
+
+	m_gridColourMapWidget->SetFieldValues(m_scrolledWindowGridColour, fieldValues);
+}
+
 void LocationSetPropertiesDlg::OnColourMapChange( wxCommandEvent& event ) 
 { 
 	m_colourMapWidget->SetColourMap(); 
@@ -944,7 +955,7 @@ void LocationSetPropertiesDlg::OnGridFieldChange( wxCommandEvent& event)
 
 	fieldValues.push_back(_T("Other"));
 
-	m_gridColourMapWidget->SetFieldValues(m_scrolledWindowChart, fieldValues);
+	m_gridColourMapWidget->SetFieldValues(m_scrolledWindowGridColour, fieldValues);
 }
 
 void LocationSetPropertiesDlg::OnGridColourMapChange( wxCommandEvent& event)
@@ -1265,7 +1276,14 @@ void LocationSetPropertiesDlg::ApplyGrid()
 	// Generate coordinates
 	locationGrid->GenerateTileCoordinates();
 
-	
+	// Set Colour Map
+	m_locationSetController->SetColourMap( m_gridColourMapWidget->GetColourMap() );
+
+//	locationGrid->Set
+	// Set Selected Field
+//	locationGrid->SetSelectedField( m_choiceGridFieldToChart->GetStringSelection().c_str() );
+	locationGrid->SetSelectedFields( m_gridColourMapWidget->GetFieldValues() );
+
 }
 
 
