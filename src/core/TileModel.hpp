@@ -29,6 +29,7 @@
 #include "../core/LocationModel.hpp"
 
 #include "../utils/StringTools.hpp"
+#include "../utils/Colour.hpp"
 
 class GenGIS::TileModel;
 namespace boost
@@ -134,6 +135,20 @@ namespace GenGIS
 		*/
 		void AddLocationLayer(LocationLayerPtr location);
 		
+		int FindField(std::wstring field)
+		{
+			std::map<std::wstring,std::wstring> data = GetData();
+			std::map<std::wstring,std::wstring>::iterator it = data.find(field);
+			if( it == data.end() )
+			{
+				return 0;
+			}
+			else
+			{
+				return 1;
+			}
+		}
+
 		/**
 		* @brief Add data to Tile
 		* @param newData data to update current data with

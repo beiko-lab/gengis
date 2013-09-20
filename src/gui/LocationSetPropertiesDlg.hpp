@@ -130,6 +130,9 @@ namespace GenGIS
 		/** Field combobox value on Location Set->Colour page has changed. */
 		void OnColourFieldChange( wxCommandEvent& event );
 
+		/** Field combobox value on Location Grid->Colour page has changed. */
+		void OnChoiceGridFieldToChartChange( wxCommandEvent& event );
+
 		/** Colourmap combobox value on Location Set->Colour page has changed. */
 		void OnColourMapChange( wxCommandEvent& event );
 

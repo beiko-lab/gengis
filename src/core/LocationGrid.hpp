@@ -29,6 +29,7 @@
 
 #include "../utils/Colour.hpp"
 #include "../utils/StringTools.hpp"
+//#include "../utils/ColourMapDiscrete.hpp"
 
 namespace GenGIS
 {
@@ -70,6 +71,8 @@ namespace GenGIS
 		/** Render location grid. */
 		void Render();
 
+
+
 		// Functions for accessing 'general' variables
 		DIVISION_AXIS GetTileDivisionAxis()           { return m_divideTilesAlong; }
 		ALIGNMENT     GetGridAlignmentStyle()         { return m_gridAlignmentStyle; }
@@ -83,6 +86,8 @@ namespace GenGIS
 		void SetAutoAdjustElevationStatus ( bool status )                { m_autoAdjustElevation = status; }
 		void SetElevation( double elevation )                            { m_elevation = elevation; }
 		void SetLocationSetLayer( LocationSetLayerPtr locationSetLayer ) { m_locationSetLayer = locationSetLayer; } 
+		void SetSelectedFields(std::vector<wxStaticText*> field);
+	//	void SetColourMap(ColourMapDiscretePtr colour)					 { m_colourMap = colour; }		
 
 
 		// Functions for accessing 'tile' variables
@@ -129,6 +134,8 @@ namespace GenGIS
 		std::list<double> m_xCoordinates;
 		std::list<double> m_yCoordinates;
 		LocationSetLayerPtr m_locationSetLayer;
+		std::vector<double> m_selectedFields;
+//		ColourMapDiscretePtr m_colourMap;
 
 		// Tile variables
 		bool      m_showTiles;

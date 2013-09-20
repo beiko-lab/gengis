@@ -26,6 +26,12 @@
 #include "../core/LocationGrid.hpp"
 #include "../core/TileModel.hpp"
 #include "../core/LocationSetLayer.hpp"
+#include "../utils/ColourMap.hpp"
+#include "../utils/ColourMapManager.hpp"
+#include "../utils/Colour.hpp"
+#include "../core/LocationSetController.hpp"
+#include "../utils/StringTools.hpp"
+#include "../utils/ColourMapDiscrete.hpp"
 
 #include "../utils/ErrorGL.hpp"
 
@@ -79,6 +85,8 @@ void LocationGrid::serialize(Archive & ar, const unsigned int version)
 	ar & m_xCoordinates;         // std::list<double>
 	ar & m_yCoordinates;         // std::list<double>
 	ar & m_locationSetLayer;     // LocationSetLayerPtr
+//	ar & m_selectedFields;		 // std::vector<wxStaticText*>
+//	ar & m_colourMap;			 // ColourMapDiscretePtr
 
 	// Tile variables
 	ar & m_showTiles;            // bool
@@ -103,6 +111,15 @@ LocationGrid::~LocationGrid()
 bool LocationGrid::IsVisible() 
 { 
 	return m_bVisible; 
+}
+
+void LocationGrid::SetSelectedFields(std::vector<wxStaticText*> field)
+{
+	for( uint i = 0; i < field.size(); i++)
+	{
+		std::wstring fieldValue = field[i]->GetLabel();
+		m_selectedFields.push_back(  StringTools::ToDouble( fieldValue ) );
+	}
 }
 
 void LocationGrid::GenerateTileCoordinates()
@@ -207,11 +224,17 @@ void LocationGrid::Render()
 	if( !IsVisible() )
 		return;
 
+	ColourMapDiscretePtr m_colourMap = m_locationSetLayer->GetLocationSetController()->GetColourMap();
+	float min = *std::min_element( m_selectedFields.begin() , m_selectedFields.end() );
+	float max = *std::max_element( m_selectedFields.begin() , m_selectedFields.end() );
+	//	differentiates in color between a tile with the smallest available value and a tile with no value
+	float defaultValue = min-1;
+
 	// Colour palette for tiles (temporary)
 	float alphaOfTile = m_uniformColourOfTiles.GetAlpha();
 	const GLfloat COLOUR[][4] = {{0, 0, 0, alphaOfTile}, {0, 0, 1, alphaOfTile},
 	     {0, 1, 0, alphaOfTile}, {0, 1, 1, alphaOfTile}, {1, 0, 0, alphaOfTile},
-         {1, 0, 1, alphaOfTile}, {1, 1, 0, alphaOfTile}, {1, 1, 1, alphaOfTile}};
+       {1, 0, 1, alphaOfTile}, {1, 1, 0, alphaOfTile}, {1, 1, 1, alphaOfTile}};
 
 	error::ErrorGL::Check();
 	glDisable( GL_LIGHTING );
@@ -268,12 +291,12 @@ void LocationGrid::Render()
 		else if ( m_tileFillMode == MAPPED )
 		{
 			// Render tiles from a stored list of previously generated coordinates
-			uint iterator = 0;
 			glBegin( GL_QUADS );
-
+	/**		uint iterator = 0;
+	
 			std::list<double>::iterator row1, row2, col1, col2;
 			row2 = m_yCoordinates.begin(); row2++;
-
+			
 			for ( row1 = m_yCoordinates.begin(); row2 != m_yCoordinates.end(); ++row1 )
 			{
 				col2 = m_xCoordinates.begin(); col2++;
@@ -292,6 +315,41 @@ void LocationGrid::Render()
 				}
 				row2++;
 			}
+		*/	
+			
+			for( uint i = 0; i < m_tileModels.size(); i++)
+			{
+				
+				// convert pair from GEO to COORD
+				std::pair<float,float> top = m_tileModels[i]->GetTopLeft();
+				std::pair<float,float> bottom = m_tileModels[i]->GetBottomRight();
+				
+				// conversion from geographic coordinate to openGL coordinate
+				MapModelPtr mapModel = App::Inst().GetMapController()->GetMapModel();
+				Point3D topLeftCoord;
+				Point3D bottomRightCoord;
+				GeoCoord topLeftGeo(top.first,top.second);
+				GeoCoord bottomRightGeo(bottom.first,bottom.second);
+				mapModel->LatLongToGrid( topLeftGeo , topLeftCoord );
+				mapModel->LatLongToGrid( bottomRightGeo , bottomRightCoord );
+				
+				std::map<std::wstring,std::wstring> datum = m_tileModels[i]->GetData();
+				double field = defaultValue;
+				std::wstring fieldString = m_tileModels[i]->GetData(StringTools::ToStringW( "Cell ID" ) );
+				if( !fieldString.empty() )
+				{
+					field = StringTools::ToDouble( fieldString );
+				}
+			//	double field = 20712;			
+
+				Colour tileColour  =  m_colourMap->GetInterpolatedColour( field , defaultValue, max);
+				glColor4f( tileColour.GetRed(), tileColour.GetGreen(), tileColour.GetBlue(), alphaOfTile );
+				glVertex3f( topLeftCoord.x, m_elevationUsed, topLeftCoord.z );
+				glVertex3f( bottomRightCoord.x, m_elevationUsed, topLeftCoord.z );
+				glVertex3f( bottomRightCoord.x, m_elevationUsed, bottomRightCoord.z );
+				glVertex3f( topLeftCoord.x, m_elevationUsed, bottomRightCoord.z );
+			}
+
 			glEnd();
 		}
 	}
@@ -351,5 +409,4 @@ void LocationGrid::FillTiles()
 			}
 		}
 	}
-	m_tileModels;
 }
