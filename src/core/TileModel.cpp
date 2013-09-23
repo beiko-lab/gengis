@@ -63,9 +63,6 @@ void TileModel::UpdateData(std::map<std::wstring,std::wstring> newData)
 		std::wstring value = dataIter->second;
 		// check if tile's data currently has a value
 		// if not make a new one
-		
-		//	USE EMPLACE INSTEAD
-		
 		if( FindField(field) == 1 )
 		{
 			std::wstring curValue = GetData( field );

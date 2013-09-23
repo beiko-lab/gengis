@@ -65,9 +65,9 @@ LocationGrid::LocationGrid() :
 
 	m_xCoordinates.clear();
 	m_yCoordinates.clear();
-	m_selectedFieldValues.clear();
-	m_field = StringTools::ToStringW( "Cell ID" );
-	m_tileModels.clear();
+//	m_selectedFieldValues.clear();
+//	m_field = StringTools::ToStringW( "Cell ID" );
+//	m_tileModels.clear();
 	//Get a default first location set layer for initialization
 
 }
