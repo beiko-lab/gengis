@@ -176,6 +176,9 @@ namespace GenGIS
 		/** Handler for longitude / latitude divisions radio control. */
 		void OnRadioLatitudeLongitude( wxCommandEvent& event );
 
+		/** Handler for grid divisions spin control. */
+		void OnNumberOfDivisions( wxCommandEvent& event );
+
 		/** Handler for 'Align to' radio controls (origin, location, or coordinates). */
 		void OnRadioAlignTo( wxCommandEvent& event );
 

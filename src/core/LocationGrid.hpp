@@ -86,8 +86,10 @@ namespace GenGIS
 		void SetAutoAdjustElevationStatus ( bool status )                { m_autoAdjustElevation = status; }
 		void SetElevation( double elevation )                            { m_elevation = elevation; }
 		void SetLocationSetLayer( LocationSetLayerPtr locationSetLayer ) { m_locationSetLayer = locationSetLayer; } 
-		void SetSelectedFields(std::vector<wxStaticText*> field);
-	//	void SetColourMap(ColourMapDiscretePtr colour)					 { m_colourMap = colour; }		
+		void SetSelectedFieldValues(std::vector<wxStaticText*> field);
+		void SetField( std::wstring field )							 { m_field = field; }
+		bool GetGridChanged()											 { return m_gridChanged; }
+		void SetGridChanged( bool val )									 { m_gridChanged = val; }
 
 
 		// Functions for accessing 'tile' variables
@@ -134,8 +136,9 @@ namespace GenGIS
 		std::list<double> m_xCoordinates;
 		std::list<double> m_yCoordinates;
 		LocationSetLayerPtr m_locationSetLayer;
-		std::vector<double> m_selectedFields;
-//		ColourMapDiscretePtr m_colourMap;
+		std::vector<double> m_selectedFieldValues;
+		std::wstring m_field;
+		bool		 m_gridChanged;
 
 		// Tile variables
 		bool      m_showTiles;
