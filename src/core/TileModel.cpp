@@ -48,6 +48,8 @@ void TileModel::serialize(Archive & ar, const unsigned int version)
 
 	ar & numLocations;  // uint
 	ar & m_bActive;     // bool
+	ar & m_topLeft;		// std::pair<float,float>
+	ar & m_bottomRight;	// std::pair<float,float>
 }
 template void TileModel::serialize<boost::archive::text_woarchive>(boost::archive::text_woarchive& ar, const unsigned int version); 
 template void TileModel::serialize<boost::archive::text_wiarchive>(boost::archive::text_wiarchive& ar, const unsigned int version);

@@ -327,6 +327,8 @@ namespace GenGIS
 			virtual void OnChoiceGridFieldToChartChange( wxCommandEvent& event ) { event.Skip(); }
 			virtual void OnGridColourMapChange( wxCommandEvent& event ) { event.Skip(); }
 			virtual void OnShowGridBorders( wxCommandEvent& event ) { event.Skip(); }
+			virtual void OnNumberOfDivisions( wxSpinEvent& event ) { event.Skip(); }
+			virtual void OnNumberOfDivisions( wxCommandEvent& event ) { event.Skip(); }
 			virtual void OnRadioLatitudeLongitude( wxCommandEvent& event ) { event.Skip(); }
 			virtual void OnRadioAlignTo( wxCommandEvent& event ) { event.Skip(); }
 			virtual void OnAutoAdjustElevation( wxCommandEvent& event ) { event.Skip(); }

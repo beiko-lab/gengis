@@ -790,7 +790,7 @@ LocationSetPropertiesLayout::LocationSetPropertiesLayout( wxWindow* parent, wxWi
 	m_panel13->SetSizer( bSizer431 );
 	m_panel13->Layout();
 	bSizer431->Fit( m_panel13 );
-	m_notebook6->AddPage( m_panel13, wxT("Colour"), false );
+	m_notebook6->AddPage( m_panel13, wxT("Colour"), true );
 	m_panel12 = new wxPanel( m_notebook6, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
 	wxBoxSizer* bSizer451;
 	bSizer451 = new wxBoxSizer( wxVERTICAL );
@@ -978,7 +978,7 @@ LocationSetPropertiesLayout::LocationSetPropertiesLayout( wxWindow* parent, wxWi
 	m_panel12->SetSizer( bSizer451 );
 	m_panel12->Layout();
 	bSizer451->Fit( m_panel12 );
-	m_notebook6->AddPage( m_panel12, wxT("Size and Position"), true );
+	m_notebook6->AddPage( m_panel12, wxT("Size and Position"), false );
 	
 	m_sizerGrid->Add( m_notebook6, 1, wxEXPAND | wxALL, 5 );
 	
@@ -1080,6 +1080,8 @@ LocationSetPropertiesLayout::LocationSetPropertiesLayout( wxWindow* parent, wxWi
 	m_choiceGridFieldToChart->Connect( wxEVT_COMMAND_COMBOBOX_SELECTED, wxCommandEventHandler( LocationSetPropertiesLayout::OnChoiceGridFieldToChartChange ), NULL, this );
 	m_choiceGridColourMap->Connect( wxEVT_COMMAND_COMBOBOX_SELECTED, wxCommandEventHandler( LocationSetPropertiesLayout::OnGridColourMapChange ), NULL, this );
 	m_chkShowGridBorders->Connect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( LocationSetPropertiesLayout::OnShowGridBorders ), NULL, this );
+	m_spinGridDivisions->Connect( wxEVT_COMMAND_SPINCTRL_UPDATED, wxSpinEventHandler( LocationSetPropertiesLayout::OnNumberOfDivisions ), NULL, this );
+	m_spinGridDivisions->Connect( wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler( LocationSetPropertiesLayout::OnNumberOfDivisions ), NULL, this );
 	m_radioBtnLatitude->Connect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( LocationSetPropertiesLayout::OnRadioLatitudeLongitude ), NULL, this );
 	m_radioBtnLongitude->Connect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( LocationSetPropertiesLayout::OnRadioLatitudeLongitude ), NULL, this );
 	m_radioAlignToOrigin->Connect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( LocationSetPropertiesLayout::OnRadioAlignTo ), NULL, this );
@@ -1122,6 +1124,8 @@ LocationSetPropertiesLayout::~LocationSetPropertiesLayout()
 	m_choiceGridFieldToChart->Disconnect( wxEVT_COMMAND_COMBOBOX_SELECTED, wxCommandEventHandler( LocationSetPropertiesLayout::OnChoiceGridFieldToChartChange ), NULL, this );
 	m_choiceGridColourMap->Disconnect( wxEVT_COMMAND_COMBOBOX_SELECTED, wxCommandEventHandler( LocationSetPropertiesLayout::OnGridColourMapChange ), NULL, this );
 	m_chkShowGridBorders->Disconnect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( LocationSetPropertiesLayout::OnShowGridBorders ), NULL, this );
+	m_spinGridDivisions->Disconnect( wxEVT_COMMAND_SPINCTRL_UPDATED, wxSpinEventHandler( LocationSetPropertiesLayout::OnNumberOfDivisions ), NULL, this );
+	m_spinGridDivisions->Disconnect( wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler( LocationSetPropertiesLayout::OnNumberOfDivisions ), NULL, this );
 	m_radioBtnLatitude->Disconnect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( LocationSetPropertiesLayout::OnRadioLatitudeLongitude ), NULL, this );
 	m_radioBtnLongitude->Disconnect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( LocationSetPropertiesLayout::OnRadioLatitudeLongitude ), NULL, this );
 	m_radioAlignToOrigin->Disconnect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( LocationSetPropertiesLayout::OnRadioAlignTo ), NULL, this );

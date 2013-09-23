@@ -42,12 +42,12 @@ LocationGrid::LocationGrid() :
 	m_divideTilesAlong( LATITUDE ),
 	m_gridAlignmentStyle( ORIGIN ),
 	m_mapOpenGLBoundaries( -1.0, -1.0, 1.0, 1.0 ),
-	//m_mapOffset( 0.2f, 0.3f ),
 	m_mapOffset( 0.0f, 0.0f ),
 	m_divisions( 12 ),
 	m_autoAdjustElevation( true ),
 	m_elevation( 0.05f ),
 	m_elevationUsed( 0.0f ),
+	m_gridChanged( true ),
 
 	// Tiles
 	m_showTiles( true ),
@@ -65,6 +65,11 @@ LocationGrid::LocationGrid() :
 
 	m_xCoordinates.clear();
 	m_yCoordinates.clear();
+	m_selectedFieldValues.clear();
+	m_field = StringTools::ToStringW( "Cell ID" );
+	m_tileModels.clear();
+	//Get a default first location set layer for initialization
+
 }
 
 template<class Archive> 
@@ -85,8 +90,9 @@ void LocationGrid::serialize(Archive & ar, const unsigned int version)
 	ar & m_xCoordinates;         // std::list<double>
 	ar & m_yCoordinates;         // std::list<double>
 	ar & m_locationSetLayer;     // LocationSetLayerPtr
-//	ar & m_selectedFields;		 // std::vector<wxStaticText*>
-//	ar & m_colourMap;			 // ColourMapDiscretePtr
+	ar & m_gridChanged;			 // bool
+	ar & m_field;				 // std::wstring
+	ar & m_selectedFieldValues;	 // std::vector<double>
 
 	// Tile variables
 	ar & m_showTiles;            // bool
@@ -113,12 +119,13 @@ bool LocationGrid::IsVisible()
 	return m_bVisible; 
 }
 
-void LocationGrid::SetSelectedFields(std::vector<wxStaticText*> field)
+void LocationGrid::SetSelectedFieldValues(std::vector<wxStaticText*> field)
 {
+	m_selectedFieldValues.clear();
 	for( uint i = 0; i < field.size(); i++)
 	{
 		std::wstring fieldValue = field[i]->GetLabel();
-		m_selectedFields.push_back(  StringTools::ToDouble( fieldValue ) );
+		m_selectedFieldValues.push_back(  StringTools::ToDouble( fieldValue ) );
 	}
 }
 
@@ -215,8 +222,12 @@ void LocationGrid::GenerateTileCoordinates()
 		m_yCoordinates.push_back( currentY );
 	}
 
-	InitTiles();
-	FillTiles();
+	if ( m_gridChanged )
+	{
+		InitTiles();
+		FillTiles();
+		SetGridChanged( false );
+	}
 }
 
 void LocationGrid::Render()
@@ -225,16 +236,16 @@ void LocationGrid::Render()
 		return;
 
 	ColourMapDiscretePtr m_colourMap = m_locationSetLayer->GetLocationSetController()->GetColourMap();
-	float min = *std::min_element( m_selectedFields.begin() , m_selectedFields.end() );
-	float max = *std::max_element( m_selectedFields.begin() , m_selectedFields.end() );
+	double min = *std::min_element( m_selectedFieldValues.begin() , m_selectedFieldValues.end() );
+	double max = *std::max_element( m_selectedFieldValues.begin() , m_selectedFieldValues.end() );
 	//	differentiates in color between a tile with the smallest available value and a tile with no value
-	float defaultValue = min-1;
+	float defaultValue = min- (max-min)/m_divisions;
 
 	// Colour palette for tiles (temporary)
 	float alphaOfTile = m_uniformColourOfTiles.GetAlpha();
-	const GLfloat COLOUR[][4] = {{0, 0, 0, alphaOfTile}, {0, 0, 1, alphaOfTile},
-	     {0, 1, 0, alphaOfTile}, {0, 1, 1, alphaOfTile}, {1, 0, 0, alphaOfTile},
-       {1, 0, 1, alphaOfTile}, {1, 1, 0, alphaOfTile}, {1, 1, 1, alphaOfTile}};
+//	const GLfloat COLOUR[][4] = {{0, 0, 0, alphaOfTile}, {0, 0, 1, alphaOfTile},
+//	     {0, 1, 0, alphaOfTile}, {0, 1, 1, alphaOfTile}, {1, 0, 0, alphaOfTile},
+//     {1, 0, 1, alphaOfTile}, {1, 1, 0, alphaOfTile}, {1, 1, 1, alphaOfTile}};
 
 	error::ErrorGL::Check();
 	glDisable( GL_LIGHTING );
@@ -335,12 +346,15 @@ void LocationGrid::Render()
 				
 				std::map<std::wstring,std::wstring> datum = m_tileModels[i]->GetData();
 				double field = defaultValue;
-				std::wstring fieldString = m_tileModels[i]->GetData(StringTools::ToStringW( "Cell ID" ) );
+			//	std::wstring m_field = StringTools::ToStringW( "Latitude" );
+				std::wstring fieldString = m_tileModels[i]->GetData( m_field );
 				if( !fieldString.empty() )
 				{
 					field = StringTools::ToDouble( fieldString );
 				}
-			//	double field = 20712;			
+				// deal with possible floating point errors in rounding
+				( field > max ) ? field = max : field;
+				( field < defaultValue ) ? field = defaultValue : field;		
 
 				Colour tileColour  =  m_colourMap->GetInterpolatedColour( field , defaultValue, max);
 				glColor4f( tileColour.GetRed(), tileColour.GetGreen(), tileColour.GetBlue(), alphaOfTile );
@@ -357,6 +371,7 @@ void LocationGrid::Render()
 
 void LocationGrid::InitTiles()
 {
+	m_tileModels.clear();
 	MapModelPtr mapModel = App::Inst().GetMapController()->GetMapModel();
 	std::list<double>::iterator row1, row2, col1, col2;
 	row2 = m_yCoordinates.begin(); row2++;

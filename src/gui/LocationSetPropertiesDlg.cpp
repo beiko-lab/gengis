@@ -742,6 +742,15 @@ void LocationSetPropertiesDlg::OnRadioLatitudeLongitude( wxCommandEvent& event )
 		m_locationSetLayer->GetLocationGrid()->SetTileDivisionAxis( LocationGrid::LATITUDE );
 	else if ( wxID == wxID_RADIO_GRID_DIVIDE_ALONG_LONGITUDE )
 		m_locationSetLayer->GetLocationGrid()->SetTileDivisionAxis( LocationGrid::LONGITUDE );
+	
+	LocationGridPtr locationGrid = m_locationSetLayer->GetLocationGrid();
+	locationGrid -> SetGridChanged( true );
+}
+
+void LocationSetPropertiesDlg::OnNumberOfDivisions( wxCommandEvent& event )
+{
+	LocationGridPtr locationGrid = m_locationSetLayer->GetLocationGrid();
+	locationGrid -> SetGridChanged( true );
 }
 
 void LocationSetPropertiesDlg::OnShowGridBorders( wxCommandEvent& event )
@@ -1271,7 +1280,7 @@ void LocationSetPropertiesDlg::ApplyGrid()
 	locationGrid->SetElevation( StringTools::ToDouble( m_textCtrlGridElevation->GetValue().c_str() ) );
 
 	//Set location set layer
-	locationGrid->SetLocationSetLayer ( m_locationSetLayer);
+//	locationGrid->SetLocationSetLayer ( m_locationSetLayer);
 	
 	// Generate coordinates
 	locationGrid->GenerateTileCoordinates();
@@ -1282,7 +1291,8 @@ void LocationSetPropertiesDlg::ApplyGrid()
 //	locationGrid->Set
 	// Set Selected Field
 //	locationGrid->SetSelectedField( m_choiceGridFieldToChart->GetStringSelection().c_str() );
-	locationGrid->SetSelectedFields( m_gridColourMapWidget->GetFieldValues() );
+	locationGrid->SetField( m_choiceGridFieldToChart->GetStringSelection().c_str() );
+	locationGrid->SetSelectedFieldValues( m_gridColourMapWidget->GetFieldValues() );
 
 }
 
