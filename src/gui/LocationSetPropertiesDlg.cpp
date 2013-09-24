@@ -1280,7 +1280,7 @@ void LocationSetPropertiesDlg::ApplyGrid()
 	locationGrid->SetElevation( StringTools::ToDouble( m_textCtrlGridElevation->GetValue().c_str() ) );
 
 	//Set location set layer
-//	locationGrid->SetLocationSetLayer ( m_locationSetLayer);
+	locationGrid->SetLocationSetLayer ( m_locationSetLayer);
 	
 	// Generate coordinates
 	locationGrid->GenerateTileCoordinates();
