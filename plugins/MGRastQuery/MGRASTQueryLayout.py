@@ -316,7 +316,7 @@ class OptionsFrame ( wx.Frame ):
 		self.m_searchTypeCheck = wx.CheckBox( self, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, 0 )
 		fgSizer2.Add( self.m_searchTypeCheck, 0, wx.ALL|wx.ALIGN_CENTER_HORIZONTAL, 5 )
 		
-		self.m_searchTypeText = wx.StaticText( self, wx.ID_ANY, u"Filter Level", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_searchTypeText = wx.StaticText( self, wx.ID_ANY, u"Search Type", wx.DefaultPosition, wx.DefaultSize, 0 )
 		self.m_searchTypeText.Wrap( -1 )
 		fgSizer2.Add( self.m_searchTypeText, 0, wx.ALL|wx.ALIGN_CENTER_HORIZONTAL, 5 )
 		
