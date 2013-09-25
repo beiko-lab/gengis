@@ -320,7 +320,7 @@ class OptionsFrame ( wx.Frame ):
 		self.m_searchTypeText.Wrap( -1 )
 		fgSizer2.Add( self.m_searchTypeText, 0, wx.ALL|wx.ALIGN_CENTER_HORIZONTAL, 5 )
 		
-		m_searchTypeChoices = [ u"organism", u"function" ]
+		m_searchTypeChoices = [ u"organism", u"function", u"study" ]
 		self.m_searchType = wx.Choice( self, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, m_searchTypeChoices, 0 )
 		self.m_searchType.SetSelection( 0 )
 		fgSizer2.Add( self.m_searchType, 0, wx.ALL|wx.EXPAND, 5 )

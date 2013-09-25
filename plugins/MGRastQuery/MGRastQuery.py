@@ -154,9 +154,15 @@ class MGRastQuery(MGRASTQueryLayout):
 			maxLatitude= float(self.m_MaxLat.GetValue())
 			minLongitude= float(self.m_MinLon.GetValue())
 			maxLongitude= float(self.m_MaxLon.GetValue())
-			matches=self.MGRastSpecific.GETTAXRESULT(taxon,searchType,minLatitude,maxLatitude,minLongitude,maxLongitude,self.m_Summary)
-			if matches:
-				self.m_Result.InsertItems(matches,0)
+			blah = "%s"%searchType
+			self.m_Progress.WriteText(blah)
+			if searchType == "study":
+				self.__selectedTaxon__ = [taxon]
+				self.OnCalculate(wx.EVT_BUTTON)
+			else:
+				matches=self.MGRastSpecific.GETTAXRESULT(taxon,searchType,minLatitude,maxLatitude,minLongitude,maxLongitude,self.m_Summary)
+				if matches:
+					self.m_Result.InsertItems(matches,0)
 		wx.EndBusyCursor()
 		
 	#	Create Sequence and Location files for selected Taxa
