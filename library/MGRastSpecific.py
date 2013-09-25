@@ -110,11 +110,15 @@ class MGRastSpecific:
 		elif searchType == "feature":
 			url="http://api.metagenomics.anl.gov/matrix/feature/?id=%s%s"%(taxon_name,options)
 			rowMeta = 'taxonomy'
+		elif searchType =="study":
+			url="http://api.metagenomics.anl.gov/matrix/organism/?id=%s%s"%(taxon_name,options)
+			rowMeta = 'taxonomy'
 		try:	
 			html=urllib2.urlopen(url)
 			startTime = time.time()
 		except urllib2.HTTPError as e:
 			wx.MessageBox("The server is temporarily unreachable.\nPlease try again later.")
+			m_Progress.WriteText("%s"%taxon_name)
 			return False
 		response=html.read()
 		matrix = json.loads(response)
