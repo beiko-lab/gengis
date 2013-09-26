@@ -239,14 +239,12 @@ void LocationGrid::Render()
 	double min = *std::min_element( m_selectedFieldValues.begin() , m_selectedFieldValues.end() );
 	double max = *std::max_element( m_selectedFieldValues.begin() , m_selectedFieldValues.end() );
 	//	differentiates in color between a tile with the smallest available value and a tile with no value
-	float defaultValue = min- (max-min)/m_divisions;
+	// fortifies against the possibility of all locations having the same value for this field
+	float defaultValue = (min == max)? max/2 : min- (max-min)/m_divisions;
+
 
 	// Colour palette for tiles (temporary)
 	float alphaOfTile = m_uniformColourOfTiles.GetAlpha();
-//	const GLfloat COLOUR[][4] = {{0, 0, 0, alphaOfTile}, {0, 0, 1, alphaOfTile},
-//	     {0, 1, 0, alphaOfTile}, {0, 1, 1, alphaOfTile}, {1, 0, 0, alphaOfTile},
-//     {1, 0, 1, alphaOfTile}, {1, 1, 0, alphaOfTile}, {1, 1, 1, alphaOfTile}};
-
 	error::ErrorGL::Check();
 	glDisable( GL_LIGHTING );
 
@@ -303,31 +301,6 @@ void LocationGrid::Render()
 		{
 			// Render tiles from a stored list of previously generated coordinates
 			glBegin( GL_QUADS );
-	/**		uint iterator = 0;
-	
-			std::list<double>::iterator row1, row2, col1, col2;
-			row2 = m_yCoordinates.begin(); row2++;
-			
-			for ( row1 = m_yCoordinates.begin(); row2 != m_yCoordinates.end(); ++row1 )
-			{
-				col2 = m_xCoordinates.begin(); col2++;
-
-				for ( col1 = m_xCoordinates.begin(); col2 != m_xCoordinates.end(); ++col1 )
-				{
-					glColor4fv( COLOUR[iterator] );
-					( iterator < 7 ) ? iterator++ : iterator = 0;
-
-					glVertex3f( *col1, m_elevationUsed, *row1 );
-					glVertex3f( *col2, m_elevationUsed, *row1 );
-					glVertex3f( *col2, m_elevationUsed, *row2 );
-					glVertex3f( *col1, m_elevationUsed, *row2 );
-
-					col2++;
-				}
-				row2++;
-			}
-		*/	
-			
 			for( uint i = 0; i < m_tileModels.size(); i++)
 			{
 				
@@ -346,7 +319,6 @@ void LocationGrid::Render()
 				
 				std::map<std::wstring,std::wstring> datum = m_tileModels[i]->GetData();
 				double field = defaultValue;
-			//	std::wstring m_field = StringTools::ToStringW( "Latitude" );
 				std::wstring fieldString = m_tileModels[i]->GetData( m_field );
 				if( !fieldString.empty() )
 				{
@@ -413,6 +385,12 @@ void LocationGrid::FillTiles()
 			std::map<std::wstring,std::wstring> data = locationLayers[i]->GetLocationController()->GetData();
 			float easting = StringTools::ToDouble(data[StringTools::ToStringW("Longitude")]);
 			float northing = StringTools::ToDouble(data[StringTools::ToStringW("Latitude")]);
+			// check if long and lat values exist. if they don't use easting and westing
+			if( easting != easting || northing != northing || !_finite(easting) || !_finite(northing) )
+			{
+				easting = locationLayers[i]->GetLocationController()->GetEasting();
+				northing = locationLayers[i]->GetLocationController()->GetNorthing();
+			}
 
 			if ( top.first <= easting
 				&& top.second >= northing
