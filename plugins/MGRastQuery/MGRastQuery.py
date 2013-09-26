@@ -149,15 +149,14 @@ class MGRastQuery(MGRASTQueryLayout):
 		if(len(taxon)==0):
 			wx.MessageBox("You did not enter a taxon name.")
 		else:
-		#	self.GBIFSpecific.GETTAXRESULT(taxon,self.m_Result)
 			minLatitude= float(self.m_MinLat.GetValue())
 			maxLatitude= float(self.m_MaxLat.GetValue())
 			minLongitude= float(self.m_MinLon.GetValue())
 			maxLongitude= float(self.m_MaxLon.GetValue())
-			blah = "%s"%searchType
-			self.m_Progress.WriteText(blah)
 			if searchType == "study":
-				self.__selectedTaxon__ = [taxon]
+			#	test data for multiple study search mgm4440037.3 mgm4440055.3 mgm4440064.3
+				for tax in taxon:
+					self.__selectedTaxon__.add((tax,"dummy value"))
 				self.OnCalculate(wx.EVT_BUTTON)
 			else:
 				matches=self.MGRastSpecific.GETTAXRESULT(taxon,searchType,minLatitude,maxLatitude,minLongitude,maxLongitude,self.m_Summary)
@@ -250,6 +249,7 @@ class MGRastQuery(MGRASTQueryLayout):
 			split = selected.split(" | ")
 			if (split[0],split[1]) not in self.__selectedTaxon__:
 				self.m_IDList.InsertItems(["%s" % selected],IDCount+i)
+				#add study ID and study location
 				self.__selectedTaxon__.add((split[0],split[1]))
 				i+=1
 			
