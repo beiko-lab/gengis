@@ -43,7 +43,8 @@ LocationGrid::LocationGrid() :
 	m_gridAlignmentStyle( ORIGIN ),
 	m_mapOpenGLBoundaries( -1.0, -1.0, 1.0, 1.0 ),
 	m_mapOffset( 0.0f, 0.0f ),
-	m_divisions( 12 ),
+//	m_divisions( 12 ),
+	m_divisions( 4 ),
 	m_autoAdjustElevation( true ),
 	m_elevation( 0.05f ),
 	m_elevationUsed( 0.0f ),
@@ -51,7 +52,8 @@ LocationGrid::LocationGrid() :
 
 	// Tiles
 	m_showTiles( true ),
-	m_tileFillMode( MAPPED ),
+//	m_tileFillMode( MAPPED ),
+	m_tileFillMode( UNIFORM ),
 	m_uniformColourOfTiles( 0.0f, 0.5f, 0.0f, 0.3f ),
 
 	// Border
@@ -403,3 +405,63 @@ void LocationGrid::FillTiles()
 		}
 	}
 }
+
+/**
+std::vector<std::wstring> LocationGrid::GetMetadataFields() const
+{
+	std::vector<std::wstring> fields;
+
+	if(m_tileModels.size() == 0)
+	{
+		Log::Inst().Error("(Error) LocationSetController::GetMetadataFields(): no location layers.");
+	}
+	else
+	{
+		// need to get non empty
+		for( int j = 0; j < m_tileModels.size(); j++ )
+		{
+			std::map<std::wstring,std::wstring> metadata = m_tileModels[j]->GetData();
+
+			std::map<std::wstring,std::wstring>::iterator it;
+			for(it = metadata.begin(); it != metadata.end(); ++it)
+				fields.push_back(it->first);
+		}
+	}
+
+	return fields;
+}
+
+//std::vector<std::wstring> LocationGrid::GetNumericMetadataFields(bool bOnlyActiveLocs) const
+std::vector<std::wstring> LocationGrid::GetNumericMetadataFields() const
+{
+	if(m_tileModels.size() == 0)
+	{
+		Log::Inst().Error("(Error) LocationGrid::GetNumericMetadataFields(): no location layers.");
+		return std::vector<std::wstring>();
+	}
+
+	std::vector<std::wstring> numericFields;
+	foreach(const std::wstring& field, GetMetadataFields())
+	{
+		bool bNumeric = true;
+		foreach(TileModelPtr tilModel, m_tileModels)
+		{
+	//		if(locLayer->IsActive() || !bOnlyActiveLocs)
+	//		{
+				std::wstring value = tilModel->GetData()[field];
+				
+				if(!StringTools::IsDecimalNumber(value))
+				{
+					bNumeric = false;
+					break;
+				}
+	//		}
+		}
+
+		if(bNumeric)
+			numericFields.push_back(field);
+	}
+
+	return numericFields;
+}
+*/

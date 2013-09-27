@@ -87,9 +87,13 @@ namespace GenGIS
 		void SetElevation( double elevation )                            { m_elevation = elevation; }
 		void SetLocationSetLayer( LocationSetLayerPtr locationSetLayer ) { m_locationSetLayer = locationSetLayer; } 
 		void SetSelectedFieldValues(std::vector<wxStaticText*> field);
-		void SetField( std::wstring field )							 { m_field = field; }
+		void SetField( std::wstring field )								 { m_field = field; }
+		std::wstring GetField()											 { return m_field; }
 		bool GetGridChanged()											 { return m_gridChanged; }
 		void SetGridChanged( bool val )									 { m_gridChanged = val; }
+		std::vector<std::wstring> GetMetadataFields() const;
+		std::vector<std::wstring> GetNumericMetadataFields() const;
+		bool GetVisible()												 { return IsVisible(); }
 
 
 		// Functions for accessing 'tile' variables

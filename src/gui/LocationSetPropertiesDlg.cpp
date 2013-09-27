@@ -168,6 +168,8 @@ void LocationSetPropertiesDlg::InitLocationSetColour()
 void LocationSetPropertiesDlg::InitLocationGridColour()
 {
 	// populate combo box with all fields associated with a location
+	
+	//std::vector<std::wstring> fields = m_locationSetLayer->GetLocationGrid()->GetNumericMetadataFields();
 	std::vector<std::wstring> fields = m_locationSetController->GetNumericMetadataFields();
 	std::vector<std::wstring>::iterator it;
 	for(it = fields.begin(); it != fields.end(); ++it)
@@ -175,8 +177,8 @@ void LocationSetPropertiesDlg::InitLocationGridColour()
 		m_choiceGridFieldToChart->Append(wxString((*it).c_str()));
 	}
 
-	if(!m_locationSetController->GetColourField().empty())
-		m_choiceGridFieldToChart->SetValue(m_locationSetController->GetColourField().c_str());
+	if(!m_locationSetLayer->GetLocationGrid()->GetField().empty())
+		m_choiceGridFieldToChart->SetValue(m_locationSetLayer->GetLocationGrid()->GetField().c_str());
 	else
 	{
 		if(!m_choiceGridFieldToChart->IsEmpty())
@@ -184,6 +186,7 @@ void LocationSetPropertiesDlg::InitLocationGridColour()
 	}
 
 	// Populate colour map combo box with all available colour maps
+	// I think this is safe to keep m_locationSetController as it is just retrieving colour maps
 	m_gridColourMapWidget->SetColourMap(m_locationSetController->GetColourMap());
 	m_gridColourMapWidget->PopulateColourMapComboBox();
 
@@ -192,10 +195,7 @@ void LocationSetPropertiesDlg::InitLocationGridColour()
 	OnColourFieldChange(dummy);
 	OnChoiceGridFieldToChartChange(dummy);
 
-	Colour uniColour = m_locationSetController->GetUniformColour();
-	m_colourUniform->SetColour(wxColour(uniColour.GetRedInt(), uniColour.GetGreenInt(), uniColour.GetBlueInt()));
-	ReplaceColourPicker( m_colourUniform, uniColour );
-
+	// uniform colour stuff is probably still junk
 	// Set uniform colour checkbox and colour
 /**
 	if(!m_locationSetController->ModifiedColour())
@@ -693,6 +693,9 @@ void LocationSetPropertiesDlg::InitLocationGrid()
 	// Get the grid elevation
 	m_textCtrlGridElevation->SetValue(
 		wxString( StringTools::ToStringW( locationGrid->GetElevation(), 2 ).c_str() ) );
+
+	//	Initialize and fill tiles
+	//locationGrid->GenerateTileCoordinates();
 
 	InitLocationGridColour();
 }
