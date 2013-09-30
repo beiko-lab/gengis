@@ -55,6 +55,7 @@ LocationGrid::LocationGrid() :
 //	m_tileFillMode( MAPPED ),
 	m_tileFillMode( UNIFORM ),
 	m_uniformColourOfTiles( 0.0f, 0.5f, 0.0f, 0.3f ),
+	m_defaultColourOfTiles( 0.5f, 0.5f, 0.5f, 0.3f ),
 
 	// Border
 	m_showBorders( true ),
@@ -67,11 +68,10 @@ LocationGrid::LocationGrid() :
 
 	m_xCoordinates.clear();
 	m_yCoordinates.clear();
-//	m_selectedFieldValues.clear();
-//	m_field = StringTools::ToStringW( "Cell ID" );
-//	m_tileModels.clear();
-	//Get a default first location set layer for initialization
-
+	ColourMapManagerPtr colourMapManager = App::Inst().GetColourMapManager();
+	ColourMapPtr defaultColourMap = colourMapManager->GetDefaultDiscreteColourMap();
+	m_gridColourMap.reset(new ColourMapDiscrete(defaultColourMap));
+//	m_field = StringTools::ToStringW("C");
 }
 
 template<class Archive> 
@@ -100,7 +100,9 @@ void LocationGrid::serialize(Archive & ar, const unsigned int version)
 	ar & m_showTiles;            // bool
 	ar & m_tileFillMode;         // TILE_FILL
 	ar & m_uniformColourOfTiles; // Colour
+	ar & m_defaultColourOfTiles; // Colour
 	ar & m_tileModels;           // std::vector<TileModelPtr>
+	ar & m_gridColourMap;		 // ColourMapDiscretePtr
 
 	// Border variables
 	ar & m_showBorders;          // bool
@@ -133,8 +135,8 @@ void LocationGrid::SetSelectedFieldValues(std::vector<wxStaticText*> field)
 
 void LocationGrid::GenerateTileCoordinates()
 {
-	if( !IsVisible() )
-		return;
+//	if( !IsVisible() )
+//		return;
 
 	// Real terrain values of DEM map
 	//mapController->GetMapBorders();
@@ -238,11 +240,11 @@ void LocationGrid::Render()
 		return;
 
 	ColourMapDiscretePtr m_colourMap = m_locationSetLayer->GetLocationSetController()->GetColourMap();
-	double min = *std::min_element( m_selectedFieldValues.begin() , m_selectedFieldValues.end() );
-	double max = *std::max_element( m_selectedFieldValues.begin() , m_selectedFieldValues.end() );
+//	double min = *std::min_element( m_selectedFieldValues.begin() , m_selectedFieldValues.end() );
+//	double max = *std::max_element( m_selectedFieldValues.begin() , m_selectedFieldValues.end() );
 	//	differentiates in color between a tile with the smallest available value and a tile with no value
 	// fortifies against the possibility of all locations having the same value for this field
-	float defaultValue = (min == max)? max/2 : min- (max-min)/m_divisions;
+//	float defaultValue = (min == max)? max/2 : min- (max-min)/m_divisions;
 
 
 	// Colour palette for tiles (temporary)
@@ -319,18 +321,19 @@ void LocationGrid::Render()
 				mapModel->LatLongToGrid( topLeftGeo , topLeftCoord );
 				mapModel->LatLongToGrid( bottomRightGeo , bottomRightCoord );
 				
-				std::map<std::wstring,std::wstring> datum = m_tileModels[i]->GetData();
-				double field = defaultValue;
-				std::wstring fieldString = m_tileModels[i]->GetData( m_field );
-				if( !fieldString.empty() )
-				{
-					field = StringTools::ToDouble( fieldString );
-				}
+	//			std::map<std::wstring,std::wstring> datum = m_tileModels[i]->GetData();
+	//			double field = defaultValue;
+	//			std::wstring fieldString = m_tileModels[i]->GetData( m_field );
+	//			if( !fieldString.empty() )
+	//			{
+	//				field = StringTools::ToDouble( fieldString );
+	//			}
 				// deal with possible floating point errors in rounding
-				( field > max ) ? field = max : field;
-				( field < defaultValue ) ? field = defaultValue : field;		
+	//			( field > max ) ? field = max : field;
+	//			( field < defaultValue ) ? field = defaultValue : field;		
 
-				Colour tileColour  =  m_colourMap->GetInterpolatedColour( field , defaultValue, max);
+	//			Colour tileColour  =  m_colourMap->GetInterpolatedColour( field , defaultValue, max);
+				Colour tileColour = m_tileModels[i]->GetColour();
 				glColor4f( tileColour.GetRed(), tileColour.GetGreen(), tileColour.GetBlue(), alphaOfTile );
 				glVertex3f( topLeftCoord.x, m_elevationUsed, topLeftCoord.z );
 				glVertex3f( bottomRightCoord.x, m_elevationUsed, topLeftCoord.z );
@@ -406,62 +409,44 @@ void LocationGrid::FillTiles()
 	}
 }
 
-/**
-std::vector<std::wstring> LocationGrid::GetMetadataFields() const
+std::vector<std::wstring> LocationGrid::GetSelectedValues( std::wstring field )
 {
-	std::vector<std::wstring> fields;
-
-	if(m_tileModels.size() == 0)
+	std::vector<std::wstring> values;
+	std::vector<TileModelPtr>::iterator it;
+	for( it = m_tileModels.begin(); it != m_tileModels.end(); ++it )
 	{
-		Log::Inst().Error("(Error) LocationSetController::GetMetadataFields(): no location layers.");
-	}
-	else
-	{
-		// need to get non empty
-		for( int j = 0; j < m_tileModels.size(); j++ )
-		{
-			std::map<std::wstring,std::wstring> metadata = m_tileModels[j]->GetData();
-
-			std::map<std::wstring,std::wstring>::iterator it;
-			for(it = metadata.begin(); it != metadata.end(); ++it)
-				fields.push_back(it->first);
-		}
+		std::map<std::wstring,std::wstring> data = (*it)->GetData();
+		if(! data[field].empty() )
+			values.push_back(data[field]);
 	}
 
-	return fields;
+	return values;
 }
 
-//std::vector<std::wstring> LocationGrid::GetNumericMetadataFields(bool bOnlyActiveLocs) const
-std::vector<std::wstring> LocationGrid::GetNumericMetadataFields() const
+void LocationGrid::SetLocationColours()
 {
-	if(m_tileModels.size() == 0)
+	for(unsigned int i = 0; i < m_tileModels.size(); ++i)
 	{
-		Log::Inst().Error("(Error) LocationGrid::GetNumericMetadataFields(): no location layers.");
-		return std::vector<std::wstring>();
-	}
-
-	std::vector<std::wstring> numericFields;
-	foreach(const std::wstring& field, GetMetadataFields())
-	{
-		bool bNumeric = true;
-		foreach(TileModelPtr tilModel, m_tileModels)
+		Colour colour;
+		if( m_tileModels[i]->GetNumLocations() == 0 )
 		{
-	//		if(locLayer->IsActive() || !bOnlyActiveLocs)
-	//		{
-				std::wstring value = tilModel->GetData()[field];
-				
-				if(!StringTools::IsDecimalNumber(value))
-				{
-					bNumeric = false;
-					break;
-				}
-	//		}
+			colour = m_defaultColourOfTiles;
+		}
+		else
+		{
+			// find colour in colour map corrsponding to field value of location
+			std::map<std::wstring,std::wstring> data = m_tileModels.at(i)->GetData();
+			std::map<std::wstring,std::wstring>::const_iterator it = data.find(m_field);
+
+			if(!m_gridColourMap->GetColour(it->second, colour))
+			{
+				Log::Inst().Error("(Error) LocationSetController::SetLocationColours(): no colour associated with name.");
+			}
 		}
 
-		if(bNumeric)
-			numericFields.push_back(field);
+	//	LocationViewPtr locationView = m_locationLayers.at(i)->GetLocationController()->GetLocationView();
+	//	locationView->SetColour(colour);
+		m_tileModels.at(i)->SetColour(colour);
+	//	locationView->SetColourModified(false);
 	}
-
-	return numericFields;
 }
-*/

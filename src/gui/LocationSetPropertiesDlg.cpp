@@ -33,6 +33,7 @@
 #include "../core/LayerTreeController.hpp"
 #include "../core/SequenceController.hpp"
 #include "../core/LocationGrid.hpp"
+#include "../core/TileModel.hpp"
 #include "../core/LocationSetLayer.hpp"
 #include "../core/LocationLayer.hpp"
 #include "../core/SequenceLayer.hpp"
@@ -167,9 +168,9 @@ void LocationSetPropertiesDlg::InitLocationSetColour()
 
 void LocationSetPropertiesDlg::InitLocationGridColour()
 {
+	LocationGridPtr locationGrid = m_locationSetLayer->GetLocationGrid();
+
 	// populate combo box with all fields associated with a location
-	
-	//std::vector<std::wstring> fields = m_locationSetLayer->GetLocationGrid()->GetNumericMetadataFields();
 	std::vector<std::wstring> fields = m_locationSetController->GetNumericMetadataFields();
 	std::vector<std::wstring>::iterator it;
 	for(it = fields.begin(); it != fields.end(); ++it)
@@ -183,8 +184,14 @@ void LocationSetPropertiesDlg::InitLocationGridColour()
 	{
 		if(!m_choiceGridFieldToChart->IsEmpty())
 			m_choiceGridFieldToChart->SetValue(m_choiceGridFieldToChart->GetString(0));
+			locationGrid->SetField(m_choiceGridFieldToChart->GetString(0).c_str());
 	}
 
+	
+//	std::wstring field = m_choiceGridFieldToChart->GetStringSelection().c_str();
+//	locationGrid->SetField( m_choiceGridFieldToChart->GetStringSelection().c_str() );
+//	field = m_choiceGridFieldToChart->GetStringSelection().c_str();
+//	m_gridColourMapWidget->SetFieldValues( m_scrolledWindowGridColour , field );
 	// Populate colour map combo box with all available colour maps
 	// I think this is safe to keep m_locationSetController as it is just retrieving colour maps
 	m_gridColourMapWidget->SetColourMap(m_locationSetController->GetColourMap());
@@ -194,6 +201,12 @@ void LocationSetPropertiesDlg::InitLocationGridColour()
 	wxCommandEvent dummy;
 	OnColourFieldChange(dummy);
 	OnChoiceGridFieldToChartChange(dummy);
+
+	// Set Colour Map
+	locationGrid->SetColourMap( m_gridColourMapWidget->GetColourMap() );
+
+	// Sets the tile colours
+	locationGrid->SetLocationColours();
 
 	// uniform colour stuff is probably still junk
 	// Set uniform colour checkbox and colour
@@ -563,6 +576,7 @@ void LocationSetPropertiesDlg::InitLocationGrid()
 		m_radioGridNoFill->SetValue( true );
 
 		m_gridTileColour->Disable();
+		m_colourGridDefaultColour->Disable();
 		m_txtTileAlpha->Disable();
 		m_sliderTileAlpha->Disable();
 		m_txtGridFieldToChart->Disable();
@@ -580,6 +594,7 @@ void LocationSetPropertiesDlg::InitLocationGrid()
 		m_txtGridColourMap->Disable();
 		m_choiceGridColourMap->Disable();
 		m_scrolledWindowGridColour->Disable();
+		m_colourGridDefaultColour->Disable();
 	}
 	else if ( colourFillStyle == LocationGrid::MAPPED )
 	{
@@ -589,11 +604,16 @@ void LocationSetPropertiesDlg::InitLocationGrid()
 	}
 
 	// Get visibility of grid
-	m_chkShowGrid->SetValue( locationGrid->IsVisible() );
+ 	m_chkShowGrid->SetValue( locationGrid->IsVisible() );
 
 	// Get uniform colour of tiles
 	Colour tileColour = locationGrid->GetTileUniformColour();
 	m_gridTileColour->SetColour( wxColour( tileColour.GetRedInt(),
+		tileColour.GetGreenInt(), tileColour.GetBlueInt() ) );
+
+	// Get default colour of tiles
+	tileColour = locationGrid->GetTileDefaultColour();
+	m_colourGridDefaultColour->SetColour( wxColour( tileColour.GetRedInt(),
 		tileColour.GetGreenInt(), tileColour.GetBlueInt() ) );
 
 	// Get alpha of tiles
@@ -694,8 +714,9 @@ void LocationSetPropertiesDlg::InitLocationGrid()
 	m_textCtrlGridElevation->SetValue(
 		wxString( StringTools::ToStringW( locationGrid->GetElevation(), 2 ).c_str() ) );
 
+	locationGrid->SetLocationSetLayer ( m_locationSetLayer);
 	//	Initialize and fill tiles
-	//locationGrid->GenerateTileCoordinates();
+	locationGrid->GenerateTileCoordinates();
 
 	InitLocationGridColour();
 }
@@ -734,6 +755,7 @@ void LocationSetPropertiesDlg::OnRadioColourFill( wxCommandEvent& event )
 	m_txtGridColourMap->Enable( set3 );
 	m_choiceGridColourMap->Enable( set3 );
 	m_scrolledWindowGridColour->Enable( set3 );
+	m_colourGridDefaultColour->Enable( set3 );
 }
 
 void LocationSetPropertiesDlg::OnRadioLatitudeLongitude( wxCommandEvent& event )
@@ -848,9 +870,10 @@ void LocationSetPropertiesDlg::OnColourFieldChange( wxCommandEvent& event )
 
 void LocationSetPropertiesDlg::OnChoiceGridFieldToChartChange( wxCommandEvent& event )
 {
-	std::vector<std::wstring> fieldValues;
-	GetSortedFieldValues(m_choiceGridFieldToChart->GetValue().c_str(), fieldValues);
+	LocationGridPtr locationGrid = m_locationSetLayer->GetLocationGrid();
 
+	std::vector<std::wstring> fieldValues;
+	GetSortedGridFieldValues( m_choiceGridFieldToChart->GetValue().c_str(), fieldValues, locationGrid->GetTileModels() );
 	m_gridColourMapWidget->SetFieldValues(m_scrolledWindowGridColour, fieldValues);
 }
 
@@ -993,6 +1016,26 @@ void LocationSetPropertiesDlg::GetSortedFieldValues(const std::wstring& field, s
 
 		std::map<std::wstring,std::wstring>::const_iterator it = data.find(field);
 		uniqueFieldValues.insert(it->second);
+	}
+
+	fieldValues.clear();
+	fieldValues = std::vector<std::wstring>(uniqueFieldValues.begin(), uniqueFieldValues.end());
+
+	SortFieldValues(fieldValues);
+}
+
+void LocationSetPropertiesDlg::GetSortedGridFieldValues(const std::wstring& field, std::vector<std::wstring>& fieldValues, std::vector<TileModelPtr> m_tileModels)
+{
+	// get all unique field values within the given field
+	std::set<std::wstring> uniqueFieldValues;
+	for(unsigned int i = 0; i < m_tileModels.size(); ++i)
+	{
+		if( m_tileModels[i]->GetNumLocations() != 0 )
+		{
+			std::map<std::wstring,std::wstring> data = m_tileModels[i]->GetData();
+			std::map<std::wstring,std::wstring>::const_iterator it = data.find(field);
+			uniqueFieldValues.insert(it->second);
+		}
 	}
 
 	fieldValues.clear();
@@ -1250,6 +1293,9 @@ void LocationSetPropertiesDlg::ApplyGrid()
 	// Set uniform colour of tiles
 	locationGrid->SetTileUniformColour( Colour( m_gridTileColour->GetColour() ) );
 
+	// Set default colour of tiles
+	locationGrid->SetTileDefaultColour( Colour( m_colourGridDefaultColour->GetColour() ) );
+
 	// Set alpha of tiles
 	float tileAlpha = m_sliderTileAlpha->GetValue();
 	locationGrid->SetTileAlpha( tileAlpha/10 );
@@ -1289,11 +1335,12 @@ void LocationSetPropertiesDlg::ApplyGrid()
 	locationGrid->GenerateTileCoordinates();
 
 	// Set Colour Map
-	m_locationSetController->SetColourMap( m_gridColourMapWidget->GetColourMap() );
+	locationGrid->SetColourMap( m_gridColourMapWidget->GetColourMap() );
 
-//	locationGrid->Set
+	// Sets the tile colours
+	locationGrid->SetLocationColours();
+
 	// Set Selected Field
-//	locationGrid->SetSelectedField( m_choiceGridFieldToChart->GetStringSelection().c_str() );
 	locationGrid->SetField( m_choiceGridFieldToChart->GetStringSelection().c_str() );
 	locationGrid->SetSelectedFieldValues( m_gridColourMapWidget->GetFieldValues() );
 
