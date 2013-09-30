@@ -91,9 +91,7 @@ namespace GenGIS
 		std::wstring GetField()											 { return m_field; }
 		bool GetGridChanged()											 { return m_gridChanged; }
 		void SetGridChanged( bool val )									 { m_gridChanged = val; }
-		std::vector<std::wstring> GetMetadataFields() const;
-		std::vector<std::wstring> GetNumericMetadataFields() const;
-		bool GetVisible()												 { return IsVisible(); }
+		std::vector<std::wstring> GetSelectedValues( std::wstring field);
 
 
 		// Functions for accessing 'tile' variables
@@ -101,11 +99,18 @@ namespace GenGIS
 		TILE_FILL GetTileFillMode()      { return m_tileFillMode; }
 		float     GetTileAlpha()         { return m_uniformColourOfTiles.GetAlpha(); }
 		Colour    GetTileUniformColour() { return m_uniformColourOfTiles; }
+		Colour	  GetTileDefaultColour() { return m_defaultColourOfTiles; }
 
 		void ShowTiles( bool status )              { m_showTiles = status; }
 		void SetTileFillMode( TILE_FILL mode )     { m_tileFillMode = mode; }
 		void SetTileAlpha( float alpha )           { m_uniformColourOfTiles.SetAlpha( alpha ); }
 		void SetTileUniformColour( Colour colour ) { m_uniformColourOfTiles = colour; }
+		void SetTileDefaultColour( Colour colour ) { m_defaultColourOfTiles = colour; }
+
+		bool GetVisible()												 { return IsVisible(); }
+		std::vector<TileModelPtr> GetTileModels()						 { return m_tileModels; }
+		void SetLocationColours();
+		void SetColourMap(ColourMapDiscretePtr colourMap)				 { m_gridColourMap = colourMap; }
 
 
 		// Functions for accessing 'border' variables
@@ -148,7 +153,9 @@ namespace GenGIS
 		bool      m_showTiles;
 		TILE_FILL m_tileFillMode;
 		Colour    m_uniformColourOfTiles;
+		Colour	  m_defaultColourOfTiles;
 		std::vector<TileModelPtr> m_tileModels;
+		ColourMapDiscretePtr m_gridColourMap;
 		
 		// Border variables
 		bool   m_showBorders;

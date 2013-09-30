@@ -711,9 +711,9 @@ LocationSetPropertiesLayout::LocationSetPropertiesLayout( wxWindow* parent, wxWi
 	sbSizer12->Add( m_staticline13, 0, wxALL|wxEXPAND, 5 );
 	
 	wxFlexGridSizer* fgSizer7;
-	fgSizer7 = new wxFlexGridSizer( 2, 2, 0, 0 );
+	fgSizer7 = new wxFlexGridSizer( 2, 4, 0, 0 );
 	fgSizer7->SetFlexibleDirection( wxBOTH );
-	fgSizer7->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
+	fgSizer7->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_ALL );
 	
 	m_txtGridFieldToChart = new wxStaticText( m_panel13, wxID_ANY, wxT("Field to chart:"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_txtGridFieldToChart->Wrap( -1 );
@@ -721,6 +721,13 @@ LocationSetPropertiesLayout::LocationSetPropertiesLayout( wxWindow* parent, wxWi
 	
 	m_choiceGridFieldToChart = new wxComboBox( m_panel13, wxID_ANY, wxT("Combo!"), wxDefaultPosition, wxDefaultSize, 0, NULL, wxCB_READONLY|wxCB_SORT ); 
 	fgSizer7->Add( m_choiceGridFieldToChart, 0, wxALL, 5 );
+	
+	m_txtGridDefaultColour = new wxStaticText( m_panel13, wxID_ANY, wxT("Default Colour:"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_txtGridDefaultColour->Wrap( -1 );
+	fgSizer7->Add( m_txtGridDefaultColour, 0, wxALL, 5 );
+	
+	m_colourGridDefaultColour = new wxColourPickerCtrl( m_panel13, wxID_ANY, *wxBLACK, wxDefaultPosition, wxDefaultSize, wxCLRP_DEFAULT_STYLE );
+	fgSizer7->Add( m_colourGridDefaultColour, 1, wxALIGN_CENTER|wxALL, 5 );
 	
 	m_txtGridColourMap = new wxStaticText( m_panel13, wxID_ANY, wxT("Colour map:"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_txtGridColourMap->Wrap( -1 );

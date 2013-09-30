@@ -243,6 +243,8 @@ namespace GenGIS
 			wxStaticLine* m_staticline13;
 			wxStaticText* m_txtGridFieldToChart;
 			wxComboBox* m_choiceGridFieldToChart;
+			wxStaticText* m_txtGridDefaultColour;
+			wxColourPickerCtrl* m_colourGridDefaultColour;
 			wxStaticText* m_txtGridColourMap;
 			wxComboBox* m_choiceGridColourMap;
 			wxScrolledWindow* m_scrolledWindowGridColour;

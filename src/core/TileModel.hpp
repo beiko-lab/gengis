@@ -161,6 +161,17 @@ namespace GenGIS
 		*/
 		void UpdateSequences(std::vector<SequenceLayerPtr> sequences);
 
+		/**
+		* @brief Change the colour of the tile
+		* @param Colour to change the tile
+		*/
+		void SetColour(Colour colour) { m_colour = colour; }
+		
+		/**
+		* @brief Get colour of the tile
+		*/
+		Colour GetColour() { return m_colour; }
+
 	private:
 		/** Serialization. */
 		friend class boost::serialization::access;
@@ -184,6 +195,9 @@ namespace GenGIS
 		
 		/** Flag indicating if this sequence is currently in the active set. */
 		bool m_bActive;
+
+		/** Colour of tile if Mapped colouring is selected. */
+		Colour m_colour;
 	};
 }
 
