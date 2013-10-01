@@ -168,8 +168,6 @@ void LocationSetPropertiesDlg::InitLocationSetColour()
 
 void LocationSetPropertiesDlg::InitLocationGridColour()
 {
-	LocationGridPtr locationGrid = m_locationSetLayer->GetLocationGrid();
-
 	// populate combo box with all fields associated with a location
 	std::vector<std::wstring> fields = m_locationSetController->GetNumericMetadataFields();
 	std::vector<std::wstring>::iterator it;
@@ -184,17 +182,11 @@ void LocationSetPropertiesDlg::InitLocationGridColour()
 	{
 		if(!m_choiceGridFieldToChart->IsEmpty())
 			m_choiceGridFieldToChart->SetValue(m_choiceGridFieldToChart->GetString(0));
-			locationGrid->SetField(m_choiceGridFieldToChart->GetString(0).c_str());
+			m_locationSetLayer->GetLocationGrid()->SetField(m_choiceGridFieldToChart->GetString(0).c_str());
 	}
 
-	
-//	std::wstring field = m_choiceGridFieldToChart->GetStringSelection().c_str();
-//	locationGrid->SetField( m_choiceGridFieldToChart->GetStringSelection().c_str() );
-//	field = m_choiceGridFieldToChart->GetStringSelection().c_str();
-//	m_gridColourMapWidget->SetFieldValues( m_scrolledWindowGridColour , field );
-	// Populate colour map combo box with all available colour maps
-	// I think this is safe to keep m_locationSetController as it is just retrieving colour maps
-	m_gridColourMapWidget->SetColourMap(m_locationSetController->GetColourMap());
+	// Use Location Grid colour map	
+	m_gridColourMapWidget->SetColourMap(m_locationSetLayer->GetLocationGrid()->GetColourMap());
 	m_gridColourMapWidget->PopulateColourMapComboBox();
 
 	// Set field values
@@ -203,42 +195,10 @@ void LocationSetPropertiesDlg::InitLocationGridColour()
 	OnChoiceGridFieldToChartChange(dummy);
 
 	// Set Colour Map
-	locationGrid->SetColourMap( m_gridColourMapWidget->GetColourMap() );
+	m_locationSetLayer->GetLocationGrid()->SetColourMap( m_gridColourMapWidget->GetColourMap() );
 
 	// Sets the tile colours
-	locationGrid->SetLocationColours();
-
-	// uniform colour stuff is probably still junk
-	// Set uniform colour checkbox and colour
-/**
-	if(!m_locationSetController->ModifiedColour())
-	{
-		m_chkUniformColour->SetValue(m_locationSetController->GetUniformColourFlag());
-
-		wxCommandEvent dummy;
-		OnUniformColour(dummy);
-	}
-	else
-	{
-		m_chkUniformColour->Set3StateValue(wxCHK_UNDETERMINED);
-
-		#ifdef WIN32
-		m_colourUniform->Enable(false);
-		#else
-		EnableButton( m_colourUniform, false );
-		#endif
-		m_scrolledWindowColour->Enable(false);
-		m_cboChoiceGridFieldToChart->Enable(false);
-		m_cboColourMap->Enable(false);
-	}
-*/
-/**	m_spinBorderSize->SetValue(m_locationSetController->GetBorderSize());
-
-	Colour borderColour = m_locationSetController->GetBorderColour();
-	m_colourBorders->SetColour(wxColour(borderColour.GetRedInt(), borderColour.GetGreenInt(), borderColour.GetBlueInt()));
-	ReplaceColourPicker( m_colourBorders, borderColour );
-
-*/
+	m_locationSetLayer->GetLocationGrid()->SetLocationColours();
 }
 
 
@@ -1310,6 +1270,10 @@ void LocationSetPropertiesDlg::ApplyGrid()
 	// Set thickness of grid borders
 	locationGrid->SetBorderThickness( m_spinGridBorderThickness->GetValue() );
 
+	// Set Selected Field
+	locationGrid->SetField( m_choiceGridFieldToChart->GetStringSelection().c_str() );
+	locationGrid->SetSelectedFieldValues( m_gridColourMapWidget->GetFieldValues() );
+
 	// Set style of grid borders
 	VisualLine::LINE_STYLE gridBorderStyle;
 	if ( m_cboGridBorderStyle->GetValue() == _T( "Hidden" ) )
@@ -1331,19 +1295,14 @@ void LocationSetPropertiesDlg::ApplyGrid()
 	//Set location set layer
 	locationGrid->SetLocationSetLayer ( m_locationSetLayer);
 	
-	// Generate coordinates
-	locationGrid->GenerateTileCoordinates();
-
 	// Set Colour Map
 	locationGrid->SetColourMap( m_gridColourMapWidget->GetColourMap() );
 
 	// Sets the tile colours
 	locationGrid->SetLocationColours();
 
-	// Set Selected Field
-	locationGrid->SetField( m_choiceGridFieldToChart->GetStringSelection().c_str() );
-	locationGrid->SetSelectedFieldValues( m_gridColourMapWidget->GetFieldValues() );
-
+	// Generate coordinates
+	locationGrid->GenerateTileCoordinates();
 }
 
 
