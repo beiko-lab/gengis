@@ -111,6 +111,7 @@ namespace GenGIS
 		std::vector<TileModelPtr> GetTileModels()						 { return m_tileModels; }
 		void SetLocationColours();
 		void SetColourMap(ColourMapDiscretePtr colourMap)				 { m_gridColourMap = colourMap; }
+		ColourMapDiscretePtr GetColourMap()								 { return m_gridColourMap; }
 
 
 		// Functions for accessing 'border' variables
