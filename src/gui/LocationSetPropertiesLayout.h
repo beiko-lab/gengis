@@ -30,7 +30,6 @@
 #include <wx/notebook.h>
 #include <wx/radiobut.h>
 #include <wx/slider.h>
-#include <wx/choice.h>
 #include <wx/button.h>
 #include <wx/richtext/richtextctrl.h>
 #include <wx/dialog.h>
@@ -247,6 +246,8 @@ namespace GenGIS
 			wxColourPickerCtrl* m_colourGridDefaultColour;
 			wxStaticText* m_txtGridColourMap;
 			wxComboBox* m_choiceGridColourMap;
+			wxStaticText* m_txtDefaultTileOpacity;
+			wxSlider* m_sliderDefaultTileAlpha;
 			wxScrolledWindow* m_scrolledWindowGridColour;
 			wxCheckBox* m_chkShowGridBorders;
 			wxStaticLine* m_staticline101;
@@ -270,7 +271,7 @@ namespace GenGIS
 			wxRadioButton* m_radioAlignToOrigin;
 			
 			wxRadioButton* m_radioAlignToLocation;
-			wxChoice* m_choiceAlignToLocation;
+			wxComboBox* m_choiceAlignToLocation;
 			wxRadioButton* m_radioAlignToCoordinates;
 			wxStaticText* m_txtLatitude;
 			wxStaticText* m_txtMinLatitude;

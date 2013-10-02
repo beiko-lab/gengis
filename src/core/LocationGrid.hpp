@@ -98,12 +98,14 @@ namespace GenGIS
 		bool      GetTileFillStatus()    { return m_showTiles; }
 		TILE_FILL GetTileFillMode()      { return m_tileFillMode; }
 		float     GetTileAlpha()         { return m_uniformColourOfTiles.GetAlpha(); }
+		float	  GetDefaultTileAlpha()  { return m_defaultColourOfTiles.GetAlpha(); }
 		Colour    GetTileUniformColour() { return m_uniformColourOfTiles; }
 		Colour	  GetTileDefaultColour() { return m_defaultColourOfTiles; }
 
 		void ShowTiles( bool status )              { m_showTiles = status; }
 		void SetTileFillMode( TILE_FILL mode )     { m_tileFillMode = mode; }
 		void SetTileAlpha( float alpha )           { m_uniformColourOfTiles.SetAlpha( alpha ); }
+		void SetDefaultTileAlpha( float alpha )		   { m_defaultColourOfTiles.SetAlpha( alpha ); }
 		void SetTileUniformColour( Colour colour ) { m_uniformColourOfTiles = colour; }
 		void SetTileDefaultColour( Colour colour ) { m_defaultColourOfTiles = colour; }
 
