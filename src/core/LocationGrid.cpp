@@ -334,7 +334,8 @@ void LocationGrid::Render()
 
 	//			Colour tileColour  =  m_colourMap->GetInterpolatedColour( field , defaultValue, max);
 				Colour tileColour = m_tileModels[i]->GetColour();
-				glColor4f( tileColour.GetRed(), tileColour.GetGreen(), tileColour.GetBlue(), alphaOfTile );
+			//	glColor4f( tileColour.GetRed(), tileColour.GetGreen(), tileColour.GetBlue(), alphaOfTile );
+				glColor4f( tileColour.GetRed(), tileColour.GetGreen(), tileColour.GetBlue(), tileColour.GetAlpha() );
 				glVertex3f( topLeftCoord.x, m_elevationUsed, topLeftCoord.z );
 				glVertex3f( bottomRightCoord.x, m_elevationUsed, topLeftCoord.z );
 				glVertex3f( bottomRightCoord.x, m_elevationUsed, bottomRightCoord.z );
@@ -442,6 +443,9 @@ void LocationGrid::SetLocationColours()
 			{
 				Log::Inst().Error("(Error) LocationSetController::SetLocationColours(): no colour associated with name.");
 			}
+
+			// set alpha of colour
+			colour.SetAlpha( GetTileAlpha() );
 		}
 
 	//	LocationViewPtr locationView = m_locationLayers.at(i)->GetLocationController()->GetLocationView();

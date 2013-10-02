@@ -85,6 +85,9 @@ namespace GenGIS
 		/** Initialize controls on Grid page. */
 		void InitLocationGrid();
 
+		/** Initialize alignment controls on Grid page. */
+		void InitLocationGridAlignment();
+
 		/** Initialize controls on MetaData page. */
 		void InitMetadata();
 

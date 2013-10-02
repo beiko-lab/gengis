@@ -736,6 +736,13 @@ LocationSetPropertiesLayout::LocationSetPropertiesLayout( wxWindow* parent, wxWi
 	m_choiceGridColourMap = new wxComboBox( m_panel13, wxID_ANY, wxT("Combo!"), wxDefaultPosition, wxDefaultSize, 0, NULL, wxCB_READONLY|wxCB_SORT ); 
 	fgSizer7->Add( m_choiceGridColourMap, 0, wxALL, 5 );
 	
+	m_txtDefaultTileOpacity = new wxStaticText( m_panel13, wxID_ANY, wxT("Default Opacity:"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_txtDefaultTileOpacity->Wrap( -1 );
+	fgSizer7->Add( m_txtDefaultTileOpacity, 0, wxALL, 5 );
+	
+	m_sliderDefaultTileAlpha = new wxSlider( m_panel13, wxID_ANY, 8, 0, 10, wxDefaultPosition, wxDefaultSize, wxSL_HORIZONTAL );
+	fgSizer7->Add( m_sliderDefaultTileAlpha, 0, wxALL, 5 );
+	
 	sbSizer12->Add( fgSizer7, 0, wxEXPAND, 5 );
 	
 	m_scrolledWindowGridColour = new wxScrolledWindow( m_panel13, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxHSCROLL|wxVSCROLL );
@@ -867,10 +874,8 @@ LocationSetPropertiesLayout::LocationSetPropertiesLayout( wxWindow* parent, wxWi
 	m_radioAlignToLocation->SetValue( true ); 
 	fgSizer11->Add( m_radioAlignToLocation, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
 	
-	wxArrayString m_choiceAlignToLocationChoices;
-	m_choiceAlignToLocation = new wxChoice( m_panel12, wxID_ANY, wxDefaultPosition, wxDefaultSize, m_choiceAlignToLocationChoices, 0 );
-	m_choiceAlignToLocation->SetSelection( 0 );
-	fgSizer11->Add( m_choiceAlignToLocation, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
+	m_choiceAlignToLocation = new wxComboBox( m_panel12, wxID_ANY, wxT("Combo!"), wxDefaultPosition, wxDefaultSize, 0, NULL, wxCB_READONLY ); 
+	fgSizer11->Add( m_choiceAlignToLocation, 0, wxALL, 5 );
 	
 	m_radioAlignToCoordinates = new wxRadioButton( m_panel12, wxID_RADIO_GRID_ALIGN_TO_COORDINATES, wxT("Align to coordinates:"), wxDefaultPosition, wxDefaultSize, 0 );
 	fgSizer11->Add( m_radioAlignToCoordinates, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );

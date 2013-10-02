@@ -165,6 +165,25 @@ void LocationSetPropertiesDlg::InitLocationSetColour()
 	ReplaceColourPicker( m_colourBorders, borderColour );
 }
 
+void LocationSetPropertiesDlg::InitLocationGridAlignment()
+{
+// populate all locations for allignment
+	for ( uint i = 0; i < m_locationSetLayer->GetNumLocationLayers(); i++ )
+	{
+		m_choiceAlignToLocation->Append( m_locationSetLayer->GetLocationLayer(i)->GetName() );
+	}
+	
+	// need to save and load selected position somehow
+//	if(!m_locationSetLayer->GetLocationGrid()->GetField().empty())
+		m_choiceAlignToLocation->SetValue(m_locationSetLayer->GetLocationLayer(0)->GetName().c_str() );
+/**	else
+	{
+		if(!m_choiceGridFieldToChart->IsEmpty())
+			m_choiceGridFieldToChart->SetValue(m_choiceGridFieldToChart->GetString(0));
+			m_locationSetLayer->GetLocationGrid()->SetField(m_choiceGridFieldToChart->GetString(0).c_str());
+	}
+*/
+}
 
 void LocationSetPropertiesDlg::InitLocationGridColour()
 {
@@ -519,7 +538,7 @@ void LocationSetPropertiesDlg::InitChart()
 		m_chkChart2D->SetValue(true);
 		m_cboChartType->SetValue(wxT("Pie Chart"));
 	}
-  
+
 	wxCommandEvent dummy;
 	OnProportionalChartSize(dummy);
 	OnChartTypeChanged(dummy);
@@ -539,6 +558,7 @@ void LocationSetPropertiesDlg::InitLocationGrid()
 		m_colourGridDefaultColour->Disable();
 		m_txtTileAlpha->Disable();
 		m_sliderTileAlpha->Disable();
+		m_sliderDefaultTileAlpha->Disable();
 		m_txtGridFieldToChart->Disable();
 		m_choiceGridFieldToChart->Disable();
 		m_txtGridColourMap->Disable();
@@ -579,6 +599,10 @@ void LocationSetPropertiesDlg::InitLocationGrid()
 	// Get alpha of tiles
 	uint alphaTiles = locationGrid->GetTileAlpha()*10;
 	m_sliderTileAlpha->SetValue( alphaTiles );
+
+	// Get alpha of default tiles
+	uint defaultAlphaTiles = locationGrid->GetDefaultTileAlpha()*10;
+	m_sliderDefaultTileAlpha->SetValue( defaultAlphaTiles );
 
 	// Enable/Disable grid border controls
 	bool borderVisibility = locationGrid->GetBorderVisibility();
@@ -679,6 +703,7 @@ void LocationSetPropertiesDlg::InitLocationGrid()
 	locationGrid->GenerateTileCoordinates();
 
 	InitLocationGridColour();
+	InitLocationGridAlignment();
 }
 
 void LocationSetPropertiesDlg::OnRadioColourFill( wxCommandEvent& event )
@@ -716,6 +741,7 @@ void LocationSetPropertiesDlg::OnRadioColourFill( wxCommandEvent& event )
 	m_choiceGridColourMap->Enable( set3 );
 	m_scrolledWindowGridColour->Enable( set3 );
 	m_colourGridDefaultColour->Enable( set3 );
+	m_sliderDefaultTileAlpha->Enable( set3 );
 }
 
 void LocationSetPropertiesDlg::OnRadioLatitudeLongitude( wxCommandEvent& event )
@@ -1259,6 +1285,10 @@ void LocationSetPropertiesDlg::ApplyGrid()
 	// Set alpha of tiles
 	float tileAlpha = m_sliderTileAlpha->GetValue();
 	locationGrid->SetTileAlpha( tileAlpha/10 );
+
+	// Set alpha of default tiles
+	float defaultTileAlpha = m_sliderDefaultTileAlpha->GetValue();
+	locationGrid->SetDefaultTileAlpha( defaultTileAlpha/10 );
 
 	// Set colour of grid borders
 	locationGrid->SetBorderColour( Colour( m_gridBorderColour->GetColour() ) );
