@@ -762,6 +762,7 @@ void LocationSetPropertiesDlg::OnNumberOfDivisions( wxCommandEvent& event )
 {
 	LocationGridPtr locationGrid = m_locationSetLayer->GetLocationGrid();
 	locationGrid -> SetGridChanged( true );
+
 }
 
 void LocationSetPropertiesDlg::OnShowGridBorders( wxCommandEvent& event )
@@ -786,6 +787,9 @@ void LocationSetPropertiesDlg::OnRadioAlignTo( wxCommandEvent& event )
 	bool set1 = true;
 	bool set2 = true;
 
+	// set grid to changed
+	m_locationSetLayer->GetLocationGrid()->SetGridChanged( true );
+
 	if ( wxID == wxID_RADIO_GRID_ALIGN_TO_ORIGIN )
 	{
 		m_locationSetLayer->GetLocationGrid()->SetGridAlignmentStyle( LocationGrid::ORIGIN );
@@ -795,6 +799,29 @@ void LocationSetPropertiesDlg::OnRadioAlignTo( wxCommandEvent& event )
 	else if ( wxID == wxID_RADIO_GRID_ALIGN_TO_LOCATION )
 	{
 		m_locationSetLayer->GetLocationGrid()->SetGridAlignmentStyle( LocationGrid::LOCATIONS );
+		
+		// Calculate the offset
+		std::wstring selectedName = m_choiceAlignToLocation->GetStringSelection().c_str();
+		float yAxisPosition1 = StringTools::ToDouble( m_locationSetLayer->GetLocationLayer( selectedName )
+			->GetLocationController()->GetData()[ StringTools::ToStringW("Latitude") ] );
+		float xAxisPosition1 = StringTools::ToDouble( m_locationSetLayer->GetLocationLayer( selectedName )
+			->GetLocationController()->GetData()[ StringTools::ToStringW("Longitude") ] );
+		//check if latitude/longitude coordinates are being used. if not use easting/northing
+		//if( xAxisPosition != xAxisPosition || yAxisPosition != yAxisPosition || !_finite(xAxisPosition) || !_finite(yAxisPosition) )
+	//	if( true )
+	//	{
+			float xAxisPosition = m_locationSetLayer->GetLocationLayer( selectedName )->GetLocationController()->GetEasting();
+			float yAxisPosition = m_locationSetLayer->GetLocationLayer( selectedName )->GetLocationController()->GetNorthing();
+	//	}
+
+		// convert axis positions to open gl coordinate
+		Point3D locationCoord; //(xAxisPosition,0.5f,yAxisPosition);
+		GeoCoord locationGeo(xAxisPosition,yAxisPosition);
+		App::Inst().GetMapController()->GetMapModel()->GeoToGrid(locationGeo,locationCoord);
+
+		// find which tile this location belongs in
+		int x = m_locationSetLayer->GetLocationGrid()->FindLocationTile( Point2D(locationCoord.x,locationCoord.z) );
+
 		set2 = false;
 	}
 	else if ( wxID == wxID_RADIO_GRID_ALIGN_TO_COORDINATES )
@@ -858,6 +885,7 @@ void LocationSetPropertiesDlg::OnChoiceGridFieldToChartChange( wxCommandEvent& e
 {
 	LocationGridPtr locationGrid = m_locationSetLayer->GetLocationGrid();
 
+	locationGrid->SetGridChanged( true );
 	std::vector<std::wstring> fieldValues;
 	GetSortedGridFieldValues( m_choiceGridFieldToChart->GetValue().c_str(), fieldValues, locationGrid->GetTileModels() );
 	m_gridColourMapWidget->SetFieldValues(m_scrolledWindowGridColour, fieldValues);
@@ -865,6 +893,7 @@ void LocationSetPropertiesDlg::OnChoiceGridFieldToChartChange( wxCommandEvent& e
 
 void LocationSetPropertiesDlg::OnColourMapChange( wxCommandEvent& event ) 
 { 
+	m_locationSetLayer->GetLocationGrid()->SetGridChanged( true );
 	m_colourMapWidget->SetColourMap(); 
 }
 
@@ -1276,6 +1305,9 @@ void LocationSetPropertiesDlg::ApplyGrid()
 	// Set visibility of grid
 	locationGrid->SetVisibility( m_chkShowGrid->GetValue() );
 
+	// Set the number of divisions
+	locationGrid->SetDivisions( m_spinGridDivisions->GetValue() );
+
 	// Set uniform colour of tiles
 	locationGrid->SetTileUniformColour( Colour( m_gridTileColour->GetColour() ) );
 
@@ -1316,23 +1348,33 @@ void LocationSetPropertiesDlg::ApplyGrid()
 		gridBorderStyle = VisualLine::SOLID;
 	locationGrid->SetBorderStyle( gridBorderStyle );
 
-	// Set the number of divisions
-	locationGrid->SetDivisions( m_spinGridDivisions->GetValue() );
+
+
+	
 
 	// Set the grid elevation
 	locationGrid->SetElevation( StringTools::ToDouble( m_textCtrlGridElevation->GetValue().c_str() ) );
 
 	//Set location set layer
 	locationGrid->SetLocationSetLayer ( m_locationSetLayer);
-	
+
+	// Generate coordinates
+	locationGrid->GenerateTileCoordinates();
+
+	// Generate new tile field values
+	if( locationGrid->GetGridChanged() )
+	{
+		wxCommandEvent dummy;
+		OnChoiceGridFieldToChartChange( dummy );
+		OnGridColourMapChange( dummy );
+		locationGrid->SetGridChanged( false );
+	}
+
 	// Set Colour Map
 	locationGrid->SetColourMap( m_gridColourMapWidget->GetColourMap() );
 
 	// Sets the tile colours
 	locationGrid->SetLocationColours();
-
-	// Generate coordinates
-	locationGrid->GenerateTileCoordinates();
 }
 
 

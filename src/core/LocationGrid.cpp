@@ -62,6 +62,7 @@ LocationGrid::LocationGrid() :
 	m_colourOfBorders( 0.0f, 0.0f, 0.0f, 0.3f ),
 	m_thicknessOfBorders( 1 ),
 	m_styleOfBorders( VisualLine::SOLID )
+	
 {
 	// Property of 'Layer' class
 	m_bVisible = false;
@@ -174,6 +175,12 @@ void LocationGrid::GenerateTileCoordinates()
 	double currentX = m_mapOpenGLBoundaries.x;
 	double currentY = m_mapOpenGLBoundaries.y;
 
+//	if( m_gridAlignmentStyle == LOCATIONS || m_gridAlignmentStyle == COORDINATES )
+//	{
+//		double newOriginX = currentX + m_xAxisOffset;
+//		double newOriginY = currentY + m_yAxisOffset;
+//	}
+
 	// Set initial coordinates 'x' and 'y' to the map origin
 	m_xCoordinates.push_back( currentX );
 	m_yCoordinates.push_back( currentY );
@@ -230,7 +237,7 @@ void LocationGrid::GenerateTileCoordinates()
 	{
 		InitTiles();
 		FillTiles();
-		SetGridChanged( false );
+	//	SetGridChanged( false );
 	}
 }
 
@@ -240,12 +247,6 @@ void LocationGrid::Render()
 		return;
 
 	ColourMapDiscretePtr m_colourMap = m_locationSetLayer->GetLocationSetController()->GetColourMap();
-//	double min = *std::min_element( m_selectedFieldValues.begin() , m_selectedFieldValues.end() );
-//	double max = *std::max_element( m_selectedFieldValues.begin() , m_selectedFieldValues.end() );
-	//	differentiates in color between a tile with the smallest available value and a tile with no value
-	// fortifies against the possibility of all locations having the same value for this field
-//	float defaultValue = (min == max)? max/2 : min- (max-min)/m_divisions;
-
 
 	// Colour palette for tiles (temporary)
 	float alphaOfTile = m_uniformColourOfTiles.GetAlpha();
@@ -321,20 +322,7 @@ void LocationGrid::Render()
 				mapModel->LatLongToGrid( topLeftGeo , topLeftCoord );
 				mapModel->LatLongToGrid( bottomRightGeo , bottomRightCoord );
 				
-	//			std::map<std::wstring,std::wstring> datum = m_tileModels[i]->GetData();
-	//			double field = defaultValue;
-	//			std::wstring fieldString = m_tileModels[i]->GetData( m_field );
-	//			if( !fieldString.empty() )
-	//			{
-	//				field = StringTools::ToDouble( fieldString );
-	//			}
-				// deal with possible floating point errors in rounding
-	//			( field > max ) ? field = max : field;
-	//			( field < defaultValue ) ? field = defaultValue : field;		
-
-	//			Colour tileColour  =  m_colourMap->GetInterpolatedColour( field , defaultValue, max);
 				Colour tileColour = m_tileModels[i]->GetColour();
-			//	glColor4f( tileColour.GetRed(), tileColour.GetGreen(), tileColour.GetBlue(), alphaOfTile );
 				glColor4f( tileColour.GetRed(), tileColour.GetGreen(), tileColour.GetBlue(), tileColour.GetAlpha() );
 				glVertex3f( topLeftCoord.x, m_elevationUsed, topLeftCoord.z );
 				glVertex3f( bottomRightCoord.x, m_elevationUsed, topLeftCoord.z );
@@ -441,7 +429,7 @@ void LocationGrid::SetLocationColours()
 
 			if(!m_gridColourMap->GetColour(it->second, colour))
 			{
-				Log::Inst().Error("(Error) LocationSetController::SetLocationColours(): no colour associated with name.");
+				Log::Inst().Error("(Error) LocationGrid::SetLocationColours(): no colour associated with name.");
 			}
 
 			// set alpha of colour
@@ -453,4 +441,68 @@ void LocationGrid::SetLocationColours()
 		m_tileModels.at(i)->SetColour(colour);
 	//	locationView->SetColourModified(false);
 	}
+}
+
+int LocationGrid::FindLocationTile(Point2D loc)
+{
+	// shift x and y to only positive values
+	loc.x = loc.x + m_mapOpenGLBoundaries.dx;
+	loc.y = loc.y + m_mapOpenGLBoundaries.dy;
+
+	int whichColumn = 0;
+	int whichRow = 0;
+	// Determine appropriate tile size according to whether the user
+	// wishes to divide the latitude or longitude 'n' number of times
+	double tileSize;
+	if ( m_divideTilesAlong == LATITUDE )
+		tileSize = m_mapOpenGLBoundaries.Height() / m_divisions;
+	else if ( m_divideTilesAlong == LONGITUDE )
+		tileSize = m_mapOpenGLBoundaries.Width() / m_divisions;
+
+	// calculate tile row
+	if( (loc.x + m_mapOpenGLBoundaries.dx) < m_mapOffset.x )
+	{
+		whichColumn = 0;
+	}
+	else
+	{
+	//	double x = ( loc.x - m_mapOffset.x ) / tileSize;
+		double x = loc.x - m_mapOffset.x;	
+	//	whichColumn = fmod( x , tileSize);
+	//	x = abs(m_mapOpenGLBoundaries.x - x) / tileSize;
+	//	whichColumn = fmod( x , tileSize );
+		float divisions = tileSize * m_divisions;
+		float tileRatio = loc.x / divisions;
+		whichColumn = tileRatio / tileSize;
+		if (whichColumn > 0 )
+			whichColumn++;
+	}
+	// calculate tile column
+	if( (loc.y + m_mapOpenGLBoundaries.dy) < m_mapOffset.y )
+	{
+		whichRow = 0;
+	}
+	else
+	{
+	//	double y = ( loc.y - m_mapOffset.y ) / tileSize;
+		double y = ( loc.y - m_mapOffset.y );
+	//	y = abs(m_mapOpenGLBoundaries.y -y) / tileSize;
+	//	whichRow = fmod( y , tileSize );
+	//	whichRow = fmod( abs(m_mapOpenGLBoundaries.y -y) , tileSize );
+		float divisions = tileSize * m_divisions;
+		float tileRatio = loc.y / divisions;
+		whichRow = tileRatio / tileSize;
+		if (whichRow > 0)
+			whichRow++;
+	}
+	uint divisionIndex = 0;
+	if ( m_divideTilesAlong == LATITUDE )
+		divisionIndex = whichRow * m_divisions + whichColumn+1;
+	else if ( m_divideTilesAlong == LONGITUDE )
+		divisionIndex = whichColumn * m_divisions + whichRow+1;
+	
+	
+	TileModelPtr tile = m_tileModels[divisionIndex];
+
+	return 0;
 }

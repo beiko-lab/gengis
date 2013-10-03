@@ -101,6 +101,10 @@ namespace GenGIS
 		float	  GetDefaultTileAlpha()  { return m_defaultColourOfTiles.GetAlpha(); }
 		Colour    GetTileUniformColour() { return m_uniformColourOfTiles; }
 		Colour	  GetTileDefaultColour() { return m_defaultColourOfTiles; }
+		bool GetVisible()												 { return IsVisible(); }
+		std::vector<TileModelPtr> GetTileModels()						 { return m_tileModels; }
+		ColourMapDiscretePtr GetColourMap()								 { return m_gridColourMap; }
+		Point2D GetMapOffset()											 { return m_mapOffset; }
 
 		void ShowTiles( bool status )              { m_showTiles = status; }
 		void SetTileFillMode( TILE_FILL mode )     { m_tileFillMode = mode; }
@@ -109,12 +113,11 @@ namespace GenGIS
 		void SetTileUniformColour( Colour colour ) { m_uniformColourOfTiles = colour; }
 		void SetTileDefaultColour( Colour colour ) { m_defaultColourOfTiles = colour; }
 
-		bool GetVisible()												 { return IsVisible(); }
-		std::vector<TileModelPtr> GetTileModels()						 { return m_tileModels; }
 		void SetLocationColours();
-		void SetColourMap(ColourMapDiscretePtr colourMap)				 { m_gridColourMap = colourMap; }
-		ColourMapDiscretePtr GetColourMap()								 { return m_gridColourMap; }
+		void SetColourMap( ColourMapDiscretePtr colourMap )				 { m_gridColourMap = colourMap; }
+		void SetMapOffset( Point2D newOffset )							 { m_mapOffset = newOffset; }
 
+		int LocationGrid::FindLocationTile(Point2D loc);
 
 		// Functions for accessing 'border' variables
 		bool   GetBorderVisibility() { return m_showBorders; }
