@@ -804,7 +804,7 @@ LocationSetPropertiesLayout::LocationSetPropertiesLayout( wxWindow* parent, wxWi
 	m_panel13->SetSizer( bSizer431 );
 	m_panel13->Layout();
 	bSizer431->Fit( m_panel13 );
-	m_notebook6->AddPage( m_panel13, wxT("Colour"), true );
+	m_notebook6->AddPage( m_panel13, wxT("Colour"), false );
 	m_panel12 = new wxPanel( m_notebook6, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
 	wxBoxSizer* bSizer451;
 	bSizer451 = new wxBoxSizer( wxVERTICAL );
@@ -893,7 +893,7 @@ LocationSetPropertiesLayout::LocationSetPropertiesLayout( wxWindow* parent, wxWi
 	
 	fgSizer121->Add( m_txtLatitude, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
 	
-	m_txtMinLatitude = new wxStaticText( m_panel12, wxID_ANY, wxT("-180"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_txtMinLatitude = new wxStaticText( m_panel12, wxID_ANY, wxT("-90"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_txtMinLatitude->Wrap( -1 );
 	fgSizer121->Add( m_txtMinLatitude, 0, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5 );
 	
@@ -908,7 +908,7 @@ LocationSetPropertiesLayout::LocationSetPropertiesLayout( wxWindow* parent, wxWi
 	m_txtLatitudeLessEqualThan2->Wrap( -1 );
 	fgSizer121->Add( m_txtLatitudeLessEqualThan2, 0, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5 );
 	
-	m_txtMaxLatitude = new wxStaticText( m_panel12, wxID_ANY, wxT("180"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_txtMaxLatitude = new wxStaticText( m_panel12, wxID_ANY, wxT("90"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_txtMaxLatitude->Wrap( -1 );
 	fgSizer121->Add( m_txtMaxLatitude, 0, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5 );
 	
@@ -918,7 +918,7 @@ LocationSetPropertiesLayout::LocationSetPropertiesLayout( wxWindow* parent, wxWi
 	
 	fgSizer121->Add( m_txtLongitude, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
 	
-	m_txtMinLongitude = new wxStaticText( m_panel12, wxID_ANY, wxT("-90"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_txtMinLongitude = new wxStaticText( m_panel12, wxID_ANY, wxT("-180"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_txtMinLongitude->Wrap( -1 );
 	fgSizer121->Add( m_txtMinLongitude, 0, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5 );
 	
@@ -933,7 +933,7 @@ LocationSetPropertiesLayout::LocationSetPropertiesLayout( wxWindow* parent, wxWi
 	m_txtLongitudeLessEqualThan2->Wrap( -1 );
 	fgSizer121->Add( m_txtLongitudeLessEqualThan2, 0, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5 );
 	
-	m_txtMaxLongitude = new wxStaticText( m_panel12, wxID_ANY, wxT("90"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_txtMaxLongitude = new wxStaticText( m_panel12, wxID_ANY, wxT("180"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_txtMaxLongitude->Wrap( -1 );
 	fgSizer121->Add( m_txtMaxLongitude, 0, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5 );
 	
@@ -990,7 +990,7 @@ LocationSetPropertiesLayout::LocationSetPropertiesLayout( wxWindow* parent, wxWi
 	m_panel12->SetSizer( bSizer451 );
 	m_panel12->Layout();
 	bSizer451->Fit( m_panel12 );
-	m_notebook6->AddPage( m_panel12, wxT("Size and Position"), false );
+	m_notebook6->AddPage( m_panel12, wxT("Size and Position"), true );
 	
 	m_sizerGrid->Add( m_notebook6, 1, wxEXPAND | wxALL, 5 );
 	
@@ -1098,7 +1098,12 @@ LocationSetPropertiesLayout::LocationSetPropertiesLayout( wxWindow* parent, wxWi
 	m_radioBtnLongitude->Connect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( LocationSetPropertiesLayout::OnRadioLatitudeLongitude ), NULL, this );
 	m_radioAlignToOrigin->Connect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( LocationSetPropertiesLayout::OnRadioAlignTo ), NULL, this );
 	m_radioAlignToLocation->Connect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( LocationSetPropertiesLayout::OnRadioAlignTo ), NULL, this );
+	m_choiceAlignToLocation->Connect( wxEVT_COMMAND_COMBOBOX_SELECTED, wxCommandEventHandler( LocationSetPropertiesLayout::OnAlignToLocationChange ), NULL, this );
 	m_radioAlignToCoordinates->Connect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( LocationSetPropertiesLayout::OnRadioAlignTo ), NULL, this );
+	m_textCtrlLatitude->Connect( wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler( LocationSetPropertiesLayout::OnAlignToLocationChange ), NULL, this );
+	m_textCtrlLongitude->Connect( wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler( LocationSetPropertiesLayout::OnAlignToLocationChange ), NULL, this );
+	m_buttonGridPositionReset->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( LocationSetPropertiesLayout::OnCoordinateReset ), NULL, this );
+	m_buttonClickMapToAlign->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( LocationSetPropertiesLayout::OnAlignCoordinateToMouse ), NULL, this );
 	m_chkAutoAdjustElevation->Connect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( LocationSetPropertiesLayout::OnAutoAdjustElevation ), NULL, this );
 	m_btnHelp->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( LocationSetPropertiesLayout::OnHelp ), NULL, this );
 	m_btnOK->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( LocationSetPropertiesLayout::OnOK ), NULL, this );
@@ -1142,7 +1147,12 @@ LocationSetPropertiesLayout::~LocationSetPropertiesLayout()
 	m_radioBtnLongitude->Disconnect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( LocationSetPropertiesLayout::OnRadioLatitudeLongitude ), NULL, this );
 	m_radioAlignToOrigin->Disconnect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( LocationSetPropertiesLayout::OnRadioAlignTo ), NULL, this );
 	m_radioAlignToLocation->Disconnect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( LocationSetPropertiesLayout::OnRadioAlignTo ), NULL, this );
+	m_choiceAlignToLocation->Disconnect( wxEVT_COMMAND_COMBOBOX_SELECTED, wxCommandEventHandler( LocationSetPropertiesLayout::OnAlignToLocationChange ), NULL, this );
 	m_radioAlignToCoordinates->Disconnect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( LocationSetPropertiesLayout::OnRadioAlignTo ), NULL, this );
+	m_textCtrlLatitude->Disconnect( wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler( LocationSetPropertiesLayout::OnAlignToLocationChange ), NULL, this );
+	m_textCtrlLongitude->Disconnect( wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler( LocationSetPropertiesLayout::OnAlignToLocationChange ), NULL, this );
+	m_buttonGridPositionReset->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( LocationSetPropertiesLayout::OnCoordinateReset ), NULL, this );
+	m_buttonClickMapToAlign->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( LocationSetPropertiesLayout::OnAlignCoordinateToMouse ), NULL, this );
 	m_chkAutoAdjustElevation->Disconnect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( LocationSetPropertiesLayout::OnAutoAdjustElevation ), NULL, this );
 	m_btnHelp->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( LocationSetPropertiesLayout::OnHelp ), NULL, this );
 	m_btnOK->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( LocationSetPropertiesLayout::OnOK ), NULL, this );

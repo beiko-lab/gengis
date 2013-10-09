@@ -799,29 +799,6 @@ void LocationSetPropertiesDlg::OnRadioAlignTo( wxCommandEvent& event )
 	else if ( wxID == wxID_RADIO_GRID_ALIGN_TO_LOCATION )
 	{
 		m_locationSetLayer->GetLocationGrid()->SetGridAlignmentStyle( LocationGrid::LOCATIONS );
-		
-		// Calculate the offset
-		std::wstring selectedName = m_choiceAlignToLocation->GetStringSelection().c_str();
-		float yAxisPosition1 = StringTools::ToDouble( m_locationSetLayer->GetLocationLayer( selectedName )
-			->GetLocationController()->GetData()[ StringTools::ToStringW("Latitude") ] );
-		float xAxisPosition1 = StringTools::ToDouble( m_locationSetLayer->GetLocationLayer( selectedName )
-			->GetLocationController()->GetData()[ StringTools::ToStringW("Longitude") ] );
-		//check if latitude/longitude coordinates are being used. if not use easting/northing
-		//if( xAxisPosition != xAxisPosition || yAxisPosition != yAxisPosition || !_finite(xAxisPosition) || !_finite(yAxisPosition) )
-	//	if( true )
-	//	{
-			float xAxisPosition = m_locationSetLayer->GetLocationLayer( selectedName )->GetLocationController()->GetEasting();
-			float yAxisPosition = m_locationSetLayer->GetLocationLayer( selectedName )->GetLocationController()->GetNorthing();
-	//	}
-
-		// convert axis positions to open gl coordinate
-		Point3D locationCoord; //(xAxisPosition,0.5f,yAxisPosition);
-		GeoCoord locationGeo(xAxisPosition,yAxisPosition);
-		App::Inst().GetMapController()->GetMapModel()->GeoToGrid(locationGeo,locationCoord);
-
-		// find which tile this location belongs in
-		int x = m_locationSetLayer->GetLocationGrid()->FindLocationTile( Point2D(locationCoord.x,locationCoord.z) );
-
 		set2 = false;
 	}
 	else if ( wxID == wxID_RADIO_GRID_ALIGN_TO_COORDINATES )
@@ -848,6 +825,12 @@ void LocationSetPropertiesDlg::OnRadioAlignTo( wxCommandEvent& event )
 
 	m_buttonGridPositionReset->Enable( set2 );
 	m_buttonClickMapToAlign->Enable( set2 );
+}
+
+void LocationSetPropertiesDlg::OnAlignToLocationChange( wxCommandEvent& event )
+{
+	// set grid to changed
+	m_locationSetLayer->GetLocationGrid()->SetGridChanged( true );
 }
 
 void LocationSetPropertiesDlg::OnAutoAdjustElevation( wxCommandEvent& event )
@@ -1348,18 +1331,37 @@ void LocationSetPropertiesDlg::ApplyGrid()
 		gridBorderStyle = VisualLine::SOLID;
 	locationGrid->SetBorderStyle( gridBorderStyle );
 
-
-
-	
-
 	// Set the grid elevation
 	locationGrid->SetElevation( StringTools::ToDouble( m_textCtrlGridElevation->GetValue().c_str() ) );
 
 	//Set location set layer
 	locationGrid->SetLocationSetLayer ( m_locationSetLayer);
 
+	// Generate coordinates at origin to reset grid
+	locationGrid->SetMapOffset( Point2D(0,0) );
+
 	// Generate coordinates
 	locationGrid->GenerateTileCoordinates();
+
+	// Set Grid Origin
+	if( locationGrid->GetGridAlignmentStyle() == LocationGrid::LOCATIONS ){
+		locationGrid->SetOriginOffset( m_choiceAlignToLocation->GetStringSelection().c_str() );
+		locationGrid->GenerateTileCoordinates();
+	}
+	else if( locationGrid->GetGridAlignmentStyle() == LocationGrid::COORDINATES )
+	{
+		float latitude = StringTools::ToDouble( m_textCtrlLatitude->GetLineText(0).c_str() );	
+		float longitude = StringTools::ToDouble( m_textCtrlLongitude->GetLineText(0).c_str() );
+		if( !_finite(latitude) || !_finite(longitude) )
+		{
+			Log::Inst().Error("(Error) LocationSetProperties::Apply(): latitude/longitude not convertible to float.");
+		}
+		else
+		{
+			locationGrid->SetOriginOffset( Point2D( longitude, latitude ) );
+			locationGrid->GenerateTileCoordinates();
+		}
+	}
 
 	// Generate new tile field values
 	if( locationGrid->GetGridChanged() )
@@ -1518,4 +1520,37 @@ void LocationSetPropertiesDlg::OnCustomColourButtonClicked( wxMouseEvent& event 
 
 	// Set the wxColourPickerCtrl colour picker (hidden, but its value will be used to change the location colour)
 	customColourButton->GetWXColourPickerCtrl()->SetColour( colourPicker->GetColourData().GetColour() );
+}
+
+void LocationSetPropertiesDlg::OnCoordinateReset(wxCommandEvent &event)
+{
+	// Clear text controls
+	m_textCtrlLatitude->Clear();
+	m_textCtrlLongitude->Clear();
+}
+
+void LocationSetPropertiesDlg::OnAlignCoordinateToMouse(wxCommandEvent &event)
+{
+	// attach viewport mouse event;
+	boost::function<void(wxMouseEvent)> mouseEvent;
+	mouseEvent = boost::bind(&LocationSetPropertiesDlg::SetMouseCoordinates, this, _1);
+	App::Inst().GetViewport()->SignalMouse(mouseEvent);
+	m_locationSetLayer->GetLocationGrid()->SetGridChanged( true );
+}
+
+void LocationSetPropertiesDlg::SetMouseCoordinates(wxMouseEvent& event)
+{
+	if(event.LeftDown())
+	{
+		Point3D point = App::Inst().GetMouseWorldPos();
+
+		// Calls viewports disconnect method for signal.
+		App::Inst().GetViewport()->UnRegisterMouse();
+
+		GeoCoord locationGeo;
+		App::Inst().GetMapController()->GetMapModel()->GridToGeo(point,locationGeo);
+
+		m_textCtrlLatitude->SetValue(wxString::Format(wxT("%f"),locationGeo.northing));
+		m_textCtrlLongitude->SetValue(wxString::Format(wxT("%f"),locationGeo.easting));
+	}
 }

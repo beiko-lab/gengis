@@ -101,7 +101,15 @@ namespace GenGIS
 		*/
 		void SignalMouse(const SigMouse::slot_type& slot)
 		{
-			m_sigMouse.connect(slot);
+			m_mouseConnection = m_sigMouse.connect(slot);
+		}
+
+		/**
+		*	@brief Disconnect method for slot(calllback) from mouse events.
+		*/
+		void UnRegisterMouse()
+		{
+			m_mouseConnection.disconnect();
 		}
 
 		/**
@@ -267,6 +275,8 @@ namespace GenGIS
 
 		/** Signal that mouse have moved within viewport. */
 		SigMouse m_sigMouse;
+
+		boost::signals::connection m_mouseConnection;
 
 		/** Signal that mouse have moved within viewport. */
 		SigMouseWheel m_sigMouseWheel;

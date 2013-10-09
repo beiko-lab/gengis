@@ -138,6 +138,8 @@ void LocationGrid::GenerateTileCoordinates()
 {
 //	if( !IsVisible() )
 //		return;
+	if( !m_gridChanged )
+		return;
 
 	// Real terrain values of DEM map
 	//mapController->GetMapBorders();
@@ -146,6 +148,10 @@ void LocationGrid::GenerateTileCoordinates()
 	MapControllerPtr mapController = App::Inst().GetLayerTreeController()->GetMapLayer(0)->GetMapController();
 	m_mapOpenGLBoundaries = Box2D( -( mapController->GetWidth() / 2 ), -( mapController->GetHeight() / 2 ),
 		( mapController->GetWidth() / 2 ), ( mapController->GetHeight() / 2 ) );
+
+	// Reset Origin if needed
+	if ( GetGridAlignmentStyle() == ORIGIN )
+		SetMapOffset( Point2D(0,0) );
 
 	// Set the grid elevation
 	if ( m_autoAdjustElevation )
@@ -443,11 +449,25 @@ void LocationGrid::SetLocationColours()
 	}
 }
 
-int LocationGrid::FindLocationTile(Point2D loc)
+TileModelPtr LocationGrid::FindLocationTile(Point2D loc)
 {
+	// TESTING
+//	Point3D locationCoord; //(xAxisPosition,0.5f,yAxisPosition);
+//	GeoCoord locationGeo( -71.52,-31.31 );
+//	GeoCoord locationGeo( -71.5,-32.11 );
+//	GeoCoord locationGeo( -70.69,-31.97 );
+//	GeoCoord locationGeo( -70.91,-31.21 );
+//	GeoCoord locationGeo( -70.52,-33.61 );
+//	GeoCoord locationGeo( -66.44,-31.31 );
+//	GeoCoord locationGeo( -66.52,-33.46 );
+
+//	App::Inst().GetMapController()->GetMapModel()->LatLongToGrid(locationGeo,locationCoord);
+//	loc.x = locationCoord.x;
+//	loc.y = locationCoord.z;
+
 	// shift x and y to only positive values
-	loc.x = loc.x + m_mapOpenGLBoundaries.dx;
-	loc.y = loc.y + m_mapOpenGLBoundaries.dy;
+	loc.x = loc.x - m_mapOpenGLBoundaries.x;
+	loc.y = loc.y - m_mapOpenGLBoundaries.y;
 
 	int whichColumn = 0;
 	int whichRow = 0;
@@ -466,16 +486,11 @@ int LocationGrid::FindLocationTile(Point2D loc)
 	}
 	else
 	{
-	//	double x = ( loc.x - m_mapOffset.x ) / tileSize;
-		double x = loc.x - m_mapOffset.x;	
-	//	whichColumn = fmod( x , tileSize);
-	//	x = abs(m_mapOpenGLBoundaries.x - x) / tileSize;
-	//	whichColumn = fmod( x , tileSize );
-		float divisions = tileSize * m_divisions;
-		float tileRatio = loc.x / divisions;
-		whichColumn = tileRatio / tileSize;
-		if (whichColumn > 0 )
-			whichColumn++;
+		double x = loc.x - m_mapOffset.x;
+		float divisions = ceil( m_mapOpenGLBoundaries.Height() / tileSize ); 
+		float tileRatio =  m_mapOpenGLBoundaries.Height() / divisions;
+		// ceiling5
+		whichColumn = x / tileRatio;;
 	}
 	// calculate tile column
 	if( (loc.y + m_mapOpenGLBoundaries.dy) < m_mapOffset.y )
@@ -486,23 +501,80 @@ int LocationGrid::FindLocationTile(Point2D loc)
 	{
 	//	double y = ( loc.y - m_mapOffset.y ) / tileSize;
 		double y = ( loc.y - m_mapOffset.y );
-	//	y = abs(m_mapOpenGLBoundaries.y -y) / tileSize;
-	//	whichRow = fmod( y , tileSize );
-	//	whichRow = fmod( abs(m_mapOpenGLBoundaries.y -y) , tileSize );
-		float divisions = tileSize * m_divisions;
-		float tileRatio = loc.y / divisions;
-		whichRow = tileRatio / tileSize;
-		if (whichRow > 0)
-			whichRow++;
+		float divisions = ceil( m_mapOpenGLBoundaries.Width() / tileSize ); 
+		float tileRatio = m_mapOpenGLBoundaries.Width() / divisions;
+		whichRow = y / tileRatio ;
 	}
 	uint divisionIndex = 0;
 	if ( m_divideTilesAlong == LATITUDE )
-		divisionIndex = whichRow * m_divisions + whichColumn+1;
+	{
+		float divisions = floor( m_mapOpenGLBoundaries.Width() / tileSize ); 
+		divisionIndex = whichRow * (divisions) + whichRow + whichColumn;
+	}
 	else if ( m_divideTilesAlong == LONGITUDE )
-		divisionIndex = whichColumn * m_divisions + whichRow+1;
-	
-	
+		divisionIndex = whichColumn * m_divisions + whichRow + whichColumn;
+
+
 	TileModelPtr tile = m_tileModels[divisionIndex];
 
-	return 0;
+	return tile;
+}
+
+void LocationGrid::SetOriginOffset( std::wstring selectedName )
+{
+	if( GetGridAlignmentStyle() == LOCATIONS )
+	{
+	//	std::wstring selectedName = m_choiceAlignToLocation->GetStringSelection().c_str();
+		float xAxisPosition = m_locationSetLayer->GetLocationLayer( selectedName )->GetLocationController()->GetEasting();
+		float yAxisPosition = m_locationSetLayer->GetLocationLayer( selectedName )->GetLocationController()->GetNorthing();
+
+		//convert axis positions to open gl coordinate
+		Point3D locationCoord;
+		GeoCoord locationGeo(xAxisPosition,yAxisPosition);
+		App::Inst().GetMapController()->GetMapModel()->GeoToGrid(locationGeo,locationCoord);
+
+		//find which tile this location belongs in
+		TileModelPtr tile = FindLocationTile( Point2D(locationCoord.x,locationCoord.z) );
+
+		GeoCoord tileOrigin( tile->GetTopLeft().first, tile->GetTopLeft().second ); 
+		Point3D tileCoord;
+		App::Inst().GetMapController()->GetMapModel()->LatLongToGrid( tileOrigin, tileCoord );
+
+		float xOffset =  locationCoord.x - tileCoord.x;
+		float yOffset =  locationCoord.z - tileCoord.z;
+
+		SetMapOffset( Point2D(xOffset,yOffset) );
+	}
+}
+
+void LocationGrid::SetOriginOffset( Point2D coord )
+{
+	if( GetGridAlignmentStyle() == COORDINATES )
+	{
+		float xAxisPosition = coord.x;
+		float yAxisPosition = coord.y;
+
+		//convert axis positions to open gl coordinate
+		Point3D locationCoord;
+		GeoCoord locationGeo(xAxisPosition,yAxisPosition);
+		App::Inst().GetMapController()->GetMapModel()->LatLongToGrid(locationGeo,locationCoord);
+
+		// handle boundries
+		(locationCoord.z > m_mapOpenGLBoundaries.dy)? m_mapOpenGLBoundaries.dy : locationCoord.z;
+		(locationCoord.x > m_mapOpenGLBoundaries.dx)? m_mapOpenGLBoundaries.dx : locationCoord.x;
+		(locationCoord.z < m_mapOpenGLBoundaries.y)? m_mapOpenGLBoundaries.y : locationCoord.z;
+		(locationCoord.x < m_mapOpenGLBoundaries.x)? m_mapOpenGLBoundaries.x : locationCoord.x;
+
+		//find which tile this location belongs in
+		TileModelPtr tile = FindLocationTile( Point2D(locationCoord.x,locationCoord.z) );
+
+		GeoCoord tileOrigin( tile->GetTopLeft().first, tile->GetTopLeft().second ); 
+		Point3D tileCoord;
+		App::Inst().GetMapController()->GetMapModel()->LatLongToGrid( tileOrigin, tileCoord );
+
+		float xOffset =  locationCoord.x - tileCoord.x;
+		float yOffset =  locationCoord.z - tileCoord.z;
+
+		SetMapOffset( Point2D(xOffset,yOffset) );
+	}
 }

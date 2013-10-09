@@ -185,6 +185,9 @@ namespace GenGIS
 		/** Handler for 'Align to' radio controls (origin, location, or coordinates). */
 		void OnRadioAlignTo( wxCommandEvent& event );
 
+		/** Handler for 'Aling to Locaiton' combo box. */
+		void OnAlignToLocationChange( wxCommandEvent& event);
+
 		/** Auto adjust to map elevation check box handler. */
 		void OnAutoAdjustElevation( wxCommandEvent& event );
 
@@ -226,6 +229,14 @@ namespace GenGIS
 
 		/** Sort field values either in lexigraphically or numerically. */
 		void SortFieldValues(std::vector<std::wstring>& fieldValues);
+
+		/** Reset tile coordinates and tiles. */
+		void OnCoordinateReset(wxCommandEvent &event);
+
+		/** Align tiles to mouse click. */
+		void OnAlignCoordinateToMouse(wxCommandEvent &event);
+
+		void SetMouseCoordinates(wxMouseEvent& event); 
 
 		void OnHelp( wxCommandEvent& event )
 		{

@@ -117,7 +117,10 @@ namespace GenGIS
 		void SetColourMap( ColourMapDiscretePtr colourMap )				 { m_gridColourMap = colourMap; }
 		void SetMapOffset( Point2D newOffset )							 { m_mapOffset = newOffset; }
 
-		int LocationGrid::FindLocationTile(Point2D loc);
+
+		TileModelPtr FindLocationTile(Point2D loc);
+		void SetOriginOffset( std::wstring selectedName );
+		void SetOriginOffset( Point2D coord );
 
 		// Functions for accessing 'border' variables
 		bool   GetBorderVisibility() { return m_showBorders; }

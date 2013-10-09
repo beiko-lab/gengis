@@ -6414,7 +6414,7 @@
                                             <object class="notebookpage" expanded="1">
                                                 <property name="bitmap"></property>
                                                 <property name="label">Colour</property>
-                                                <property name="select">1</property>
+                                                <property name="select">0</property>
                                                 <object class="wxPanel" expanded="1">
                                                     <property name="bg"></property>
                                                     <property name="context_help"></property>
@@ -8135,7 +8135,7 @@
                                             <object class="notebookpage" expanded="1">
                                                 <property name="bitmap"></property>
                                                 <property name="label">Size and Position</property>
-                                                <property name="select">0</property>
+                                                <property name="select">1</property>
                                                 <object class="wxPanel" expanded="1">
                                                     <property name="bg"></property>
                                                     <property name="context_help"></property>
@@ -8863,7 +8863,7 @@
                                                                                 <property name="window_name"></property>
                                                                                 <property name="window_style"></property>
                                                                                 <event name="OnChar"></event>
-                                                                                <event name="OnCombobox"></event>
+                                                                                <event name="OnCombobox">OnAlignToLocationChange</event>
                                                                                 <event name="OnEnterWindow"></event>
                                                                                 <event name="OnEraseBackground"></event>
                                                                                 <event name="OnKeyDown"></event>
@@ -9034,7 +9034,7 @@
                                                                                 <property name="font"></property>
                                                                                 <property name="hidden">0</property>
                                                                                 <property name="id">wxID_ANY</property>
-                                                                                <property name="label">-180</property>
+                                                                                <property name="label">-90</property>
                                                                                 <property name="maximum_size"></property>
                                                                                 <property name="minimum_size"></property>
                                                                                 <property name="name">m_txtMinLatitude</property>
@@ -9186,7 +9186,7 @@
                                                                                 <event name="OnRightUp"></event>
                                                                                 <event name="OnSetFocus"></event>
                                                                                 <event name="OnSize"></event>
-                                                                                <event name="OnText"></event>
+                                                                                <event name="OnText">OnAlignToLocationChange</event>
                                                                                 <event name="OnTextEnter"></event>
                                                                                 <event name="OnTextMaxLen"></event>
                                                                                 <event name="OnTextURL"></event>
@@ -9262,7 +9262,7 @@
                                                                                 <property name="font"></property>
                                                                                 <property name="hidden">0</property>
                                                                                 <property name="id">wxID_ANY</property>
-                                                                                <property name="label">180</property>
+                                                                                <property name="label">90</property>
                                                                                 <property name="maximum_size"></property>
                                                                                 <property name="minimum_size"></property>
                                                                                 <property name="name">m_txtMaxLatitude</property>
@@ -9374,7 +9374,7 @@
                                                                                 <property name="font"></property>
                                                                                 <property name="hidden">0</property>
                                                                                 <property name="id">wxID_ANY</property>
-                                                                                <property name="label">-90</property>
+                                                                                <property name="label">-180</property>
                                                                                 <property name="maximum_size"></property>
                                                                                 <property name="minimum_size"></property>
                                                                                 <property name="name">m_txtMinLongitude</property>
@@ -9526,7 +9526,7 @@
                                                                                 <event name="OnRightUp"></event>
                                                                                 <event name="OnSetFocus"></event>
                                                                                 <event name="OnSize"></event>
-                                                                                <event name="OnText"></event>
+                                                                                <event name="OnText">OnAlignToLocationChange</event>
                                                                                 <event name="OnTextEnter"></event>
                                                                                 <event name="OnTextMaxLen"></event>
                                                                                 <event name="OnTextURL"></event>
@@ -9602,7 +9602,7 @@
                                                                                 <property name="font"></property>
                                                                                 <property name="hidden">0</property>
                                                                                 <property name="id">wxID_ANY</property>
-                                                                                <property name="label">90</property>
+                                                                                <property name="label">180</property>
                                                                                 <property name="maximum_size"></property>
                                                                                 <property name="minimum_size"></property>
                                                                                 <property name="name">m_txtMaxLongitude</property>
@@ -9694,7 +9694,7 @@
                                                                                 <property name="window_extra_style"></property>
                                                                                 <property name="window_name"></property>
                                                                                 <property name="window_style"></property>
-                                                                                <event name="OnButtonClick"></event>
+                                                                                <event name="OnButtonClick">OnCoordinateReset</event>
                                                                                 <event name="OnChar"></event>
                                                                                 <event name="OnEnterWindow"></event>
                                                                                 <event name="OnEraseBackground"></event>
@@ -9751,7 +9751,7 @@
                                                                                 <property name="window_extra_style"></property>
                                                                                 <property name="window_name"></property>
                                                                                 <property name="window_style"></property>
-                                                                                <event name="OnButtonClick"></event>
+                                                                                <event name="OnButtonClick">OnAlignCoordinateToMouse</event>
                                                                                 <event name="OnChar"></event>
                                                                                 <event name="OnEnterWindow"></event>
                                                                                 <event name="OnEraseBackground"></event>
