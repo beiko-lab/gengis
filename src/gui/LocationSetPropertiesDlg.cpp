@@ -639,6 +639,9 @@ void LocationSetPropertiesDlg::InitLocationGrid()
 	else if ( gridBorderStyle == VisualLine::HIDDEN )
 		m_cboGridBorderStyle->SetValue( _T("Hidden") );	
 
+	// Set tile field combination
+	m_tileFieldChoice->SetValue(_T("Average"));
+
 	// Get the number of divisions
 	m_spinGridDivisions->SetValue( locationGrid->GetNumberOfDivisions() );
 
@@ -1369,6 +1372,7 @@ void LocationSetPropertiesDlg::ApplyGrid()
 		wxCommandEvent dummy;
 		OnChoiceGridFieldToChartChange( dummy );
 		OnGridColourMapChange( dummy );
+	//	m_gridColourMapWidget->SetFieldValues( m_scrolledWindowGridColour, locationGrid-> );
 		locationGrid->SetGridChanged( false );
 	}
 
@@ -1553,4 +1557,22 @@ void LocationSetPropertiesDlg::SetMouseCoordinates(wxMouseEvent& event)
 		m_textCtrlLatitude->SetValue(wxString::Format(wxT("%f"),locationGeo.northing));
 		m_textCtrlLongitude->SetValue(wxString::Format(wxT("%f"),locationGeo.easting));
 	}
+}
+
+void LocationSetPropertiesDlg::OnTileFieldChoiceChange(wxCommandEvent& event)
+{
+	std::wstring str = m_tileFieldChoice->GetValue();
+	std::wstring nex = _T("Standard Deviation");
+	if(str == nex)
+		str = _T("blargddasd");
+	// set grid to changed
+	m_locationSetLayer->GetLocationGrid()->SetGridChanged( true );
+	// Set default tile field combination
+	if( m_tileFieldChoice->GetValue() == _T("Average") )
+		m_locationSetLayer->GetLocationGrid()->SetCombinationMethod( TileModel::DATA_COMBINE::AVERAGE );
+	else if( m_tileFieldChoice->GetValue() == _T("Standard Deviation") )
+		m_locationSetLayer->GetLocationGrid()->SetCombinationMethod( TileModel::DATA_COMBINE::STDEV );
+	else// if( m_tileFieldChoice->GetValue() == _T("Gini Index") )
+		m_locationSetLayer->GetLocationGrid()->SetCombinationMethod( TileModel::DATA_COMBINE::GINI );
+
 }

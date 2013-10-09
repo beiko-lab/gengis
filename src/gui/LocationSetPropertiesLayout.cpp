@@ -166,7 +166,7 @@ LocationSetPropertiesLayout::LocationSetPropertiesLayout( wxWindow* parent, wxWi
 	m_pnlLocationSetColour->SetSizer( m_sizerColourVert );
 	m_pnlLocationSetColour->Layout();
 	m_sizerColourVert->Fit( m_pnlLocationSetColour );
-	m_notebookLocationSet->AddPage( m_pnlLocationSetColour, wxT("Colour"), true );
+	m_notebookLocationSet->AddPage( m_pnlLocationSetColour, wxT("Colour"), false );
 	m_pnlLocationSetShape = new wxPanel( m_notebookLocationSet, ID_PANEL_LOCATION_SET_SHAPE, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL, wxT("Shape") );
 	wxBoxSizer* m_sizerShapeVert;
 	m_sizerShapeVert = new wxBoxSizer( wxVERTICAL );
@@ -355,7 +355,7 @@ LocationSetPropertiesLayout::LocationSetPropertiesLayout( wxWindow* parent, wxWi
 	m_pnlLocationSetLabel->SetSizer( m_sizerLabelVert );
 	m_pnlLocationSetLabel->Layout();
 	m_sizerLabelVert->Fit( m_pnlLocationSetLabel );
-	m_notebookLocationSet->AddPage( m_pnlLocationSetLabel, wxT("Label"), false );
+	m_notebookLocationSet->AddPage( m_pnlLocationSetLabel, wxT("Label"), true );
 	
 	m_sizerLocations->Add( m_notebookLocationSet, 1, wxEXPAND | wxALL, 5 );
 	
@@ -987,10 +987,32 @@ LocationSetPropertiesLayout::LocationSetPropertiesLayout( wxWindow* parent, wxWi
 	
 	bSizer451->Add( m_sizerGridPositionProperties, 0, wxEXPAND, 5 );
 	
+	wxStaticBoxSizer* m_sizerTileFields;
+	m_sizerTileFields = new wxStaticBoxSizer( new wxStaticBox( m_panel12, wxID_ANY, wxT("Tile Fields") ), wxVERTICAL );
+	
+	wxGridBagSizer* gbSizer1;
+	gbSizer1 = new wxGridBagSizer( 0, 0 );
+	gbSizer1->SetFlexibleDirection( wxBOTH );
+	gbSizer1->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
+	
+	m_txtTileFieldChoice = new wxStaticText( m_panel12, wxID_ANY, wxT("Tile field combination method:"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_txtTileFieldChoice->Wrap( -1 );
+	gbSizer1->Add( m_txtTileFieldChoice, wxGBPosition( 0, 0 ), wxGBSpan( 1, 1 ), wxALL, 5 );
+	
+	m_tileFieldChoice = new wxComboBox( m_panel12, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, NULL, wxCB_READONLY );
+	m_tileFieldChoice->Append( wxT("Average") );
+	m_tileFieldChoice->Append( wxT("Standard Deviation") );
+	m_tileFieldChoice->Append( wxT("Gini Index") );
+	gbSizer1->Add( m_tileFieldChoice, wxGBPosition( 0, 1 ), wxGBSpan( 1, 1 ), wxALL, 5 );
+	
+	m_sizerTileFields->Add( gbSizer1, 1, wxEXPAND, 5 );
+	
+	bSizer451->Add( m_sizerTileFields, 0, wxEXPAND, 5 );
+	
 	m_panel12->SetSizer( bSizer451 );
 	m_panel12->Layout();
 	bSizer451->Fit( m_panel12 );
-	m_notebook6->AddPage( m_panel12, wxT("Size and Position"), true );
+	m_notebook6->AddPage( m_panel12, wxT("Custom"), true );
 	
 	m_sizerGrid->Add( m_notebook6, 1, wxEXPAND | wxALL, 5 );
 	
@@ -1105,6 +1127,7 @@ LocationSetPropertiesLayout::LocationSetPropertiesLayout( wxWindow* parent, wxWi
 	m_buttonGridPositionReset->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( LocationSetPropertiesLayout::OnCoordinateReset ), NULL, this );
 	m_buttonClickMapToAlign->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( LocationSetPropertiesLayout::OnAlignCoordinateToMouse ), NULL, this );
 	m_chkAutoAdjustElevation->Connect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( LocationSetPropertiesLayout::OnAutoAdjustElevation ), NULL, this );
+	m_tileFieldChoice->Connect( wxEVT_COMMAND_COMBOBOX_SELECTED, wxCommandEventHandler( LocationSetPropertiesLayout::OnTileFieldChoiceChange ), NULL, this );
 	m_btnHelp->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( LocationSetPropertiesLayout::OnHelp ), NULL, this );
 	m_btnOK->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( LocationSetPropertiesLayout::OnOK ), NULL, this );
 	m_btnApply->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( LocationSetPropertiesLayout::OnApply ), NULL, this );
@@ -1154,6 +1177,7 @@ LocationSetPropertiesLayout::~LocationSetPropertiesLayout()
 	m_buttonGridPositionReset->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( LocationSetPropertiesLayout::OnCoordinateReset ), NULL, this );
 	m_buttonClickMapToAlign->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( LocationSetPropertiesLayout::OnAlignCoordinateToMouse ), NULL, this );
 	m_chkAutoAdjustElevation->Disconnect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( LocationSetPropertiesLayout::OnAutoAdjustElevation ), NULL, this );
+	m_tileFieldChoice->Disconnect( wxEVT_COMMAND_COMBOBOX_SELECTED, wxCommandEventHandler( LocationSetPropertiesLayout::OnTileFieldChoiceChange ), NULL, this );
 	m_btnHelp->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( LocationSetPropertiesLayout::OnHelp ), NULL, this );
 	m_btnOK->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( LocationSetPropertiesLayout::OnOK ), NULL, this );
 	m_btnApply->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( LocationSetPropertiesLayout::OnApply ), NULL, this );

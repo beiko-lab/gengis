@@ -31,6 +31,8 @@
 #include "../utils/StringTools.hpp"
 #include "../utils/Colour.hpp"
 
+#include <numeric>
+
 class GenGIS::TileModel;
 namespace boost
 {
@@ -49,6 +51,9 @@ namespace GenGIS
 	class TileModel : public LocationModel
 	{
 	public:
+
+		enum DATA_COMBINE { AVERAGE, STDEV, GINI };
+		
 		/** 
 		* @brief Constuctor.
 		* @param siteId Unique id for location site.
@@ -66,7 +71,8 @@ namespace GenGIS
 			m_topLeft(topLeft),
 			m_bottomRight(bottomRight),
 			numLocations(0),
-			m_bActive(true)
+			m_bActive(true),
+			m_combinationMethod( AVERAGE )
 		{
 		}
 
@@ -135,6 +141,10 @@ namespace GenGIS
 		*/
 		void AddLocationLayer(LocationLayerPtr location);
 		
+		/**
+		* @brief check if field exists in tile
+		* @param field to search for
+		*/
 		int FindField(std::wstring field)
 		{
 			std::map<std::wstring,std::wstring> data = GetData();
@@ -172,6 +182,22 @@ namespace GenGIS
 		*/
 		Colour GetColour() { return m_colour; }
 
+		/**
+		* @brief Combine tile data fields as specified by the user.
+		*/
+		void CombineData();
+	
+		/**
+		* @brief Set combination method for tile fields.
+		* @param Combination method to be set to.
+		*/
+ 		void SetCombinationMethod(DATA_COMBINE dat) { m_combinationMethod = dat; }
+
+		/**
+		* @brief Get combination method for tile fields.
+		*/
+		DATA_COMBINE GetCombinationMethod() { return m_combinationMethod; }
+
 	private:
 		/** Serialization. */
 		friend class boost::serialization::access;
@@ -198,6 +224,9 @@ namespace GenGIS
 
 		/** Colour of tile if Mapped colouring is selected. */
 		Colour m_colour;
+
+		/** Method for data combination of tile. */
+		DATA_COMBINE m_combinationMethod;
 	};
 }
 

@@ -56,6 +56,7 @@ LocationGrid::LocationGrid() :
 	m_tileFillMode( UNIFORM ),
 	m_uniformColourOfTiles( 0.0f, 0.5f, 0.0f, 0.3f ),
 	m_defaultColourOfTiles( 0.5f, 0.5f, 0.5f, 0.3f ),
+	m_combination ( TileModel::DATA_COMBINE::AVERAGE ),
 
 	// Border
 	m_showBorders( true ),
@@ -96,6 +97,7 @@ void LocationGrid::serialize(Archive & ar, const unsigned int version)
 	ar & m_gridChanged;			 // bool
 	ar & m_field;				 // std::wstring
 	ar & m_selectedFieldValues;	 // std::vector<double>
+	ar & m_combination;			 // TileModel::DATA_COMBINE
 
 	// Tile variables
 	ar & m_showTiles;            // bool
@@ -371,6 +373,7 @@ void LocationGrid::InitTiles()
 		}
 		row2++;
 	}
+	AssertCombinationMethod();
 }
 
 void LocationGrid::FillTiles()
@@ -401,6 +404,11 @@ void LocationGrid::FillTiles()
 				break;
 			}
 		}
+	}
+	// now set tile true values for every tile
+	for ( uint j = 0; j < m_tileModels.size(); j++)
+	{
+		m_tileModels[j]->CombineData();
 	}
 }
 
@@ -442,10 +450,7 @@ void LocationGrid::SetLocationColours()
 			colour.SetAlpha( GetTileAlpha() );
 		}
 
-	//	LocationViewPtr locationView = m_locationLayers.at(i)->GetLocationController()->GetLocationView();
-	//	locationView->SetColour(colour);
 		m_tileModels.at(i)->SetColour(colour);
-	//	locationView->SetColourModified(false);
 	}
 }
 
@@ -577,4 +582,17 @@ void LocationGrid::SetOriginOffset( Point2D coord )
 
 		SetMapOffset( Point2D(xOffset,yOffset) );
 	}
+}
+
+void LocationGrid::AssertCombinationMethod()
+{
+	for(uint i = 0; i < m_tileModels.size(); i++)
+	{
+		m_tileModels[i]->SetCombinationMethod(m_combination);
+	}
+}
+
+TileModel::DATA_COMBINE LocationGrid::GetCombinationMethod()
+{
+	return m_tileModels[0]->GetCombinationMethod();
 }

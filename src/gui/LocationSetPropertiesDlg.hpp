@@ -236,7 +236,11 @@ namespace GenGIS
 		/** Align tiles to mouse click. */
 		void OnAlignCoordinateToMouse(wxCommandEvent &event);
 
+		/** Set lat/long coordinates for Mouse position on Viewport. */
 		void SetMouseCoordinates(wxMouseEvent& event); 
+
+		/** Change the way tile field values are combined. */
+		void OnTileFieldChoiceChange(wxCommandEvent& event);
 
 		void OnHelp( wxCommandEvent& event )
 		{
