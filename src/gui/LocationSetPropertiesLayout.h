@@ -334,6 +334,9 @@ namespace GenGIS
 			virtual void OnNumberOfDivisions( wxCommandEvent& event ) { event.Skip(); }
 			virtual void OnRadioLatitudeLongitude( wxCommandEvent& event ) { event.Skip(); }
 			virtual void OnRadioAlignTo( wxCommandEvent& event ) { event.Skip(); }
+			virtual void OnAlignToLocationChange( wxCommandEvent& event ) { event.Skip(); }
+			virtual void OnCoordinateReset( wxCommandEvent& event ) { event.Skip(); }
+			virtual void OnAlignCoordinateToMouse( wxCommandEvent& event ) { event.Skip(); }
 			virtual void OnAutoAdjustElevation( wxCommandEvent& event ) { event.Skip(); }
 			virtual void OnHelp( wxCommandEvent& event ) { event.Skip(); }
 			virtual void OnOK( wxCommandEvent& event ) { event.Skip(); }
