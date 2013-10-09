@@ -29,6 +29,7 @@
 
 #include "../utils/Colour.hpp"
 #include "../utils/StringTools.hpp"
+#include "../core/TileModel.hpp"
 //#include "../utils/ColourMapDiscrete.hpp"
 
 namespace GenGIS
@@ -92,6 +93,9 @@ namespace GenGIS
 		bool GetGridChanged()											 { return m_gridChanged; }
 		void SetGridChanged( bool val )									 { m_gridChanged = val; }
 		std::vector<std::wstring> GetSelectedValues( std::wstring field);
+		void SetCombinationMethod( TileModel::DATA_COMBINE combination) { m_combination = combination; }
+		void AssertCombinationMethod();
+		TileModel::DATA_COMBINE GetCombinationMethod();
 
 
 		// Functions for accessing 'tile' variables
@@ -157,6 +161,7 @@ namespace GenGIS
 		std::vector<double> m_selectedFieldValues;
 		std::wstring m_field;
 		bool		 m_gridChanged;
+		TileModel::DATA_COMBINE m_combination;
 
 		// Tile variables
 		bool      m_showTiles;

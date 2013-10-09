@@ -31,6 +31,7 @@
 #include <wx/radiobut.h>
 #include <wx/slider.h>
 #include <wx/button.h>
+#include <wx/gbsizer.h>
 #include <wx/richtext/richtextctrl.h>
 #include <wx/dialog.h>
 
@@ -293,6 +294,8 @@ namespace GenGIS
 			wxTextCtrl* m_textCtrlGridElevation;
 			wxRadioButton* m_radioVerticalElevationDegrees;
 			wxRadioButton* m_radioVerticalElevationPixels;
+			wxStaticText* m_txtTileFieldChoice;
+			wxComboBox* m_tileFieldChoice;
 			wxCheckBox* m_chkShowGrid;
 			wxPanel* m_pnlMetadata;
 			wxStaticText* m_lblLayerSource;
@@ -338,6 +341,7 @@ namespace GenGIS
 			virtual void OnCoordinateReset( wxCommandEvent& event ) { event.Skip(); }
 			virtual void OnAlignCoordinateToMouse( wxCommandEvent& event ) { event.Skip(); }
 			virtual void OnAutoAdjustElevation( wxCommandEvent& event ) { event.Skip(); }
+			virtual void OnTileFieldChoiceChange( wxCommandEvent& event ) { event.Skip(); }
 			virtual void OnHelp( wxCommandEvent& event ) { event.Skip(); }
 			virtual void OnOK( wxCommandEvent& event ) { event.Skip(); }
 			virtual void OnApply( wxCommandEvent& event ) { event.Skip(); }

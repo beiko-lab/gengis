@@ -49,6 +49,7 @@ void TileModel::serialize(Archive & ar, const unsigned int version)
 	ar & numLocations;  // uint
 	ar & m_bActive;     // bool
 	ar & m_colour;		// Colour
+	ar & m_combinationMethod; // DATA_COMBINE
 }
 template void TileModel::serialize<boost::archive::text_woarchive>(boost::archive::text_woarchive& ar, const unsigned int version); 
 template void TileModel::serialize<boost::archive::text_wiarchive>(boost::archive::text_wiarchive& ar, const unsigned int version);
@@ -67,7 +68,7 @@ void TileModel::UpdateData(std::map<std::wstring,std::wstring> newData)
 			std::wstring curValue = GetData( field );
 			if(StringTools::IsDecimalNumber( value ))
 			{
-				curValue =  StringTools::ToStringW( ( StringTools::ToInt(curValue) + StringTools::ToInt(value) ) / 2 );
+				curValue = curValue + StringTools::ToStringW(" ") + value;
 				AddData(field, curValue);
 			}
 		}
@@ -76,6 +77,7 @@ void TileModel::UpdateData(std::map<std::wstring,std::wstring> newData)
 			AddData(field,value);
 		}
 	}
+
 }
 
 void TileModel::UpdateSequences(std::vector<SequenceLayerPtr> sequences)
@@ -83,5 +85,38 @@ void TileModel::UpdateSequences(std::vector<SequenceLayerPtr> sequences)
 	for(uint i = 0; i < sequences.size(); i++)
 	{
 		AddSequence(sequences[i]->GetSequenceController()->GetSequenceModel());
+	}
+}
+
+void TileModel::CombineData()
+{
+	// for every field in data combine as user specified
+	std::map<std::wstring,std::wstring> data = GetData();
+	std::map<std::wstring,std::wstring>::iterator dataIter;
+	for(dataIter = data.begin(); dataIter != data.end(); ++dataIter)
+	{
+		std::wstring field = dataIter->first;
+		std::wstring value = dataIter->second;
+
+		std::vector<std::string> seperatedValue;
+		std::vector<double> values;
+		double result;
+		boost::split(seperatedValue,value,boost::is_any_of(" "),boost::token_compress_on);
+		// convert string values to double values. Non numeric already parsed out
+		for( uint i = 0; i < seperatedValue.size(); i++)
+		{	
+			values.push_back(StringTools::ToDouble(seperatedValue[i]));
+		}
+		// MATH referenced from musiphil on Sep 30, 2011
+		// http://stackoverflow.com/questions/7616511/calculate-mean-and-standard-deviation-from-a-vector-of-samples-in-c-using-boos
+		double mean =  std::accumulate(values.begin(), values.end(), 0.0) / values.size();
+		double sq_sum = std::inner_product(values.begin(), values.end(), values.begin(), 0.0);
+		double stdev = std::sqrt(sq_sum / values.size() - mean * mean);
+
+		if( m_combinationMethod == AVERAGE )
+			result = mean;
+		else if(m_combinationMethod == STDEV )
+			result = stdev;
+		AddData( field, StringTools::ToStringW(result,2) );
 	}
 }
