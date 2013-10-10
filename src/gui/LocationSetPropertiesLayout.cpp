@@ -817,31 +817,28 @@ LocationSetPropertiesLayout::LocationSetPropertiesLayout( wxWindow* parent, wxWi
 	fgSizer12->SetFlexibleDirection( wxBOTH );
 	fgSizer12->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
 	
-	m_staticText38 = new wxStaticText( m_panel12, wxID_ANY, wxT("Tile size:"), wxDefaultPosition, wxDefaultSize, 0 );
-	m_staticText38->Wrap( -1 );
-	m_staticText38->Enable( false );
+	m_radioBox = new wxRadioButton( m_panel12, wxID_DIVIDE_BY_BOX, wxT("Tile Size"), wxDefaultPosition, wxDefaultSize, 0 );
+	fgSizer12->Add( m_radioBox, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
 	
-	fgSizer12->Add( m_staticText38, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
+	m_spinBoxDivisions = new wxSpinCtrl( m_panel12, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 1, 90, 1 );
+	m_spinBoxDivisions->Enable( false );
 	
-	m_comboBox17 = new wxComboBox( m_panel12, wxID_ANY, wxT("Combo!"), wxDefaultPosition, wxDefaultSize, 0, NULL, 0 ); 
-	m_comboBox17->Enable( false );
+	fgSizer12->Add( m_spinBoxDivisions, 0, wxALL, 5 );
 	
-	fgSizer12->Add( m_comboBox17, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
-	
-	m_radioBtn5 = new wxRadioButton( m_panel12, wxID_ANY, wxT("Degrees"), wxDefaultPosition, wxDefaultSize, wxRB_GROUP );
+	m_radioBtn5 = new wxRadioButton( m_panel12, wxID_DIVIDE_INTO_DEGREES, wxT("Degrees"), wxDefaultPosition, wxDefaultSize, wxRB_GROUP );
 	m_radioBtn5->SetValue( true ); 
 	m_radioBtn5->Enable( false );
 	
 	fgSizer12->Add( m_radioBtn5, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
 	
-	m_radioBtn6 = new wxRadioButton( m_panel12, wxID_ANY, wxT("Pixels"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_radioBtn6 = new wxRadioButton( m_panel12, wxID_DIVIDE_INTO_PIXELS, wxT("Pixels"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_radioBtn6->Enable( false );
 	
 	fgSizer12->Add( m_radioBtn6, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
 	
-	m_staticText36 = new wxStaticText( m_panel12, wxID_ANY, wxT("Divisions:"), wxDefaultPosition, wxDefaultSize, 0 );
-	m_staticText36->Wrap( -1 );
-	fgSizer12->Add( m_staticText36, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
+	m_radioAxis = new wxRadioButton( m_panel12, wxID_DIVIDE_BY_AXIS, wxT("Divisions"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_radioAxis->SetValue( true ); 
+	fgSizer12->Add( m_radioAxis, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
 	
 	m_spinGridDivisions = new wxSpinCtrl( m_panel12, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 1, 255, 1 );
 	fgSizer12->Add( m_spinGridDivisions, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
@@ -1114,6 +1111,12 @@ LocationSetPropertiesLayout::LocationSetPropertiesLayout( wxWindow* parent, wxWi
 	m_choiceGridFieldToChart->Connect( wxEVT_COMMAND_COMBOBOX_SELECTED, wxCommandEventHandler( LocationSetPropertiesLayout::OnChoiceGridFieldToChartChange ), NULL, this );
 	m_choiceGridColourMap->Connect( wxEVT_COMMAND_COMBOBOX_SELECTED, wxCommandEventHandler( LocationSetPropertiesLayout::OnGridColourMapChange ), NULL, this );
 	m_chkShowGridBorders->Connect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( LocationSetPropertiesLayout::OnShowGridBorders ), NULL, this );
+	m_radioBox->Connect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( LocationSetPropertiesLayout::OnRadioDivideBy ), NULL, this );
+	m_spinBoxDivisions->Connect( wxEVT_COMMAND_SPINCTRL_UPDATED, wxSpinEventHandler( LocationSetPropertiesLayout::OnNumberOfDivisions ), NULL, this );
+	m_spinBoxDivisions->Connect( wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler( LocationSetPropertiesLayout::OnNumberOfDivisions ), NULL, this );
+	m_radioBtn5->Connect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( LocationSetPropertiesLayout::OnRadioDivideType ), NULL, this );
+	m_radioBtn6->Connect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( LocationSetPropertiesLayout::OnRadioDivideType ), NULL, this );
+	m_radioAxis->Connect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( LocationSetPropertiesLayout::OnRadioDivideBy ), NULL, this );
 	m_spinGridDivisions->Connect( wxEVT_COMMAND_SPINCTRL_UPDATED, wxSpinEventHandler( LocationSetPropertiesLayout::OnNumberOfDivisions ), NULL, this );
 	m_spinGridDivisions->Connect( wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler( LocationSetPropertiesLayout::OnNumberOfDivisions ), NULL, this );
 	m_radioBtnLatitude->Connect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( LocationSetPropertiesLayout::OnRadioLatitudeLongitude ), NULL, this );
@@ -1164,6 +1167,12 @@ LocationSetPropertiesLayout::~LocationSetPropertiesLayout()
 	m_choiceGridFieldToChart->Disconnect( wxEVT_COMMAND_COMBOBOX_SELECTED, wxCommandEventHandler( LocationSetPropertiesLayout::OnChoiceGridFieldToChartChange ), NULL, this );
 	m_choiceGridColourMap->Disconnect( wxEVT_COMMAND_COMBOBOX_SELECTED, wxCommandEventHandler( LocationSetPropertiesLayout::OnGridColourMapChange ), NULL, this );
 	m_chkShowGridBorders->Disconnect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( LocationSetPropertiesLayout::OnShowGridBorders ), NULL, this );
+	m_radioBox->Disconnect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( LocationSetPropertiesLayout::OnRadioDivideBy ), NULL, this );
+	m_spinBoxDivisions->Disconnect( wxEVT_COMMAND_SPINCTRL_UPDATED, wxSpinEventHandler( LocationSetPropertiesLayout::OnNumberOfDivisions ), NULL, this );
+	m_spinBoxDivisions->Disconnect( wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler( LocationSetPropertiesLayout::OnNumberOfDivisions ), NULL, this );
+	m_radioBtn5->Disconnect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( LocationSetPropertiesLayout::OnRadioDivideType ), NULL, this );
+	m_radioBtn6->Disconnect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( LocationSetPropertiesLayout::OnRadioDivideType ), NULL, this );
+	m_radioAxis->Disconnect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( LocationSetPropertiesLayout::OnRadioDivideBy ), NULL, this );
 	m_spinGridDivisions->Disconnect( wxEVT_COMMAND_SPINCTRL_UPDATED, wxSpinEventHandler( LocationSetPropertiesLayout::OnNumberOfDivisions ), NULL, this );
 	m_spinGridDivisions->Disconnect( wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler( LocationSetPropertiesLayout::OnNumberOfDivisions ), NULL, this );
 	m_radioBtnLatitude->Disconnect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( LocationSetPropertiesLayout::OnRadioLatitudeLongitude ), NULL, this );

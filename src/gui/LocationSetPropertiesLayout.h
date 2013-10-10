@@ -113,6 +113,10 @@ namespace GenGIS
 				wxID_RADIO_TILE_COLOUR_NO_FILL,
 				wxID_RADIO_TILE_COLOUR_UNIFORM_FILL,
 				wxID_RADIO_TILE_COLOUR_MAP_FILL,
+				wxID_DIVIDE_BY_BOX,
+				wxID_DIVIDE_INTO_DEGREES,
+				wxID_DIVIDE_INTO_PIXELS,
+				wxID_DIVIDE_BY_AXIS,
 				wxID_RADIO_GRID_DIVIDE_ALONG_LATITUDE,
 				wxID_RADIO_GRID_DIVIDE_ALONG_LONGITUDE,
 				wxID_RADIO_GRID_ALIGN_TO_ORIGIN,
@@ -261,11 +265,11 @@ namespace GenGIS
 			wxSpinCtrl* m_spinGridBorderThickness;
 			wxComboBox* m_cboGridBorderStyle;
 			wxPanel* m_panel12;
-			wxStaticText* m_staticText38;
-			wxComboBox* m_comboBox17;
+			wxRadioButton* m_radioBox;
+			wxSpinCtrl* m_spinBoxDivisions;
 			wxRadioButton* m_radioBtn5;
 			wxRadioButton* m_radioBtn6;
-			wxStaticText* m_staticText36;
+			wxRadioButton* m_radioAxis;
 			wxSpinCtrl* m_spinGridDivisions;
 			wxRadioButton* m_radioBtnLatitude;
 			wxRadioButton* m_radioBtnLongitude;
@@ -333,8 +337,10 @@ namespace GenGIS
 			virtual void OnChoiceGridFieldToChartChange( wxCommandEvent& event ) { event.Skip(); }
 			virtual void OnGridColourMapChange( wxCommandEvent& event ) { event.Skip(); }
 			virtual void OnShowGridBorders( wxCommandEvent& event ) { event.Skip(); }
+			virtual void OnRadioDivideBy( wxCommandEvent& event ) { event.Skip(); }
 			virtual void OnNumberOfDivisions( wxSpinEvent& event ) { event.Skip(); }
 			virtual void OnNumberOfDivisions( wxCommandEvent& event ) { event.Skip(); }
+			virtual void OnRadioDivideType( wxCommandEvent& event ) { event.Skip(); }
 			virtual void OnRadioLatitudeLongitude( wxCommandEvent& event ) { event.Skip(); }
 			virtual void OnRadioAlignTo( wxCommandEvent& event ) { event.Skip(); }
 			virtual void OnAlignToLocationChange( wxCommandEvent& event ) { event.Skip(); }

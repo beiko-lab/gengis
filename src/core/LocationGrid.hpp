@@ -44,6 +44,15 @@ namespace GenGIS
 		// latitude or longitude
 		enum DIVISION_AXIS { LATITUDE, LONGITUDE };
 
+		// Whether size of tiles is determined by an axis
+		//  (lat/lon) or by display properties 
+		// (degree/ pixel)
+		enum DIVISION_TYPE { AXIS, BOX };
+
+		// Wether size of tiles is determined by  dividing into
+		// degrees or pixels
+		enum DIVISION_BOX { DEGREE, PIXEL };
+
 		// Whether tiles/grid are alied at the map origin, along
 		// a location, or at specific coordinates
 		enum ALIGNMENT { ORIGIN, LOCATIONS, COORDINATES };
@@ -76,12 +85,16 @@ namespace GenGIS
 
 		// Functions for accessing 'general' variables
 		DIVISION_AXIS GetTileDivisionAxis()           { return m_divideTilesAlong; }
+		DIVISION_TYPE GetTileDivisionType()			  { return m_divideTilesBy; }
+		DIVISION_BOX GetTileDivisionBox()			  { return m_divideTilesInto;}
 		ALIGNMENT     GetGridAlignmentStyle()         { return m_gridAlignmentStyle; }
 		uint          GetNumberOfDivisions()          { return m_divisions; }
 		bool          GetAutoAdjustElevationStatus () { return m_autoAdjustElevation; }
 		double        GetElevation()                  { return m_elevation; }
 
 		void SetTileDivisionAxis( DIVISION_AXIS divideAlong )            { m_divideTilesAlong = divideAlong; }
+		void SetTileDivisionType( DIVISION_TYPE divideType )			 { m_divideTilesBy = divideType; }
+		void SetTileDivisionBox ( DIVISION_BOX divideBox )				 { m_divideTilesInto = divideBox; }
 		void SetGridAlignmentStyle( ALIGNMENT alignment )                { m_gridAlignmentStyle = alignment; }
 		void SetDivisions( uint divisions )                              { m_divisions = divisions; }
 		void SetAutoAdjustElevationStatus ( bool status )                { m_autoAdjustElevation = status; }
@@ -148,6 +161,8 @@ namespace GenGIS
 	private:
 		// General variables
 		DIVISION_AXIS m_divideTilesAlong;
+		DIVISION_TYPE m_divideTilesBy;
+		DIVISION_BOX  m_divideTilesInto;
 		ALIGNMENT     m_gridAlignmentStyle;
 		Box2D         m_mapOpenGLBoundaries;
 		Point2D       m_mapOffset;
