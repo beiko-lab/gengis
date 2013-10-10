@@ -40,6 +40,8 @@ using namespace GenGIS;
 LocationGrid::LocationGrid() :
 	// General
 	m_divideTilesAlong( LATITUDE ),
+	m_divideTilesBy( AXIS ),
+	m_divideTilesInto( DEGREE ),
 	m_gridAlignmentStyle( ORIGIN ),
 	m_mapOpenGLBoundaries( -1.0, -1.0, 1.0, 1.0 ),
 	m_mapOffset( 0.0f, 0.0f ),
@@ -56,7 +58,7 @@ LocationGrid::LocationGrid() :
 	m_tileFillMode( UNIFORM ),
 	m_uniformColourOfTiles( 0.0f, 0.5f, 0.0f, 0.3f ),
 	m_defaultColourOfTiles( 0.5f, 0.5f, 0.5f, 0.3f ),
-	m_combination ( TileModel::DATA_COMBINE::AVERAGE ),
+	m_combination ( TileModel::AVERAGE ),
 
 	// Border
 	m_showBorders( true ),
@@ -84,6 +86,8 @@ void LocationGrid::serialize(Archive & ar, const unsigned int version)
 
 	// General variables
 	ar & m_divideTilesAlong;     // DIVISION_AXIS
+	ar & m_divideTilesBy;		 // DIVISION_TYPE
+	ar & m_divideTilesInto;		 // DIVISION_BOX
 	ar & m_gridAlignmentStyle;   // ALIGNMENT
 	ar & m_mapOpenGLBoundaries;  // Box2D
 	ar & m_mapOffset;            // Point2D
@@ -171,10 +175,43 @@ void LocationGrid::GenerateTileCoordinates()
 	// Determine appropriate tile size according to whether the user
 	// wishes to divide the latitude or longitude 'n' number of times
 	double tileSize;
-	if ( m_divideTilesAlong == LATITUDE )
-		tileSize = m_mapOpenGLBoundaries.Height() / m_divisions;
-	else if ( m_divideTilesAlong == LONGITUDE )
-		tileSize = m_mapOpenGLBoundaries.Width() / m_divisions;
+	double tileSizeX;
+	double tileSizeY;
+	if (m_divideTilesBy == AXIS )
+	{
+		if ( m_divideTilesAlong == LATITUDE )
+			tileSize = m_mapOpenGLBoundaries.Height() / m_divisions;
+		else if ( m_divideTilesAlong == LONGITUDE )
+			tileSize = m_mapOpenGLBoundaries.Width() / m_divisions;
+		tileSizeX = tileSize;
+		tileSizeY = tileSize;
+	}
+	else if(m_divideTilesBy == BOX )
+	{
+		// divide into degrees or pixels;
+		if( m_divideTilesInto == DEGREE )
+		{
+			// convert map origin point to lat lon, add one (degree) 
+			Point3D tileOrigin( m_mapOpenGLBoundaries.x, 0, m_mapOpenGLBoundaries.y); 
+			GeoCoord tileCoord;
+			App::Inst().GetMapController()->GetMapModel()->GridToGeo( tileOrigin, tileCoord );
+			// go to next tile boundary
+			Point3D nextTile;
+			GeoCoord tileNext( tileCoord.easting + m_divisions, tileCoord.northing - m_divisions);
+			App::Inst().GetMapController()->GetMapModel()->LatLongToGrid( tileNext, nextTile);
+			
+			tileSizeX = abs(nextTile.x - tileOrigin.x);
+			tileSizeY = abs(tileOrigin.z- nextTile.z);
+
+		//	tileSize = tileSizeX;
+			 
+			
+		}
+		else if(m_divideTilesInto == PIXEL)
+		{
+
+		}
+	}
 
 	// Clear any previous tile coordinates
 	m_xCoordinates.clear();
@@ -183,12 +220,6 @@ void LocationGrid::GenerateTileCoordinates()
 	double currentX = m_mapOpenGLBoundaries.x;
 	double currentY = m_mapOpenGLBoundaries.y;
 
-//	if( m_gridAlignmentStyle == LOCATIONS || m_gridAlignmentStyle == COORDINATES )
-//	{
-//		double newOriginX = currentX + m_xAxisOffset;
-//		double newOriginY = currentY + m_yAxisOffset;
-//	}
-
 	// Set initial coordinates 'x' and 'y' to the map origin
 	m_xCoordinates.push_back( currentX );
 	m_yCoordinates.push_back( currentY );
@@ -196,14 +227,14 @@ void LocationGrid::GenerateTileCoordinates()
 	// [ OFFSET ] ( MIDDLE * N ) [ REMAINDER ] 
 
 	// Calculate map OFFSET for OpenGL; fmod is modulus for floats
-	double mapOffsetX = fmod( ( double )m_mapOffset.x, tileSize );
+	double mapOffsetX = fmod( ( double )m_mapOffset.x, tileSizeX );
 	if ( mapOffsetX > 0 )
 	{
 		currentX += mapOffsetX;
 		m_xCoordinates.push_back( currentX );
 	}
 
-	double mapOffsetY = fmod( ( double )m_mapOffset.y, tileSize );
+	double mapOffsetY = fmod( ( double )m_mapOffset.y, tileSizeY );
 	if ( mapOffsetY > 0 )
 	{
 		currentY += mapOffsetY;
@@ -213,17 +244,23 @@ void LocationGrid::GenerateTileCoordinates()
 	uint numberOfMiddleTiles;
 	
 	// Calculate the number of MIDDLE divisions along each axis after the offset
-	numberOfMiddleTiles = floor( abs( ( m_mapOpenGLBoundaries.Width() - mapOffsetX ) / tileSize ) );
+	numberOfMiddleTiles = floor( abs( ( m_mapOpenGLBoundaries.Width() - mapOffsetX ) / tileSizeX ) );
 	for ( uint col = 0; col < numberOfMiddleTiles; col++ )
 	{
-		currentX += tileSize;
+		currentX += tileSizeX;
+	//	if(m_divideTilesBy == BOX )
+	//		currentX += tileSizeX;
+		
 		m_xCoordinates.push_back( currentX );
 	}
 
-	numberOfMiddleTiles = floor( abs( ( m_mapOpenGLBoundaries.Height() - mapOffsetY ) / tileSize ) );
+	numberOfMiddleTiles = floor( abs( ( m_mapOpenGLBoundaries.Height() - mapOffsetY ) / tileSizeY ) );
 	for ( uint row = 0; row < numberOfMiddleTiles; row++ )
 	{
-		currentY += tileSize;
+		currentY += tileSizeY;
+	//	if(m_divideTilesBy == BOX )
+	//		currentY += tileSizeY;
+
 		m_yCoordinates.push_back( currentY );
 	}
 

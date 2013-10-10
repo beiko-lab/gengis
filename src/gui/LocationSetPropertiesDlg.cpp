@@ -1292,7 +1292,10 @@ void LocationSetPropertiesDlg::ApplyGrid()
 	locationGrid->SetVisibility( m_chkShowGrid->GetValue() );
 
 	// Set the number of divisions
-	locationGrid->SetDivisions( m_spinGridDivisions->GetValue() );
+	if(m_radioAxis->GetValue() == true)
+		locationGrid->SetDivisions( m_spinGridDivisions->GetValue() );
+	else if(m_radioBox->GetValue() == true)
+		locationGrid->SetDivisions( m_spinBoxDivisions->GetValue() );
 
 	// Set uniform colour of tiles
 	locationGrid->SetTileUniformColour( Colour( m_gridTileColour->GetColour() ) );
@@ -1569,10 +1572,50 @@ void LocationSetPropertiesDlg::OnTileFieldChoiceChange(wxCommandEvent& event)
 	m_locationSetLayer->GetLocationGrid()->SetGridChanged( true );
 	// Set default tile field combination
 	if( m_tileFieldChoice->GetValue() == _T("Average") )
-		m_locationSetLayer->GetLocationGrid()->SetCombinationMethod( TileModel::DATA_COMBINE::AVERAGE );
+		m_locationSetLayer->GetLocationGrid()->SetCombinationMethod( TileModel::AVERAGE );
 	else if( m_tileFieldChoice->GetValue() == _T("Standard Deviation") )
-		m_locationSetLayer->GetLocationGrid()->SetCombinationMethod( TileModel::DATA_COMBINE::STDEV );
+		m_locationSetLayer->GetLocationGrid()->SetCombinationMethod( TileModel::STDEV );
 	else// if( m_tileFieldChoice->GetValue() == _T("Gini Index") )
-		m_locationSetLayer->GetLocationGrid()->SetCombinationMethod( TileModel::DATA_COMBINE::GINI );
+		m_locationSetLayer->GetLocationGrid()->SetCombinationMethod( TileModel::GINI );
 
+}
+
+void LocationSetPropertiesDlg::OnRadioDivideBy(wxCommandEvent& event)
+{
+	int wxID = event.GetId();
+	bool set1 = false;
+	bool set2 = false;
+
+	if( wxID == wxID_DIVIDE_BY_BOX )
+	{
+		m_locationSetLayer->GetLocationGrid()->SetTileDivisionType( LocationGrid::BOX );
+		set1 = false;
+		set2 = true;	
+	}
+	else if( wxID == wxID_DIVIDE_BY_AXIS )
+	{
+		m_locationSetLayer->GetLocationGrid()->SetTileDivisionType( LocationGrid::AXIS );
+		set1 = true;
+		set2 = false;
+	}
+	m_spinGridDivisions->Enable(set1);
+	m_radioBtnLatitude->Enable(set1);
+	m_radioBtnLongitude->Enable(set1);
+	m_radioAxis->SetValue(set1);
+	
+	m_spinBoxDivisions->Enable(set2);
+	m_radioBtn5->Enable(set2);
+	m_radioBtn6->Enable(set2);
+	m_radioBox->SetValue(set2);
+	m_radioBtn5->SetValue(set2);
+}
+
+void LocationSetPropertiesDlg::OnRadioDivideType(wxCommandEvent& event)
+{
+	int wxID = event.GetId();
+	
+	if(wxID == wxID_DIVIDE_INTO_DEGREES)
+		m_locationSetLayer->GetLocationGrid()->SetTileDivisionBox( LocationGrid::DEGREE );
+	else if(wxID == wxID_DIVIDE_INTO_PIXELS)
+		m_locationSetLayer->GetLocationGrid()->SetTileDivisionBox( LocationGrid::PIXEL );
 }

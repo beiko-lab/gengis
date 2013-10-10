@@ -242,6 +242,12 @@ namespace GenGIS
 		/** Change the way tile field values are combined. */
 		void OnTileFieldChoiceChange(wxCommandEvent& event);
 
+		/** Change how tile divisions are made. */
+		void OnRadioDivideBy(wxCommandEvent& event);
+
+		/** Change how to divide tiles. */
+		void OnRadioDivideType(wxCommandEvent& event);
+
 		void OnHelp( wxCommandEvent& event )
 		{
 			wxLaunchDefaultBrowser( wxT( "http://kiwi.cs.dal.ca/GenGIS/The_GenGIS_2.1_Manual#Location_Set_Layer_Properties" ));
