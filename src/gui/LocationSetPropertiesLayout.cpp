@@ -825,16 +825,16 @@ LocationSetPropertiesLayout::LocationSetPropertiesLayout( wxWindow* parent, wxWi
 	
 	fgSizer12->Add( m_spinBoxDivisions, 0, wxALL, 5 );
 	
-	m_radioBtn5 = new wxRadioButton( m_panel12, wxID_DIVIDE_INTO_DEGREES, wxT("Degrees"), wxDefaultPosition, wxDefaultSize, wxRB_GROUP );
-	m_radioBtn5->SetValue( true ); 
-	m_radioBtn5->Enable( false );
+	m_radioBtnDegrees = new wxRadioButton( m_panel12, wxID_DIVIDE_INTO_DEGREES, wxT("Degrees"), wxDefaultPosition, wxDefaultSize, wxRB_GROUP );
+	m_radioBtnDegrees->SetValue( true ); 
+	m_radioBtnDegrees->Enable( false );
 	
-	fgSizer12->Add( m_radioBtn5, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
+	fgSizer12->Add( m_radioBtnDegrees, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
 	
-	m_radioBtn6 = new wxRadioButton( m_panel12, wxID_DIVIDE_INTO_PIXELS, wxT("Pixels"), wxDefaultPosition, wxDefaultSize, 0 );
-	m_radioBtn6->Enable( false );
+	m_radioBtnPixels = new wxRadioButton( m_panel12, wxID_DIVIDE_INTO_PIXELS, wxT("Pixels"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_radioBtnPixels->Enable( false );
 	
-	fgSizer12->Add( m_radioBtn6, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
+	fgSizer12->Add( m_radioBtnPixels, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
 	
 	m_radioAxis = new wxRadioButton( m_panel12, wxID_DIVIDE_BY_AXIS, wxT("Divisions"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_radioAxis->SetValue( true ); 
@@ -1114,8 +1114,8 @@ LocationSetPropertiesLayout::LocationSetPropertiesLayout( wxWindow* parent, wxWi
 	m_radioBox->Connect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( LocationSetPropertiesLayout::OnRadioDivideBy ), NULL, this );
 	m_spinBoxDivisions->Connect( wxEVT_COMMAND_SPINCTRL_UPDATED, wxSpinEventHandler( LocationSetPropertiesLayout::OnNumberOfDivisions ), NULL, this );
 	m_spinBoxDivisions->Connect( wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler( LocationSetPropertiesLayout::OnNumberOfDivisions ), NULL, this );
-	m_radioBtn5->Connect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( LocationSetPropertiesLayout::OnRadioDivideType ), NULL, this );
-	m_radioBtn6->Connect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( LocationSetPropertiesLayout::OnRadioDivideType ), NULL, this );
+	m_radioBtnDegrees->Connect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( LocationSetPropertiesLayout::OnRadioDivideType ), NULL, this );
+	m_radioBtnPixels->Connect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( LocationSetPropertiesLayout::OnRadioDivideType ), NULL, this );
 	m_radioAxis->Connect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( LocationSetPropertiesLayout::OnRadioDivideBy ), NULL, this );
 	m_spinGridDivisions->Connect( wxEVT_COMMAND_SPINCTRL_UPDATED, wxSpinEventHandler( LocationSetPropertiesLayout::OnNumberOfDivisions ), NULL, this );
 	m_spinGridDivisions->Connect( wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler( LocationSetPropertiesLayout::OnNumberOfDivisions ), NULL, this );
@@ -1170,8 +1170,8 @@ LocationSetPropertiesLayout::~LocationSetPropertiesLayout()
 	m_radioBox->Disconnect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( LocationSetPropertiesLayout::OnRadioDivideBy ), NULL, this );
 	m_spinBoxDivisions->Disconnect( wxEVT_COMMAND_SPINCTRL_UPDATED, wxSpinEventHandler( LocationSetPropertiesLayout::OnNumberOfDivisions ), NULL, this );
 	m_spinBoxDivisions->Disconnect( wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler( LocationSetPropertiesLayout::OnNumberOfDivisions ), NULL, this );
-	m_radioBtn5->Disconnect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( LocationSetPropertiesLayout::OnRadioDivideType ), NULL, this );
-	m_radioBtn6->Disconnect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( LocationSetPropertiesLayout::OnRadioDivideType ), NULL, this );
+	m_radioBtnDegrees->Disconnect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( LocationSetPropertiesLayout::OnRadioDivideType ), NULL, this );
+	m_radioBtnPixels->Disconnect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( LocationSetPropertiesLayout::OnRadioDivideType ), NULL, this );
 	m_radioAxis->Disconnect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( LocationSetPropertiesLayout::OnRadioDivideBy ), NULL, this );
 	m_spinGridDivisions->Disconnect( wxEVT_COMMAND_SPINCTRL_UPDATED, wxSpinEventHandler( LocationSetPropertiesLayout::OnNumberOfDivisions ), NULL, this );
 	m_spinGridDivisions->Disconnect( wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler( LocationSetPropertiesLayout::OnNumberOfDivisions ), NULL, this );

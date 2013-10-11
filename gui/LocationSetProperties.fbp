@@ -8349,7 +8349,7 @@
                                                                                 <property name="label">Degrees</property>
                                                                                 <property name="maximum_size"></property>
                                                                                 <property name="minimum_size"></property>
-                                                                                <property name="name">m_radioBtn5</property>
+                                                                                <property name="name">m_radioBtnDegrees</property>
                                                                                 <property name="permission">protected</property>
                                                                                 <property name="pos"></property>
                                                                                 <property name="size"></property>
@@ -8406,7 +8406,7 @@
                                                                                 <property name="label">Pixels</property>
                                                                                 <property name="maximum_size"></property>
                                                                                 <property name="minimum_size"></property>
-                                                                                <property name="name">m_radioBtn6</property>
+                                                                                <property name="name">m_radioBtnPixels</property>
                                                                                 <property name="permission">protected</property>
                                                                                 <property name="pos"></property>
                                                                                 <property name="size"></property>

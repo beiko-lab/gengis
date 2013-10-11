@@ -267,8 +267,8 @@ namespace GenGIS
 			wxPanel* m_panel12;
 			wxRadioButton* m_radioBox;
 			wxSpinCtrl* m_spinBoxDivisions;
-			wxRadioButton* m_radioBtn5;
-			wxRadioButton* m_radioBtn6;
+			wxRadioButton* m_radioBtnDegrees;
+			wxRadioButton* m_radioBtnPixels;
 			wxRadioButton* m_radioAxis;
 			wxSpinCtrl* m_spinGridDivisions;
 			wxRadioButton* m_radioBtnLatitude;

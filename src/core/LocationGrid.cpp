@@ -47,6 +47,8 @@ LocationGrid::LocationGrid() :
 	m_mapOffset( 0.0f, 0.0f ),
 //	m_divisions( 12 ),
 	m_divisions( 4 ),
+	m_axisDivisions( 4 ),
+	m_boxDivisions( 1 ),
 	m_autoAdjustElevation( true ),
 	m_elevation( 0.05f ),
 	m_elevationUsed( 0.0f ),
@@ -92,6 +94,8 @@ void LocationGrid::serialize(Archive & ar, const unsigned int version)
 	ar & m_mapOpenGLBoundaries;  // Box2D
 	ar & m_mapOffset;            // Point2D
 	ar & m_divisions;            // uint
+	ar & m_axisDivisions;		 // uint
+	ar & m_boxDivisions;		 // uint
 	ar & m_autoAdjustElevation;  // bool
 	ar & m_elevation;            // float
 	ar & m_elevationUsed;        // float
@@ -209,7 +213,14 @@ void LocationGrid::GenerateTileCoordinates()
 		}
 		else if(m_divideTilesInto == PIXEL)
 		{
-
+			float pixels = float(m_divisions) / 100.0f;
+			Point3D tileOrigin( m_mapOpenGLBoundaries.x, 0, m_mapOpenGLBoundaries.y); 
+			Point3D nextTile( m_mapOpenGLBoundaries.x , 0, m_mapOpenGLBoundaries.y );
+			nextTile.x = nextTile.x + pixels;
+			nextTile.z = nextTile.z + pixels;
+			
+			tileSizeX = abs(nextTile.x - tileOrigin.x);
+			tileSizeY = abs(tileOrigin.z- nextTile.z);
 		}
 	}
 
@@ -248,8 +259,6 @@ void LocationGrid::GenerateTileCoordinates()
 	for ( uint col = 0; col < numberOfMiddleTiles; col++ )
 	{
 		currentX += tileSizeX;
-	//	if(m_divideTilesBy == BOX )
-	//		currentX += tileSizeX;
 		
 		m_xCoordinates.push_back( currentX );
 	}
@@ -258,8 +267,6 @@ void LocationGrid::GenerateTileCoordinates()
 	for ( uint row = 0; row < numberOfMiddleTiles; row++ )
 	{
 		currentY += tileSizeY;
-	//	if(m_divideTilesBy == BOX )
-	//		currentY += tileSizeY;
 
 		m_yCoordinates.push_back( currentY );
 	}
@@ -282,7 +289,6 @@ void LocationGrid::GenerateTileCoordinates()
 	{
 		InitTiles();
 		FillTiles();
-	//	SetGridChanged( false );
 	}
 }
 
@@ -632,4 +638,17 @@ void LocationGrid::AssertCombinationMethod()
 TileModel::DATA_COMBINE LocationGrid::GetCombinationMethod()
 {
 	return m_tileModels[0]->GetCombinationMethod();
+}
+
+void LocationGrid::SetAxisDivisions( uint divisions )
+{
+	m_axisDivisions = divisions;
+	SetDivisions( divisions );
+
+}
+void LocationGrid::SetBoxDivisions( uint divisions )
+{
+	m_boxDivisions = divisions;
+	SetDivisions( divisions );
+
 }

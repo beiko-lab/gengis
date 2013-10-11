@@ -643,7 +643,8 @@ void LocationSetPropertiesDlg::InitLocationGrid()
 	m_tileFieldChoice->SetValue(_T("Average"));
 
 	// Get the number of divisions
-	m_spinGridDivisions->SetValue( locationGrid->GetNumberOfDivisions() );
+	m_spinGridDivisions->SetValue( locationGrid->GetNumberOfAxisDivisions() );
+	m_spinBoxDivisions->SetValue( locationGrid->GetNumberOfBoxDivisions() );
 
 	// Get the axis (longitude or latitude) along which the map is divided
 	bool latLong = true;
@@ -659,6 +660,38 @@ void LocationSetPropertiesDlg::InitLocationGrid()
 		m_radioAlignToLocation->SetValue( true );
 	else if ( gridAlignmentStyle == LocationGrid::COORDINATES )
 		m_radioAlignToCoordinates->SetValue( true );
+
+	// Get the division strategy
+	LocationGrid::DIVISION_TYPE divisionType = locationGrid->GetTileDivisionType();
+	if		( divisionType == LocationGrid::BOX )
+	{
+		m_radioBox->SetValue(true);
+		m_spinGridDivisions->Enable(false);
+		m_radioBtnLatitude->Enable(false);
+		m_radioBtnLongitude->Enable(false);
+
+		m_spinBoxDivisions->Enable(true);
+		m_radioBtnDegrees->Enable(true);
+		m_radioBtnPixels->Enable(true);
+
+		if( locationGrid->GetTileDivisionBox() == LocationGrid::DEGREE )
+			m_radioBtnDegrees->SetValue(true);
+		else if( locationGrid->GetTileDivisionBox() == LocationGrid::PIXEL )
+			m_radioBtnPixels->SetValue(true);
+		
+	}
+	else if( divisionType == LocationGrid::AXIS )
+	{	
+		m_radioAxis->SetValue(true);
+		m_spinBoxDivisions->Enable(false);
+		m_radioBtnDegrees->Enable(false);
+		m_radioBtnPixels->Enable(false);
+
+		m_spinGridDivisions->Enable(true);
+		m_radioBtnLatitude->Enable(true);
+		m_radioBtnLongitude->Enable(true);
+
+	}
 
 	// Disable alignment controls based on radio button selection
 	if ( ( gridAlignmentStyle == LocationGrid::ORIGIN ) ||
@@ -1293,9 +1326,9 @@ void LocationSetPropertiesDlg::ApplyGrid()
 
 	// Set the number of divisions
 	if(m_radioAxis->GetValue() == true)
-		locationGrid->SetDivisions( m_spinGridDivisions->GetValue() );
+		locationGrid->SetAxisDivisions( m_spinGridDivisions->GetValue() );
 	else if(m_radioBox->GetValue() == true)
-		locationGrid->SetDivisions( m_spinBoxDivisions->GetValue() );
+		locationGrid->SetBoxDivisions( m_spinBoxDivisions->GetValue() );
 
 	// Set uniform colour of tiles
 	locationGrid->SetTileUniformColour( Colour( m_gridTileColour->GetColour() ) );
@@ -1582,6 +1615,8 @@ void LocationSetPropertiesDlg::OnTileFieldChoiceChange(wxCommandEvent& event)
 
 void LocationSetPropertiesDlg::OnRadioDivideBy(wxCommandEvent& event)
 {
+	
+	m_locationSetLayer->GetLocationGrid()->SetGridChanged(true);
 	int wxID = event.GetId();
 	bool set1 = false;
 	bool set2 = false;
@@ -1604,18 +1639,28 @@ void LocationSetPropertiesDlg::OnRadioDivideBy(wxCommandEvent& event)
 	m_radioAxis->SetValue(set1);
 	
 	m_spinBoxDivisions->Enable(set2);
-	m_radioBtn5->Enable(set2);
-	m_radioBtn6->Enable(set2);
+	m_radioBtnDegrees->Enable(set2);
+	m_radioBtnPixels->Enable(set2);
 	m_radioBox->SetValue(set2);
-	m_radioBtn5->SetValue(set2);
+	m_radioBtnDegrees->SetValue(set2);
 }
 
 void LocationSetPropertiesDlg::OnRadioDivideType(wxCommandEvent& event)
 {
 	int wxID = event.GetId();
-	
+	m_locationSetLayer->GetLocationGrid()->SetGridChanged(true);
+
 	if(wxID == wxID_DIVIDE_INTO_DEGREES)
+	{
 		m_locationSetLayer->GetLocationGrid()->SetTileDivisionBox( LocationGrid::DEGREE );
+		// keep number of divisions within minimum range ( y axis )
+		m_spinBoxDivisions->SetRange( 1, 90 );		// should be turned into something not hard coded
+	}
 	else if(wxID == wxID_DIVIDE_INTO_PIXELS)
+	{	
 		m_locationSetLayer->GetLocationGrid()->SetTileDivisionBox( LocationGrid::PIXEL );
+		// keep number of divisions within minimum range ( y axis )
+		m_spinBoxDivisions->SetRange( 1, 600 );	// should definitely be turned into something not hard coded... map.height / 100 ?
+
+	}
 }
