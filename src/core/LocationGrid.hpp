@@ -89,6 +89,8 @@ namespace GenGIS
 		DIVISION_BOX GetTileDivisionBox()			  { return m_divideTilesInto;}
 		ALIGNMENT     GetGridAlignmentStyle()         { return m_gridAlignmentStyle; }
 		uint          GetNumberOfDivisions()          { return m_divisions; }
+		uint		  GetNumberOfAxisDivisions()	  { return m_axisDivisions; }
+		uint		  GetNumberOfBoxDivisions()		  { return m_boxDivisions; }
 		bool          GetAutoAdjustElevationStatus () { return m_autoAdjustElevation; }
 		double        GetElevation()                  { return m_elevation; }
 
@@ -97,6 +99,8 @@ namespace GenGIS
 		void SetTileDivisionBox ( DIVISION_BOX divideBox )				 { m_divideTilesInto = divideBox; }
 		void SetGridAlignmentStyle( ALIGNMENT alignment )                { m_gridAlignmentStyle = alignment; }
 		void SetDivisions( uint divisions )                              { m_divisions = divisions; }
+		void SetAxisDivisions( uint divisions );
+		void SetBoxDivisions( uint divisions);
 		void SetAutoAdjustElevationStatus ( bool status )                { m_autoAdjustElevation = status; }
 		void SetElevation( double elevation )                            { m_elevation = elevation; }
 		void SetLocationSetLayer( LocationSetLayerPtr locationSetLayer ) { m_locationSetLayer = locationSetLayer; } 
@@ -167,6 +171,8 @@ namespace GenGIS
 		Box2D         m_mapOpenGLBoundaries;
 		Point2D       m_mapOffset;
 		uint          m_divisions;
+		uint		  m_axisDivisions;
+		uint		  m_boxDivisions;
 		bool          m_autoAdjustElevation;
 		float         m_elevation;
 		float         m_elevationUsed;

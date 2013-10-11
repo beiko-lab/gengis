@@ -196,12 +196,19 @@ class MGRastSpecific:
 					for ent in sorted(thisList,key=itemgetter(1,2)):
 						fullLat = float(ent[1])
 						fullLon = float(ent[2])
-						siteID = "%s_%f_%f" %(taxOut,fullLat,fullLon)
-						siteID = re.sub(' ','_',siteID)
+					#	siteID = "%s_%f_%f" %(taxOut,fullLat,fullLon)
+						# change siteID to study ID
+					#	siteID = re.sub(' ','_',siteID)
+						
+						# parse any commas in taxon
+						taxOut = re.sub(',','\",\"',taxOut)
+						#siteID is now the study
+						siteID = ent[4];
 						if siteID not in uniqueSiteID:
 							uniqueSiteID.add(siteID)
-							OUTLTEXT += ("%s,%f,%f,%s,%s\n" % (siteID, fullLat, fullLon, ent[0], cellOut+(int(fullLon) +180)))
-						toKey = "%s,%s,%f,%f,%s" %(ent[4],siteID,fullLat,fullLon,ent[3])
+							OUTLTEXT += ("%s,%f,%f,%s\n" % (siteID, fullLat, fullLon, cellOut+(int(fullLon) +180)))
+						#toKey = "%s,%s,%f,%f,%s,%s" %(ent[4],siteID,fullLat,fullLon,ent[0],ent[3])
+						toKey = "%s,%s,%f,%f,%s,%s" %(taxOut,ent[4],fullLat,fullLon,ent[0],ent[3])
 						seqFile.append(toKey)
 		for IDlist in seqFile:
 			OUTSTEXT += ("%s\n" %(IDlist))
