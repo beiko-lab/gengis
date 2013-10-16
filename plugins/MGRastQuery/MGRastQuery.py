@@ -97,6 +97,7 @@ class MGRastQuery(MGRASTQueryLayout):
 	__selectedTaxon__= set()
 	__description__=""
 	__options__=""
+	__metaKeys__ = []
 	
 	def __init__(self,parent=None):
 		self.__options__ = Options()
@@ -180,9 +181,11 @@ class MGRastQuery(MGRASTQueryLayout):
 			self.m_Progress.WriteText("Starting...\n")
 			for tax in self.__selectedTaxon__:
 				startTime = time.time()
-				obs = self.MGRastSpecific.GETOBS(tax[0],searchType,additFields,self.m_Progress)
+				obs, metaKey = self.MGRastSpecific.GETOBS(tax[0],searchType,additFields,self.m_Progress)
 				if obs:	
 					self.__obs__.append(obs)
+				# simpy adds them right now. something must be done for different/additional fields
+				self.__metaKeys__ = metaKey
 				if (time.time() - startTime) < 1:
 					sleep.time(1)
 		else:
@@ -234,7 +237,8 @@ class MGRastQuery(MGRASTQueryLayout):
 				OUTLfile = ("%s/%s_locs.csv" % (dir,file_split[0]))				
 				OUTSfile = ("%s/%s_seqs.csv" % (dir,file_split[0]))
 				OUTLText, OUTSText = self.MGRastSpecific.GETTEXT(self.__obs__)
-				self.GBIFGeneric.WRITEEXPORT(OUTLfile,OUTLText,"Site ID,Latitude,Longitude,Cell ID\n")
+				metKey = ','.join(str(x) for x in self.__metaKeys__)
+				self.GBIFGeneric.WRITEEXPORT(OUTLfile,OUTLText,"Site ID,Latitude,Longitude,Cell ID,%s\n" %metKey)
 				self.GBIFGeneric.WRITEEXPORT(OUTSfile,OUTSText,"Sequence ID,Site ID,CellLat,CellLong,Richness,Taxonomy\n")
 			dlg.Destroy()
 		else:
