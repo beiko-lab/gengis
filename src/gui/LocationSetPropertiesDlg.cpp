@@ -737,6 +737,8 @@ void LocationSetPropertiesDlg::InitLocationGrid()
 	locationGrid->SetLocationSetLayer ( m_locationSetLayer);
 	//	Initialize and fill tiles
 	locationGrid->GenerateTileCoordinates();
+	locationGrid->InitTiles();
+	locationGrid->FillTiles();
 
 	InitLocationGridColour();
 	InitLocationGridAlignment();
@@ -1405,10 +1407,11 @@ void LocationSetPropertiesDlg::ApplyGrid()
 	// Generate new tile field values
 	if( locationGrid->GetGridChanged() )
 	{
+		// put values in tiles
+		locationGrid->FillTiles();
 		wxCommandEvent dummy;
 		OnChoiceGridFieldToChartChange( dummy );
 		OnGridColourMapChange( dummy );
-	//	m_gridColourMapWidget->SetFieldValues( m_scrolledWindowGridColour, locationGrid-> );
 		locationGrid->SetGridChanged( false );
 	}
 
@@ -1623,6 +1626,11 @@ void LocationSetPropertiesDlg::OnRadioDivideBy(wxCommandEvent& event)
 
 	if( wxID == wxID_DIVIDE_BY_BOX )
 	{
+	//	if( m_locationSetLayer->GetLocationGrid()->GetTileDivisionType() == LocationGrid::DEGREE)
+	//		m_radioBtnDegrees->SetValue(true);
+	//	else
+	//		m_radioBtnPixels->SetValue(true);
+
 		m_locationSetLayer->GetLocationGrid()->SetTileDivisionType( LocationGrid::BOX );
 		set1 = false;
 		set2 = true;	
@@ -1642,7 +1650,7 @@ void LocationSetPropertiesDlg::OnRadioDivideBy(wxCommandEvent& event)
 	m_radioBtnDegrees->Enable(set2);
 	m_radioBtnPixels->Enable(set2);
 	m_radioBox->SetValue(set2);
-	m_radioBtnDegrees->SetValue(set2);
+//	m_radioBtnDegrees->SetValue(set2);
 }
 
 void LocationSetPropertiesDlg::OnRadioDivideType(wxCommandEvent& event)
@@ -1663,4 +1671,7 @@ void LocationSetPropertiesDlg::OnRadioDivideType(wxCommandEvent& event)
 		m_spinBoxDivisions->SetRange( 1, 600 );	// should definitely be turned into something not hard coded... map.height / 100 ?
 
 	}
+
+	LocationGridPtr locationGrid = m_locationSetLayer->GetLocationGrid();
+	locationGrid -> SetGridChanged( true );
 }
