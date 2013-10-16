@@ -826,18 +826,12 @@ LocationSetPropertiesLayout::LocationSetPropertiesLayout( wxWindow* parent, wxWi
 	fgSizer12->Add( m_spinBoxDivisions, 0, wxALL, 5 );
 	
 	m_radioBtnDegrees = new wxRadioButton( m_panel12, wxID_DIVIDE_INTO_DEGREES, wxT("Degrees"), wxDefaultPosition, wxDefaultSize, wxRB_GROUP );
-	m_radioBtnDegrees->SetValue( true ); 
-	m_radioBtnDegrees->Enable( false );
-	
 	fgSizer12->Add( m_radioBtnDegrees, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
 	
 	m_radioBtnPixels = new wxRadioButton( m_panel12, wxID_DIVIDE_INTO_PIXELS, wxT("Pixels"), wxDefaultPosition, wxDefaultSize, 0 );
-	m_radioBtnPixels->Enable( false );
-	
 	fgSizer12->Add( m_radioBtnPixels, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
 	
 	m_radioAxis = new wxRadioButton( m_panel12, wxID_DIVIDE_BY_AXIS, wxT("Divisions"), wxDefaultPosition, wxDefaultSize, 0 );
-	m_radioAxis->SetValue( true ); 
 	fgSizer12->Add( m_radioAxis, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
 	
 	m_spinGridDivisions = new wxSpinCtrl( m_panel12, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 1, 255, 1 );

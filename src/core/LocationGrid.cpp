@@ -288,7 +288,6 @@ void LocationGrid::GenerateTileCoordinates()
 	if ( m_gridChanged )
 	{
 		InitTiles();
-		FillTiles();
 	}
 }
 
