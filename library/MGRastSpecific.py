@@ -57,12 +57,16 @@ class MGRastSpecific:
 			html=urllib2.urlopen(url)
 			startTime = time.time()
 		except urllib2.HTTPError as e:
+			wx.EndBusyCursor()
 			wx.MessageBox("The server is temporarily unreachable.\nPlease try again later.")
 			return False
 		response=html.read()
 		searchRes = json.loads(response)
-		nodeList = searchRes['data']
-		next = str(searchRes['next'])
+		if( 'data' in searchRes ):
+			nodeList = searchRes['data']
+			next = str(searchRes['next'])
+		else:
+			nodeList = []
 		if len(nodeList)==0:
 			wx.MessageBox("No Organism Found.")
 			return False
@@ -148,13 +152,13 @@ class MGRastSpecific:
 			projID = node[1]['id']
 			taxonomy = '|'.join(str(i) for i in node[0]['metadata'][rowMeta])
 			taxonomy = re.sub(",","",taxonomy)
-			try:
-				obs[currGrid][id].extend([(richness,lat,lon,taxonomy,projID,metaValsString)])
-			except KeyError:
-				try:
+			if( currGrid in obs ):
+				if( id in obs[currGrid]):
+					obs[currGrid][id].extend([(richness,lat,lon,taxonomy,projID,metaValsString)])
+				else:
 					obs[currGrid].update({id: [(richness,lat,lon,taxonomy,projID,metaValsString)] })
-				except KeyError:
-					obs[currGrid] = {id: [(richness,lat,lon,taxonomy,projID,metaValsString)] }
+			else:
+				obs[currGrid] = {id: [(richness,lat,lon,taxonomy,projID,metaValsString)] }
 		m_Progress.WriteText("Recieved %d records.\n"%len(nodeList))
 		return (obs, metaKeys)
 	
@@ -162,7 +166,7 @@ class MGRastSpecific:
 	def GRABALLMETADATA(self,input,oldKey,metaKeys,metaVals):
 		if isinstance(input,dict):
 			for key,value in input.iteritems():
-				# only dictionairies store the keys, so creates a key trail so you know where each trait came from
+				# only dictionaries store the keys, so creates a key trail so you know where each trait came from
 				if( oldKey != "temp" ):
 					tempKey = "%s.%s" %(oldKey,key)
 				else:
@@ -249,9 +253,7 @@ class MGRastSpecific:
 							uniqueSiteID.add(siteID)
 							metadata = ent[5].decode("utf-8")
 							metadata = unicodedata.normalize('NFKD',metadata).encode('ascii','ignore')
-							print metadata
 							OUTLTEXT += ("%s,%f,%f,%s,%s\n" % (siteID, fullLat, fullLon, cellOut+(int(fullLon) +180), metadata))
-						#toKey = "%s,%s,%f,%f,%s,%s" %(ent[4],siteID,fullLat,fullLon,ent[0],ent[3])
 						toKey = "%s,%s,%f,%f,%s,%s" %(taxOut,ent[4],fullLat,fullLon,ent[0],ent[3])
 						seqFile.append(toKey)
 		for IDlist in seqFile:
