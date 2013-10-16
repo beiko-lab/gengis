@@ -36,7 +36,6 @@ class GBIFSpecific:
 	
 	def __init__(self):
 		self.GBIFGeneric = GBIFGeneric()
-	#	self.__description__ = ""
 		self.__description__ = set()
 		self.__warnings__=[0,0]
 		self.__uniqueNodeList__=set()
@@ -117,13 +116,10 @@ class GBIFSpecific:
 					name=self.Strip(string,"<tn:nameComplete>.*")
 					rank=self.Strip(string,"<tn:rankString>.*")
 					according=self.Strip(string,"<tc:accordingToString>.*")
-				#	queryLayout.InsertItems(["%d | %s | %s | %s"%(id,name,rank,according)],pos)
 					resultList.append("%d | %s | %s | %s"%(id,name,rank,according))
-	#				pos+=1
 			else:
 				wx.MessageBox("No Tax Found.")
 				return(-1)
-	#		return(1)
 			return resultList
 	
 	#	Get smallest TAX ID. 
