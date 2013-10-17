@@ -57,13 +57,19 @@ void LocationMergeDlg::Init()
 	//get location layers
 	//for each location layer create a checkbox for them
 	LayerTreeControllerPtr layerTree = App::Inst().GetLayerTreeController();
-	for (uint locSet = 0; locSet < layerTree->GetNumLocationSetLayers(); locSet++)
+//	for (uint locSet = 0; locSet < layerTree->GetNumLocationSetLayers(); locSet++)
+	for (uint locSet = layerTree->GetNumLocationSetLayers(); locSet > 0; locSet--)
 	{
-		std::wstring layerName = layerTree->GetLocationSetLayer( locSet )->GetName();
+		std::wstring layerName = layerTree->GetLocationSetLayer( locSet - 1 )->GetName();
 		wxString const mystring(layerName);
 		m_locationSetCheckbox->InsertItems(1,&mystring,0);
 	}
+
+	m_description->SetLabel(wxT("Combine two or more Location Sets into one and insert it into top of the location stack. This allows the new layer to be used with GenGIS plugins. Selecting only one Location Set creates an exact copy of that Location Set."));
+	wxSize size;
+	size = bSizer1->GetSize();
 	
+	m_description->Wrap(size.GetWidth());
 }
 void LocationMergeDlg::OnOK(wxCommandEvent& event)
 {
@@ -100,6 +106,11 @@ void LocationMergeDlg::OnOK(wxCommandEvent& event)
 		}
 		CreateLocationSet(LocationModels,ChartViews);
 		CreateSequenceSet(SequenceModels);
+		// if m_remove is checked remove the selected layers
+		if( m_remove->GetValue() == true )
+		{
+			RemoveLocationSetLayers(LocationSets);
+		}
 		Destroy();
 	}
 }
@@ -237,4 +248,14 @@ void LocationMergeDlg::CreateSequenceSet( std::vector<SequenceModelPtr> sequence
 	}
 
 	App::Inst().GetViewport()->Refresh(false);
+}
+
+void LocationMergeDlg::RemoveLocationSetLayers ( std::vector<LocationSetLayerPtr> locationSets  )
+{
+	for( uint i = 0; i < locationSets.size(); i++ )
+	{
+		App::Inst().GetLayerTreeController()->SetSelection( locationSets[i] );
+		wxCommandEvent dummy;
+		App::Inst().GetLayerTreeController()->OnLayerRemove(dummy);
+	}
 }

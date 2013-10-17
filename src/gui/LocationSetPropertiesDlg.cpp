@@ -1624,6 +1624,12 @@ void LocationSetPropertiesDlg::OnRadioDivideBy(wxCommandEvent& event)
 	bool set1 = false;
 	bool set2 = false;
 
+	if( m_locationSetLayer->GetLocationGrid()->GetTileDivisionBox() == LocationGrid::DEGREE)
+		m_radioBtnDegrees->SetValue(true);
+	else
+		m_radioBtnPixels->SetValue(true);
+
+
 	if( wxID == wxID_DIVIDE_BY_BOX )
 	{
 	//	if( m_locationSetLayer->GetLocationGrid()->GetTileDivisionType() == LocationGrid::DEGREE)

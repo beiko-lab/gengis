@@ -155,6 +155,7 @@ class MGRastQuery(MGRASTQueryLayout):
 			minLongitude= float(self.m_MinLon.GetValue())
 			maxLongitude= float(self.m_MaxLon.GetValue())
 			if searchType == "study":
+				self.__selectedTaxon__.clear()
 			#	test data for multiple study search mgm4440037.3 mgm4440055.3 mgm4440064.3
 				for tax in taxon:
 					self.__selectedTaxon__.add((tax,"dummy value"))

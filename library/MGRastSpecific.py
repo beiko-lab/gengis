@@ -128,17 +128,24 @@ class MGRastSpecific:
 			return False
 		response=html.read()
 		matrix = json.loads(response)
+		metaKeys = []
+		metaVals = []
+			
+		#check for errors in the return
+		if 'ERROR' in matrix:
+			wx.MessageBox("Error in data: Please consult MG-RAST to verify the study you entered is valid.")
+			m_Progress.WriteText("Error. Consult MG-RAST.\n")
+			return (obs,metaKeys)
+			
 		if matrix['type'] != "Taxon table":
 			wx.MessageBox("Unexpected data format.")
-			return False
+			return (obs,metaKeys)
 		if matrix['matrix_type'] == 'dense':
 			nodeList = self.DENSEHANDLER(matrix)
-			metaKeys = []
-			metaVals = []
 		else:
 			nodeList,metaKeys,metaVals = self.SPARSEHANDLER(matrix)
 		if nodeList == False:
-			return {}
+			return (obs,metaKeys)
 		
 		metaValsString = ','.join(str(x) for x in metaVals)
 	
@@ -188,6 +195,9 @@ class MGRastSpecific:
 			oldKey = oldKey.encode('utf-8')
 			if isinstance(input,str):
 				input = re.sub(',',' ',input)
+				input = re.sub('[\r\n\t]','  ',input)
+				print input
+		#	print ("%s |\t %s" %(oldKey,input))
 			metaKeys.append(oldKey)
 			metaVals.append(input)
 			return (oldKey,input)

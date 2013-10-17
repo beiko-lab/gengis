@@ -14,6 +14,8 @@
 #include <wx/font.h>
 #include <wx/colour.h>
 #include <wx/settings.h>
+#include <wx/checkbox.h>
+#include <wx/stattext.h>
 #include <wx/button.h>
 #include <wx/sizer.h>
 #include <wx/frame.h>
@@ -29,7 +31,10 @@ class LocationMergeLayout : public wxFrame
 	private:
 	
 	protected:
+		wxBoxSizer* bSizer1;
 		wxCheckListBox* m_locationSetCheckbox;
+		wxCheckBox* m_remove;
+		wxStaticText* m_description;
 		wxButton* m_OK;
 		wxButton* m_Close;
 		
@@ -40,7 +45,7 @@ class LocationMergeLayout : public wxFrame
 	
 	public:
 		
-		LocationMergeLayout( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Location Set Merger"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 260,160 ), long style = wxDEFAULT_FRAME_STYLE|wxTAB_TRAVERSAL );
+		LocationMergeLayout( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Location Set Merger"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 260,186 ), long style = wxDEFAULT_FRAME_STYLE|wxTAB_TRAVERSAL );
 		~LocationMergeLayout();
 	
 };

@@ -125,7 +125,7 @@ bool LocationSetIO::ParseCSVFile( const std::vector<std::wstring>& csvTableRows,
 		{
 			wxString warning;
 			warning.Printf(wxT("(Warning) Location file contains %d headings, but line %d contains only %d values. "), columnValues.size(), rowNum, rowValues.size());
-			warning += (wxT("This line beings with the value '") + rowValues.at(0) + wxT("'.")).c_str();
+			warning += (wxT("This line begins with the value '") + rowValues.at(0) + wxT("'.")).c_str();
 			Log::Inst().Warning(warning);	
 			return false;
 		}
