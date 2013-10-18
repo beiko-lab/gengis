@@ -97,7 +97,7 @@ class MGRastQuery(MGRASTQueryLayout):
 	__selectedTaxon__= set()
 	__description__=""
 	__options__=""
-	__metaKeys__ = []
+	__metaVals__ = {}
 	
 	def __init__(self,parent=None):
 		self.__options__ = Options()
@@ -174,19 +174,30 @@ class MGRastQuery(MGRASTQueryLayout):
 	######################
 	def OnCalculate(self,event):
 		self.__obs__=[]
+		self.__metaVals__={}
 		self.m_Summary.SetLabel("\n")
 		records,distLocations = 0,0
 		searchType = self.__options__.GetSearchType()
 		additFields = "%s%s%s%s%s%s%s"%(self.__options__.GetFilterLevel(),self.__options__.GetFilterSource(),self.__options__.GetGroupLevel(),self.__options__.GetHitType(),self.__options__.GetIdentity(),self.__options__.GetLength(),self.__options__.GetSource())
 		if(self.__selectedTaxon__):
 			self.m_Progress.WriteText("Starting...\n")
+			#index of which taxon is being used
+			index = 0
 			for tax in self.__selectedTaxon__:
 				startTime = time.time()
-				obs, metaKey = self.MGRastSpecific.GETOBS(tax[0],searchType,additFields,self.m_Progress)
+				obs, metaVals = self.MGRastSpecific.GETOBS(tax[0],searchType,additFields,self.m_Progress)
+				print metaVals
 				if obs:	
 					self.__obs__.append(obs)
-				# simpy adds them right now. something must be done for different/additional fields
-				self.__metaKeys__ = metaKey
+				# add all unique key/val pairs from json files
+				for key,value in metaVals.iteritems():
+					if key in self.__metaVals__:
+						self.__metaVals__[key][index] = value
+					else:
+						list = ['']*len(self.__selectedTaxon__)
+						list[index] = value
+						self.__metaVals__[key] = list
+				index += 1
 				if (time.time() - startTime) < 1:
 					sleep.time(1)
 		else:
@@ -206,10 +217,11 @@ class MGRastQuery(MGRASTQueryLayout):
 	#	Adds Data to GenGIS
 	def OnAddData(self,event):
 		if (len(self.__obs__) > 0):
-			OUTLText, OUTSText = self.MGRastSpecific.GETTEXT(self.__obs__)
+			OUTLText, OUTSText = self.MGRastSpecific.GETTEXT(self.__obs__,self.__metaVals__)
 			OUTLArray=self.GBIFGeneric.CPPOUT(OUTLText)
 			OUTSArray=self.GBIFGeneric.CPPOUT(OUTSText)
-			OUTLArray.insert(0,"Site ID,Latitude,Longitude,Cell ID")
+			metKey = ','.join(sorted(self.__metaVals__.keys()))
+			OUTLArray.insert(0,"Site ID,Latitude,Longitude,Cell ID,%s" %metKey)
 			OUTSArray.insert(0,"Sequence ID,Site ID,CellLat,CellLong,Richness,Taxonomy")					
 			OUTLArray.pop()
 			OUTSArray.pop()
@@ -237,8 +249,10 @@ class MGRastQuery(MGRASTQueryLayout):
 				#creates the directories
 				OUTLfile = ("%s/%s_locs.csv" % (dir,file_split[0]))				
 				OUTSfile = ("%s/%s_seqs.csv" % (dir,file_split[0]))
-				OUTLText, OUTSText = self.MGRastSpecific.GETTEXT(self.__obs__)
-				metKey = ','.join(str(x) for x in self.__metaKeys__)
+				OUTLText, OUTSText = self.MGRastSpecific.GETTEXT(self.__obs__,self.__metaVals__)
+			#	metKey = ','.join(str(x) for x in self.__metaKeys__)
+				metKey = ','.join(sorted(self.__metaVals__.keys()))
+			#	print metKey
 				self.GBIFGeneric.WRITEEXPORT(OUTLfile,OUTLText,"Site ID,Latitude,Longitude,Cell ID,%s\n" %metKey)
 				self.GBIFGeneric.WRITEEXPORT(OUTSfile,OUTSText,"Sequence ID,Site ID,CellLat,CellLong,Richness,Taxonomy\n")
 			dlg.Destroy()

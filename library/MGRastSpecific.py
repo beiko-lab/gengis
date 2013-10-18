@@ -128,28 +128,24 @@ class MGRastSpecific:
 			return False
 		response=html.read()
 		matrix = json.loads(response)
-		metaKeys = []
-		metaVals = []
-			
+		metaVals = {}
+	
 		#check for errors in the return
 		if 'ERROR' in matrix:
 			wx.MessageBox("Error in data: Please consult MG-RAST to verify the study you entered is valid.")
 			m_Progress.WriteText("Error. Consult MG-RAST.\n")
-			return (obs,metaKeys)
+			return (obs,metaVals)
 			
 		if matrix['type'] != "Taxon table":
 			wx.MessageBox("Unexpected data format.")
-			return (obs,metaKeys)
+			return (obs,metaVals)
 		if matrix['matrix_type'] == 'dense':
 			nodeList = self.DENSEHANDLER(matrix)
 		else:
-			nodeList,metaKeys,metaVals = self.SPARSEHANDLER(matrix)
+			nodeList,metaVals = self.SPARSEHANDLER(matrix)
 		if nodeList == False:
-			return (obs,metaKeys)
+			return (obs,metaVals)
 		
-		metaValsString = ','.join(str(x) for x in metaVals)
-	
-	#	metaValsString = metaVals
 		for node in nodeList:
 			id = node[0]['id']
 			lat = node[1]['metadata']['sample']['data']['latitude']
@@ -161,13 +157,13 @@ class MGRastSpecific:
 			taxonomy = re.sub(",","",taxonomy)
 			if( currGrid in obs ):
 				if( id in obs[currGrid]):
-					obs[currGrid][id].extend([(richness,lat,lon,taxonomy,projID,metaValsString)])
+					obs[currGrid][id].extend([(richness,lat,lon,taxonomy,projID)])
 				else:
-					obs[currGrid].update({id: [(richness,lat,lon,taxonomy,projID,metaValsString)] })
+					obs[currGrid].update({id: [(richness,lat,lon,taxonomy,projID)] })
 			else:
-				obs[currGrid] = {id: [(richness,lat,lon,taxonomy,projID,metaValsString)] }
+				obs[currGrid] = {id: [(richness,lat,lon,taxonomy,projID)] }
 		m_Progress.WriteText("Recieved %d records.\n"%len(nodeList))
-		return (obs, metaKeys)
+		return (obs, metaVals)
 	
 	# Get all possible metadata from the JSON file
 	def GRABALLMETADATA(self,input,oldKey,metaKeys,metaVals):
@@ -187,7 +183,7 @@ class MGRastSpecific:
 				tempKeys,tempVals = self.GRABALLMETADATA(elem,tempKey,metaKeys,metaVals)
 			return(tempKeys,tempVals)
 		elif isinstance(input,unicode):
-			input = input.encode('utf-8')
+			input = unicodedata.normalize('NFKD',input).encode('ascii','ignore')
 			input = re.sub(',',' ',input)
 			tempKeys,tempVals = self.GRABALLMETADATA(input,oldKey,metaKeys,metaVals)
 			return(tempKeys,tempVals)
@@ -196,8 +192,6 @@ class MGRastSpecific:
 			if isinstance(input,str):
 				input = re.sub(',',' ',input)
 				input = re.sub('[\r\n\t]','  ',input)
-				print input
-		#	print ("%s |\t %s" %(oldKey,input))
 			metaKeys.append(oldKey)
 			metaVals.append(input)
 			return (oldKey,input)
@@ -209,7 +203,9 @@ class MGRastSpecific:
 			miningMatrix.pop(i, None)
 		metaKeys = [];
 		metaVals = [];	
+		#convert into dictionary of key: values
 		metaKeys, metaVals = self.GRABALLMETADATA(miningMatrix,"temp",metaKeys,metaVals)
+		dictionary = dict(zip(metaKeys,metaVals))
 		nodeList=[]
 		metaData = matrix['columns']
 		data = matrix['data']
@@ -221,7 +217,7 @@ class MGRastSpecific:
 			node = [id[row],metaData[col],val]
 			nodeList.append(node)
 		
-		return (nodeList,metaKeys,metaVals)
+		return (nodeList,dictionary)
 	
 	def DENSEHANDLER(self,matrix):
 		wx.MessageBox("Unexpected data format.")
@@ -233,17 +229,17 @@ class MGRastSpecific:
 			print 'yippee kiyay'
 		return 1
 		
-	def GETTEXT (self,obs_list):
+	def GETTEXT (self,obs_list,metaVals):
 		OUTL=""
 		OUTS=""
 		for obs in obs_list:
-			locs, seqs = self.MAKEOUTS(obs)
+			locs, seqs = self.MAKEOUTS(obs,metaVals)
 			OUTL+=locs
 			OUTS+=seqs
 		return(OUTL,OUTS)
 		
 	#	Transforms the mined data into text to be output
-	def MAKEOUTS (self,obs):
+	def MAKEOUTS (self,obs,metaVals):
 		uniqueSiteID = set()
 		OUTLTEXT=""
 		OUTSTEXT=""
@@ -261,8 +257,15 @@ class MGRastSpecific:
 						siteID = ent[4];
 						if siteID not in uniqueSiteID:
 							uniqueSiteID.add(siteID)
-							metadata = ent[5].decode("utf-8")
-							metadata = unicodedata.normalize('NFKD',metadata).encode('ascii','ignore')
+							index = metaVals['columns.0.id'].index(siteID)
+							metadata = "" 
+							first = True
+							for key in sorted(metaVals.keys()):
+								if first:
+									metadata = "%s" %(metaVals[key][index])
+									first = False
+								else:
+									metadata = "%s,%s" %(metadata, metaVals[key][index])
 							OUTLTEXT += ("%s,%f,%f,%s,%s\n" % (siteID, fullLat, fullLon, cellOut+(int(fullLon) +180), metadata))
 						toKey = "%s,%s,%f,%f,%s,%s" %(taxOut,ent[4],fullLat,fullLon,ent[0],ent[3])
 						seqFile.append(toKey)
