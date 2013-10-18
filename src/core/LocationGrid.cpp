@@ -423,21 +423,39 @@ void LocationGrid::FillTiles()
 	std::vector<LocationLayerPtr> locationLayers = m_locationSetLayer->GetAllLocationLayers();
 	for( uint i = 0; i < locationLayers.size() ; i++)
 	{
+		std::map<std::wstring,std::wstring> data = locationLayers[i]->GetLocationController()->GetData();
+		float easting = StringTools::ToDouble(data[StringTools::ToStringW("Longitude")]);
+		float northing = StringTools::ToDouble(data[StringTools::ToStringW("Latitude")]);
+		// check if long and lat values exist. if they don't use easting and westing
+		if( easting != easting || northing != northing || !_finite(easting) || !_finite(northing) )
+		{
+			easting = locationLayers[i]->GetLocationController()->GetEasting();
+			northing = locationLayers[i]->GetLocationController()->GetNorthing();
+		}
+		
 		for ( uint j = 0; j < m_tileModels.size(); j++)
 		{
 			std::pair<float,float> top = m_tileModels[j]->GetTopLeft();
 			std::pair<float,float> bottom = m_tileModels[j]->GetBottomRight();
-			std::map<std::wstring,std::wstring> data = locationLayers[i]->GetLocationController()->GetData();
-			float easting = StringTools::ToDouble(data[StringTools::ToStringW("Longitude")]);
-			float northing = StringTools::ToDouble(data[StringTools::ToStringW("Latitude")]);
-			// check if long and lat values exist. if they don't use easting and westing
-			if( easting != easting || northing != northing || !_finite(easting) || !_finite(northing) )
-			{
-				easting = locationLayers[i]->GetLocationController()->GetEasting();
-				northing = locationLayers[i]->GetLocationController()->GetNorthing();
-			}
+			
+			// floating point was proving not to be precise enough at this stage. comparing 33.180000 < 33.1800000000 was equating to true
+			int eastingP = floor(easting * 100);
+			int northingP = floor(northing * 100);
+			int topFirst = floor(top.first * 100);
+			int topSecond = floor(top.second * 100);
+			int bottomFirst = floor(bottom.first * 100);
+			int bottomSecond = floor(bottom.second * 100);
 
-			if ( top.first <= easting
+
+			if ( topFirst <= eastingP
+				&& topSecond >= northingP
+				&& bottomFirst > eastingP
+				&& bottomSecond < northingP )
+			{
+				m_tileModels[j]->AddLocationLayer(locationLayers[i]);
+				break;
+			}
+/*			if ( top.first <= easting
 				&& top.second >= northing
 				&& bottom.first > easting
 				&& bottom.second < northing )
@@ -445,12 +463,14 @@ void LocationGrid::FillTiles()
 				m_tileModels[j]->AddLocationLayer(locationLayers[i]);
 				break;
 			}
+*/
 		}
 	}
 	// now set tile true values for every tile
 	for ( uint j = 0; j < m_tileModels.size(); j++)
 	{
-		m_tileModels[j]->CombineData();
+		if(m_tileModels[j]->GetNumLocations() > 0 )
+			m_tileModels[j]->CombineData();
 	}
 }
 
@@ -533,8 +553,8 @@ TileModelPtr LocationGrid::FindLocationTile(Point2D loc)
 	}
 	else
 	{
-		double x = loc.x - m_mapOffset.x;
-		float divisions = ceil( m_mapOpenGLBoundaries.Height() / tileSize ); 
+		double x = loc.x - m_mapOffset.x; 
+		float divisions = m_mapOpenGLBoundaries.Height() / tileSize ; 
 		float tileRatio =  m_mapOpenGLBoundaries.Height() / divisions;
 		// ceiling5
 		whichColumn = x / tileRatio;;
@@ -548,7 +568,7 @@ TileModelPtr LocationGrid::FindLocationTile(Point2D loc)
 	{
 	//	double y = ( loc.y - m_mapOffset.y ) / tileSize;
 		double y = ( loc.y - m_mapOffset.y );
-		float divisions = ceil( m_mapOpenGLBoundaries.Width() / tileSize ); 
+		float divisions = m_mapOpenGLBoundaries.Width() / tileSize ; 
 		float tileRatio = m_mapOpenGLBoundaries.Width() / divisions;
 		whichRow = y / tileRatio ;
 	}
@@ -559,8 +579,11 @@ TileModelPtr LocationGrid::FindLocationTile(Point2D loc)
 		divisionIndex = whichRow * (divisions) + whichRow + whichColumn;
 	}
 	else if ( m_divideTilesAlong == LONGITUDE )
-		divisionIndex = whichColumn * m_divisions + whichRow + whichColumn;
-
+	{
+	//	float divisions = floor( m_mapOpenGLBoundaries.Height() / tileSize ); 
+		float divisions = floor( m_mapOpenGLBoundaries.Width() / tileSize ); 
+		divisionIndex = whichRow * divisions + whichColumn;
+	}
 
 	TileModelPtr tile = m_tileModels[divisionIndex];
 
@@ -587,9 +610,10 @@ void LocationGrid::SetOriginOffset( std::wstring selectedName )
 		Point3D tileCoord;
 		App::Inst().GetMapController()->GetMapModel()->LatLongToGrid( tileOrigin, tileCoord );
 
+		// negative offsets mean the wrong tile has been selected
 		float xOffset =  locationCoord.x - tileCoord.x;
 		float yOffset =  locationCoord.z - tileCoord.z;
-
+	
 		SetMapOffset( Point2D(xOffset,yOffset) );
 	}
 }
