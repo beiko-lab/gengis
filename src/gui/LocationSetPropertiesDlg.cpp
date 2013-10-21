@@ -195,6 +195,20 @@ void LocationSetPropertiesDlg::InitLocationGridColour()
 		m_choiceGridFieldToChart->Append(wxString((*it).c_str()));
 	}
 
+	// populate combo box with all fields associated with a sequence
+	std::map<std::wstring,std::wstring> data = m_locationSetController->GetSequenceMetadata();
+	std::map<std::wstring,std::wstring>::iterator seqIt;
+	for(seqIt = data.begin(); seqIt != data.end(); ++seqIt)
+	{
+//		if(StringTools::ToLower((*seqIt).first.c_str()) != _T("site id")
+//				&& StringTools::ToLower((*seqIt).first.c_str()) != _T("sequence id"))
+//		{
+		//	m_cboChartField->Append(wxString((*it).first.c_str()));
+		if( StringTools::IsDecimalNumber((*seqIt).second) )
+			m_choiceGridFieldToChart->Append(wxString((*seqIt).first.c_str()));
+//		}
+	}
+
 	if(!m_locationSetLayer->GetLocationGrid()->GetField().empty())
 		m_choiceGridFieldToChart->SetValue(m_locationSetLayer->GetLocationGrid()->GetField().c_str());
 	else
@@ -1068,8 +1082,14 @@ void LocationSetPropertiesDlg::GetSortedGridFieldValues(const std::wstring& fiel
 	{
 		if( m_tileModels[i]->GetNumLocations() != 0 )
 		{
+			// need to check if field comes from location or sequence layer
 			std::map<std::wstring,std::wstring> data = m_tileModels[i]->GetData();
 			std::map<std::wstring,std::wstring>::const_iterator it = data.find(field);
+			if( it == data.end() )
+			{
+				data = m_tileModels[i]->GetSequence(0)->GetData();
+				it = data.find(field);
+			}
 			uniqueFieldValues.insert(it->second);
 		}
 	}

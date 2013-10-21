@@ -26,6 +26,7 @@
 #include "../core/LocationGrid.hpp"
 #include "../core/TileModel.hpp"
 #include "../core/LocationSetLayer.hpp"
+#include "../core/SequenceModel.hpp"
 #include "../utils/ColourMap.hpp"
 #include "../utils/ColourMapManager.hpp"
 #include "../utils/Colour.hpp"
@@ -455,22 +456,16 @@ void LocationGrid::FillTiles()
 				m_tileModels[j]->AddLocationLayer(locationLayers[i]);
 				break;
 			}
-/*			if ( top.first <= easting
-				&& top.second >= northing
-				&& bottom.first > easting
-				&& bottom.second < northing )
-			{
-				m_tileModels[j]->AddLocationLayer(locationLayers[i]);
-				break;
-			}
-*/
 		}
 	}
 	// now set tile true values for every tile
 	for ( uint j = 0; j < m_tileModels.size(); j++)
 	{
 		if(m_tileModels[j]->GetNumLocations() > 0 )
+		{
 			m_tileModels[j]->CombineData();
+			m_tileModels[j]->CombineSequenceData();
+		}
 	}
 }
 
@@ -503,6 +498,11 @@ void LocationGrid::SetLocationColours()
 			std::map<std::wstring,std::wstring> data = m_tileModels.at(i)->GetData();
 			std::map<std::wstring,std::wstring>::const_iterator it = data.find(m_field);
 
+			if( it == data.end() )
+			{
+				data = m_tileModels.at(i)->GetSequence(0)->GetData();
+				it = data.find(m_field);
+			}
 			if(!m_gridColourMap->GetColour(it->second, colour))
 			{
 				Log::Inst().Error("(Error) LocationGrid::SetLocationColours(): no colour associated with name.");

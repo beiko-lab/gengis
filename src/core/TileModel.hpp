@@ -188,6 +188,11 @@ namespace GenGIS
 		void CombineData();
 	
 		/**
+		*	@brief Combine tile sequence data fields as specified by the user.
+		*/
+		void CombineSequenceData();
+
+		/**
 		* @brief Set combination method for tile fields.
 		* @param Combination method to be set to.
 		*/
