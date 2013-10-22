@@ -556,7 +556,6 @@ TileModelPtr LocationGrid::FindLocationTile(Point2D loc)
 		double x = loc.x - m_mapOffset.x; 
 		float divisions = m_mapOpenGLBoundaries.Height() / tileSize ; 
 		float tileRatio =  m_mapOpenGLBoundaries.Height() / divisions;
-		// ceiling5
 		whichColumn = x / tileRatio;;
 	}
 	// calculate tile column
@@ -630,11 +629,33 @@ void LocationGrid::SetOriginOffset( Point2D coord )
 		GeoCoord locationGeo(xAxisPosition,yAxisPosition);
 		App::Inst().GetMapController()->GetMapModel()->LatLongToGrid(locationGeo,locationCoord);
 
+		
+		double tileSize;
+		if ( m_divideTilesAlong == LATITUDE )
+			tileSize = m_mapOpenGLBoundaries.Height() / m_divisions;
+		else if ( m_divideTilesAlong == LONGITUDE )
+			tileSize = m_mapOpenGLBoundaries.Width() / m_divisions;
+
 		// handle boundries
-		(locationCoord.z > m_mapOpenGLBoundaries.dy)? m_mapOpenGLBoundaries.dy : locationCoord.z;
-		(locationCoord.x > m_mapOpenGLBoundaries.dx)? m_mapOpenGLBoundaries.dx : locationCoord.x;
-		(locationCoord.z < m_mapOpenGLBoundaries.y)? m_mapOpenGLBoundaries.y : locationCoord.z;
-		(locationCoord.x < m_mapOpenGLBoundaries.x)? m_mapOpenGLBoundaries.x : locationCoord.x;
+		if ((locationCoord.z > m_mapOpenGLBoundaries.dy) || (locationCoord.z < m_mapOpenGLBoundaries.y))	// lat boundary
+		{		
+	//		double tileSize = m_mapOpenGLBoundaries.Height() / m_divisions;
+			double tileSizeY = tileSize;
+			if (locationCoord.z > m_mapOpenGLBoundaries.y)
+				tileSizeY = tileSize * -1;
+			while ( ( locationCoord.z > m_mapOpenGLBoundaries.dy) || (locationCoord.z < m_mapOpenGLBoundaries.y ) )
+				locationCoord.z = locationCoord.z + tileSizeY;
+		}
+		if ( (locationCoord.x > m_mapOpenGLBoundaries.dx) || (locationCoord.x < m_mapOpenGLBoundaries.x) )	// lon boundary
+		{		
+		//	double tileSize = m_mapOpenGLBoundaries.Width() / m_divisions;
+			double tileSizeX = tileSize;
+			if (locationCoord.x > m_mapOpenGLBoundaries.x)
+				tileSizeX = tileSize * -1;
+			while( (locationCoord.x > m_mapOpenGLBoundaries.dx) || (locationCoord.x < m_mapOpenGLBoundaries.x) )
+				locationCoord.x = locationCoord.x + tileSizeX;
+		}
+
 
 		//find which tile this location belongs in
 		TileModelPtr tile = FindLocationTile( Point2D(locationCoord.x,locationCoord.z) );
