@@ -756,6 +756,9 @@ void LocationSetPropertiesDlg::InitLocationGrid()
 
 	InitLocationGridColour();
 	InitLocationGridAlignment();
+
+	// Grid is initialized and not changed
+	locationGrid->SetGridChanged( false );
 }
 
 void LocationSetPropertiesDlg::OnRadioColourFill( wxCommandEvent& event )
@@ -920,7 +923,7 @@ void LocationSetPropertiesDlg::OnChoiceGridFieldToChartChange( wxCommandEvent& e
 {
 	LocationGridPtr locationGrid = m_locationSetLayer->GetLocationGrid();
 
-	locationGrid->SetGridChanged( true );
+//	locationGrid->SetGridChanged( true );
 	std::vector<std::wstring> fieldValues;
 	GetSortedGridFieldValues( m_choiceGridFieldToChart->GetValue().c_str(), fieldValues, locationGrid->GetTileModels() );
 	m_gridColourMapWidget->SetFieldValues(m_scrolledWindowGridColour, fieldValues);
