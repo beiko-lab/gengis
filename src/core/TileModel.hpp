@@ -203,6 +203,12 @@ namespace GenGIS
 		*/
 		DATA_COMBINE GetCombinationMethod() { return m_combinationMethod; }
 
+		/**
+		* @brief Compute the Gini-Simpson Index for a sample.
+		* @param Sample values to be computer.
+		*/
+		double GiniSimpson(std::vector<double> values);
+
 	private:
 		/** Serialization. */
 		friend class boost::serialization::access;

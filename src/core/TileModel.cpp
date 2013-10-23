@@ -82,48 +82,11 @@ void TileModel::UpdateData(std::map<std::wstring,std::wstring> newData)
 
 void TileModel::UpdateSequences(std::vector<SequenceLayerPtr> sequences)
 {
-	// for every sequence
-	for(uint i = 0; i < sequences.size(); i++)
-	{
-		if( GetNumSequence() == 0 )
-			AddSequence(sequences[i]->GetSequenceController()->GetSequenceModel());
-		else
-		{
-			//Get first sequence
-			SequenceModelPtr curSequence = GetSequence(0);
-			//Get that sequences data;
-			std::map<std::wstring,std::wstring> curData = curSequence->GetData();
-
-			// now its the same as adding new data
-			
-			// get data to be added
-			std::map<std::wstring,std::wstring> newData = sequences[i]->GetSequenceController()->GetData();
-			std::map<std::wstring,std::wstring>::iterator dataIter;
-
-			for(dataIter = newData.begin(); dataIter != newData.end(); ++dataIter)
-			{
-				std::wstring field = dataIter->first;
-				std::wstring value = dataIter->second;
-				// check if tile's data currently has a value
-				// if not make a new one
-				std::wstring curValue = curData[field];
-				if( curValue != curSequence->GetSiteId() )	
-				{
-					curValue = curValue + StringTools::ToStringW(" ") + value;
-					curData[field] = curValue;
-				}
-				else
-				{
-					curData[field] = value;
-				}
-			}
-			// remove our old un-updated sequence
-			RemoveSequence(0);
-			// make and add a new one
-			SequenceModelPtr newSequence(new SequenceModel(curSequence->GetSequenceId(), curSequence->GetSiteId(),curData));
-			AddSequence(newSequence);
-		}
+ 	for(uint i = 0; i < sequences.size(); i++)
+ 	{
+		AddSequence(sequences[i]->GetSequenceController()->GetSequenceModel());
 	}
+
 }
 
 void TileModel::CombineData()
@@ -150,54 +113,72 @@ void TileModel::CombineData()
 		double mean =  std::accumulate(values.begin(), values.end(), 0.0) / values.size();
 		double sq_sum = std::inner_product(values.begin(), values.end(), values.begin(), 0.0);
 		double stdev = std::sqrt(sq_sum / values.size() - mean * mean);
+		double giniSimpson = GiniSimpson( values );
 
 		if( m_combinationMethod == AVERAGE )
 			result = mean;
 		else if(m_combinationMethod == STDEV )
 			result = stdev;
+		else if(m_combinationMethod == GINI )
+			result = giniSimpson;
 		AddData( field, StringTools::ToStringW(result,2) );
 	}
 }
 
 void TileModel::CombineSequenceData()
 {
-	// for every field in data combine as user specified
-	
-	if(GetNumSequence() > 0 ){
-
-		std::map<std::wstring,std::wstring> data = GetSequence(0)->GetData();
-		std::map<std::wstring,std::wstring>::iterator dataIter;
-		for(dataIter = data.begin(); dataIter != data.end(); ++dataIter)
+ 	std::map< std::wstring, std::vector<double> > master;
+	for( uint i =0; i< GetNumSequence(); i++ )
+	{
+		std::map<std::wstring,std::wstring> data = GetSequence(i)->GetData();
+		for( std::map<std::wstring,std::wstring>::iterator it = data.begin(); it != data.end(); ++it)
 		{
-			std::wstring field = dataIter->first;
-			std::wstring value = dataIter->second;
-
-			std::vector<std::string> seperatedValue;
-			std::vector<double> values;
-			double result;
-			boost::split(seperatedValue,value,boost::is_any_of(" "),boost::token_compress_on);
-			for( uint i = 0; i < seperatedValue.size(); i++)
-			{	
-				values.push_back(StringTools::ToDouble(seperatedValue[i]));
-			}
-			double mean =  std::accumulate(values.begin(), values.end(), 0.0) / values.size();
-			double sq_sum = std::inner_product(values.begin(), values.end(), values.begin(), 0.0);
-			double stdev = std::sqrt(sq_sum / values.size() - mean * mean);
-			// check if we're dealing with a string or number
-			if( m_combinationMethod == AVERAGE )
-				result = mean;
-			else if(m_combinationMethod == STDEV )
-				result = stdev;
-
-			// check if dealing with a number or a string
-			if( StringTools::IsDecimalNumber( seperatedValue[0] ) )
-				data[field] = StringTools::ToStringW(result,2);
-			else
-				data[field] = value;
+			master[ (*it).first ].push_back( StringTools::ToDouble( (*it).second ) );
 		}
-		// make and add a new one
-		SequenceModelPtr newSequence(new SequenceModel(GetSequence(0)->GetSequenceId(), GetSequence(0)->GetSiteId(),data));
-		RemoveSequence(0);
-		AddSequence(newSequence);
 	}
+	
+	std::map<std::wstring,std::wstring> combinedData;
+	// now combine all the sequences in the specified manner
+	for( std::map<std::wstring,std::vector<double>>::iterator it = master.begin(); it != master.end(); ++it)
+	{
+		double result;
+		if( m_combinationMethod == AVERAGE )
+		{
+			double mean =  std::accumulate((*it).second.begin(), (*it).second.end(), 0.0) / (*it).second.size();
+			result = mean;
+		}
+		else if(m_combinationMethod == STDEV )
+		{		
+			double mean =  std::accumulate((*it).second.begin(), (*it).second.end(), 0.0) / (*it).second.size();
+			double sq_sum = std::inner_product((*it).second.begin(), (*it).second.end(), (*it).second.begin(), 0.0);
+			double stdev = std::sqrt(sq_sum / (*it).second.size() - mean * mean);
+			result = stdev;
+		}
+		else if(m_combinationMethod == GINI )
+		{		
+			double giniSimpson = GiniSimpson( (*it).second );
+			result = giniSimpson;
+		}
+		combinedData[(*it).first] = StringTools::ToStringW( result, 4 );
+	}
+
+	SequenceModelPtr newSequence(new SequenceModel(GetSequence(0)->GetSequenceId(), GetSequence(0)->GetSiteId(),combinedData));
+	RemoveAllSequence();
+	AddSequence(newSequence);
+}
+
+double TileModel::GiniSimpson(std::vector<double> values)
+{
+	double D = 0;
+	double total = std::accumulate(values.begin(),values.end(),0);
+	for( uint i = 0; i< values.size(); i++ )
+	{
+		double p = values[i] / total;
+		D += p*p;
+	}
+	double ginisimpson = 1.0 - D;
+
+	return ginisimpson;
+
+
 }
