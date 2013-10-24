@@ -207,7 +207,7 @@ namespace GenGIS
 		* @brief Compute the Gini-Simpson Index for a sample.
 		* @param Sample values to be computer.
 		*/
-		double GiniSimpson(std::vector<double> values);
+		double GiniSimpson(std::vector<std::wstring> values);
 
 	private:
 		/** Serialization. */

@@ -188,7 +188,8 @@ void LocationSetPropertiesDlg::InitLocationGridAlignment()
 void LocationSetPropertiesDlg::InitLocationGridColour()
 {
 	// populate combo box with all fields associated with a location
-	std::vector<std::wstring> fields = m_locationSetController->GetNumericMetadataFields();
+//	std::vector<std::wstring> fields = m_locationSetController->GetNumericMetadataFields();
+	std::vector<std::wstring> fields = m_locationSetController->GetMetadataFields();
 	std::vector<std::wstring>::iterator it;
 	for(it = fields.begin(); it != fields.end(); ++it)
 	{
