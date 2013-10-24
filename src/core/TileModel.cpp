@@ -25,6 +25,7 @@
 #include "../core/SequenceLayer.hpp"
 #include "../core/TileModel.hpp"
 #include "../core/LocationModel.hpp"
+
 //#include "../core/LocationController.hpp"
 
 using namespace GenGIS;
@@ -66,11 +67,11 @@ void TileModel::UpdateData(std::map<std::wstring,std::wstring> newData)
 		if( FindField(field) == 1 )
 		{
 			std::wstring curValue = GetData( field );
-			if(StringTools::IsDecimalNumber( value ))
-			{
+//			if(StringTools::IsDecimalNumber( value ))
+//			{
 				curValue = curValue + StringTools::ToStringW(" ") + value;
 				AddData(field, curValue);
-			}
+//			}
 		}
 		else
 		{
@@ -99,67 +100,118 @@ void TileModel::CombineData()
 		std::wstring field = dataIter->first;
 		std::wstring value = dataIter->second;
 
-		std::vector<std::string> seperatedValue;
+		std::vector<std::wstring> seperatedValue;
 		std::vector<double> values;
 		double result;
+		std::wstring resultConverted;
 		boost::split(seperatedValue,value,boost::is_any_of(" "),boost::token_compress_on);
-		// convert string values to double values. Non numeric already parsed out
-		for( uint i = 0; i < seperatedValue.size(); i++)
-		{	
-			values.push_back(StringTools::ToDouble(seperatedValue[i]));
-		}
-		// MATH referenced from musiphil on Sep 30, 2011
-		// http://stackoverflow.com/questions/7616511/calculate-mean-and-standard-deviation-from-a-vector-of-samples-in-c-using-boos
-		double mean =  std::accumulate(values.begin(), values.end(), 0.0) / values.size();
-		double sq_sum = std::inner_product(values.begin(), values.end(), values.begin(), 0.0);
-		double stdev = std::sqrt(sq_sum / values.size() - mean * mean);
-		double giniSimpson = GiniSimpson( values );
 
-		if( m_combinationMethod == AVERAGE )
-			result = mean;
-		else if(m_combinationMethod == STDEV )
-			result = stdev;
-		else if(m_combinationMethod == GINI )
+		// combination Methods that only handle numbers
+		//		FIND A WAY TO EXCLUDE SEQUENCE ID!!!!!!!!!!
+		if( ( StringTools::IsDecimalNumber( seperatedValue[0] ) )
+			&& ( StringTools::ToLower(field).compare(_T("cell id")) != 0 )
+			&& ( StringTools::ToLower(field).compare(_T("cellid")) != 0 ) )
+		{
+			// convert string values to double values. Non numeric already parsed out
+			for( uint i = 0; i < seperatedValue.size(); i++)
+			{	
+				values.push_back(StringTools::ToDouble(seperatedValue[i]));
+			}	
+			// MATH referenced from musiphil on Sep 30, 2011
+			// http://stackoverflow.com/questions/7616511/calculate-mean-and-standard-deviation-from-a-vector-of-samples-in-c-using-boos
+			if( m_combinationMethod == AVERAGE )
+			{
+				double mean =  std::accumulate(values.begin(), values.end(), 0.0) / values.size();
+				result = mean;
+			}
+			else if(m_combinationMethod == STDEV )
+			{		
+				double mean =  std::accumulate(values.begin(), values.end(), 0.0) / values.size();
+				double sq_sum = std::inner_product(values.begin(), values.end(), values.begin(), 0.0);
+				double stdev = std::sqrt(sq_sum / values.size() - mean * mean);		
+				result = stdev;
+			}
+			resultConverted = StringTools::ToStringW(result,2);
+		}
+		else
+		{
+			resultConverted = value;
+		}
+		// GINI index can handle String fields
+		if(m_combinationMethod == GINI )
+		{		
+		//	double giniSimpson = GiniSimpson( values );
+			double giniSimpson = GiniSimpson( seperatedValue );
 			result = giniSimpson;
-		AddData( field, StringTools::ToStringW(result,2) );
+			resultConverted = StringTools::ToStringW(result,2);
+		}
+		AddData( field, resultConverted);
 	}
 }
 
 void TileModel::CombineSequenceData()
 {
- 	std::map< std::wstring, std::vector<double> > master;
+ //	std::map< std::wstring, std::vector<double> > master;
+	std::map< std::wstring, std::vector<std::wstring> > master;
+
 	for( uint i =0; i< GetNumSequence(); i++ )
 	{
 		std::map<std::wstring,std::wstring> data = GetSequence(i)->GetData();
 		for( std::map<std::wstring,std::wstring>::iterator it = data.begin(); it != data.end(); ++it)
 		{
-			master[ (*it).first ].push_back( StringTools::ToDouble( (*it).second ) );
+		//	master[ (*it).first ].push_back( StringTools::ToDouble( (*it).second ) );
+			master[ (*it).first ].push_back(  (*it).second  );
 		}
 	}
 	
 	std::map<std::wstring,std::wstring> combinedData;
 	// now combine all the sequences in the specified manner
-	for( std::map<std::wstring,std::vector<double>>::iterator it = master.begin(); it != master.end(); ++it)
+//	for( std::map<std::wstring,std::vector<double>>::iterator it = master.begin(); it != master.end(); ++it)
+	for( std::map<std::wstring,std::vector<std::wstring>>::iterator it = master.begin(); it != master.end(); ++it)
 	{
 		double result;
-		if( m_combinationMethod == AVERAGE )
+		std::wstring resultConverted;
+
+		//convert any possible numeric
+		std::vector<double> valueAsNum( (*it).second.size() );
+		
+		if( ( StringTools::IsDecimalNumber( (*it).second[0] ) )
+		&& ( StringTools::ToLower((*it).first).compare(_T("sequence id")) != 0 )
+		&& ( StringTools::ToLower((*it).first).compare(_T("sequenceid")) != 0 )
+		&& ( StringTools::ToLower((*it).first).compare(_T("site id")) != 0 )
+		&& ( StringTools::ToLower((*it).first).compare(_T("siteid")) != 0 ) )
 		{
-			double mean =  std::accumulate((*it).second.begin(), (*it).second.end(), 0.0) / (*it).second.size();
-			result = mean;
+			for( uint i = 0; i < (*it).second.size(); i++)
+			{
+				valueAsNum[i] = StringTools::ToDouble( (*it).second[i] );
+			}
+			
+			if( m_combinationMethod == AVERAGE )
+			{
+				double mean =  std::accumulate(valueAsNum.begin(), valueAsNum.end(), 0.0) / valueAsNum.size();
+				result = mean;
+			}
+			else if(m_combinationMethod == STDEV )
+			{		
+				double mean =  std::accumulate(valueAsNum.begin(), valueAsNum.end(), 0.0) / valueAsNum.size();
+				double sq_sum = std::inner_product(valueAsNum.begin(), valueAsNum.end(), valueAsNum.begin(), 0.0);
+				double stank = valueAsNum.size();
+				double stdev = std::sqrt(abs(sq_sum / valueAsNum.size() - mean * mean));
+				result = stdev;
+			}
+			resultConverted = StringTools::ToStringW( result, 4 );
 		}
-		else if(m_combinationMethod == STDEV )
-		{		
-			double mean =  std::accumulate((*it).second.begin(), (*it).second.end(), 0.0) / (*it).second.size();
-			double sq_sum = std::inner_product((*it).second.begin(), (*it).second.end(), (*it).second.begin(), 0.0);
-			double stdev = std::sqrt(sq_sum / (*it).second.size() - mean * mean);
-			result = stdev;
+		else
+		{
+			resultConverted = boost::algorithm::join( (*it).second, " " );
 		}
-		else if(m_combinationMethod == GINI )
-		{		
+		if(m_combinationMethod == GINI )
+		{	
+			// GINI index can do it's own conversions as it will accept non-numeric
 			double giniSimpson = GiniSimpson( (*it).second );
 			result = giniSimpson;
 		}
-		combinedData[(*it).first] = StringTools::ToStringW( result, 4 );
+		combinedData[(*it).first] = resultConverted;
 	}
 
 	SequenceModelPtr newSequence(new SequenceModel(GetSequence(0)->GetSequenceId(), GetSequence(0)->GetSiteId(),combinedData));
@@ -167,8 +219,13 @@ void TileModel::CombineSequenceData()
 	AddSequence(newSequence);
 }
 
-double TileModel::GiniSimpson(std::vector<double> values)
+double TileModel::GiniSimpson(std::vector<std::wstring> values)
 {
+	// create "sample dict" as per OnCalculate method of AlphaDiversity.py
+/**
+	double count = 1;
+	// count = 
+
 	double D = 0;
 	double total = std::accumulate(values.begin(),values.end(),0);
 	for( uint i = 0; i< values.size(); i++ )
@@ -179,6 +236,7 @@ double TileModel::GiniSimpson(std::vector<double> values)
 	double ginisimpson = 1.0 - D;
 
 	return ginisimpson;
-
+*/
+	return 0;
 
 }
