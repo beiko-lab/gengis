@@ -98,6 +98,7 @@ class MGRastQuery(MGRASTQueryLayout):
 	__description__=""
 	__options__=""
 	__metaVals__ = {}
+	__TAXON__ = ["Domain","Phylum","Class","Order","Family","Genus","Species","Strain"]
 	
 	def __init__(self,parent=None):
 		self.__options__ = Options()
@@ -185,7 +186,14 @@ class MGRastQuery(MGRASTQueryLayout):
 			index = 0
 			for tax in self.__selectedTaxon__:
 				startTime = time.time()
-				obs, metaVals = self.MGRastSpecific.GETOBS(tax[0],searchType,additFields,self.m_Progress)
+				obs, metaVals, taxonLength = self.MGRastSpecific.GETOBS(tax[0],searchType,additFields,self.m_Progress)
+				taxonomy = []
+				for i in range(0,taxonLength):
+					if i < len(self.__TAXON__):
+						taxonomy.append(self.__TAXON__[i])
+					else:
+						taxonomy[i].append("Level_%s"%i)
+				self.__TAXON__= taxonomy
 				if obs:	
 					self.__obs__.append(obs)
 				# add all unique key/val pairs from json files
@@ -215,13 +223,20 @@ class MGRastQuery(MGRASTQueryLayout):
 	
 	#	Adds Data to GenGIS
 	def OnAddData(self,event):
+		# check required data has been loaded
+		if GenGIS.layerTree.GetNumMapLayers() == 0:
+			wx.MessageBox("This action requires a Map layer. Please load a Map.")
+			self.Close()
+			return
+		taxonLevels = ','.join(str(i) for i in self.__TAXON__)
+		
 		if (len(self.__obs__) > 0):
 			OUTLText, OUTSText = self.MGRastSpecific.GETTEXT(self.__obs__,self.__metaVals__)
 			OUTLArray=self.GBIFGeneric.CPPOUT(OUTLText)
 			OUTSArray=self.GBIFGeneric.CPPOUT(OUTSText)
 			metKey = ','.join(sorted(self.__metaVals__.keys()))
 			OUTLArray.insert(0,"Site ID,Latitude,Longitude,Cell ID,%s" %metKey)
-			OUTSArray.insert(0,"Sequence ID,Site ID,CellLat,CellLong,Richness,Taxonomy")					
+			OUTSArray.insert(0,"Sequence ID,Site ID,CellLat,CellLong,Richness,%s,Taxonomy" %taxonLevels)					
 			OUTLArray.pop()
 			OUTSArray.pop()
 			layerName = "MGRASTLayer_%d" % GenGIS.layerTree.GetNumLocationLayers()
@@ -239,6 +254,7 @@ class MGRastQuery(MGRASTQueryLayout):
 	#	Exports Location and Sequence Data to a location of the users choice
 	def OnExportData(self,event):
 		if (len(self.__obs__) > 0):
+			taxonLevels = ','.join(str(i) for i in self.__TAXON__)
 			fileTypes = 'Loc and Seq Files (*.csv)|*.csv'
 			dlg = wx.FileDialog(self, "Save plot", "", "", fileTypes, wx.SAVE)
 			if dlg.ShowModal()==wx.ID_OK:
@@ -253,7 +269,7 @@ class MGRastQuery(MGRASTQueryLayout):
 				metKey = ','.join(sorted(self.__metaVals__.keys()))
 			#	print metKey
 				self.GBIFGeneric.WRITEEXPORT(OUTLfile,OUTLText,"Site ID,Latitude,Longitude,Cell ID,%s\n" %metKey)
-				self.GBIFGeneric.WRITEEXPORT(OUTSfile,OUTSText,"Sequence ID,Site ID,CellLat,CellLong,Richness,Taxonomy\n")
+				self.GBIFGeneric.WRITEEXPORT(OUTSfile,OUTSText,"Sequence ID,Site ID,CellLat,CellLong,Richness,%s,Taxonomy\n" %taxonLevels)
 			dlg.Destroy()
 		else:
 			wx.MessageBox("Please make a successful GBIF Query first.")
