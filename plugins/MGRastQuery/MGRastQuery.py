@@ -186,7 +186,6 @@ class MGRastQuery(MGRASTQueryLayout):
 			for tax in self.__selectedTaxon__:
 				startTime = time.time()
 				obs, metaVals = self.MGRastSpecific.GETOBS(tax[0],searchType,additFields,self.m_Progress)
-				print metaVals
 				if obs:	
 					self.__obs__.append(obs)
 				# add all unique key/val pairs from json files
@@ -225,7 +224,7 @@ class MGRastQuery(MGRASTQueryLayout):
 			OUTSArray.insert(0,"Sequence ID,Site ID,CellLat,CellLong,Richness,Taxonomy")					
 			OUTLArray.pop()
 			OUTSArray.pop()
-			layerName = "GBIFLayer_%d" % GenGIS.layerTree.GetNumLocationLayers()
+			layerName = "MGRASTLayer_%d" % GenGIS.layerTree.GetNumLocationLayers()
 			GenGIS.mainWindow.OpenLocationsCSVFile(OUTLArray, layerName)
 			GenGIS.mainWindow.OpenSequenceCSVFile(OUTSArray, layerName)
 			
