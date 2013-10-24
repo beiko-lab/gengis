@@ -157,7 +157,6 @@ class MGRastSpecific:
 			taxonomy = '|'.join(str(i) for i in node[0]['metadata'][rowMeta])
 			taxonomy = re.sub(",","",taxonomy)
 			labeled_taxonomy = re.sub("\|",",",taxonomy)
-			print taxonomy
 			if( currGrid in obs ):
 				if( id in obs[currGrid]):
 					obs[currGrid][id].extend([(richness,lat,lon,taxonomy,labeled_taxonomy,projID)])
