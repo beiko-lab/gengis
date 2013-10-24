@@ -188,7 +188,6 @@ void LocationSetPropertiesDlg::InitLocationGridAlignment()
 void LocationSetPropertiesDlg::InitLocationGridColour()
 {
 	// populate combo box with all fields associated with a location
-//	std::vector<std::wstring> fields = m_locationSetController->GetNumericMetadataFields();
 	std::vector<std::wstring> fields = m_locationSetController->GetMetadataFields();
 	std::vector<std::wstring>::iterator it;
 	for(it = fields.begin(); it != fields.end(); ++it)
@@ -197,17 +196,15 @@ void LocationSetPropertiesDlg::InitLocationGridColour()
 	}
 
 	// populate combo box with all fields associated with a sequence
-	std::map<std::wstring,std::wstring> data = m_locationSetController->GetSequenceMetadata();
-	std::map<std::wstring,std::wstring>::iterator seqIt;
-	for(seqIt = data.begin(); seqIt != data.end(); ++seqIt)
+	if(App::Inst().GetLayerTreeController()->GetNumSequenceLayers() > 0)
 	{
-//		if(StringTools::ToLower((*seqIt).first.c_str()) != _T("site id")
-//				&& StringTools::ToLower((*seqIt).first.c_str()) != _T("sequence id"))
-//		{
-		//	m_cboChartField->Append(wxString((*it).first.c_str()));
-		if( StringTools::IsDecimalNumber((*seqIt).second) )
-			m_choiceGridFieldToChart->Append(wxString((*seqIt).first.c_str()));
-//		}
+		std::map<std::wstring,std::wstring> data = m_locationSetController->GetSequenceMetadata();
+		std::map<std::wstring,std::wstring>::iterator seqIt;
+		for(seqIt = data.begin(); seqIt != data.end(); ++seqIt)
+		{
+			if( StringTools::IsDecimalNumber((*seqIt).second) )
+				m_choiceGridFieldToChart->Append(wxString((*seqIt).first.c_str()));
+		}
 	}
 
 	if(!m_locationSetLayer->GetLocationGrid()->GetField().empty())

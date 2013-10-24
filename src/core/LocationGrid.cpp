@@ -464,7 +464,10 @@ void LocationGrid::FillTiles()
 		if(m_tileModels[j]->GetNumLocations() > 0 )
 		{
 			m_tileModels[j]->CombineData();
-			m_tileModels[j]->CombineSequenceData();
+			//combine sequence layers if there are any
+			if(m_tileModels[j]->GetNumSequence() > 0)
+				m_tileModels[j]->CombineSequenceData();
+
 		}
 	}
 }

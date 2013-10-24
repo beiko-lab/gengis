@@ -69,7 +69,8 @@ void TileModel::UpdateData(std::map<std::wstring,std::wstring> newData)
 			std::wstring curValue = GetData( field );
 //			if(StringTools::IsDecimalNumber( value ))
 //			{
-				curValue = curValue + StringTools::ToStringW(" ") + value;
+				//binding on nonsensical string
+				curValue = curValue + StringTools::ToStringW("|") + value;
 				AddData(field, curValue);
 //			}
 		}
@@ -104,13 +105,14 @@ void TileModel::CombineData()
 		std::vector<double> values;
 		double result;
 		std::wstring resultConverted;
-		boost::split(seperatedValue,value,boost::is_any_of(" "),boost::token_compress_on);
+		boost::split(seperatedValue,value,boost::is_any_of("|"),boost::token_compress_on);
 
 		// combination Methods that only handle numbers
 		//		FIND A WAY TO EXCLUDE SEQUENCE ID!!!!!!!!!!
 		if( ( StringTools::IsDecimalNumber( seperatedValue[0] ) )
 			&& ( StringTools::ToLower(field).compare(_T("cell id")) != 0 )
-			&& ( StringTools::ToLower(field).compare(_T("cellid")) != 0 ) )
+			&& ( StringTools::ToLower(field).compare(_T("cellid")) != 0 )
+			&& ( m_combinationMethod != GINI ) )
 		{
 			// convert string values to double values. Non numeric already parsed out
 			for( uint i = 0; i < seperatedValue.size(); i++)
@@ -179,7 +181,8 @@ void TileModel::CombineSequenceData()
 		&& ( StringTools::ToLower((*it).first).compare(_T("sequence id")) != 0 )
 		&& ( StringTools::ToLower((*it).first).compare(_T("sequenceid")) != 0 )
 		&& ( StringTools::ToLower((*it).first).compare(_T("site id")) != 0 )
-		&& ( StringTools::ToLower((*it).first).compare(_T("siteid")) != 0 ) )
+		&& ( StringTools::ToLower((*it).first).compare(_T("siteid")) != 0 )
+		&& ( m_combinationMethod != GINI ) )
 		{
 			for( uint i = 0; i < (*it).second.size(); i++)
 			{
@@ -205,11 +208,13 @@ void TileModel::CombineSequenceData()
 		{
 			resultConverted = boost::algorithm::join( (*it).second, " " );
 		}
+
 		if(m_combinationMethod == GINI )
 		{	
 			// GINI index can do it's own conversions as it will accept non-numeric
 			double giniSimpson = GiniSimpson( (*it).second );
 			result = giniSimpson;
+			resultConverted = StringTools::ToStringW( result, 4 );
 		}
 		combinedData[(*it).first] = resultConverted;
 	}
@@ -221,22 +226,29 @@ void TileModel::CombineSequenceData()
 
 double TileModel::GiniSimpson(std::vector<std::wstring> values)
 {
+	// dictionary containing unique values and their count
+	std::map<std::wstring,int> sampleDict;
+	int total=0;
+	for( std::vector<std::wstring>::iterator it = values.begin(); it != values.end(); ++it)
+	{
+		if( sampleDict.find(*it) != sampleDict.end() )
+			sampleDict[*it] += 1;
+		else
+			sampleDict[*it] = 1;
+		total++;
+	}
 	// create "sample dict" as per OnCalculate method of AlphaDiversity.py
-/**
-	double count = 1;
-	// count = 
 
 	double D = 0;
-	double total = std::accumulate(values.begin(),values.end(),0);
-	for( uint i = 0; i< values.size(); i++ )
+	for ( std::map<std::wstring,int>::iterator sampIt = sampleDict.begin(); sampIt != sampleDict.end(); ++sampIt )
 	{
-		double p = values[i] / total;
-		D += p*p;
-	}
-	double ginisimpson = 1.0 - D;
+		int count = (*sampIt).second;
+		double p = double(count)/total;
 
-	return ginisimpson;
-*/
-	return 0;
+		D += p*p;		
+	}
+	double simpson = 1.0 - D;
+
+	return simpson;
 
 }
