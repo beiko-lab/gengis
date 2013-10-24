@@ -153,17 +153,20 @@ class MGRastSpecific:
 			currGrid = (int(float(lat))+90)*36
 			richness = node[2]
 			projID = node[1]['id']
+			taxonomyLength = len(node[0]['metadata'][rowMeta])
 			taxonomy = '|'.join(str(i) for i in node[0]['metadata'][rowMeta])
 			taxonomy = re.sub(",","",taxonomy)
+			labeled_taxonomy = re.sub("\|",",",taxonomy)
+			print taxonomy
 			if( currGrid in obs ):
 				if( id in obs[currGrid]):
-					obs[currGrid][id].extend([(richness,lat,lon,taxonomy,projID)])
+					obs[currGrid][id].extend([(richness,lat,lon,taxonomy,labeled_taxonomy,projID)])
 				else:
-					obs[currGrid].update({id: [(richness,lat,lon,taxonomy,projID)] })
+					obs[currGrid].update({id: [(richness,lat,lon,taxonomy,labeled_taxonomy,projID)] })
 			else:
-				obs[currGrid] = {id: [(richness,lat,lon,taxonomy,projID)] }
+				obs[currGrid] = {id: [(richness,lat,lon,taxonomy,labeled_taxonomy,projID)] }
 		m_Progress.WriteText("Recieved %d records.\n"%len(nodeList))
-		return (obs, metaVals)
+		return (obs, metaVals,taxonomyLength)
 	
 	# Get all possible metadata from the JSON file
 	def GRABALLMETADATA(self,input,oldKey,metaKeys,metaVals):
@@ -252,9 +255,11 @@ class MGRastSpecific:
 						fullLat = float(ent[1])
 						fullLon = float(ent[2])
 						# parse any commas in taxon
-						taxOut = re.sub(',','\",\"',taxOut)
+						#this works if GenGIS can handle commas
+					#	taxOut = re.sub(',','\",\"',taxOut)
+						taxOut = re.sub(',','_', taxOut)
 						#siteID is now the study
-						siteID = ent[4];
+						siteID = ent[5];
 						if siteID not in uniqueSiteID:
 							uniqueSiteID.add(siteID)
 							index = metaVals['columns.0.id'].index(siteID)
@@ -267,7 +272,7 @@ class MGRastSpecific:
 								else:
 									metadata = "%s,%s" %(metadata, metaVals[key][index])
 							OUTLTEXT += ("%s,%f,%f,%s,%s\n" % (siteID, fullLat, fullLon, cellOut+(int(fullLon) +180), metadata))
-						toKey = "%s,%s,%f,%f,%s,%s" %(taxOut,ent[4],fullLat,fullLon,ent[0],ent[3])
+						toKey = "%s,%s,%f,%f,%s,%s,%s" %(taxOut,ent[5],fullLat,fullLon,ent[0],ent[4],ent[3])
 						seqFile.append(toKey)
 		for IDlist in seqFile:
 			OUTSTEXT += ("%s\n" %(IDlist))
