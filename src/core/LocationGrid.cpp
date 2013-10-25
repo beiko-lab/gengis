@@ -357,6 +357,32 @@ void LocationGrid::Render()
 		{
 			// Render tiles from a stored list of previously generated coordinates
 			glBegin( GL_QUADS );
+			
+			int i = 0;
+			MapModelPtr mapModel = App::Inst().GetMapController()->GetMapModel();
+			std::list<double>::iterator row1, row2, col1, col2;
+			row2 = m_yCoordinates.begin(); row2++;
+			//row heads of each tile
+			for ( row1 = m_yCoordinates.begin(); row2 != m_yCoordinates.end(); ++row1 )
+			{
+				col2 = m_xCoordinates.begin(); col2++;
+					
+				//column heads of each tile
+				for ( col1 = m_xCoordinates.begin(); col2 != m_xCoordinates.end(); ++col1 )
+				{
+					Colour tileColour = m_tileModels[i]->GetColour();
+					glColor4f( tileColour.GetRed(), tileColour.GetGreen(), tileColour.GetBlue(), tileColour.GetAlpha() );
+					glVertex3f( *col1, m_elevationUsed, *row1 );
+					glVertex3f( *col2, m_elevationUsed, *row1 );
+					glVertex3f( *col2, m_elevationUsed, *row2 );
+					glVertex3f( *col1, m_elevationUsed, *row2 );
+					col2++;
+					i++;
+				}
+				row2++;
+			}	
+			
+			/*	
 			for( uint i = 0; i < m_tileModels.size(); i++)
 			{
 				
@@ -370,6 +396,7 @@ void LocationGrid::Render()
 				Point3D bottomRightCoord;
 				GeoCoord topLeftGeo(top.first,top.second);
 				GeoCoord bottomRightGeo(bottom.first,bottom.second);
+
 				mapModel->LatLongToGrid( topLeftGeo , topLeftCoord );
 				mapModel->LatLongToGrid( bottomRightGeo , bottomRightCoord );
 				
@@ -380,7 +407,7 @@ void LocationGrid::Render()
 				glVertex3f( bottomRightCoord.x, m_elevationUsed, bottomRightCoord.z );
 				glVertex3f( topLeftCoord.x, m_elevationUsed, bottomRightCoord.z );
 			}
-
+		*/
 			glEnd();
 		}
 	}
