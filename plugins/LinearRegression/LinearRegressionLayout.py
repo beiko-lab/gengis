@@ -27,7 +27,7 @@ class LinearRegressionLayout ( wx.Frame ):
 		
 		bSizer6 = wx.BoxSizer( wx.VERTICAL )
 		
-		sbSizer1 = wx.StaticBoxSizer( wx.StaticBox( self, wx.ID_ANY, u"Mantel Test" ), wx.VERTICAL )
+		sbSizer1 = wx.StaticBoxSizer( wx.StaticBox( self, wx.ID_ANY, u"Linear regression" ), wx.VERTICAL )
 		
 		gSizer1 = wx.GridSizer( 1, 2, 0, 0 )
 		
