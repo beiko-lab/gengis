@@ -46,7 +46,6 @@ LocationGrid::LocationGrid() :
 	m_gridAlignmentStyle( ORIGIN ),
 	m_mapOpenGLBoundaries( -1.0, -1.0, 1.0, 1.0 ),
 	m_mapOffset( 0.0f, 0.0f ),
-//	m_divisions( 12 ),
 	m_divisions( 4 ),
 	m_axisDivisions( 4 ),
 	m_boxDivisions( 1 ),
@@ -57,7 +56,6 @@ LocationGrid::LocationGrid() :
 
 	// Tiles
 	m_showTiles( true ),
-//	m_tileFillMode( MAPPED ),
 	m_tileFillMode( UNIFORM ),
 	m_uniformColourOfTiles( 0.0f, 0.5f, 0.0f, 0.3f ),
 	m_defaultColourOfTiles( 0.5f, 0.5f, 0.5f, 0.3f ),
@@ -78,7 +76,6 @@ LocationGrid::LocationGrid() :
 	ColourMapManagerPtr colourMapManager = App::Inst().GetColourMapManager();
 	ColourMapPtr defaultColourMap = colourMapManager->GetDefaultDiscreteColourMap();
 	m_gridColourMap.reset(new ColourMapDiscrete(defaultColourMap));
-//	m_field = StringTools::ToStringW("C");
 }
 
 template<class Archive> 
@@ -147,15 +144,10 @@ void LocationGrid::SetSelectedFieldValues(std::vector<wxStaticText*> field)
 
 void LocationGrid::GenerateTileCoordinates()
 {
-//	if( !IsVisible() )
-//		return;
 	if( !m_gridChanged )
 		return;
 
 	// Real terrain values of DEM map
-	//mapController->GetMapBorders();
-	//mapController->GetProjectionExtents();
-	
 	MapControllerPtr mapController = App::Inst().GetLayerTreeController()->GetMapLayer(0)->GetMapController();
 	m_mapOpenGLBoundaries = Box2D( -( mapController->GetWidth() / 2 ), -( mapController->GetHeight() / 2 ),
 		( mapController->GetWidth() / 2 ), ( mapController->GetHeight() / 2 ) );
@@ -381,33 +373,6 @@ void LocationGrid::Render()
 				}
 				row2++;
 			}	
-			
-			/*	
-			for( uint i = 0; i < m_tileModels.size(); i++)
-			{
-				
-				// convert pair from GEO to COORD
-				std::pair<float,float> top = m_tileModels[i]->GetTopLeft();
-				std::pair<float,float> bottom = m_tileModels[i]->GetBottomRight();
-				
-				// conversion from geographic coordinate to openGL coordinate
-				MapModelPtr mapModel = App::Inst().GetMapController()->GetMapModel();
-				Point3D topLeftCoord;
-				Point3D bottomRightCoord;
-				GeoCoord topLeftGeo(top.first,top.second);
-				GeoCoord bottomRightGeo(bottom.first,bottom.second);
-
-				mapModel->LatLongToGrid( topLeftGeo , topLeftCoord );
-				mapModel->LatLongToGrid( bottomRightGeo , bottomRightCoord );
-				
-				Colour tileColour = m_tileModels[i]->GetColour();
-				glColor4f( tileColour.GetRed(), tileColour.GetGreen(), tileColour.GetBlue(), tileColour.GetAlpha() );
-				glVertex3f( topLeftCoord.x, m_elevationUsed, topLeftCoord.z );
-				glVertex3f( bottomRightCoord.x, m_elevationUsed, topLeftCoord.z );
-				glVertex3f( bottomRightCoord.x, m_elevationUsed, bottomRightCoord.z );
-				glVertex3f( topLeftCoord.x, m_elevationUsed, bottomRightCoord.z );
-			}
-		*/
 			glEnd();
 		}
 	}

@@ -137,7 +137,13 @@ void TileModel::CombineData()
 		}
 		else
 		{
-			resultConverted = value;
+			std::vector<std::wstring>::iterator it;
+			it = std::unique( seperatedValue.begin(),seperatedValue.end() );
+
+			seperatedValue.resize(std::distance(seperatedValue.begin(),it) );
+			resultConverted = boost::algorithm::join( seperatedValue, "|" );
+
+			//	resultConverted = value;
 		}
 		// GINI index can handle String fields
 		if(m_combinationMethod == GINI )

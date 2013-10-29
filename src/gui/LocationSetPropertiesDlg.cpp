@@ -202,7 +202,6 @@ void LocationSetPropertiesDlg::InitLocationGridColour()
 		std::map<std::wstring,std::wstring>::iterator seqIt;
 		for(seqIt = data.begin(); seqIt != data.end(); ++seqIt)
 		{
-			if( StringTools::IsDecimalNumber((*seqIt).second) )
 				m_choiceGridFieldToChart->Append(wxString((*seqIt).first.c_str()));
 		}
 	}
@@ -678,6 +677,7 @@ void LocationSetPropertiesDlg::InitLocationGrid()
 	if		( divisionType == LocationGrid::BOX )
 	{
 		m_radioBox->SetValue(true);
+		m_radioAxis->SetValue(false);
 		m_spinGridDivisions->Enable(false);
 		m_radioBtnLatitude->Enable(false);
 		m_radioBtnLongitude->Enable(false);
@@ -695,6 +695,7 @@ void LocationSetPropertiesDlg::InitLocationGrid()
 	else if( divisionType == LocationGrid::AXIS )
 	{	
 		m_radioAxis->SetValue(true);
+		m_radioBox->SetValue(false);
 		m_spinBoxDivisions->Enable(false);
 		m_radioBtnDegrees->Enable(false);
 		m_radioBtnPixels->Enable(false);
@@ -704,7 +705,7 @@ void LocationSetPropertiesDlg::InitLocationGrid()
 		m_radioBtnLongitude->Enable(true);
 
 	}
-
+	
 	// Disable alignment controls based on radio button selection
 	if ( ( gridAlignmentStyle == LocationGrid::ORIGIN ) ||
 		 ( gridAlignmentStyle == LocationGrid::COORDINATES ) )
@@ -739,8 +740,6 @@ void LocationSetPropertiesDlg::InitLocationGrid()
 	// Enable/Disable grid elevation controls
 	m_lblVerticalElevation->Enable( !autoAdjustElevationStatus );
 	m_textCtrlGridElevation->Enable( !autoAdjustElevationStatus );
-	m_radioVerticalElevationDegrees->Enable( !autoAdjustElevationStatus );
-	m_radioVerticalElevationPixels->Enable( !autoAdjustElevationStatus );
 
 	// Get the grid elevation
 	m_textCtrlGridElevation->SetValue(
@@ -757,6 +756,11 @@ void LocationSetPropertiesDlg::InitLocationGrid()
 
 	// Grid is initialized and not changed
 	locationGrid->SetGridChanged( false );
+
+	// Removes weird click anywhere bug for divide by radio boxes
+//	wxCommandEvent setting;
+//	setting.SetId(wxID_DIVIDE_BY_AXIS);
+//	OnRadioDivideBy(setting);
 }
 
 void LocationSetPropertiesDlg::OnRadioColourFill( wxCommandEvent& event )
@@ -880,7 +884,7 @@ void LocationSetPropertiesDlg::OnRadioAlignTo( wxCommandEvent& event )
 	m_buttonClickMapToAlign->Enable( set2 );
 }
 
-void LocationSetPropertiesDlg::OnAlignToLocationChange( wxCommandEvent& event )
+void LocationSetPropertiesDlg::OnGridChanged( wxCommandEvent& event )
 {
 	// set grid to changed
 	m_locationSetLayer->GetLocationGrid()->SetGridChanged( true );
@@ -888,12 +892,11 @@ void LocationSetPropertiesDlg::OnAlignToLocationChange( wxCommandEvent& event )
 
 void LocationSetPropertiesDlg::OnAutoAdjustElevation( wxCommandEvent& event )
 {
+	m_locationSetLayer->GetLocationGrid()->SetGridChanged( true );
 	bool status = m_chkAutoAdjustElevation->GetValue();
 
 	m_lblVerticalElevation->Enable( !status );
 	m_textCtrlGridElevation->Enable( !status );
-	m_radioVerticalElevationDegrees->Enable( !status );
-	m_radioVerticalElevationPixels->Enable( !status );
 
 	m_locationSetLayer->GetLocationGrid()->SetAutoAdjustElevationStatus( status );
 }
@@ -1642,6 +1645,10 @@ void LocationSetPropertiesDlg::OnRadioDivideBy(wxCommandEvent& event)
 	
 	m_locationSetLayer->GetLocationGrid()->SetGridChanged(true);
 	int wxID = event.GetId();
+	wxEventType charlie = event.GetEventType();
+	bool skipped = event.GetSkipped();
+	long blah = event.GetTimestamp();
+	bool asw = event.IsCommandEvent();
 	bool set1 = false;
 	bool set2 = false;
 
@@ -1653,11 +1660,6 @@ void LocationSetPropertiesDlg::OnRadioDivideBy(wxCommandEvent& event)
 
 	if( wxID == wxID_DIVIDE_BY_BOX )
 	{
-	//	if( m_locationSetLayer->GetLocationGrid()->GetTileDivisionType() == LocationGrid::DEGREE)
-	//		m_radioBtnDegrees->SetValue(true);
-	//	else
-	//		m_radioBtnPixels->SetValue(true);
-
 		m_locationSetLayer->GetLocationGrid()->SetTileDivisionType( LocationGrid::BOX );
 		set1 = false;
 		set2 = true;	
@@ -1677,7 +1679,6 @@ void LocationSetPropertiesDlg::OnRadioDivideBy(wxCommandEvent& event)
 	m_radioBtnDegrees->Enable(set2);
 	m_radioBtnPixels->Enable(set2);
 	m_radioBox->SetValue(set2);
-//	m_radioBtnDegrees->SetValue(set2);
 }
 
 void LocationSetPropertiesDlg::OnRadioDivideType(wxCommandEvent& event)
@@ -1698,7 +1699,4 @@ void LocationSetPropertiesDlg::OnRadioDivideType(wxCommandEvent& event)
 		m_spinBoxDivisions->SetRange( 1, 600 );	// should definitely be turned into something not hard coded... map.height / 100 ?
 
 	}
-
-	LocationGridPtr locationGrid = m_locationSetLayer->GetLocationGrid();
-	locationGrid -> SetGridChanged( true );
 }
