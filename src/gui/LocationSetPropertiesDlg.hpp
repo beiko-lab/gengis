@@ -185,8 +185,8 @@ namespace GenGIS
 		/** Handler for 'Align to' radio controls (origin, location, or coordinates). */
 		void OnRadioAlignTo( wxCommandEvent& event );
 
-		/** Handler for 'Aling to Locaiton' combo box. */
-		void OnAlignToLocationChange( wxCommandEvent& event);
+		/** Handler for wx objects that only need to signal a property change for the grid. */
+		void OnGridChanged( wxCommandEvent& event);
 
 		/** Auto adjust to map elevation check box handler. */
 		void OnAutoAdjustElevation( wxCommandEvent& event );

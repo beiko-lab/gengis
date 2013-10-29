@@ -296,8 +296,6 @@ namespace GenGIS
 			wxStaticLine* m_staticline8;
 			wxStaticText* m_lblVerticalElevation;
 			wxTextCtrl* m_textCtrlGridElevation;
-			wxRadioButton* m_radioVerticalElevationDegrees;
-			wxRadioButton* m_radioVerticalElevationPixels;
 			wxStaticText* m_txtTileFieldChoice;
 			wxComboBox* m_tileFieldChoice;
 			wxCheckBox* m_chkShowGrid;
@@ -343,6 +341,7 @@ namespace GenGIS
 			virtual void OnRadioDivideType( wxCommandEvent& event ) { event.Skip(); }
 			virtual void OnRadioLatitudeLongitude( wxCommandEvent& event ) { event.Skip(); }
 			virtual void OnRadioAlignTo( wxCommandEvent& event ) { event.Skip(); }
+			virtual void OnGridChanged( wxCommandEvent& event ) { event.Skip(); }
 			virtual void OnAlignToLocationChange( wxCommandEvent& event ) { event.Skip(); }
 			virtual void OnCoordinateReset( wxCommandEvent& event ) { event.Skip(); }
 			virtual void OnAlignCoordinateToMouse( wxCommandEvent& event ) { event.Skip(); }
