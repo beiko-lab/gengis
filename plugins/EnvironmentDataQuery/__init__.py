@@ -24,4 +24,4 @@ def rDependencies():
 
 # Specifies the destination plugin menu (plugins or data) within GenGIS
 def pluginMenu():
-	return "plugins"
+	return "data"
