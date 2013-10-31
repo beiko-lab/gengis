@@ -40,7 +40,6 @@ class EnvironmentDataQuery( EnvironmentDataQueryLayout ):
 		
 		#populate measure wxChoice
 		for key in sorted( self.fileTranslations.iterkeys() ):
-	#	for key in self.defaultFiles:
 			self.m_Measures.Append(key)
 		self.m_Measures.SetSelection(0)
 		
@@ -78,7 +77,6 @@ class EnvironmentDataQuery( EnvironmentDataQueryLayout ):
 			lat_lon.append( (lat,lon) )
 		# GETS SOME FORM OF DATA
 		dataSet = self.fileTranslations[ self.m_Measures.GetStringSelection() ]
-	#	dataSet = 'bio1'
 		dat = pybioclim.get_dataset(dataSet)
 		array = dat.ReadAsArray()
 		values = pybioclim.get_values(dataSet,lat_lon)
@@ -90,7 +88,6 @@ class EnvironmentDataQuery( EnvironmentDataQueryLayout ):
 			self.txtLog.AppendText('For ' + activeLocLayers[index].GetName() + ' adding data: ' + tem + '.\n')
 			
 		# ADD DATA BACK TO LOCATIONS METADATA
-	#	newDivName = 'Annual Mean Temperature'
 		print len(metadata)
 		print metadata
 		print str(self.m_Measures.GetStringSelection())
