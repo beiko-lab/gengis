@@ -88,9 +88,6 @@ class EnvironmentDataQuery( EnvironmentDataQueryLayout ):
 			self.txtLog.AppendText('For ' + activeLocLayers[index].GetName() + ' adding data: ' + tem + '.\n')
 			
 		# ADD DATA BACK TO LOCATIONS METADATA
-		print len(metadata)
-		print metadata
-		print str(self.m_Measures.GetStringSelection())
 		GenGIS.layerTree.GetLocationSetLayer(0).GetController().AddMetadata( str(self.m_Measures.GetStringSelection()) , metadata )
 		
 		self.txtLog.AppendText('\n' + self.m_Measures.GetStringSelection() + ' results added to location metadata table as "' + str(self.m_Measures.GetStringSelection()) + '".\n\n')
