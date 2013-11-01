@@ -74,6 +74,12 @@ class EnvironmentDataQuery( EnvironmentDataQueryLayout ):
 		for locLayer in activeLocLayers:
 			lat = float(locLayer.GetController().GetData()['Latitude'])
 			lon = float(locLayer.GetController().GetData()['Longitude'])
+			
+			if !lat || !lon:
+				lon = locLayer.GetController().GetEasting();
+				lat = locLayer.GetController().GetNorthing();
+				poin3D = GenGIS.GeoCoord(lon,lat)
+				
 			lat_lon.append( (lat,lon) )
 		# GETS SOME FORM OF DATA
 		dataSet = self.fileTranslations[ self.m_Measures.GetStringSelection() ]
