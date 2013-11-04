@@ -135,6 +135,7 @@ bool LocationSetIO::ParseCSVFile( const std::vector<std::wstring>& csvTableRows,
 		double  northing   = -std::numeric_limits<float>::max();
 		double  easting    = -std::numeric_limits<float>::max();
 		bool    bIsLatLong = false;
+		bool	bReject	   = false;
 		double  latitude   = -std::numeric_limits<float>::max();
 		double  longitude  = -std::numeric_limits<float>::max();
 
@@ -156,11 +157,17 @@ bool LocationSetIO::ParseCSVFile( const std::vector<std::wstring>& csvTableRows,
 				easting = StringTools::ToLong(value);
 			else if(StringTools::ToLower(header) == _T("latitude"))
 			{
+				// check if latitude is numeric
+				if(!StringTools::IsDecimalNumber( StringTools::ToString(value) ) && !StringTools::IsInteger( StringTools::ToString(value) ) )
+					bReject = true;
 				latitude = StringTools::ToDouble(value);
 				bIsLatLong = true;
 			}
 			else if(StringTools::ToLower(header) == _T("longitude"))
 			{
+				// check if longitude is numeric
+				if(!StringTools::IsDecimalNumber( StringTools::ToString(value) ) && !StringTools::IsInteger( StringTools::ToString(value) ) )
+					bReject = true;
 				longitude = StringTools::ToDouble(value);
 				bIsLatLong = true;
 			}
@@ -221,10 +228,12 @@ bool LocationSetIO::ParseCSVFile( const std::vector<std::wstring>& csvTableRows,
 			return false;
 		}
 
-		// create a new location model from this data
-		LocationModelPtr locationModel(new LocationModel(siteId, northing, easting, data));
-
-		locationModels.push_back(locationModel);
+		if (!bReject)
+		{
+			// create a new location model from this data
+			LocationModelPtr locationModel(new LocationModel(siteId, northing, easting, data));
+			locationModels.push_back(locationModel);
+		}
 	}
 
 	return true;
