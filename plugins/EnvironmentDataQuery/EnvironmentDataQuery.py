@@ -32,6 +32,15 @@ class EnvironmentDataQuery( EnvironmentDataQueryLayout ):
 		
 		self.SetIcon(wx.Icon(GenGIS.mainWindow.GetExeDir() + "images/CrazyEye.ico", wx.BITMAP_TYPE_ICO))
 		
+		# check if projections exist. UTM format with no projection is not convertible
+		# into Lat/Lon coordinates, which are needed for Pybioclim
+		geographic = GenGIS.StudyController.IsUsingGeographic(GenGIS.study.GetController())
+		projected = GenGIS.StudyController.IsUsingProjection(GenGIS.study.GetController())
+		if(not (geographic or projected)):
+			wx.MessageBox("The current map has an unrecognised projection. Unfortunately at this time UTM data can not be used with this plugin if the map's projection is unknown.","Improper Coordinate System")
+			self.Close()
+			return
+		
 		# check required data has been loaded (doesn't need sequences)
 		if GenGIS.layerTree.GetNumMapLayers() == 0 or GenGIS.layerTree.GetNumLocationSetLayers() == 0:
 			wx.MessageBox("This plugin requires map and location data to be loaded.", "Additional data required.")
@@ -72,13 +81,20 @@ class EnvironmentDataQuery( EnvironmentDataQueryLayout ):
 		activeLocLayers = GenGIS.layerTree.GetLocationSetLayer(0).GetAllActiveLocationLayers()
 		lat_lon = []
 		for locLayer in activeLocLayers:
-			lat = float(locLayer.GetController().GetData()['Latitude'])
-			lon = float(locLayer.GetController().GetData()['Longitude'])
+			if 'Latitude' in locLayer.GetController().GetData().keys():
+				lat = float(locLayer.GetController().GetData()['Latitude'])
+				lon = float(locLayer.GetController().GetData()['Longitude'])
 			
-			if !lat || !lon:
-				lon = locLayer.GetController().GetEasting();
-				lat = locLayer.GetController().GetNorthing();
-				poin3D = GenGIS.GeoCoord(lon,lat)
+			else:
+				lon = locLayer.GetController().GetEasting()
+				lat = locLayer.GetController().GetNorthing()
+				geo = GenGIS.GeoCoord(lon,lat)
+				point = GenGIS.Point3D()
+				GenGIS.layerTree.GetMapLayer(0).GetController().GeoToGrid( geo, point)
+				GenGIS.layerTree.GetMapLayer(0).GetController().GridToGeo( point, geo)
+				lon = geo.longitude;
+				lat = geo.latitude;
+				
 				
 			lat_lon.append( (lat,lon) )
 		# GETS SOME FORM OF DATA
