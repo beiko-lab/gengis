@@ -53,7 +53,7 @@ namespace GenGIS
 		* @param Vector of Location Model pointeres
 		* @param Vector of Chart View pointers
 		*/
-		void LocationMergeDlg::CreateLocationSet( std::vector<LocationModelPtr> locationModels, std::vector<ChartSetViewPtr> ChartViews );
+		void LocationMergeDlg::CreateLocationSet( std::vector<LocationModelPtr> locationModels, std::vector<ChartSetViewPtr> ChartViews,std::vector<std::wstring> keysIntersect );
 
 		/**
 		* @brief Copies the selected Sequence sets into a new set 
