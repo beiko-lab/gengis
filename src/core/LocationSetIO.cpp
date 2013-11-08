@@ -227,6 +227,8 @@ bool LocationSetIO::ParseCSVFile( const std::vector<std::wstring>& csvTableRows,
 			Log::Inst().Warning("(Warning) Missing 'Longitude or Easting' field.");
 			return false;
 		}
+		// remove spaces from siteId to avoid conflicts with trees
+		siteId = StringTools::ReplaceChar(siteId, ' ','_');
 
 		if (!bReject)
 		{

@@ -462,6 +462,16 @@ namespace GenGIS
 		static std::string ReplaceChar(const std::string & s, char c, char r);
 
 		/**
+		* @brief Replace all occurences of a character in a std::string with another character.
+		*
+		* @param s The std::wstring to parse.
+		* @param c The character to replace.
+		* @param r The replacement character.
+		* @return The std::wstring with all specified chars removed.
+		*/
+		static std::wstring ReplaceChar(const std::wstring & s, char c, char r);
+
+		/**
 		* @brief Count the occurences of a given pattern in a std::string.
 		*
 		* @param s The std::string to search.
