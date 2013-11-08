@@ -133,6 +133,11 @@ void TileModel::CombineData()
 				double stdev = std::sqrt(sq_sum / values.size() - mean * mean);		
 				result = stdev;
 			}
+			else if(m_combinationMethod == SUM )
+			{			
+				double sum = std::accumulate(values.begin(),values.end(),0);
+				result = sum;
+			}
 			resultConverted = StringTools::ToStringW(result,2);
 		}
 		else
@@ -207,6 +212,11 @@ void TileModel::CombineSequenceData()
 				double stank = valueAsNum.size();
 				double stdev = std::sqrt(abs(sq_sum / valueAsNum.size() - mean * mean));
 				result = stdev;
+			}
+			else if(m_combinationMethod == SUM )
+			{			
+				double sum = std::accumulate(valueAsNum.begin(),valueAsNum.end(),0);
+				result = sum;
 			}
 			resultConverted = StringTools::ToStringW( result, 4 );
 		}

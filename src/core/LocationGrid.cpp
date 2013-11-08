@@ -413,7 +413,7 @@ void LocationGrid::InitTiles()
 
 void LocationGrid::FillTiles()
 {
-	std::vector<LocationLayerPtr> locationLayers = m_locationSetLayer->GetAllLocationLayers();
+	std::vector<LocationLayerPtr> locationLayers = m_locationSetLayer->GetAllActiveLocationLayers();
 	for( uint i = 0; i < locationLayers.size() ; i++)
 	{
 		std::map<std::wstring,std::wstring> data = locationLayers[i]->GetLocationController()->GetData();
