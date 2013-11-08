@@ -1635,8 +1635,10 @@ void LocationSetPropertiesDlg::OnTileFieldChoiceChange(wxCommandEvent& event)
 		m_locationSetLayer->GetLocationGrid()->SetCombinationMethod( TileModel::AVERAGE );
 	else if( m_tileFieldChoice->GetValue() == _T("Standard Deviation") )
 		m_locationSetLayer->GetLocationGrid()->SetCombinationMethod( TileModel::STDEV );
-	else// if( m_tileFieldChoice->GetValue() == _T("Gini Index") )
+	else if( m_tileFieldChoice->GetValue() == _T("Gini Index") )
 		m_locationSetLayer->GetLocationGrid()->SetCombinationMethod( TileModel::GINI );
+	else
+		m_locationSetLayer->GetLocationGrid()->SetCombinationMethod( TileModel::SUM );
 
 }
 

@@ -10138,7 +10138,7 @@
                                                                             <property name="rowspan">1</property>
                                                                             <object class="wxComboBox" expanded="1">
                                                                                 <property name="bg"></property>
-                                                                                <property name="choices">&quot;Average&quot; &quot;Standard Deviation&quot; &quot;Gini Index&quot;</property>
+                                                                                <property name="choices">&quot;Average&quot; &quot;Standard Deviation&quot; &quot;Gini Index&quot; &quot;Sum&quot;</property>
                                                                                 <property name="context_help"></property>
                                                                                 <property name="context_menu">1</property>
                                                                                 <property name="enabled">1</property>

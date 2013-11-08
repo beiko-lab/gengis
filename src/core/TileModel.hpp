@@ -52,7 +52,7 @@ namespace GenGIS
 	{
 	public:
 
-		enum DATA_COMBINE { AVERAGE, STDEV, GINI };
+		enum DATA_COMBINE { AVERAGE, STDEV, GINI, SUM };
 		
 		/** 
 		* @brief Constuctor.

@@ -988,6 +988,7 @@ LocationSetPropertiesLayout::LocationSetPropertiesLayout( wxWindow* parent, wxWi
 	m_tileFieldChoice->Append( wxT("Average") );
 	m_tileFieldChoice->Append( wxT("Standard Deviation") );
 	m_tileFieldChoice->Append( wxT("Gini Index") );
+	m_tileFieldChoice->Append( wxT("Sum") );
 	gbSizer1->Add( m_tileFieldChoice, wxGBPosition( 0, 1 ), wxGBSpan( 1, 1 ), wxALL, 5 );
 	
 	m_sizerTileFields->Add( gbSizer1, 1, wxEXPAND, 5 );
