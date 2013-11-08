@@ -82,6 +82,32 @@ void LocationMergeDlg::OnOK(wxCommandEvent& event)
 		std::vector<LocationModelPtr> LocationModels;
 		std::vector<SequenceModelPtr> SequenceModels;
 		std::vector<ChartSetViewPtr> ChartViews;
+		
+		// Get Intersect of metadata keys
+		std::vector<std::wstring> keysIntersect;
+		bool first = true;
+		for(int locSet = 0; locSet < numItems; locSet++)
+		{
+			if(m_locationSetCheckbox->IsChecked(locSet))
+			{
+				LocationSetLayerPtr locationSet = layerTree->GetLocationSetLayer( locSet );
+				std::vector<std::wstring> fields = locationSet->GetLocationSetController()->GetMetadataFields();
+				if(first)
+				{
+					keysIntersect = fields;	
+					first = false;
+				}
+				else
+				{
+					std::vector<std::wstring> locs;
+					set_intersection(keysIntersect.begin(),keysIntersect.end(), fields.begin(),fields.end(),
+						std::inserter(locs,locs.begin()) );
+					keysIntersect = locs;
+					
+				}
+			}
+		}
+		
 		//Finds the indexes of all checked boxes
 		for(int locSet = 0; locSet < numItems; locSet++)
 		{
@@ -104,7 +130,7 @@ void LocationMergeDlg::OnOK(wxCommandEvent& event)
 				}
 			}
 		}
-		CreateLocationSet(LocationModels,ChartViews);
+		CreateLocationSet(LocationModels,ChartViews,keysIntersect);
 		CreateSequenceSet(SequenceModels);
 		// if m_remove is checked remove the selected layers
 		if( m_remove->GetValue() == true )
@@ -114,7 +140,7 @@ void LocationMergeDlg::OnOK(wxCommandEvent& event)
 		Destroy();
 	}
 }
-void LocationMergeDlg::CreateLocationSet( std::vector<LocationModelPtr> locationModels, std::vector<ChartSetViewPtr> ChartViews )
+void LocationMergeDlg::CreateLocationSet( std::vector<LocationModelPtr> locationModels, std::vector<ChartSetViewPtr> ChartViews, std::vector<std::wstring> keysIntersect )
 {
 	// get selected layer
 	LayerPtr selectedLayer = App::Inst().GetLayerTreeController()->GetSelectedLayer();
@@ -162,7 +188,15 @@ void LocationMergeDlg::CreateLocationSet( std::vector<LocationModelPtr> location
 		std::vector<LocationLayerPtr> locationLayers;
 		foreach(LocationModelPtr locationModel, locationModels)
 		{
-			LocationModelPtr copyLocationModel(new LocationModel(locationModel->GetId(),locationModel->GetNorthing(),locationModel->GetEasting(),locationModel->GetData()));
+			// get intersect of data fields
+			std::map<std::wstring,std::wstring> newData;
+			for(uint interField = 0; interField < keysIntersect.size(); interField++)
+			{
+				std::wstring field = keysIntersect[interField];
+				newData[field] = locationModel->GetData(field);
+			}
+
+			LocationModelPtr copyLocationModel(new LocationModel(locationModel->GetId(),locationModel->GetNorthing(),locationModel->GetEasting(),newData));
 			LocationViewPtr locationView(new LocationView(copyLocationModel, App::Inst().GetViewport()->GetCamera(), UniqueId::Inst().GenerateId()));
 			ChartViewPtr pieChartView(new ChartView(copyLocationModel, locationView, newColourMap));
 			chartSetCtrl->AddChart(pieChartView);
