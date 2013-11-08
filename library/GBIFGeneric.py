@@ -56,8 +56,10 @@ class GBIFGeneric:
 						siteID = re.sub(' ','_',siteID)
 						if siteID not in uniqueSiteID:
 							uniqueSiteID.add(siteID)
-							OUTLTEXT += ("%s,%f,%f,%d,%d,%s,%s\n" % (siteID, fullLat, fullLon, len(obs[cellOut].keys()), cellOut+(int(fullLon) +180),ent[3],taxOut ))
-						toKey = "%s,%f,%f,%s,%s,%s,%s" %(siteID, fullLat,fullLon,ent[3],taxOut,ent[1],ent[2])
+						#	OUTLTEXT += ("%s,%f,%f,%d,%d,%s,%s\n" % (siteID, fullLat, fullLon, len(obs[cellOut].keys()), cellOut+(int(fullLon) +180),ent[3],taxOut ))
+							OUTLTEXT += ("%s,%f,%f,%d,%s,%s\n" % (siteID, fullLat, fullLon, cellOut+(int(fullLon) +180),ent[3],taxOut ))
+					#	toKey = "%s,%f,%f,%s,%s,%s,%s" %(siteID, fullLat,fullLon,ent[3],taxOut,ent[1],ent[2])
+						toKey = "%s,%s,%s,%s,%s" %(siteID,ent[3],taxOut,ent[1],ent[2])
 						toKey = re.sub(r'\<.*?\>','',toKey)
 						try:
 							seqFileAgg[toKey].extend([ent[0]])

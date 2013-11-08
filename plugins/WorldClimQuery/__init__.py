@@ -1,5 +1,5 @@
 def name():
-	return "Environmental Data Query"
+	return "WorldClim Query"
 
 def version():
 	return "Version 1.1"
