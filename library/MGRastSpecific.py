@@ -35,7 +35,9 @@ class MGRastSpecific:
 	#test =  Akkermansia	
 	
 	def GETTAXRESULT(self,taxon_name,searchType,minlatitude,maxlatitude,minlongitude,maxlongitude,Summary):
-		result=[]
+	#	result=[]
+		result = {}
+		count=0
 		totalRecords=0
 		limit=1000
 		taxonReq = '+'.join(taxon_name)
@@ -79,7 +81,17 @@ class MGRastSpecific:
 				id = node['id']
 				name = node['project_name']
 				according = node['name']
-				result.append("%s | %s | %s"%(id,name,according))
+				enviro = node['biome']
+				
+			#	result.append("%s | %s | %s"%(id,name,according))
+				if enviro in result:
+					# no duplicate study id's exist. that would kind of break the whole idea of a study id
+					result[enviro].update( { id:[name,according] } )
+					
+				else:
+					result[enviro]= { id:[name,according] }
+					
+				count+=1
 			totalRecords+=len(nodeList)
 			if next != 'None':
 				url = next
@@ -99,8 +111,13 @@ class MGRastSpecific:
 				next = str(searchRes['next'])
 			else:
 				break
-		Summary.SetLabel("Found %d studies.\n Returned %d valid studies." %(totalRecords,len(result)))
-		return(result)
+		matches = []
+		# sort and order the results
+		for key in sorted(result.iterkeys()):
+			for val in sorted(result[key].iterkeys()):
+				matches.append("%s | %s | %s | %s" %(key,val,result[key][val][0],result[key][val][1]))
+		Summary.SetLabel("Found %d studies.\n Returned %d valid studies." %(totalRecords,count))
+		return(matches)
 			
 	# test = mgm4440037.3
 	def GETOBS(self,taxon_name,searchType,options,m_Progress):

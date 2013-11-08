@@ -1,9 +1,10 @@
-from EnvironmentDataQueryLayout import EnvironmentDataQueryLayout
+from WorldClimQueryLayout import WorldClimQueryLayout
+from WorldClimQueryLayout import DescriptionLayout
 import GenGIS
 import wx
 import pybioclim
 
-class EnvironmentDataQuery( EnvironmentDataQueryLayout ):
+class WorldClimQuery( WorldClimQueryLayout ):
 	
 	fileTranslations = {
 	"Annual Mean Temperature" : "BIO1",
@@ -28,7 +29,8 @@ class EnvironmentDataQuery( EnvironmentDataQueryLayout ):
 	}
 	
 	def __init__(self, parent=None):
-		EnvironmentDataQueryLayout.__init__ ( self, parent )
+		WorldClimQueryLayout.__init__ ( self, parent )
+		self.about = Description()
 		
 		self.SetIcon(wx.Icon(GenGIS.mainWindow.GetExeDir() + "images/CrazyEye.ico", wx.BITMAP_TYPE_ICO))
 		
@@ -133,3 +135,19 @@ class EnvironmentDataQuery( EnvironmentDataQueryLayout ):
 		
 		self.txtFullName.SetValue(file)
 		self.txtDescription.SetValue(description)
+	
+	def OnAbout(self, event):
+		self.about.Show()
+		
+class Description( DescriptionLayout ):
+	def __init__(self):
+		DescriptionLayout.__init__(self,None)
+		self.SetIcon(wx.Icon(GenGIS.mainWindow.GetExeDir() + "images/CrazyEye.ico",wx.BITMAP_TYPE_ICO))
+		
+		text = "This plugin uses Bioclim data retrieved from WorldClim.org and applys it to location points loaded in GenGIS. Granularity of Bioclim data maps to 0.083 latitude by 0.083 longitude, locations closer than this will map to the same environmental data. For more information about Bioclim data or WorldClim, please visit www.worldclim.org."
+		self.m_description.SetLabel(text)
+		self.m_description.Wrap(250)
+		
+	def OnClose(self,event):
+		self.Hide()
+	

@@ -162,7 +162,7 @@ class MGRastQuery(MGRASTQueryLayout):
 					self.__selectedTaxon__.add((tax,"dummy value"))
 				self.OnCalculate(wx.EVT_BUTTON)
 			else:
-				matches=self.MGRastSpecific.GETTAXRESULT(taxon,searchType,minLatitude,maxLatitude,minLongitude,maxLongitude,self.m_Summary)
+				matches=self.MGRastSpecific.GETTAXRESULT(taxon,searchType,minLatitude,maxLatitude,minLongitude,maxLongitude,self.m_Summary)				
 				if matches:
 					self.m_Result.InsertItems(matches,0)
 		wx.EndBusyCursor()
