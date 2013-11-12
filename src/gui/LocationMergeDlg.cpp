@@ -109,8 +109,14 @@ void LocationMergeDlg::OnOK(wxCommandEvent& event)
 				}
 				
 				//now do the same for sequences
-				std::vector<std::wstring> seqFields  = locationSet-> GetLocationLayer(0) -> GetSequenceLayer(0) -> GetSequenceController()->GetMetadataFields();
-				//std::vector<std::wstring> fields = locationSet->GetLocationSetController()->GetMetadataFields();
+				// IF SEQUENCES
+				std::vector<std::wstring> seqFields;
+				if( locationSet->GetLocationLayer(0)->GetNumSequenceLayers() > 1 ) 
+				{
+					seqFields  = locationSet-> GetLocationLayer(0) -> GetSequenceLayer(0) -> GetSequenceController()->GetMetadataFields();
+					//std::vector<std::wstring> fields = locationSet->GetLocationSetController()->GetMetadataFields();
+				}
+
 				if(firstSeq)
 				{
 					keysIntersectSeq = seqFields;	
@@ -124,6 +130,7 @@ void LocationMergeDlg::OnOK(wxCommandEvent& event)
 					keysIntersectSeq = locs;
 					
 				}
+				
 			}
 		}
 		
@@ -249,6 +256,9 @@ void LocationMergeDlg::CreateLocationSet( std::vector<LocationModelPtr> location
 }
 void LocationMergeDlg::CreateSequenceSet( std::vector<SequenceModelPtr> sequenceModels, std::vector<std::wstring> keysIntersectSeq )
 {
+	if( keysIntersectSeq.size() == 0 )
+		return;
+
 	LayerPtr selectedLayer = App::Inst().GetLayerTreeController()->GetSelectedLayer();
 	if(selectedLayer == LayerPtr() || selectedLayer->GetType() != Layer::LOCATION_SET)
 	{
@@ -284,7 +294,7 @@ void LocationMergeDlg::CreateSequenceSet( std::vector<SequenceModelPtr> sequence
 
 				SequenceLayerPtr sequenceLayer(new SequenceLayer(UniqueId::Inst().GenerateId(), selectedLayer, sequenceController));
 				sequenceLayer->SetName(sequenceController->GetSequenceId().c_str());
-				sequenceLayer->SetFullPath( wxT("blahblahblah") );
+				sequenceLayer->SetFullPath( wxT("combination") );
 
 				if(!App::Inst().GetLayerTreeController()->AddSequence(sequenceLayer, copySequenceModel, missingLocations))
 				{			
