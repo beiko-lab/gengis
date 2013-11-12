@@ -59,7 +59,7 @@ namespace GenGIS
 		* @brief Copies the selected Sequence sets into a new set 
 		* @param Vector of Sequence Model pointeres
 		*/
-		void LocationMergeDlg::CreateSequenceSet( std::vector<SequenceModelPtr> sequenceModels );
+		void LocationMergeDlg::CreateSequenceSet( std::vector<SequenceModelPtr> sequenceModels, std::vector<std::wstring> keysIntersectSeq );
 
 		/** 
 		* @brief Removes the selected Location sets after they have been copied
