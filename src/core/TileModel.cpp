@@ -153,7 +153,6 @@ void TileModel::CombineData()
 		// GINI index can handle String fields
 		if(m_combinationMethod == GINI )
 		{		
-		//	double giniSimpson = GiniSimpson( values );
 			double giniSimpson = GiniSimpson( seperatedValue );
 			result = giniSimpson;
 			resultConverted = StringTools::ToStringW(result,2);
@@ -164,7 +163,6 @@ void TileModel::CombineData()
 
 void TileModel::CombineSequenceData()
 {
- //	std::map< std::wstring, std::vector<double> > master;
 	std::map< std::wstring, std::vector<std::wstring> > master;
 
 	for( uint i =0; i< GetNumSequence(); i++ )
@@ -172,14 +170,12 @@ void TileModel::CombineSequenceData()
 		std::map<std::wstring,std::wstring> data = GetSequence(i)->GetData();
 		for( std::map<std::wstring,std::wstring>::iterator it = data.begin(); it != data.end(); ++it)
 		{
-		//	master[ (*it).first ].push_back( StringTools::ToDouble( (*it).second ) );
 			master[ (*it).first ].push_back(  (*it).second  );
 		}
 	}
 	
 	std::map<std::wstring,std::wstring> combinedData;
 	// now combine all the sequences in the specified manner
-//	for( std::map<std::wstring,std::vector<double>>::iterator it = master.begin(); it != master.end(); ++it)
 	for( std::map<std::wstring,std::vector<std::wstring>>::iterator it = master.begin(); it != master.end(); ++it)
 	{
 		double result;
