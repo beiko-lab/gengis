@@ -83,7 +83,6 @@ class MGRastSpecific:
 				according = node['name']
 				enviro = node['biome']
 				
-			#	result.append("%s | %s | %s"%(id,name,according))
 				if enviro in result:
 					# no duplicate study id's exist. that would kind of break the whole idea of a study id
 					result[enviro].update( { id:[name,according] } )
@@ -272,7 +271,6 @@ class MGRastSpecific:
 						fullLon = float(ent[2])
 						# parse any commas in taxon
 						#this works if GenGIS can handle commas
-					#	taxOut = re.sub(',','\",\"',taxOut)
 						taxOut = re.sub(',','_', taxOut)
 						#siteID is now the study
 						siteID = ent[5];

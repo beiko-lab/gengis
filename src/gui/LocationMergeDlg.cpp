@@ -57,7 +57,6 @@ void LocationMergeDlg::Init()
 	//get location layers
 	//for each location layer create a checkbox for them
 	LayerTreeControllerPtr layerTree = App::Inst().GetLayerTreeController();
-//	for (uint locSet = 0; locSet < layerTree->GetNumLocationSetLayers(); locSet++)
 	for (uint locSet = layerTree->GetNumLocationSetLayers(); locSet > 0; locSet--)
 	{
 		std::wstring layerName = layerTree->GetLocationSetLayer( locSet - 1 )->GetName();
@@ -114,7 +113,6 @@ void LocationMergeDlg::OnOK(wxCommandEvent& event)
 				if( locationSet->GetLocationLayer(0)->GetNumSequenceLayers() > 1 ) 
 				{
 					seqFields  = locationSet-> GetLocationLayer(0) -> GetSequenceLayer(0) -> GetSequenceController()->GetMetadataFields();
-					//std::vector<std::wstring> fields = locationSet->GetLocationSetController()->GetMetadataFields();
 				}
 
 				if(firstSeq)
@@ -145,7 +143,7 @@ void LocationMergeDlg::OnOK(wxCommandEvent& event)
 				LocationSets.push_back(locationSet);
 				for(uint i = 0; i < locationSet->GetNumLocationLayers(); i++)
 				{
-					LocationLayerPtr locLayer = locationSet -> GetLocationLayer(i);// -> GetSequenceLayer() -> GetSequenceController() -> GetSequenceModel();
+					LocationLayerPtr locLayer = locationSet -> GetLocationLayer(i);
 					LocationModelPtr locationModel = locationSet -> GetLocationLayer(i) -> GetLocationController() -> GetLocationModel();
 					LocationModels.push_back(locationModel);
 					for(uint j = 0; j < locLayer->GetNumSequenceLayers(); j++)
