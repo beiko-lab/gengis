@@ -60,7 +60,7 @@ void LocationMergeDlg::Init()
 	for (uint locSet = layerTree->GetNumLocationSetLayers(); locSet > 0; locSet--)
 	{
 		std::wstring layerName = layerTree->GetLocationSetLayer( locSet - 1 )->GetName();
-		wxString const mystring = wxstring( layerName.c_str() );
+		wxString const mystring = wxString( layerName.c_str() );
 		m_locationSetCheckbox->InsertItems(1,&mystring,0);
 	}
 
