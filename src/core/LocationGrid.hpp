@@ -30,6 +30,31 @@
 #include "../utils/Colour.hpp"
 #include "../utils/StringTools.hpp"
 #include "../core/TileModel.hpp"
+
+/* checks for finite values */
+#define FP_ZERO        /* implementation specific value */
+#define FP_NORMAL      /* implementation specific value */
+#define FP_INFINITE    /* implementation specific value */
+#define FP_NAN         /* implementation specific value */
+#define FP_SUBNORMAL   /* implementation specific value */
+
+template <class T>
+int fpclassify(T t);
+
+template <class T>
+bool isfinite(T z); // Neither infinity nor NaN.
+
+template <class T>
+bool isinf(T t); // Infinity (+ or -).
+
+template <class T>
+bool isnan(T t); // NaN.
+
+template <class T>
+bool isnormal(T t); // isfinite and not denormalised.
+
+#include <boost\math\special_functions\fpclassify.hpp>
+
 //#include "../utils/ColourMapDiscrete.hpp"
 
 namespace GenGIS
