@@ -416,7 +416,7 @@ void LocationGrid::FillTiles()
 		float easting = StringTools::ToDouble(data[StringTools::ToStringW("Longitude")]);
 		float northing = StringTools::ToDouble(data[StringTools::ToStringW("Latitude")]);
 		// check if long and lat values exist. if they don't use easting and westing
-		if( easting != easting || northing != northing || !boost::math::isfinite(easting) || !boost::math::isfinite(northing) )
+		if( easting != easting || northing != northing || !(easting<=DBL_MAX && easting >= -DBL_MAX) || !(northing<=DBL_MAX && northing >= -DBL_MAX) )
 		{
 			easting = locationLayers[i]->GetLocationController()->GetEasting();
 			northing = locationLayers[i]->GetLocationController()->GetNorthing();
