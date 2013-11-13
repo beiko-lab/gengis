@@ -176,7 +176,7 @@ void TileModel::CombineSequenceData()
 	
 	std::map<std::wstring,std::wstring> combinedData;
 	// now combine all the sequences in the specified manner
-	for( std::map<std::wstring,std::vector<std::wstring>>::iterator it = master.begin(); it != master.end(); ++it)
+	for( std::map<std::wstring,std::vector<std::wstring> >::iterator it = master.begin(); it != master.end(); ++it)
 	{
 		double result;
 		std::wstring resultConverted;

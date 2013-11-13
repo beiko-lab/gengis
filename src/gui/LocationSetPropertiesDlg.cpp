@@ -170,7 +170,7 @@ void LocationSetPropertiesDlg::InitLocationGridAlignment()
 // populate all locations for allignment
 	for ( uint i = 0; i < m_locationSetLayer->GetNumLocationLayers(); i++ )
 	{
-		m_choiceAlignToLocation->Append( m_locationSetLayer->GetLocationLayer(i)->GetName() );
+		m_choiceAlignToLocation->Append( wxString( m_locationSetLayer->GetLocationLayer(i)->GetName().c_str() ) );
 	}
 	
 	// need to save and load selected position somehow
@@ -1624,7 +1624,7 @@ void LocationSetPropertiesDlg::SetMouseCoordinates(wxMouseEvent& event)
 
 void LocationSetPropertiesDlg::OnTileFieldChoiceChange(wxCommandEvent& event)
 {
-	std::wstring str = m_tileFieldChoice->GetValue();
+	std::wstring str = m_tileFieldChoice->GetValue().c_str();
 	std::wstring nex = _T("Standard Deviation");
 	if(str == nex)
 		str = _T("blargddasd");

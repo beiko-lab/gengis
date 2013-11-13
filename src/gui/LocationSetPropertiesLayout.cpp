@@ -835,7 +835,7 @@ LocationSetPropertiesLayout::LocationSetPropertiesLayout( wxWindow* parent, wxWi
 	m_radioAxis->SetValue( true ); 
 	fgSizer12->Add( m_radioAxis, 1, wxALL|wxALIGN_CENTER_VERTICAL|wxEXPAND, 5 );
 	
-	m_spinGridDivisions = new wxSpinCtrl( m_panel12, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 1, 255, 1 );
+	m_spinGridDivisions = new wxSpinCtrl( m_panel12, wxID_ANY, wxT("1"), wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 1, 255, 1 );
 	fgSizer12->Add( m_spinGridDivisions, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
 	
 	m_radioBtnLatitude = new wxRadioButton( m_panel12, wxID_RADIO_GRID_DIVIDE_ALONG_LATITUDE, wxT("Latitude"), wxDefaultPosition, wxDefaultSize, wxRB_GROUP );

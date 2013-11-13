@@ -554,7 +554,7 @@ void GenGisFrame::FillSamplesLegend()
 	// Generate new choices
 	for (uint locSet = 0; locSet < layerTree->GetNumLocationSetLayers(); locSet++)
 	{
-		m_locationSetChoice->Append( layerTree->GetLocationSetLayer( locSet )->GetName() );
+		m_locationSetChoice->Append( wxString( layerTree->GetLocationSetLayer( locSet )->GetName().c_str() ) );
 	}
 
 	// Select currently active location set within choice box
