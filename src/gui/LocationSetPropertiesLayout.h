@@ -336,7 +336,6 @@ namespace GenGIS
 			virtual void OnGridColourMapChange( wxCommandEvent& event ) { event.Skip(); }
 			virtual void OnShowGridBorders( wxCommandEvent& event ) { event.Skip(); }
 			virtual void OnRadioDivideBy( wxCommandEvent& event ) { event.Skip(); }
-			virtual void OnNumberOfDivisions( wxSpinEvent& event ) { event.Skip(); }
 			virtual void OnNumberOfDivisions( wxCommandEvent& event ) { event.Skip(); }
 			virtual void OnRadioDivideType( wxCommandEvent& event ) { event.Skip(); }
 			virtual void OnRadioLatitudeLongitude( wxCommandEvent& event ) { event.Skip(); }

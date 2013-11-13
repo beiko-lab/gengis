@@ -8328,7 +8328,7 @@
                                                                                 <event name="OnRightUp"></event>
                                                                                 <event name="OnSetFocus"></event>
                                                                                 <event name="OnSize"></event>
-                                                                                <event name="OnSpinCtrl">OnNumberOfDivisions</event>
+                                                                                <event name="OnSpinCtrl"></event>
                                                                                 <event name="OnSpinCtrlText">OnNumberOfDivisions</event>
                                                                                 <event name="OnUpdateUI"></event>
                                                                             </object>
@@ -8559,7 +8559,7 @@
                                                                                 <event name="OnRightUp"></event>
                                                                                 <event name="OnSetFocus"></event>
                                                                                 <event name="OnSize"></event>
-                                                                                <event name="OnSpinCtrl">OnNumberOfDivisions</event>
+                                                                                <event name="OnSpinCtrl"></event>
                                                                                 <event name="OnSpinCtrlText">OnNumberOfDivisions</event>
                                                                                 <event name="OnUpdateUI"></event>
                                                                             </object>
