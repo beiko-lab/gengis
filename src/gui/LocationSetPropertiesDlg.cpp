@@ -1417,7 +1417,7 @@ void LocationSetPropertiesDlg::ApplyGrid()
 	{
 		float latitude = StringTools::ToDouble( m_textCtrlLatitude->GetLineText(0).c_str() );	
 		float longitude = StringTools::ToDouble( m_textCtrlLongitude->GetLineText(0).c_str() );
-		if( !_finite(latitude) || !_finite(longitude) )
+		if( !(latitude<=DBL_MAX && latitude >= -DBL_MAX) || !(longitude<=DBL_MAX && longitude >= -DBL_MAX) )
 		{
 			Log::Inst().Error("(Error) LocationSetProperties::Apply(): latitude/longitude not convertible to float.");
 		}
