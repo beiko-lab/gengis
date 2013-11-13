@@ -558,7 +558,7 @@ void GenGisFrame::FillSamplesLegend()
 	}
 
 	// Select currently active location set within choice box
-	m_locationSetChoice->SetStringSelection( m_locationSetLayer->GetName() );
+	m_locationSetChoice->SetStringSelection( wxstring(m_locationSetLayer->GetName().c_str() ) );
 
 	// Generate the samples legend
 	GenerateSamplesLegend();

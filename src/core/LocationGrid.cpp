@@ -137,7 +137,7 @@ void LocationGrid::SetSelectedFieldValues(std::vector<wxStaticText*> field)
 	m_selectedFieldValues.clear();
 	for( uint i = 0; i < field.size(); i++)
 	{
-		std::wstring fieldValue = field[i]->GetLabel();
+		std::wstring fieldValue = field[i]->GetLabel().c_str();
 		m_selectedFieldValues.push_back(  StringTools::ToDouble( fieldValue ) );
 	}
 }
