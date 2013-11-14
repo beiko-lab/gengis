@@ -110,7 +110,7 @@ void LocationMergeDlg::OnOK(wxCommandEvent& event)
 				//now do the same for sequences
 				// IF SEQUENCES
 				std::vector<std::wstring> seqFields;
-				if( locationSet->GetLocationLayer(0)->GetNumSequenceLayers() > 1 ) 
+				if( locationSet->GetLocationLayer(0)->GetNumSequenceLayers() >= 1 ) 
 				{
 					seqFields  = locationSet-> GetLocationLayer(0) -> GetSequenceLayer(0) -> GetSequenceController()->GetMetadataFields();
 				}
