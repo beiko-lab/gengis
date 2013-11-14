@@ -224,9 +224,20 @@ void LocationSetPropertiesDlg::InitLocationGridColour()
 	OnColourFieldChange(dummy);
 	OnChoiceGridFieldToChartChange(dummy);
 
+	// Set up Uniform Colour
 	Colour uniColour = m_locationSetLayer->GetLocationGrid()->GetTileUniformColour();
 	m_gridTileColour->SetColour(wxColour(uniColour.GetRedInt(), uniColour.GetGreenInt(), uniColour.GetBlueInt()));
 	ReplaceColourPicker( m_gridTileColour, uniColour );
+
+	// Set Up Default Colour
+	Colour defColour = m_locationSetLayer->GetLocationGrid()->GetTileDefaultColour();
+	m_colourGridDefaultColour->SetColour(wxColour(defColour.GetRedInt(), defColour.GetGreenInt(), defColour.GetBlueInt()));
+	ReplaceColourPicker( m_colourGridDefaultColour, defColour );
+	
+	// Set up Border Colour
+	Colour bordColour = m_locationSetLayer->GetLocationGrid()->GetBorderColour();
+	m_gridBorderColour->SetColour(wxColour(bordColour.GetRedInt(), bordColour.GetGreenInt(), bordColour.GetBlueInt()));
+	ReplaceColourPicker( m_gridBorderColour, bordColour );
 
 	// Set Colour Map
 	m_locationSetLayer->GetLocationGrid()->SetColourMap( m_gridColourMapWidget->GetColourMap() );
