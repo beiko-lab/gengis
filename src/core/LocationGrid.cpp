@@ -1,5 +1,5 @@
 //=======================================================================
-// Author: Timothy Mankowski
+// Author: Timothy Mankowski & Alexander Keddy
 //
 // Copyright 2013 Timothy Mankowski
 //
