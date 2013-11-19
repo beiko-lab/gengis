@@ -160,7 +160,7 @@ class MGRastSpecific:
 		else:
 			nodeList,metaVals = self.SPARSEHANDLER(matrix)
 		if nodeList == False:
-			return (obs,metaVals)
+			return (obs,metaVals,0)
 		
 		for node in nodeList:
 			id = node[0]['id']
