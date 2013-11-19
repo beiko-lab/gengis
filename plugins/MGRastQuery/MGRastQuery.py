@@ -186,7 +186,7 @@ class MGRastQuery(MGRASTQueryLayout):
 			index = 0
 			for tax in self.__selectedTaxon__:
 				startTime = time.time()
-				obs, metaVals, taxonLength = self.MGRastSpecific.GETOBS(tax[0],searchType,additFields,self.m_Progress)
+				obs, metaVals, taxonLength = self.MGRastSpecific.GETOBS(tax[1],searchType,additFields,self.m_Progress)
 				taxonomy = []
 				for i in range(0,taxonLength):
 					if i < len(self.__TAXON__):
