@@ -39,7 +39,7 @@ import wx
 class AlphaDiversityMeasures:
 	"""Different alpha diversity measures."""
 	def __init__(self):
-		self.measures = ['Gini-Simpson index', 'Richness', 'Shannon index', 'Shannon diversity', 'Simpson index', 'Simpson diversity']
+		self.measures = ['Gini-Simpson index', 'Richness', 'Shannon index', 'Shannon diversity', 'Simpson index', 'Simpson diversity', 'Sum of Counts']
 		
 	def Info(self, measure):
 		if measure == 'Gini-Simpson index':
@@ -54,7 +54,9 @@ class AlphaDiversityMeasures:
 			return ["Simpson's diversity index", 'sum(pi*pi)', 'A common index used to characterize community diversity which accounts for both abundance and evenness. Gives the probability of two entities drawn at random being the same type. Index decreases with increasing diversity.']
 		elif measure == 'Simpson diversity':
 			return ["Simpson's diversity", '1/sum(pi*pi)', "Effective number of species as determined using Simpson's diversity index.\n\nSee Jost L. et al. 2006. Entropy and diversity. Oikos, 113:363-375."]
-
+		elif measure == 'Sum of Counts':
+			return ["Sum of Counts", 'x1+x2',"A summation of all Count Field values for all given locations."]
+			
 	def GetMeasureFunction(self, measure):
 		measureFunc = None
 		if measure == 'Gini-Simpson index':
@@ -69,6 +71,8 @@ class AlphaDiversityMeasures:
 			measureFunc =  self.ShannonDiversity
 		elif measure == 'Simpson diversity':
 			measureFunc =  self.SimpsonDiversity
+		elif measure == 'Sum of Counts':
+			measureFunc = self.SumOfCounts
 			
 		return measureFunc
 			
@@ -85,7 +89,7 @@ class AlphaDiversityMeasures:
 			categoryDict = sampleDict[sampleName]
 			for category in categoryDict:
 				categories.add(category)
-				
+		
 		# create data dictionary indicate category counts for each sample
 		dataDict = {}
 		for sampleName in sampleDict:
@@ -100,10 +104,13 @@ class AlphaDiversityMeasures:
 					dataDict[sampleName].append(categoryDict[category])
 				else:
 					dataDict[sampleName].append(0)
-		
+
 		# calculate specified alpha diversity measure
 		measureFunc = self.GetMeasureFunction(measure)
-		return measureFunc(dataDict)
+		if( measure != 'Sum of Counts' ):
+			return measureFunc(dataDict)
+		else:
+			return measureFunc(sampleDict)
 		
 	def CalculateJackknife(self, measure, sampleDict, bIgnoreOtherUnclassified, replicates, seqsToDraw):
 		"""
@@ -289,5 +296,21 @@ class AlphaDiversityMeasures:
 				D += p*p
 			
 			simpson[sampleName] = 1.0 - D
+			
+		return simpson
+		
+	def SumOfCounts(self,sampleDict):
+		"""
+		Calculate the sum of counts for each sample.
+		  dataDict: dictionary with category counts for each sample
+		"""
+		simpson = {}
+		for sampleName in sampleDict:
+			values = sampleDict[sampleName]
+			total = 0
+			for key in values:
+				total += values[key]
+			
+			simpson[sampleName] = total
 			
 		return simpson

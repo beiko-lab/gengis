@@ -30,8 +30,8 @@
 #include <wx/notebook.h>
 #include <wx/radiobut.h>
 #include <wx/slider.h>
-#include <wx/choice.h>
 #include <wx/button.h>
+#include <wx/gbsizer.h>
 #include <wx/richtext/richtextctrl.h>
 #include <wx/dialog.h>
 
@@ -113,6 +113,12 @@ namespace GenGIS
 				wxID_RADIO_TILE_COLOUR_NO_FILL,
 				wxID_RADIO_TILE_COLOUR_UNIFORM_FILL,
 				wxID_RADIO_TILE_COLOUR_MAP_FILL,
+				wxID_DIVIDE_BY_BOX,
+				wxID_DIVIDE_INTO_DEGREES,
+				wxID_DIVIDE_INTO_PIXELS,
+				wxID_DIVIDE_BY_AXIS,
+				wxID_RADIO_GRID_DIVIDE_ALONG_LATITUDE,
+				wxID_RADIO_GRID_DIVIDE_ALONG_LONGITUDE,
 				wxID_RADIO_GRID_ALIGN_TO_ORIGIN,
 				wxID_RADIO_GRID_ALIGN_TO_LOCATION,
 				wxID_RADIO_GRID_ALIGN_TO_COORDINATES,
@@ -240,9 +246,13 @@ namespace GenGIS
 			wxSlider* m_sliderTileAlpha;
 			wxStaticLine* m_staticline13;
 			wxStaticText* m_txtGridFieldToChart;
-			wxChoice* m_choiceGridFieldToChart;
+			wxComboBox* m_choiceGridFieldToChart;
+			wxStaticText* m_txtGridDefaultColour;
+			wxColourPickerCtrl* m_colourGridDefaultColour;
 			wxStaticText* m_txtGridColourMap;
-			wxChoice* m_choiceGridColourMap;
+			wxComboBox* m_choiceGridColourMap;
+			wxStaticText* m_txtDefaultTileOpacity;
+			wxSlider* m_sliderDefaultTileAlpha;
 			wxScrolledWindow* m_scrolledWindowGridColour;
 			wxCheckBox* m_chkShowGridBorders;
 			wxStaticLine* m_staticline101;
@@ -255,18 +265,18 @@ namespace GenGIS
 			wxSpinCtrl* m_spinGridBorderThickness;
 			wxComboBox* m_cboGridBorderStyle;
 			wxPanel* m_panel12;
-			wxStaticText* m_staticText38;
-			wxComboBox* m_comboBox17;
-			wxRadioButton* m_radioBtn5;
-			wxRadioButton* m_radioBtn6;
-			wxStaticText* m_staticText36;
+			wxRadioButton* m_radioBox;
+			wxSpinCtrl* m_spinBoxDivisions;
+			wxRadioButton* m_radioBtnDegrees;
+			wxRadioButton* m_radioBtnPixels;
+			wxRadioButton* m_radioAxis;
 			wxSpinCtrl* m_spinGridDivisions;
 			wxRadioButton* m_radioBtnLatitude;
 			wxRadioButton* m_radioBtnLongitude;
 			wxRadioButton* m_radioAlignToOrigin;
 			
 			wxRadioButton* m_radioAlignToLocation;
-			wxChoice* m_choiceAlignToLocation;
+			wxComboBox* m_choiceAlignToLocation;
 			wxRadioButton* m_radioAlignToCoordinates;
 			wxStaticText* m_txtLatitude;
 			wxStaticText* m_txtMinLatitude;
@@ -286,8 +296,8 @@ namespace GenGIS
 			wxStaticLine* m_staticline8;
 			wxStaticText* m_lblVerticalElevation;
 			wxTextCtrl* m_textCtrlGridElevation;
-			wxRadioButton* m_radioVerticalElevationDegrees;
-			wxRadioButton* m_radioVerticalElevationPixels;
+			wxStaticText* m_txtTileFieldChoice;
+			wxComboBox* m_tileFieldChoice;
 			wxCheckBox* m_chkShowGrid;
 			wxPanel* m_pnlMetadata;
 			wxStaticText* m_lblLayerSource;
@@ -322,9 +332,20 @@ namespace GenGIS
 			virtual void OnCboFieldChange( wxCommandEvent& event ) { event.Skip(); }
 			virtual void OnSpinLineThickness( wxSpinEvent& event ) { event.Skip(); }
 			virtual void OnRadioColourFill( wxCommandEvent& event ) { event.Skip(); }
+			virtual void OnChoiceGridFieldToChartChange( wxCommandEvent& event ) { event.Skip(); }
+			virtual void OnGridColourMapChange( wxCommandEvent& event ) { event.Skip(); }
 			virtual void OnShowGridBorders( wxCommandEvent& event ) { event.Skip(); }
+			virtual void OnRadioDivideBy( wxCommandEvent& event ) { event.Skip(); }
+			virtual void OnNumberOfDivisions( wxCommandEvent& event ) { event.Skip(); }
+			virtual void OnRadioDivideType( wxCommandEvent& event ) { event.Skip(); }
+			virtual void OnRadioLatitudeLongitude( wxCommandEvent& event ) { event.Skip(); }
 			virtual void OnRadioAlignTo( wxCommandEvent& event ) { event.Skip(); }
+			virtual void OnGridChanged( wxCommandEvent& event ) { event.Skip(); }
+			virtual void OnAlignToLocationChange( wxCommandEvent& event ) { event.Skip(); }
+			virtual void OnCoordinateReset( wxCommandEvent& event ) { event.Skip(); }
+			virtual void OnAlignCoordinateToMouse( wxCommandEvent& event ) { event.Skip(); }
 			virtual void OnAutoAdjustElevation( wxCommandEvent& event ) { event.Skip(); }
+			virtual void OnTileFieldChoiceChange( wxCommandEvent& event ) { event.Skip(); }
 			virtual void OnHelp( wxCommandEvent& event ) { event.Skip(); }
 			virtual void OnOK( wxCommandEvent& event ) { event.Skip(); }
 			virtual void OnApply( wxCommandEvent& event ) { event.Skip(); }

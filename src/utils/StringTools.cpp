@@ -369,6 +369,24 @@ string StringTools::ReplaceChar(const string & s, char c, char r)
 	return st;
 }
 
+std::wstring StringTools::ReplaceChar(const std::wstring & s, char c, char r)
+{
+	// Copy sequence
+	std::wstring st(s);
+
+	// For all sequence's characters
+	for (uint i = 0; i < st.size(); i++)
+	{
+		if (st[i] == c)
+		{
+			st[i] = r; // replace character
+		}
+	}
+
+	// Send result
+	return st;
+}
+
 uint StringTools::Count(const string & s, const string & pattern)
 {
 	uint count = 0;

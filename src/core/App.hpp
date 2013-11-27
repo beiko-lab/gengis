@@ -62,10 +62,11 @@ namespace GenGIS
 			V2_11Pre1 = 4,
 			V2_11Pre2 = 5,
 			V2_11 = 6,
-			//V2_12 = 7,
+			V2_20Pre1 = 7,
+			//V2_2 = 8
 			//
-			GENGIS_VERSION = V2_11,
-			SAVE_VERSION   = V2_10 /* For serialization: The last version of GenGIS
+			GENGIS_VERSION = V2_20Pre1,
+			SAVE_VERSION   = V2_20Pre1 /* For serialization: The last version of GenGIS
 			                          whose session file is compatible with this release. */
 		};
 

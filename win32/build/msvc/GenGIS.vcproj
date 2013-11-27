@@ -382,6 +382,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\..\src\core\TileModel.cpp"
+					>
+				</File>
+				<File
 					RelativePath="..\..\..\src\core\TreeLayer.cpp"
 					>
 				</File>
@@ -1001,6 +1005,10 @@
 				</File>
 				<File
 					RelativePath="..\..\..\src\core\StudyModel.hpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\src\core\TileModel.hpp"
 					>
 				</File>
 				<File

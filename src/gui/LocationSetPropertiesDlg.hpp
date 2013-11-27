@@ -68,6 +68,8 @@ namespace GenGIS
 		/** Initialize controls on Location Set->Colour page. */
 		void InitLocationSetColour();
 
+		void InitLocationGridColour();
+
 		/** Initialize controls on Location Set->Size page. */
 		void InitLocationSetShape();
 
@@ -82,6 +84,9 @@ namespace GenGIS
 
 		/** Initialize controls on Grid page. */
 		void InitLocationGrid();
+
+		/** Initialize alignment controls on Grid page. */
+		void InitLocationGridAlignment();
 
 		/** Initialize controls on MetaData page. */
 		void InitMetadata();
@@ -128,6 +133,9 @@ namespace GenGIS
 		/** Field combobox value on Location Set->Colour page has changed. */
 		void OnColourFieldChange( wxCommandEvent& event );
 
+		/** Field combobox value on Location Grid->Colour page has changed. */
+		void OnChoiceGridFieldToChartChange( wxCommandEvent& event );
+
 		/** Colourmap combobox value on Location Set->Colour page has changed. */
 		void OnColourMapChange( wxCommandEvent& event );
 
@@ -143,8 +151,14 @@ namespace GenGIS
 		/** Field combobox value on chart page has changed. */
 		void OnChartFieldChange( wxCommandEvent& event );
 
+		/** Field combobox value on grid page has changed. */
+		void OnGridFieldChange( wxCommandEvent& event);
+
 		/** Colourmap combobox value on chart page has changed. */
 		void OnChartColourMapChange( wxCommandEvent& event );
+
+		/** Colourmap combobox value on grid page has changed. */
+		void OnGridColourMapChange( wxCommandEvent& event);
 
 		/** Enable or disable controls based on wether labels are to be shown. */
 		void OnShowLabels( wxCommandEvent& event );
@@ -162,8 +176,17 @@ namespace GenGIS
 		/** Show grid borders check box handler. */
 		void OnShowGridBorders( wxCommandEvent& event );
 
+		/** Handler for longitude / latitude divisions radio control. */
+		void OnRadioLatitudeLongitude( wxCommandEvent& event );
+
+		/** Handler for grid divisions spin control. */
+		void OnNumberOfDivisions( wxCommandEvent& event );
+
 		/** Handler for 'Align to' radio controls (origin, location, or coordinates). */
 		void OnRadioAlignTo( wxCommandEvent& event );
+
+		/** Handler for wx objects that only need to signal a property change for the grid. */
+		void OnGridChanged( wxCommandEvent& event);
 
 		/** Auto adjust to map elevation check box handler. */
 		void OnAutoAdjustElevation( wxCommandEvent& event );
@@ -201,8 +224,29 @@ namespace GenGIS
 		/** Get all field values for a given field in sorted order. */
 		void GetSortedFieldValues(const std::wstring& field, std::vector<std::wstring>& fieldValues);
 
+		/** Get all field values for a given field in sorted order for tiles. */
+		void GetSortedGridFieldValues(const std::wstring& field, std::vector<std::wstring>& fieldValues, std::vector<TileModelPtr> m_tileModels);
+
 		/** Sort field values either in lexigraphically or numerically. */
 		void SortFieldValues(std::vector<std::wstring>& fieldValues);
+
+		/** Reset tile coordinates and tiles. */
+		void OnCoordinateReset(wxCommandEvent &event);
+
+		/** Align tiles to mouse click. */
+		void OnAlignCoordinateToMouse(wxCommandEvent &event);
+
+		/** Set lat/long coordinates for Mouse position on Viewport. */
+		void SetMouseCoordinates(wxMouseEvent& event); 
+
+		/** Change the way tile field values are combined. */
+		void OnTileFieldChoiceChange(wxCommandEvent& event);
+
+		/** Change how tile divisions are made. */
+		void OnRadioDivideBy(wxCommandEvent& event);
+
+		/** Change how to divide tiles. */
+		void OnRadioDivideType(wxCommandEvent& event);
 
 		void OnHelp( wxCommandEvent& event )
 		{
@@ -215,6 +259,9 @@ namespace GenGIS
 
 		/** Helper functions for interacting with colour maps on the Location Set->Colour page. */
 		ColourMapWidgetPtr m_colourMapWidget;
+
+		/** Helper functions for interacting with colour maps on the Location Set->Grid page. */
+		ColourMapWidgetPtr m_gridColourMapWidget;
 
 		/** Helper functions for interacting with colour maps on the chart page. */
 		ColourMapWidgetPtr m_chartColourMapWidget;

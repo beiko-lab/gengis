@@ -110,8 +110,8 @@ class RCALayout ( wx.Frame ):
 		self.m_staticText51.Wrap( -1 )
 		gbSizer1.Add( self.m_staticText51, wx.GBPosition( 0, 0 ), wx.GBSpan( 1, 1 ), wx.ALL, 5 )
 		
-		self.m_textCtrl1 = wx.TextCtrl( self, wx.ID_ANY, u"1.0", wx.DefaultPosition, wx.Size( 45,-1 ), 0 )
-		gbSizer1.Add( self.m_textCtrl1, wx.GBPosition( 0, 1 ), wx.GBSpan( 1, 1 ), wx.ALL, 5 )
+		self.userScaleFactor = wx.TextCtrl( self, wx.ID_ANY, u"1.0", wx.DefaultPosition, wx.Size( 45,-1 ), 0 )
+		gbSizer1.Add( self.userScaleFactor, wx.GBPosition( 0, 1 ), wx.GBSpan( 1, 1 ), wx.ALL, 5 )
 		
 		self.btnPlot = wx.Button( self, wx.ID_ANY, u"Plot Selected Data", wx.DefaultPosition, wx.DefaultSize, 0 )
 		gbSizer1.Add( self.btnPlot, wx.GBPosition( 0, 2 ), wx.GBSpan( 1, 1 ), wx.ALL, 5 )

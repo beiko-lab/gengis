@@ -189,7 +189,7 @@ class LinearRegression( LinearRegressionLayout ):
 		# Get Data
 		self.GetData()
 		
-		# Perform Mantel test
+		# Perform linear regression
 		self.txtOutput.AppendText('\n')
 		self.txtOutput.AppendText('Running Linear Regression...')
 		self.txtOutput.AppendText('\n')

@@ -24,8 +24,8 @@ from GBIFQueryLayout import GBIFQueryLayout
 import GenGIS
 import wx
 import math
-import pickle
-import urllib2
+#import pickle
+#import urllib2
 import re
 import sys
 from xml.dom import minidom
@@ -97,7 +97,8 @@ class GBIFQuery(GBIFQueryLayout):
 			maxLatitude= float(self.m_MaxLat.GetValue())
 			minLongitude= float(self.m_MinLon.GetValue())
 			maxLongitude= float(self.m_MaxLon.GetValue())
-			self.GBIFSpecific.GETTAXRESULT(taxon,self.m_Result)
+			result=self.GBIFSpecific.GETTAXRESULT(taxon,self.m_Result)
+			self.m_Result.InsertItems(result,0)
 		wx.EndBusyCursor()
 		
 	#	Create Sequence and Location files for selected Taxa
@@ -163,8 +164,11 @@ class GBIFQuery(GBIFQueryLayout):
 			OUTLText, OUTSText = self.GBIFGeneric.GETTEXT(self.__obs__)
 			OUTLArray=self.GBIFGeneric.CPPOUT(OUTLText)
 			OUTSArray=self.GBIFGeneric.CPPOUT(OUTSText)
-			OUTLArray.insert(0,"Site ID,Latitude,Longitude,Richness,Cell ID,Taxon,Genus")
-			OUTSArray.insert(0,"Sequence ID,Site ID,CellLat,CellLong,Taxon,Genus,TrueLat,TrueLong,Count,AllRecords")					
+			# Removing some Gridding based artifacts, may become useful again in the future.
+			#OUTLArray.insert(0,"Site ID,Latitude,Longitude,Richness,Cell ID,Taxon,Genus")
+			OUTLArray.insert(0,"Site ID,Latitude,Longitude,Cell ID,Taxon,Genus")
+			#OUTSArray.insert(0,"Sequence ID,Site ID,CellLat,CellLong,Taxon,Genus,TrueLat,TrueLong,Count,AllRecords")					
+			OUTSArray.insert(0,"Sequence ID,Site ID,Taxon,Genus,TrueLat,TrueLong,Count,AllRecords")					
 			OUTLArray.pop()
 			OUTSArray.pop()
 			layerName = "GBIFLayer_%d" % GenGIS.layerTree.GetNumLocationSetLayers()
@@ -193,8 +197,11 @@ class GBIFQuery(GBIFQueryLayout):
 				OUTSfile = ("%s/%s_seqs.csv" % (dir,file_split[0]))
 				OUTDfile = ("%s/%s_source.txt" % (dir,file_split[0]))
 				OUTLText, OUTSText = self.GBIFGeneric.GETTEXT(self.__obs__)
-				self.GBIFGeneric.WRITEEXPORT(OUTLfile,OUTLText,"Site ID,Latitude,Longitude,Richness,Cell ID,Taxon,Genus\n")
-				self.GBIFGeneric.WRITEEXPORT(OUTSfile,OUTSText,"Sequence ID,Site ID,CellLat,CellLong,Taxon,Genus,TrueLat,TrueLong,Count,AllRecords\n")
+				# Removing some Gridding based artifacts, may become useful again in the future.
+			#	self.GBIFGeneric.WRITEEXPORT(OUTLfile,OUTLText,"Site ID,Latitude,Longitude,Richness,Cell ID,Taxon,Genus\n")
+				self.GBIFGeneric.WRITEEXPORT(OUTLfile,OUTLText,"Site ID,Latitude,Longitude,Cell ID,Taxon,Genus\n")
+			#	self.GBIFGeneric.WRITEEXPORT(OUTSfile,OUTSText,"Sequence ID,Site ID,CellLat,CellLong,Taxon,Genus,TrueLat,TrueLong,Count,AllRecords\n")
+				self.GBIFGeneric.WRITEEXPORT(OUTSfile,OUTSText,"Sequence ID,Site ID,Taxon,Genus,TrueLat,TrueLong,Count,AllRecords\n")
 				description = self.__description__.encode('utf-8')
 				self.GBIFGeneric.WRITEEXPORT(OUTDfile,description,"")
 			dlg.Destroy()
