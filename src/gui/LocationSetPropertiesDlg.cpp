@@ -33,6 +33,7 @@
 #include "../core/LayerTreeController.hpp"
 #include "../core/SequenceController.hpp"
 #include "../core/LocationGrid.hpp"
+#include "../core/TileModel.hpp"
 #include "../core/LocationSetLayer.hpp"
 #include "../core/LocationLayer.hpp"
 #include "../core/SequenceLayer.hpp"
@@ -52,6 +53,7 @@ LocationSetPropertiesDlg::LocationSetPropertiesDlg(wxWindow* parent, LocationSet
 	LocationSetPropertiesLayout(parent),
 	m_locationSetLayer(locationSetLayer), 
 	m_colourMapWidget(new ColourMapWidget(m_cboColourMap, m_scrolledWindowChart, m_scrolledWindowColour)),
+	m_gridColourMapWidget(new ColourMapWidget(m_choiceGridColourMap, m_scrolledWindowGridColour, m_scrolledWindowGridColour)),
 	m_chartColourMapWidget(new ColourMapWidget(m_cboChartColourMap, m_scrolledWindowChart, m_scrolledWindowColour)),
 	m_shapeMapWidget(new ShapeMapWidget(m_cboShapeMap))
 {
@@ -162,6 +164,88 @@ void LocationSetPropertiesDlg::InitLocationSetColour()
 	m_colourBorders->SetColour(wxColour(borderColour.GetRedInt(), borderColour.GetGreenInt(), borderColour.GetBlueInt()));
 	ReplaceColourPicker( m_colourBorders, borderColour );
 }
+
+void LocationSetPropertiesDlg::InitLocationGridAlignment()
+{
+// populate all locations for allignment
+	for ( uint i = 0; i < m_locationSetLayer->GetNumLocationLayers(); i++ )
+	{
+		m_choiceAlignToLocation->Append( wxString( m_locationSetLayer->GetLocationLayer(i)->GetName().c_str() ) );
+	}
+	
+	// need to save and load selected position somehow
+//	if(!m_locationSetLayer->GetLocationGrid()->GetField().empty())
+		m_choiceAlignToLocation->SetValue(m_locationSetLayer->GetLocationLayer(0)->GetName().c_str() );
+/**	else
+	{
+		if(!m_choiceGridFieldToChart->IsEmpty())
+			m_choiceGridFieldToChart->SetValue(m_choiceGridFieldToChart->GetString(0));
+			m_locationSetLayer->GetLocationGrid()->SetField(m_choiceGridFieldToChart->GetString(0).c_str());
+	}
+*/
+}
+
+void LocationSetPropertiesDlg::InitLocationGridColour()
+{
+	// populate combo box with all fields associated with a location
+	std::vector<std::wstring> fields = m_locationSetController->GetMetadataFields();
+	std::vector<std::wstring>::iterator it;
+	for(it = fields.begin(); it != fields.end(); ++it)
+	{
+		m_choiceGridFieldToChart->Append(wxString((*it).c_str()));
+	}
+
+	// populate combo box with all fields associated with a sequence
+	if(App::Inst().GetLayerTreeController()->GetNumSequenceLayers() > 0)
+	{
+		std::map<std::wstring,std::wstring> data = m_locationSetController->GetSequenceMetadata();
+		std::map<std::wstring,std::wstring>::iterator seqIt;
+		for(seqIt = data.begin(); seqIt != data.end(); ++seqIt)
+		{
+				m_choiceGridFieldToChart->Append(wxString((*seqIt).first.c_str()));
+		}
+	}
+
+	if(!m_locationSetLayer->GetLocationGrid()->GetField().empty())
+		m_choiceGridFieldToChart->SetValue(m_locationSetLayer->GetLocationGrid()->GetField().c_str());
+	else
+	{
+		if(!m_choiceGridFieldToChart->IsEmpty())
+			m_choiceGridFieldToChart->SetValue(m_choiceGridFieldToChart->GetString(0));
+			m_locationSetLayer->GetLocationGrid()->SetField(m_choiceGridFieldToChart->GetString(0).c_str());
+	}
+
+	// Use Location Grid colour map	
+	m_gridColourMapWidget->SetColourMap(m_locationSetLayer->GetLocationGrid()->GetColourMap());
+	m_gridColourMapWidget->PopulateColourMapComboBox();
+
+	// Set field values
+	wxCommandEvent dummy;
+	OnColourFieldChange(dummy);
+	OnChoiceGridFieldToChartChange(dummy);
+
+	// Set up Uniform Colour
+	Colour uniColour = m_locationSetLayer->GetLocationGrid()->GetTileUniformColour();
+	m_gridTileColour->SetColour(wxColour(uniColour.GetRedInt(), uniColour.GetGreenInt(), uniColour.GetBlueInt()));
+	ReplaceColourPicker( m_gridTileColour, uniColour );
+
+	// Set Up Default Colour
+	Colour defColour = m_locationSetLayer->GetLocationGrid()->GetTileDefaultColour();
+	m_colourGridDefaultColour->SetColour(wxColour(defColour.GetRedInt(), defColour.GetGreenInt(), defColour.GetBlueInt()));
+	ReplaceColourPicker( m_colourGridDefaultColour, defColour );
+	
+	// Set up Border Colour
+	Colour bordColour = m_locationSetLayer->GetLocationGrid()->GetBorderColour();
+	m_gridBorderColour->SetColour(wxColour(bordColour.GetRedInt(), bordColour.GetGreenInt(), bordColour.GetBlueInt()));
+	ReplaceColourPicker( m_gridBorderColour, bordColour );
+
+	// Set Colour Map
+	m_locationSetLayer->GetLocationGrid()->SetColourMap( m_gridColourMapWidget->GetColourMap() );
+
+	// Sets the tile colours
+	m_locationSetLayer->GetLocationGrid()->SetLocationColours();
+}
+
 
 void LocationSetPropertiesDlg::InitLocationSetShape()
 {
@@ -480,7 +564,7 @@ void LocationSetPropertiesDlg::InitChart()
 		m_chkChart2D->SetValue(true);
 		m_cboChartType->SetValue(wxT("Pie Chart"));
 	}
-  
+
 	wxCommandEvent dummy;
 	OnProportionalChartSize(dummy);
 	OnChartTypeChanged(dummy);
@@ -497,8 +581,10 @@ void LocationSetPropertiesDlg::InitLocationGrid()
 		m_radioGridNoFill->SetValue( true );
 
 		m_gridTileColour->Disable();
+		m_colourGridDefaultColour->Disable();
 		m_txtTileAlpha->Disable();
 		m_sliderTileAlpha->Disable();
+		m_sliderDefaultTileAlpha->Disable();
 		m_txtGridFieldToChart->Disable();
 		m_choiceGridFieldToChart->Disable();
 		m_txtGridColourMap->Disable();
@@ -514,6 +600,7 @@ void LocationSetPropertiesDlg::InitLocationGrid()
 		m_txtGridColourMap->Disable();
 		m_choiceGridColourMap->Disable();
 		m_scrolledWindowGridColour->Disable();
+		m_colourGridDefaultColour->Disable();
 	}
 	else if ( colourFillStyle == LocationGrid::MAPPED )
 	{
@@ -523,16 +610,25 @@ void LocationSetPropertiesDlg::InitLocationGrid()
 	}
 
 	// Get visibility of grid
-	m_chkShowGrid->SetValue( locationGrid->IsVisible() );
+ 	m_chkShowGrid->SetValue( locationGrid->IsVisible() );
 
 	// Get uniform colour of tiles
 	Colour tileColour = locationGrid->GetTileUniformColour();
 	m_gridTileColour->SetColour( wxColour( tileColour.GetRedInt(),
 		tileColour.GetGreenInt(), tileColour.GetBlueInt() ) );
 
+	// Get default colour of tiles
+	tileColour = locationGrid->GetTileDefaultColour();
+	m_colourGridDefaultColour->SetColour( wxColour( tileColour.GetRedInt(),
+		tileColour.GetGreenInt(), tileColour.GetBlueInt() ) );
+
 	// Get alpha of tiles
 	uint alphaTiles = locationGrid->GetTileAlpha()*10;
 	m_sliderTileAlpha->SetValue( alphaTiles );
+
+	// Get alpha of default tiles
+	uint defaultAlphaTiles = locationGrid->GetDefaultTileAlpha()*10;
+	m_sliderDefaultTileAlpha->SetValue( defaultAlphaTiles );
 
 	// Enable/Disable grid border controls
 	bool borderVisibility = locationGrid->GetBorderVisibility();
@@ -569,8 +665,19 @@ void LocationSetPropertiesDlg::InitLocationGrid()
 	else if ( gridBorderStyle == VisualLine::HIDDEN )
 		m_cboGridBorderStyle->SetValue( _T("Hidden") );	
 
+	// Set tile field combination
+	m_tileFieldChoice->SetValue(_T("Average"));
+
 	// Get the number of divisions
-	m_spinGridDivisions->SetValue( locationGrid->GetNumberOfDivisions() );
+	m_spinGridDivisions->SetValue( locationGrid->GetNumberOfAxisDivisions() );
+	m_spinBoxDivisions->SetValue( locationGrid->GetNumberOfBoxDivisions() );
+
+	// Get the axis (longitude or latitude) along which the map is divided
+	bool latLong = true;
+	if ( locationGrid->GetTileDivisionAxis() == LocationGrid::LONGITUDE )
+		latLong = false;
+	m_radioBtnLatitude->SetValue( latLong );
+	m_radioBtnLongitude->SetValue( !latLong );
 
 	LocationGrid::ALIGNMENT gridAlignmentStyle = locationGrid->GetGridAlignmentStyle();
 	if      ( gridAlignmentStyle == LocationGrid::ORIGIN )
@@ -580,6 +687,40 @@ void LocationSetPropertiesDlg::InitLocationGrid()
 	else if ( gridAlignmentStyle == LocationGrid::COORDINATES )
 		m_radioAlignToCoordinates->SetValue( true );
 
+	// Get the division strategy
+	LocationGrid::DIVISION_TYPE divisionType = locationGrid->GetTileDivisionType();
+	if		( divisionType == LocationGrid::BOX )
+	{
+		m_radioBox->SetValue(true);
+		m_radioAxis->SetValue(false);
+		m_spinGridDivisions->Enable(false);
+		m_radioBtnLatitude->Enable(false);
+		m_radioBtnLongitude->Enable(false);
+
+		m_spinBoxDivisions->Enable(true);
+		m_radioBtnDegrees->Enable(true);
+		m_radioBtnPixels->Enable(true);
+
+		if( locationGrid->GetTileDivisionBox() == LocationGrid::DEGREE )
+			m_radioBtnDegrees->SetValue(true);
+		else if( locationGrid->GetTileDivisionBox() == LocationGrid::PIXEL )
+			m_radioBtnPixels->SetValue(true);
+		
+	}
+	else if( divisionType == LocationGrid::AXIS )
+	{	
+		m_radioAxis->SetValue(true);
+		m_radioBox->SetValue(false);
+		m_spinBoxDivisions->Enable(false);
+		m_radioBtnDegrees->Enable(false);
+		m_radioBtnPixels->Enable(false);
+
+		m_spinGridDivisions->Enable(true);
+		m_radioBtnLatitude->Enable(true);
+		m_radioBtnLongitude->Enable(true);
+
+	}
+	
 	// Disable alignment controls based on radio button selection
 	if ( ( gridAlignmentStyle == LocationGrid::ORIGIN ) ||
 		 ( gridAlignmentStyle == LocationGrid::COORDINATES ) )
@@ -614,12 +755,27 @@ void LocationSetPropertiesDlg::InitLocationGrid()
 	// Enable/Disable grid elevation controls
 	m_lblVerticalElevation->Enable( !autoAdjustElevationStatus );
 	m_textCtrlGridElevation->Enable( !autoAdjustElevationStatus );
-	m_radioVerticalElevationDegrees->Enable( !autoAdjustElevationStatus );
-	m_radioVerticalElevationPixels->Enable( !autoAdjustElevationStatus );
 
 	// Get the grid elevation
 	m_textCtrlGridElevation->SetValue(
 		wxString( StringTools::ToStringW( locationGrid->GetElevation(), 2 ).c_str() ) );
+
+	locationGrid->SetLocationSetLayer ( m_locationSetLayer);
+	//	Initialize and fill tiles
+	locationGrid->GenerateTileCoordinates();
+	locationGrid->InitTiles();
+	locationGrid->FillTiles();
+
+	InitLocationGridColour();
+	InitLocationGridAlignment();
+
+	// Grid is initialized and not changed
+	locationGrid->SetGridChanged( false );
+
+	// Removes weird click anywhere bug for divide by radio boxes
+//	wxCommandEvent setting;
+//	setting.SetId(wxID_DIVIDE_BY_AXIS);
+//	OnRadioDivideBy(setting);
 }
 
 void LocationSetPropertiesDlg::OnRadioColourFill( wxCommandEvent& event )
@@ -656,6 +812,29 @@ void LocationSetPropertiesDlg::OnRadioColourFill( wxCommandEvent& event )
 	m_txtGridColourMap->Enable( set3 );
 	m_choiceGridColourMap->Enable( set3 );
 	m_scrolledWindowGridColour->Enable( set3 );
+	m_colourGridDefaultColour->Enable( set3 );
+	m_sliderDefaultTileAlpha->Enable( set3 );
+}
+
+void LocationSetPropertiesDlg::OnRadioLatitudeLongitude( wxCommandEvent& event )
+{
+	int wxID = event.GetId();
+	bool set1 = true;
+
+	if ( wxID == wxID_RADIO_GRID_DIVIDE_ALONG_LATITUDE )
+		m_locationSetLayer->GetLocationGrid()->SetTileDivisionAxis( LocationGrid::LATITUDE );
+	else if ( wxID == wxID_RADIO_GRID_DIVIDE_ALONG_LONGITUDE )
+		m_locationSetLayer->GetLocationGrid()->SetTileDivisionAxis( LocationGrid::LONGITUDE );
+	
+	LocationGridPtr locationGrid = m_locationSetLayer->GetLocationGrid();
+	locationGrid -> SetGridChanged( true );
+}
+
+void LocationSetPropertiesDlg::OnNumberOfDivisions( wxCommandEvent& event )
+{
+	LocationGridPtr locationGrid = m_locationSetLayer->GetLocationGrid();
+	locationGrid -> SetGridChanged( true );
+
 }
 
 void LocationSetPropertiesDlg::OnShowGridBorders( wxCommandEvent& event )
@@ -679,6 +858,9 @@ void LocationSetPropertiesDlg::OnRadioAlignTo( wxCommandEvent& event )
 	int wxID = event.GetId();
 	bool set1 = true;
 	bool set2 = true;
+
+	// set grid to changed
+	m_locationSetLayer->GetLocationGrid()->SetGridChanged( true );
 
 	if ( wxID == wxID_RADIO_GRID_ALIGN_TO_ORIGIN )
 	{
@@ -717,14 +899,19 @@ void LocationSetPropertiesDlg::OnRadioAlignTo( wxCommandEvent& event )
 	m_buttonClickMapToAlign->Enable( set2 );
 }
 
+void LocationSetPropertiesDlg::OnGridChanged( wxCommandEvent& event )
+{
+	// set grid to changed
+	m_locationSetLayer->GetLocationGrid()->SetGridChanged( true );
+}
+
 void LocationSetPropertiesDlg::OnAutoAdjustElevation( wxCommandEvent& event )
 {
+	m_locationSetLayer->GetLocationGrid()->SetGridChanged( true );
 	bool status = m_chkAutoAdjustElevation->GetValue();
 
 	m_lblVerticalElevation->Enable( !status );
 	m_textCtrlGridElevation->Enable( !status );
-	m_radioVerticalElevationDegrees->Enable( !status );
-	m_radioVerticalElevationPixels->Enable( !status );
 
 	m_locationSetLayer->GetLocationGrid()->SetAutoAdjustElevationStatus( status );
 }
@@ -748,8 +935,19 @@ void LocationSetPropertiesDlg::OnColourFieldChange( wxCommandEvent& event )
 	m_colourMapWidget->SetFieldValues(m_scrolledWindowColour, fieldValues);
 }
 
+void LocationSetPropertiesDlg::OnChoiceGridFieldToChartChange( wxCommandEvent& event )
+{
+	LocationGridPtr locationGrid = m_locationSetLayer->GetLocationGrid();
+
+//	locationGrid->SetGridChanged( true );
+	std::vector<std::wstring> fieldValues;
+	GetSortedGridFieldValues( m_choiceGridFieldToChart->GetValue().c_str(), fieldValues, locationGrid->GetTileModels() );
+	m_gridColourMapWidget->SetFieldValues(m_scrolledWindowGridColour, fieldValues);
+}
+
 void LocationSetPropertiesDlg::OnColourMapChange( wxCommandEvent& event ) 
 { 
+	m_locationSetLayer->GetLocationGrid()->SetGridChanged( true );
 	m_colourMapWidget->SetColourMap(); 
 }
 
@@ -828,6 +1026,47 @@ void LocationSetPropertiesDlg::OnChartColourMapChange( wxCommandEvent& event )
 	m_chartColourMapWidget->SetColourMap(); 
 }
 
+void LocationSetPropertiesDlg::OnGridFieldChange( wxCommandEvent& event)
+{
+	bool bAccept = true;
+	std::set<std::wstring> uniqueFieldValues;
+	for(unsigned int i = 0; i < m_locationSetLayer->GetNumLocationLayers(); ++i)
+	{
+		ChartViewPtr chartView = m_locationSetLayer->GetLocationLayer(i)->GetLocationController()->GetChartView();
+
+		std::set<std::wstring> fieldValues;
+		chartView->GetValues(m_cboChartField->GetValue().c_str(), fieldValues);
+
+		if ( !m_cboQuantitativeField->IsEmpty() )
+			chartView->SetQuantitativeField(m_cboQuantitativeField->GetValue().c_str());
+		chartView->SetQuantitative(m_chkQuantitative->IsChecked());
+
+		bAccept = bAccept && chartView->UpdateChart(m_cboChartField->GetValue().c_str(), fieldValues);
+
+		foreach(const std::wstring& value, fieldValues)
+		{
+			if(chartView->GetPercentage(value) > float(m_spinChartFilterTaxaPercentage->GetValue())/100)
+				uniqueFieldValues.insert(value);
+		}
+	}
+
+	if(!bAccept)
+		wxMessageBox(wxT("None numeric type found in specific quantitative field."), wxT("Abundance count error"), wxOK | wxICON_INFORMATION);
+
+	std::vector<std::wstring> fieldValues(uniqueFieldValues.begin(), uniqueFieldValues.end());
+
+	SortFieldValues(fieldValues);
+
+	fieldValues.push_back(_T("Other"));
+
+	m_gridColourMapWidget->SetFieldValues(m_scrolledWindowGridColour, fieldValues);
+}
+
+void LocationSetPropertiesDlg::OnGridColourMapChange( wxCommandEvent& event)
+{
+	m_gridColourMapWidget->SetColourMap();
+}
+
 void LocationSetPropertiesDlg::OnProportionalChartSize( wxCommandEvent& event )
 {
 	m_spinChartWidth->Enable(!m_chkChartSizeBySeqCount->GetValue());
@@ -846,6 +1085,32 @@ void LocationSetPropertiesDlg::GetSortedFieldValues(const std::wstring& field, s
 
 		std::map<std::wstring,std::wstring>::const_iterator it = data.find(field);
 		uniqueFieldValues.insert(it->second);
+	}
+
+	fieldValues.clear();
+	fieldValues = std::vector<std::wstring>(uniqueFieldValues.begin(), uniqueFieldValues.end());
+
+	SortFieldValues(fieldValues);
+}
+
+void LocationSetPropertiesDlg::GetSortedGridFieldValues(const std::wstring& field, std::vector<std::wstring>& fieldValues, std::vector<TileModelPtr> m_tileModels)
+{
+	// get all unique field values within the given field
+	std::set<std::wstring> uniqueFieldValues;
+	for(unsigned int i = 0; i < m_tileModels.size(); ++i)
+	{
+		if( m_tileModels[i]->GetNumLocations() != 0 )
+		{
+			// need to check if field comes from location or sequence layer
+			std::map<std::wstring,std::wstring> data = m_tileModels[i]->GetData();
+			std::map<std::wstring,std::wstring>::const_iterator it = data.find(field);
+			if( it == data.end() )
+			{
+				data = m_tileModels[i]->GetSequence(0)->GetData();
+				it = data.find(field);
+			}
+			uniqueFieldValues.insert(it->second);
+		}
 	}
 
 	fieldValues.clear();
@@ -1100,12 +1365,25 @@ void LocationSetPropertiesDlg::ApplyGrid()
 	// Set visibility of grid
 	locationGrid->SetVisibility( m_chkShowGrid->GetValue() );
 
+	// Set the number of divisions
+	if(m_radioAxis->GetValue() == true)
+		locationGrid->SetAxisDivisions( m_spinGridDivisions->GetValue() );
+	else if(m_radioBox->GetValue() == true)
+		locationGrid->SetBoxDivisions( m_spinBoxDivisions->GetValue() );
+
 	// Set uniform colour of tiles
 	locationGrid->SetTileUniformColour( Colour( m_gridTileColour->GetColour() ) );
+
+	// Set default colour of tiles
+	locationGrid->SetTileDefaultColour( Colour( m_colourGridDefaultColour->GetColour() ) );
 
 	// Set alpha of tiles
 	float tileAlpha = m_sliderTileAlpha->GetValue();
 	locationGrid->SetTileAlpha( tileAlpha/10 );
+
+	// Set alpha of default tiles
+	float defaultTileAlpha = m_sliderDefaultTileAlpha->GetValue();
+	locationGrid->SetDefaultTileAlpha( defaultTileAlpha/10 );
 
 	// Set colour of grid borders
 	locationGrid->SetBorderColour( Colour( m_gridBorderColour->GetColour() ) );
@@ -1116,6 +1394,10 @@ void LocationSetPropertiesDlg::ApplyGrid()
 
 	// Set thickness of grid borders
 	locationGrid->SetBorderThickness( m_spinGridBorderThickness->GetValue() );
+
+	// Set Selected Field
+	locationGrid->SetField( m_choiceGridFieldToChart->GetStringSelection().c_str() );
+	locationGrid->SetSelectedFieldValues( m_gridColourMapWidget->GetFieldValues() );
 
 	// Set style of grid borders
 	VisualLine::LINE_STYLE gridBorderStyle;
@@ -1129,14 +1411,54 @@ void LocationSetPropertiesDlg::ApplyGrid()
 		gridBorderStyle = VisualLine::SOLID;
 	locationGrid->SetBorderStyle( gridBorderStyle );
 
-	// Set the number of divisions
-	locationGrid->SetDivisions( m_spinGridDivisions->GetValue() );
-
 	// Set the grid elevation
 	locationGrid->SetElevation( StringTools::ToDouble( m_textCtrlGridElevation->GetValue().c_str() ) );
 
+	//Set location set layer
+	locationGrid->SetLocationSetLayer ( m_locationSetLayer);
+
+	// Generate coordinates at origin to reset grid
+	locationGrid->SetMapOffset( Point2D(0,0) );
+
 	// Generate coordinates
 	locationGrid->GenerateTileCoordinates();
+
+	// Set Grid Origin
+	if( locationGrid->GetGridAlignmentStyle() == LocationGrid::LOCATIONS ){
+		locationGrid->SetOriginOffset( m_choiceAlignToLocation->GetStringSelection().c_str() );
+		locationGrid->GenerateTileCoordinates();
+	}
+	else if( locationGrid->GetGridAlignmentStyle() == LocationGrid::COORDINATES )
+	{
+		float latitude = StringTools::ToDouble( m_textCtrlLatitude->GetLineText(0).c_str() );	
+		float longitude = StringTools::ToDouble( m_textCtrlLongitude->GetLineText(0).c_str() );
+		if( !(latitude<=DBL_MAX && latitude >= -DBL_MAX) || !(longitude<=DBL_MAX && longitude >= -DBL_MAX) )
+		{
+			Log::Inst().Error("(Error) LocationSetProperties::Apply(): latitude/longitude not convertible to float.");
+		}
+		else
+		{
+			locationGrid->SetOriginOffset( Point2D( longitude, latitude ) );
+			locationGrid->GenerateTileCoordinates();
+		}
+	}
+
+	// Generate new tile field values
+	if( locationGrid->GetGridChanged() )
+	{
+		// put values in tiles
+		locationGrid->FillTiles();
+		wxCommandEvent dummy;
+		OnChoiceGridFieldToChartChange( dummy );
+		OnGridColourMapChange( dummy );
+		locationGrid->SetGridChanged( false );
+	}
+
+	// Set Colour Map
+	locationGrid->SetColourMap( m_gridColourMapWidget->GetColourMap() );
+
+	// Sets the tile colours
+	locationGrid->SetLocationColours();
 }
 
 
@@ -1280,4 +1602,118 @@ void LocationSetPropertiesDlg::OnCustomColourButtonClicked( wxMouseEvent& event 
 
 	// Set the wxColourPickerCtrl colour picker (hidden, but its value will be used to change the location colour)
 	customColourButton->GetWXColourPickerCtrl()->SetColour( colourPicker->GetColourData().GetColour() );
+}
+
+void LocationSetPropertiesDlg::OnCoordinateReset(wxCommandEvent &event)
+{
+	// Clear text controls
+	m_textCtrlLatitude->Clear();
+	m_textCtrlLongitude->Clear();
+}
+
+void LocationSetPropertiesDlg::OnAlignCoordinateToMouse(wxCommandEvent &event)
+{
+	// attach viewport mouse event;
+	boost::function<void(wxMouseEvent)> mouseEvent;
+	mouseEvent = boost::bind(&LocationSetPropertiesDlg::SetMouseCoordinates, this, _1);
+	App::Inst().GetViewport()->SignalMouse(mouseEvent);
+	m_locationSetLayer->GetLocationGrid()->SetGridChanged( true );
+}
+
+void LocationSetPropertiesDlg::SetMouseCoordinates(wxMouseEvent& event)
+{
+	if(event.LeftDown())
+	{
+		Point3D point = App::Inst().GetMouseWorldPos();
+
+		// Calls viewports disconnect method for signal.
+		App::Inst().GetViewport()->UnRegisterMouse();
+
+		GeoCoord locationGeo;
+		App::Inst().GetMapController()->GetMapModel()->GridToGeo(point,locationGeo);
+
+		m_textCtrlLatitude->SetValue(wxString::Format(wxT("%f"),locationGeo.northing));
+		m_textCtrlLongitude->SetValue(wxString::Format(wxT("%f"),locationGeo.easting));
+	}
+}
+
+void LocationSetPropertiesDlg::OnTileFieldChoiceChange(wxCommandEvent& event)
+{
+	std::wstring str = m_tileFieldChoice->GetValue().c_str();
+	std::wstring nex = _T("Standard Deviation");
+	if(str == nex)
+		str = _T("blargddasd");
+	// set grid to changed
+	m_locationSetLayer->GetLocationGrid()->SetGridChanged( true );
+	// Set default tile field combination
+	if( m_tileFieldChoice->GetValue() == _T("Average") )
+		m_locationSetLayer->GetLocationGrid()->SetCombinationMethod( TileModel::AVERAGE );
+	else if( m_tileFieldChoice->GetValue() == _T("Standard Deviation") )
+		m_locationSetLayer->GetLocationGrid()->SetCombinationMethod( TileModel::STDEV );
+	else if( m_tileFieldChoice->GetValue() == _T("Gini Index") )
+		m_locationSetLayer->GetLocationGrid()->SetCombinationMethod( TileModel::GINI );
+	else
+		m_locationSetLayer->GetLocationGrid()->SetCombinationMethod( TileModel::SUM );
+
+}
+
+void LocationSetPropertiesDlg::OnRadioDivideBy(wxCommandEvent& event)
+{
+	
+	m_locationSetLayer->GetLocationGrid()->SetGridChanged(true);
+	int wxID = event.GetId();
+	wxEventType charlie = event.GetEventType();
+	bool skipped = event.GetSkipped();
+	long blah = event.GetTimestamp();
+	bool asw = event.IsCommandEvent();
+	bool set1 = false;
+	bool set2 = false;
+
+	if( m_locationSetLayer->GetLocationGrid()->GetTileDivisionBox() == LocationGrid::DEGREE)
+		m_radioBtnDegrees->SetValue(true);
+	else
+		m_radioBtnPixels->SetValue(true);
+
+
+	if( wxID == wxID_DIVIDE_BY_BOX )
+	{
+		m_locationSetLayer->GetLocationGrid()->SetTileDivisionType( LocationGrid::BOX );
+		set1 = false;
+		set2 = true;	
+	}
+	else if( wxID == wxID_DIVIDE_BY_AXIS )
+	{
+		m_locationSetLayer->GetLocationGrid()->SetTileDivisionType( LocationGrid::AXIS );
+		set1 = true;
+		set2 = false;
+	}
+	m_spinGridDivisions->Enable(set1);
+	m_radioBtnLatitude->Enable(set1);
+	m_radioBtnLongitude->Enable(set1);
+	m_radioAxis->SetValue(set1);
+	
+	m_spinBoxDivisions->Enable(set2);
+	m_radioBtnDegrees->Enable(set2);
+	m_radioBtnPixels->Enable(set2);
+	m_radioBox->SetValue(set2);
+}
+
+void LocationSetPropertiesDlg::OnRadioDivideType(wxCommandEvent& event)
+{
+	int wxID = event.GetId();
+	m_locationSetLayer->GetLocationGrid()->SetGridChanged(true);
+
+	if(wxID == wxID_DIVIDE_INTO_DEGREES)
+	{
+		m_locationSetLayer->GetLocationGrid()->SetTileDivisionBox( LocationGrid::DEGREE );
+		// keep number of divisions within minimum range ( y axis )
+		m_spinBoxDivisions->SetRange( 1, 90 );		// should be turned into something not hard coded
+	}
+	else if(wxID == wxID_DIVIDE_INTO_PIXELS)
+	{	
+		m_locationSetLayer->GetLocationGrid()->SetTileDivisionBox( LocationGrid::PIXEL );
+		// keep number of divisions within minimum range ( y axis )
+		m_spinBoxDivisions->SetRange( 1, 600 );	// should definitely be turned into something not hard coded... map.height / 100 ?
+
+	}
 }

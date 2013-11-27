@@ -36,7 +36,6 @@ class GBIFSpecific:
 	
 	def __init__(self):
 		self.GBIFGeneric = GBIFGeneric()
-	#	self.__description__ = ""
 		self.__description__ = set()
 		self.__warnings__=[0,0]
 		self.__uniqueNodeList__=set()
@@ -67,7 +66,6 @@ class GBIFSpecific:
 	def GETCOUNT(self,taxon_name,cID,minLat,maxLat,minLon,maxLon,m_Progress):
 		taxonReq = '+'.join(taxon_name)			
 		url= " http://data.gbif.org/ws/rest/occurrence/count?taxonconceptkey=%d&maxlatitude=%f&minlatitude=%f&maxlongitude=%f&minlongitude=%f" % (cID,maxLat,minLat,maxLon,minLon) 
-		print url
 		try:	
 			response=urllib2.urlopen(url).read()
 		except urllib2.HTTPError as e:
@@ -97,9 +95,8 @@ class GBIFSpecific:
 		if(FAIL==1):
 			taxonList=[taxonReq]
 		obs={}
-				
+		resultList=[]	
 		for taxonName in taxonList:	
-			pos=0
 			url="http://data.gbif.org/ws/rest/taxon/list?scientificname="+taxonName+"*&dataproviderkey=1&dataresourcekey=1"
 			try:	
 				html=urllib2.urlopen(url)
@@ -119,12 +116,11 @@ class GBIFSpecific:
 					name=self.Strip(string,"<tn:nameComplete>.*")
 					rank=self.Strip(string,"<tn:rankString>.*")
 					according=self.Strip(string,"<tc:accordingToString>.*")
-					queryLayout.InsertItems(["%d | %s | %s | %s"%(id,name,rank,according)],pos)
-					pos+=1
+					resultList.append("%d | %s | %s | %s"%(id,name,rank,according))
 			else:
 				wx.MessageBox("No Tax Found.")
 				return(-1)
-			return(1)
+			return resultList
 	
 	#	Get smallest TAX ID. 
 	def	Strip (self,Node,tag):
@@ -200,13 +196,14 @@ class GBIFSpecific:
 					#changed currGrid to Lat only for sorting purposes. Lon is added back in when written to file, so the user is none the wiser
 					currGrid = (int(fullLat)+90)*360# + (int(fullLon) +180)
 					distLocations.add((fullLat,fullLon))
-					try:
-						obs[currGrid][genus].extend([(rID,fullLat,fullLon,name)])
-					except KeyError:
-						try:
+					
+					if( currGrid in obs ):
+						if( genus in obs[currGrid]):
+							obs[currGrid][genus].extend([(rID,fullLat,fullLon,name)])
+						else:
 							obs[currGrid].update({genus: [(rID,fullLat,fullLon,name)] })
-						except KeyError:
-							obs[currGrid] = {genus: [(rID,fullLat,fullLon,name)] }
+					else:
+						obs[currGrid] = {genus: [(rID,fullLat,fullLon,name)] }
 					records = len(uniqueRID)
 		return(obs,records,len(distLocations),description)
 		

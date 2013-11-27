@@ -52,6 +52,7 @@ template<class Archive>
 void LocationSetLayer::serialize(Archive & ar, const unsigned int version)
 {
 	ar & boost::serialization::base_object<Layer>(*this);
+	ar & m_locationGrid;          // LocationGridPtr
 	ar & m_locationLayers;        // std::vector<LocationLayerPtr>
 	ar & m_locationSetController; // LocationSetControllerPtr
 }

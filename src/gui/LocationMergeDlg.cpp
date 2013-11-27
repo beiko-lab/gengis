@@ -57,13 +57,18 @@ void LocationMergeDlg::Init()
 	//get location layers
 	//for each location layer create a checkbox for them
 	LayerTreeControllerPtr layerTree = App::Inst().GetLayerTreeController();
-	for (uint locSet = 0; locSet < layerTree->GetNumLocationSetLayers(); locSet++)
+	for (uint locSet = layerTree->GetNumLocationSetLayers(); locSet > 0; locSet--)
 	{
-		std::wstring layerName = layerTree->GetLocationSetLayer( locSet )->GetName();
-		wxString const mystring(layerName);
+		std::wstring layerName = layerTree->GetLocationSetLayer( locSet - 1 )->GetName();
+		wxString const mystring = wxString( layerName.c_str() );
 		m_locationSetCheckbox->InsertItems(1,&mystring,0);
 	}
+
+	m_description->SetLabel(wxT("Combine two or more Location Sets into one and insert it into top of the location stack. This allows the new layer to be used with GenGIS plugins. Selecting only one Location Set creates an exact copy of that Location Set."));
+	wxSize size;
+	size = bSizer1->GetSize();
 	
+	m_description->Wrap(size.GetWidth());
 }
 void LocationMergeDlg::OnOK(wxCommandEvent& event)
 {
@@ -76,6 +81,57 @@ void LocationMergeDlg::OnOK(wxCommandEvent& event)
 		std::vector<LocationModelPtr> LocationModels;
 		std::vector<SequenceModelPtr> SequenceModels;
 		std::vector<ChartSetViewPtr> ChartViews;
+		
+		// Get Intersect of metadata keys
+		std::vector<std::wstring> keysIntersect;
+		std::vector<std::wstring> keysIntersectSeq;
+		bool firstLay = true;
+		bool firstSeq = true;
+		for(int locSet = 0; locSet < numItems; locSet++)
+		{
+			if(m_locationSetCheckbox->IsChecked(locSet))
+			{
+				LocationSetLayerPtr locationSet = layerTree->GetLocationSetLayer( locSet );
+				std::vector<std::wstring> fields = locationSet->GetLocationSetController()->GetMetadataFields();
+				if(firstLay)
+				{
+					keysIntersect = fields;	
+					firstLay = false;
+				}
+				else
+				{
+					std::vector<std::wstring> locs;
+					set_intersection(keysIntersect.begin(),keysIntersect.end(), fields.begin(),fields.end(),
+						std::inserter(locs,locs.begin()) );
+					keysIntersect = locs;
+					
+				}
+				
+				//now do the same for sequences
+				// IF SEQUENCES
+				std::vector<std::wstring> seqFields;
+				if( locationSet->GetLocationLayer(0)->GetNumSequenceLayers() >= 1 ) 
+				{
+					seqFields  = locationSet-> GetLocationLayer(0) -> GetSequenceLayer(0) -> GetSequenceController()->GetMetadataFields();
+				}
+
+				if(firstSeq)
+				{
+					keysIntersectSeq = seqFields;	
+					firstSeq = false;
+				}
+				else
+				{
+					std::vector<std::wstring> locs;
+					set_intersection(keysIntersectSeq.begin(),keysIntersectSeq.end(), seqFields.begin(),seqFields.end(),
+						std::inserter(locs,locs.begin()) );
+					keysIntersectSeq = locs;
+					
+				}
+				
+			}
+		}
+		
 		//Finds the indexes of all checked boxes
 		for(int locSet = 0; locSet < numItems; locSet++)
 		{
@@ -87,7 +143,7 @@ void LocationMergeDlg::OnOK(wxCommandEvent& event)
 				LocationSets.push_back(locationSet);
 				for(uint i = 0; i < locationSet->GetNumLocationLayers(); i++)
 				{
-					LocationLayerPtr locLayer = locationSet -> GetLocationLayer(i);// -> GetSequenceLayer() -> GetSequenceController() -> GetSequenceModel();
+					LocationLayerPtr locLayer = locationSet -> GetLocationLayer(i);
 					LocationModelPtr locationModel = locationSet -> GetLocationLayer(i) -> GetLocationController() -> GetLocationModel();
 					LocationModels.push_back(locationModel);
 					for(uint j = 0; j < locLayer->GetNumSequenceLayers(); j++)
@@ -98,12 +154,17 @@ void LocationMergeDlg::OnOK(wxCommandEvent& event)
 				}
 			}
 		}
-		CreateLocationSet(LocationModels,ChartViews);
-		CreateSequenceSet(SequenceModels);
+		CreateLocationSet(LocationModels,ChartViews,keysIntersect);
+		CreateSequenceSet(SequenceModels,keysIntersectSeq);
+		// if m_remove is checked remove the selected layers
+		if( m_remove->GetValue() == true )
+		{
+			RemoveLocationSetLayers(LocationSets);
+		}
 		Destroy();
 	}
 }
-void LocationMergeDlg::CreateLocationSet( std::vector<LocationModelPtr> locationModels, std::vector<ChartSetViewPtr> ChartViews )
+void LocationMergeDlg::CreateLocationSet( std::vector<LocationModelPtr> locationModels, std::vector<ChartSetViewPtr> ChartViews, std::vector<std::wstring> keysIntersect )
 {
 	// get selected layer
 	LayerPtr selectedLayer = App::Inst().GetLayerTreeController()->GetSelectedLayer();
@@ -151,7 +212,15 @@ void LocationMergeDlg::CreateLocationSet( std::vector<LocationModelPtr> location
 		std::vector<LocationLayerPtr> locationLayers;
 		foreach(LocationModelPtr locationModel, locationModels)
 		{
-			LocationModelPtr copyLocationModel(new LocationModel(locationModel->GetId(),locationModel->GetNorthing(),locationModel->GetEasting(),locationModel->GetData()));
+			// get intersect of data fields
+			std::map<std::wstring,std::wstring> newData;
+			for(uint interField = 0; interField < keysIntersect.size(); interField++)
+			{
+				std::wstring field = keysIntersect[interField];
+				newData[field] = locationModel->GetData(field);
+			}
+
+			LocationModelPtr copyLocationModel(new LocationModel(locationModel->GetId(),locationModel->GetNorthing(),locationModel->GetEasting(),newData));
 			LocationViewPtr locationView(new LocationView(copyLocationModel, App::Inst().GetViewport()->GetCamera(), UniqueId::Inst().GenerateId()));
 			ChartViewPtr pieChartView(new ChartView(copyLocationModel, locationView, newColourMap));
 			chartSetCtrl->AddChart(pieChartView);
@@ -183,8 +252,11 @@ void LocationMergeDlg::CreateLocationSet( std::vector<LocationModelPtr> location
 			wxT("Select map node"), wxOK | wxICON_INFORMATION);
 	}
 }
-void LocationMergeDlg::CreateSequenceSet( std::vector<SequenceModelPtr> sequenceModels )
+void LocationMergeDlg::CreateSequenceSet( std::vector<SequenceModelPtr> sequenceModels, std::vector<std::wstring> keysIntersectSeq )
 {
+	if( keysIntersectSeq.size() == 0 )
+		return;
+
 	LayerPtr selectedLayer = App::Inst().GetLayerTreeController()->GetSelectedLayer();
 	if(selectedLayer == LayerPtr() || selectedLayer->GetType() != Layer::LOCATION_SET)
 	{
@@ -206,13 +278,21 @@ void LocationMergeDlg::CreateSequenceSet( std::vector<SequenceModelPtr> sequence
 			std::set<std::wstring> missingLocations;
 			foreach(SequenceModelPtr sequenceModel, sequenceModels)
 			{
-				SequenceModelPtr copySequenceModel(new SequenceModel(sequenceModel->GetSequenceId(),sequenceModel->GetSiteId(),sequenceModel->GetData()));
+				// get intersect of data fields
+				std::map<std::wstring,std::wstring> newData;
+				for(uint interField = 0; interField < keysIntersectSeq.size(); interField++)
+				{
+					std::wstring field = keysIntersectSeq[interField];
+					newData[field] = sequenceModel->GetData(field);
+				}
+
+				SequenceModelPtr copySequenceModel(new SequenceModel(sequenceModel->GetSequenceId(),sequenceModel->GetSiteId(),newData));
 				
 				SequenceControllerPtr sequenceController(new SequenceController(copySequenceModel));
 
 				SequenceLayerPtr sequenceLayer(new SequenceLayer(UniqueId::Inst().GenerateId(), selectedLayer, sequenceController));
 				sequenceLayer->SetName(sequenceController->GetSequenceId().c_str());
-				sequenceLayer->SetFullPath( wxT("blahblahblah") );
+				sequenceLayer->SetFullPath( wxT("combination") );
 
 				if(!App::Inst().GetLayerTreeController()->AddSequence(sequenceLayer, copySequenceModel, missingLocations))
 				{			
@@ -237,4 +317,14 @@ void LocationMergeDlg::CreateSequenceSet( std::vector<SequenceModelPtr> sequence
 	}
 
 	App::Inst().GetViewport()->Refresh(false);
+}
+
+void LocationMergeDlg::RemoveLocationSetLayers ( std::vector<LocationSetLayerPtr> locationSets  )
+{
+	for( uint i = 0; i < locationSets.size(); i++ )
+	{
+		App::Inst().GetLayerTreeController()->SetSelection( locationSets[i] );
+		wxCommandEvent dummy;
+		App::Inst().GetLayerTreeController()->OnLayerRemove(dummy);
+	}
 }

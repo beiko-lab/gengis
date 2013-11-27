@@ -46,12 +46,18 @@ class ScatterPlot(AbstractPlot):
 		axesScatter.scatter(x, y)
 
 		# plot linear regression line
-		if slope != None and intercept != None:
+		if slope != None and intercept != None and slope != 0:
+			print "one"
 			linearX = [min(x), max(x)]
 			linearY = polyval([slope, intercept], linearX)
 			axesScatter.plot(linearX, linearY)
+			print linearX
+			print linearY
+		
+		print r2_value
 		
 		if r2_value:
+			print "two"
 			axesScatter.text(0.02, 0.98, r'R$^2$ = ' + ('%0.3f' % r2_value), horizontalalignment='left', verticalalignment='top', transform=axesScatter.transAxes)
 		
 		# make plot pretty

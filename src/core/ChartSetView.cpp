@@ -89,6 +89,8 @@ void ChartSetView::UpdateCharts(const std::wstring& field)
 	foreach(ChartViewPtr chart, m_chartViews)
 	{
 		float normNumSeq = (float(chart->GetNumActiveSequences()) - min) / (max-min);
+		// assert normNumSeq
+		if( normNumSeq != normNumSeq ){ normNumSeq = 1; }
 		chart->SetNormalizedNumSeq(normNumSeq);	
 	}
 

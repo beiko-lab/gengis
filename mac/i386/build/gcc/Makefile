@@ -109,7 +109,10 @@ default: release
 # Debug mode
 debug:
 	@if [ ! -d $(LIBRARY3RD_PATH)/$(BOOST_VERSION) ]; then tar -xzf $(LIBRARY3RD_PATH)/$(BOOST_VERSION).tar.gz -C $(LIBRARY3RD_PATH); fi;
-	@if [ ! -d $(LIBRARY3RD_PATH)/Frameworks ];       then tar -xzf $(LIBRARY3RD_PATH)/Frameworks.tar.gz       -C $(LIBRARY3RD_PATH); fi;
+	@if [ ! -d $(LIBRARY3RD_PATH)/Frameworks ];       then \
+	then cat $(LIBRARY3RD_PATH)/Frameworks* > $(LIBRARY3RD_PATH)/Frameworks.tar.gz; \
+	tar -xzf $(LIBRARY3RD_PATH)/Frameworks.tar.gz       -C $(LIBRARY3RD_PATH); \
+	fi;
 	@if [ ! -d $(LIBRARY3RD_PATH)/ftgl ];             then tar -xzf $(LIBRARY3RD_PATH)/ftgl.tar.gz             -C $(LIBRARY3RD_PATH); fi;
 	@if [ ! -d $(LIBRARY3RD_PATH)/GL ];               then tar -xzf $(LIBRARY3RD_PATH)/GL.tar.gz               -C $(LIBRARY3RD_PATH); fi;
 	@if [ ! -d $(LIBRARY3RD_PATH)/lib ];              then tar -xzf $(LIBRARY3RD_PATH)/lib.tar.gz              -C $(LIBRARY3RD_PATH); fi;
@@ -122,7 +125,10 @@ debug:
 # Release mode
 release:
 	@if [ ! -d $(LIBRARY3RD_PATH)/$(BOOST_VERSION) ]; then tar -xzf $(LIBRARY3RD_PATH)/$(BOOST_VERSION).tar.gz -C $(LIBRARY3RD_PATH); fi;
-	@if [ ! -d $(LIBRARY3RD_PATH)/Frameworks ];       then tar -xzf $(LIBRARY3RD_PATH)/Frameworks.tar.gz       -C $(LIBRARY3RD_PATH); fi;
+	@if [ ! -d $(LIBRARY3RD_PATH)/Frameworks ];       then \
+	cat $(LIBRARY3RD_PATH)/Frameworks* > $(LIBRARY3RD_PATH)/Frameworks.tar.gz; \
+	tar -xzf $(LIBRARY3RD_PATH)/Frameworks.tar.gz       -C $(LIBRARY3RD_PATH); \
+	fi;
 	@if [ ! -d $(LIBRARY3RD_PATH)/ftgl ];             then tar -xzf $(LIBRARY3RD_PATH)/ftgl.tar.gz             -C $(LIBRARY3RD_PATH); fi;
 	@if [ ! -d $(LIBRARY3RD_PATH)/GL ];               then tar -xzf $(LIBRARY3RD_PATH)/GL.tar.gz               -C $(LIBRARY3RD_PATH); fi;
 	@if [ ! -d $(LIBRARY3RD_PATH)/lib ];              then tar -xzf $(LIBRARY3RD_PATH)/lib.tar.gz              -C $(LIBRARY3RD_PATH); fi;
@@ -222,7 +228,10 @@ depend: .depend
 	echo $(var);
 .depend: 
 	@if [ ! -d $(LIBRARY3RD_PATH)/$(BOOST_VERSION) ]; then tar -xzf $(LIBRARY3RD_PATH)/$(BOOST_VERSION).tar.gz -C $(LIBRARY3RD_PATH); fi;
-	@if [ ! -d $(LIBRARY3RD_PATH)/Frameworks ];       then tar -xzf $(LIBRARY3RD_PATH)/Frameworks.tar.gz       -C $(LIBRARY3RD_PATH); fi;
+	@if [ ! -d $(LIBRARY3RD_PATH)/Frameworks ];       then \
+	cat $(LIBRARY3RD_PATH)/Frameworks* > $(LIBRARY3RD_PATH)/Frameworks.tar.gz; \
+	tar -xzf $(LIBRARY3RD_PATH)/Frameworks.tar.gz       -C $(LIBRARY3RD_PATH); \
+	fi;
 	@if [ ! -d $(LIBRARY3RD_PATH)/ftgl ];             then tar -xzf $(LIBRARY3RD_PATH)/ftgl.tar.gz             -C $(LIBRARY3RD_PATH); fi;
 	@if [ ! -d $(LIBRARY3RD_PATH)/GL ];               then tar -xzf $(LIBRARY3RD_PATH)/GL.tar.gz               -C $(LIBRARY3RD_PATH); fi;
 	@if [ ! -d $(LIBRARY3RD_PATH)/lib ];              then tar -xzf $(LIBRARY3RD_PATH)/lib.tar.gz              -C $(LIBRARY3RD_PATH); fi;

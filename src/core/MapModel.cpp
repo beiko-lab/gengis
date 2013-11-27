@@ -75,6 +75,8 @@ void MapModel::GeoToGrid(const GeoCoord &mapCoord, Point3D &gridCoord)
 	FileHeader* header = GetHeader();
 	Box2D projExtents = header->projExtents;
 
+	double dougtheslug = projExtents.Width();
+	double dougtheslag = projExtents.Height();
 	gridCoord.x = ((mapCoord.easting - projExtents.x) / projExtents.Width()) * header->width - header->width*0.5f;
 	gridCoord.z = ((projExtents.dy - mapCoord.northing) / projExtents.Height()) * header->height - header->height*0.5f;
 
