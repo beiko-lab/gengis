@@ -26,6 +26,9 @@ import wx
 import pybioclim
 
 class WorldClimQuery( WorldClimQueryLayout ):
+	NODATA = -9999
+	MAX = 0
+	MIN = 0
 	
 	fileTranslations = {
 	"Annual Mean Temperature" : "BIO1",
@@ -81,6 +84,8 @@ class WorldClimQuery( WorldClimQueryLayout ):
 		#get descriptions for maps
 		desc = {}
 		desc = pybioclim.metadata['%s.bil' %file.lower()] 
+		self.MAX = desc["maxvalue"]
+		self.MIN = desc["minvalue"]
 		self.UpdateDescription( file.lower(), desc )
 		
 		
@@ -92,7 +97,9 @@ class WorldClimQuery( WorldClimQueryLayout ):
 		
 		#get descriptions for maps
 		desc = {}
-		desc = pybioclim.metadata['%s.bil' %file.lower()] 
+		desc = pybioclim.metadata['%s.bil' %file.lower()]
+		self.MAX = desc["maxvalue"]
+		self.MIN = desc["minvalue"]
 		self.UpdateDescription( file.lower(), desc )
 
 	
@@ -128,6 +135,10 @@ class WorldClimQuery( WorldClimQueryLayout ):
 		metadata = []
 		for val in values:
 			index = values.index(val)
+			
+			#check if val is NODATA. Needed for MAC as SetNoData() is not supported under GDAL 1.5.0
+			if (val > int(self.MAX)) or (val < int(self.MIN)):
+				val = None
 			tem = str(val)
 			metadata.append(tem)
 			self.txtLog.AppendText('For ' + activeLocLayers[index].GetName() + ' adding data: ' + tem + '.\n')
