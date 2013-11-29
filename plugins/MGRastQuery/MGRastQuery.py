@@ -302,7 +302,8 @@ class MGRastQuery(MGRASTQueryLayout):
 	
 	#	Close the Plugin
 	def OnOK( self, event ):
-		self.Close()	
+		self.Close()
+		self.__options__.Close()
 	
 	def OnLatEnter(self,event):
 		str = event.GetString()
