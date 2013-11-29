@@ -165,7 +165,7 @@ class LinearRegression( LinearRegressionLayout ):
 		self.Close()
 
 	def OnHelp( self, event ):
-		wx.LaunchDefaultBrowser( 'http://kiwi.cs.dal.ca/GenGIS/Description_of_GenGIS_plugins#Linear_Regression' )
+		wx.LaunchDefaultBrowser( 'http://kiwi.cs.dal.ca/GenGIS/index.php/Description_of_GenGIS_plugins#Linear_Regression' )
 		
 	def OnSavePlot(self, event):
 		self.plot.SavePlot()

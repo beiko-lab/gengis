@@ -163,7 +163,7 @@ class BarGraph( BarGraphLayout ):
 		return (group1, totalSeq1, group2, totalSeq2)
 
 	def OnHelp( self, event ):
-		wx.LaunchDefaultBrowser( 'http://kiwi.cs.dal.ca/GenGIS/Description_of_GenGIS_plugins#Bar_Graph' )
+		wx.LaunchDefaultBrowser( 'http://kiwi.cs.dal.ca/GenGIS/index.php/Description_of_GenGIS_plugins#Bar_Graph' )
 		
 	#Returns a dictionary of means and standard deviations
 	def Statistics( self, group, groupId ):

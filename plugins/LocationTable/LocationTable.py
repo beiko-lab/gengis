@@ -94,7 +94,7 @@ class LocationTable( LocationTableLayout ):
 		self.Close()
 
 	def OnHelp( self, event ):
-		wx.LaunchDefaultBrowser( 'http://kiwi.cs.dal.ca/GenGIS/Description_of_GenGIS_plugins#Location_Table_Viewer' )
+		wx.LaunchDefaultBrowser( 'http://kiwi.cs.dal.ca/GenGIS/index.php/Description_of_GenGIS_plugins#Location_Table_Viewer' )
 		
 	def OnShowAll( self, event ):
 		if self.chkShowAll.IsChecked():

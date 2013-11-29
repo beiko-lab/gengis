@@ -253,7 +253,7 @@ class Mantel( MantelLayout ):
 		self.Close()
 		
 	def OnHelp( self, event ):
-		wx.LaunchDefaultBrowser( 'http://kiwi.cs.dal.ca/GenGIS/Description_of_GenGIS_plugins#Mantel' )
+		wx.LaunchDefaultBrowser( 'http://kiwi.cs.dal.ca/GenGIS/index.php/Description_of_GenGIS_plugins#Mantel_Test' )
 		
 	def OnSavePlot(self, event):
 		self.plot.SavePlot()

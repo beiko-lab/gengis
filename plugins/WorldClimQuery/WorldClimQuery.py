@@ -155,7 +155,7 @@ class WorldClimQuery( WorldClimQueryLayout ):
 	
 	
 	def OnHelp(self, event):
-		wx.LaunchDefaultBrowser( 'http://kiwi.cs.dal.ca/GenGIS/Description_of_GenGIS_plugins#Environmental_Data_Visualizer' )
+		wx.LaunchDefaultBrowser( 'http://kiwi.cs.dal.ca/GenGIS/index.php/Description_of_GenGIS_plugins#Worldclim_Query' )
 		
 	def UpdateDescription(self, file, metadata ):
 		name = file

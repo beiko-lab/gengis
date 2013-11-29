@@ -146,7 +146,7 @@ class AlphaDiversityVisualizer( AlphaDiversityVisualizerLayout ):
 		event.Skip()
 
 	def OnHelp( self, event ):
-		wx.LaunchDefaultBrowser( 'http://kiwi.cs.dal.ca/GenGIS/Description_of_GenGIS_plugins#Alpha_Diversity_Visualizer' )
+		wx.LaunchDefaultBrowser( 'http://kiwi.cs.dal.ca/GenGIS/index.php/Description_of_GenGIS_plugins#Alpha_Diversity_Visualizer' )
 		
 	def OnPerformSubsampling( self, event ):
 		self.cboReplicates.Enable(self.chkSubsample.IsChecked())
