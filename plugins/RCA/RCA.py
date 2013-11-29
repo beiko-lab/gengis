@@ -156,7 +156,7 @@ class RCA( RCALayout ):
 		self.Close()
 
 	def OnHelp( self, event ):
-		wx.LaunchDefaultBrowser( 'http://kiwi.cs.dal.ca/GenGIS/Description_of_GenGIS_plugins#Reference_Condition_Analysis' )
+		wx.LaunchDefaultBrowser( 'http://kiwi.cs.dal.ca/GenGIS/index.php/Description_of_GenGIS_plugins#Reference_Condition_Analysis' )
 
 	def OnClose( self, event ):
 		if hasattr(self,'rca'):

@@ -219,7 +219,7 @@ class MGRastQuery(MGRASTQueryLayout):
 		
 	#	Redirects User to Wiki page for this plugin
 	def OnHelp(self, event):
-		wx.LaunchDefaultBrowser( 'http://kiwi.cs.dal.ca/GenGIS/Description_of_GenGIS_plugins#GBIF_Query' )
+		wx.LaunchDefaultBrowser( 'http://kiwi.cs.dal.ca/GenGIS/index.php/Description_of_GenGIS_plugins#MG-RAST_Query' )
 	
 	#	Adds Data to GenGIS
 	def OnAddData(self,event):

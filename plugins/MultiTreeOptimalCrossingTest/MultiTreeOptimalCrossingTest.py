@@ -223,7 +223,7 @@ class MultiTreeOptimalCrossingTest( MultiTreeOptimalCrossingTestLayout ):
 		self.Close()
 	
 	def OnHelp( self, event ):
-		wx.LaunchDefaultBrowser( 'http://kiwi.cs.dal.ca/GenGIS/Description_of_GenGIS_plugins#Multi-Tree_Optimal-Crossing_Test' )
+		wx.LaunchDefaultBrowser( 'http://kiwi.cs.dal.ca/GenGIS/index.php/Description_of_GenGIS_plugins#Multi-Tree_Optimal-Crossing_Test' )
 
 	# Finds the angle with the least number of crossings of list with tuples of the form (angle, crossingNumber)
 	def FindOptimal( self, crossingList ):

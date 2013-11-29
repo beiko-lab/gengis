@@ -82,7 +82,7 @@ class BetaDiversity( BetaDiversityLayout ):
 		self.Close()
 	
 	def OnHelp( self, event ):
-		wx.LaunchDefaultBrowser( 'http://kiwi.cs.dal.ca/GenGIS/Description_of_GenGIS_plugins#Beta_Diversity_Calculator' )
+		wx.LaunchDefaultBrowser( 'http://kiwi.cs.dal.ca/GenGIS/index.php/Description_of_GenGIS_plugins#Beta_Diversity_Calculator' )
 		
 	def OnPerformSubsampling( self, event ):
 		self.cboReplicates.Enable(self.chkSubsample.IsChecked())

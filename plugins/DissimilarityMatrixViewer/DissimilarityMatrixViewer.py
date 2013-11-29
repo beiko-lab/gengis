@@ -63,7 +63,7 @@ class DissimilarityMatrixViewer( DissimilarityMatrixViewerLayout ):
 		self.Close()
 
 	def OnHelp( self, event ):
-		wx.LaunchDefaultBrowser( 'http://kiwi.cs.dal.ca/GenGIS/Description_of_GenGIS_plugins#Dissimilarity_Matrix_Viewer' )
+		wx.LaunchDefaultBrowser( 'http://kiwi.cs.dal.ca/GenGIS/index.php/Description_of_GenGIS_plugins#Dissimilarity_Matrix_Viewer' )
 		
 	def OnClose(self, event):
 		# remove plotted lines

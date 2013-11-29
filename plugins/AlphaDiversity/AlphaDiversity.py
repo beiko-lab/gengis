@@ -119,7 +119,7 @@ class AlphaDiversity( AlphaDiversityLayout ):
 		self.txtDescription.SetValue(info[2])
 
 	def OnHelp( self, event ):
-		wx.LaunchDefaultBrowser( 'http://kiwi.cs.dal.ca/GenGIS/Description_of_GenGIS_plugins#Alpha_Diversity' )
+		wx.LaunchDefaultBrowser( 'http://kiwi.cs.dal.ca/GenGIS/index.php/Description_of_GenGIS_plugins#Alpha_Diversity' )
 		
 	def OnCalculate( self, event ):
 		wx.BeginBusyCursor()
