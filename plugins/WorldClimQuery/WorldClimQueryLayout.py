@@ -137,7 +137,7 @@ class DescriptionLayout ( wx.Frame ):
 	def __init__( self, parent ):
 		wx.Frame.__init__ ( self, parent, id = wx.ID_ANY, title = u"About", pos = wx.DefaultPosition, size = wx.Size( -1,-1 ), style = wx.DEFAULT_FRAME_STYLE|wx.TAB_TRAVERSAL )
 		
-		self.SetSizeHintsSz( wx.Size( 292,205 ), wx.Size( -1,-1 ) )
+		self.SetSizeHintsSz( wx.Size( 292,275 ), wx.Size( -1,-1 ) )
 		self.SetBackgroundColour( wx.SystemSettings.GetColour( wx.SYS_COLOUR_BTNFACE ) )
 		
 		bSizer5 = wx.BoxSizer( wx.VERTICAL )
