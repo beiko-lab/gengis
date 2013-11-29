@@ -152,6 +152,7 @@ class WorldClimQuery( WorldClimQueryLayout ):
 	
 	def OnOK(self, event):
 		self.Close()
+		self.about.Close()
 	
 	
 	def OnHelp(self, event):
