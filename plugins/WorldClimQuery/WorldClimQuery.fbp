@@ -808,11 +808,11 @@
             <property name="font"></property>
             <property name="hidden">0</property>
             <property name="id">wxID_ANY</property>
-            <property name="maximum_size">292,205</property>
+            <property name="maximum_size">-1,-1</property>
             <property name="minimum_size">292,205</property>
             <property name="name">DescriptionLayout</property>
             <property name="pos"></property>
-            <property name="size">292,205</property>
+            <property name="size">-1,-1</property>
             <property name="style">wxDEFAULT_FRAME_STYLE</property>
             <property name="subclass"></property>
             <property name="title">About</property>
