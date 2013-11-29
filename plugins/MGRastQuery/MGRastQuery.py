@@ -126,7 +126,7 @@ class MGRastQuery(MGRASTQueryLayout):
 			geographic = GenGIS.StudyController.IsUsingGeographic(GenGIS.study.GetController())
 			projected = GenGIS.StudyController.IsUsingProjection(GenGIS.study.GetController())
 			if(not (geographic or projected)):
-				wx.MessageBox("Geographic coordinates are not being used in the current map file. Only geographic coordinates are compatible with GBIF. Geographic range will need to be manually set, and any returned data will not display correctly.","Warning")
+				wx.MessageBox("Geographic coordinates are not being used in the current map file. Only geographic coordinates are compatible with MG-RAST. Geographic range will need to be manually set, and any returned data will not display correctly.","Warning")
 				self.m_AddData.Disable()
 				self.m_MinLat.SetValue(str(MinLat))
 				self.m_MaxLat.SetValue(str(MaxLat))
@@ -249,7 +249,7 @@ class MGRastQuery(MGRASTQueryLayout):
 		#	locationSetLayer.SetDescription(self.__description__)
 			
 		else:
-			wx.MessageBox("Please make a successful GBIF Query first.")
+			wx.MessageBox("Please make a successful MG-RAST Query first.")
 		
 	#	Exports Location and Sequence Data to a location of the users choice
 	def OnExportData(self,event):
@@ -272,7 +272,7 @@ class MGRastQuery(MGRASTQueryLayout):
 				self.GBIFGeneric.WRITEEXPORT(OUTSfile,OUTSText,"Sequence ID,Site ID,CellLat,CellLong,Richness,%s,Taxonomy\n" %taxonLevels)
 			dlg.Destroy()
 		else:
-			wx.MessageBox("Please make a successful GBIF Query first.")
+			wx.MessageBox("Please make a successful MG-RAST Query first.")
 	
 	#	Add Data from Results Table to ID List
 	def OnAdd(self,event):
