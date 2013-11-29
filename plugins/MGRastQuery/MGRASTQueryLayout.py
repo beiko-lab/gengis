@@ -380,7 +380,7 @@ class OptionsFrame ( wx.Frame ):
 		self.m_identityText.Wrap( -1 )
 		fgSizer2.Add( self.m_identityText, 0, wx.ALL|wx.ALIGN_CENTER_HORIZONTAL, 5 )
 		
-		self.m_identity = wx.SpinCtrl( self, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, wx.SP_ARROW_KEYS, 0, 100, 60 )
+		self.m_identity = wx.SpinCtrl( self, wx.ID_ANY, u"60", wx.DefaultPosition, wx.DefaultSize, wx.SP_ARROW_KEYS, 0, 100, 60 )
 		fgSizer2.Add( self.m_identity, 0, wx.ALL, 5 )
 		
 		self.m_lengthCheck = wx.CheckBox( self, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, 0 )
@@ -390,7 +390,7 @@ class OptionsFrame ( wx.Frame ):
 		self.m_lengthText.Wrap( -1 )
 		fgSizer2.Add( self.m_lengthText, 0, wx.ALL|wx.ALIGN_CENTER_HORIZONTAL, 5 )
 		
-		self.m_length = wx.SpinCtrl( self, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, wx.SP_ARROW_KEYS, 0, 50, 15 )
+		self.m_length = wx.SpinCtrl( self, wx.ID_ANY, u"15", wx.DefaultPosition, wx.DefaultSize, wx.SP_ARROW_KEYS, 0, 50, 15 )
 		fgSizer2.Add( self.m_length, 0, wx.ALL, 5 )
 		
 		self.m_sourceCheck = wx.CheckBox( self, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, 0 )
