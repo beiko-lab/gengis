@@ -38,52 +38,52 @@ class Options(OptionsFrame):
 		self.SetIcon(wx.Icon(GenGIS.mainWindow.GetExeDir() + "images/CrazyEye.ico",wx.BITMAP_TYPE_ICO))
 	
 	def GetSearchType(self):
-		if self.m_searchTypeCheck.IsChecked():
-			return "%s" %self.m_searchType.GetString(self.m_searchType.GetSelection())
-		else:
-			return 'organism'
+	#	if self.m_searchTypeCheck.IsChecked():
+		return "%s" %self.m_searchType.GetString(self.m_searchType.GetSelection())
+	#	else:
+	#		return 'organism'
 	
 	def GetFilterLevel(self):
-		if self.m_filterLevelCheck.IsChecked():
-			return "&filter_level=%s" %self.m_filterLevel.GetString(self.m_filterLevel.GetSelection())
-		else:
-			return ""
+	#	if self.m_filterLevelCheck.IsChecked():
+		return "&filter_level=%s" %self.m_filterLevel.GetString(self.m_filterLevel.GetSelection())
+#		else:
+#			return ""
 	
 	def GetFilterSource(self):	
-		if self.m_filterSourceCheck.IsChecked():
-			return "&filer_source=%s" %self.m_filterSource.GetString(self.m_filterSource.GetCurrentSelection())
-		else:
-			return ""
+#		if self.m_filterSourceCheck.IsChecked():
+		return "&filer_source=%s" %self.m_filterSource.GetString(self.m_filterSource.GetCurrentSelection())
+#		else:
+#			return ""
 			
 	def GetGroupLevel(self):
-		if self.m_groupLevelCheck.IsChecked():
-			return "&group_level=%s" %self.m_groupLevel.GetString(self.m_groupLevel.GetCurrentSelection())
-		else:
-			return ""
+#		if self.m_groupLevelCheck.IsChecked():
+		return "&group_level=%s" %self.m_groupLevel.GetString(self.m_groupLevel.GetCurrentSelection())
+#		else:
+#			return ""
 			
 	def GetHitType(self):
-		if self.m_hitTypeCheck.IsChecked():
-			return "&hit_type=%s" %self.m_hitType.GetString(self.m_hitType.GetCurrentSelection())
-		else:
-			return ""
+#		if self.m_hitTypeCheck.IsChecked():
+		return "&hit_type=%s" %self.m_hitType.GetString(self.m_hitType.GetCurrentSelection())
+#		else:
+#			return ""
 			
 	def GetIdentity(self):		
-		if self.m_identityCheck.IsChecked():
-			return "&identity=%s" %self.m_identity.GetValue()
-		else:
-			return ""
+#		if self.m_identityCheck.IsChecked():
+		return "&identity=%s" %self.m_identity.GetValue()
+#		else:
+#			return ""
 			
 	def GetLength(self):		
-		if self.m_lengthCheck.IsChecked():
-			return "&length=%s" %self.m_length.GetValue()
-		else:
-			return ""
+	#	if self.m_lengthCheck.IsChecked():
+		return "&length=%s" %self.m_length.GetValue()
+	#	else:
+	#		return ""
 			
 	def GetSource(self):		
-		if self.m_sourceCheck.IsChecked():
-			return "&source=%s" %self.m_source.GetString(self.m_source.GetCurrentSelection())
-		else:
-			return ""
+	#	if self.m_sourceCheck.IsChecked():
+		return "&source=%s" %self.m_source.GetString(self.m_source.GetCurrentSelection())
+	#	else:
+	#		return ""
 			
 	def OnOK(self,event):
 		self.Hide()
