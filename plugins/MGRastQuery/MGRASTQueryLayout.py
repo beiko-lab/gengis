@@ -295,7 +295,7 @@ class OptionsFrame ( wx.Frame ):
 		
 		sbSizer6 = wx.StaticBoxSizer( wx.StaticBox( self, wx.ID_ANY, u"Options" ), wx.VERTICAL )
 		
-		fgSizer2 = wx.FlexGridSizer( 9, 3, 0, 0 )
+		fgSizer2 = wx.FlexGridSizer( 9, 2, 0, 0 )
 		fgSizer2.AddGrowableCol( 0 )
 		fgSizer2.AddGrowableCol( 1 )
 		fgSizer2.AddGrowableCol( 2 )
@@ -313,9 +313,6 @@ class OptionsFrame ( wx.Frame ):
 		fgSizer2.SetFlexibleDirection( wx.BOTH )
 		fgSizer2.SetNonFlexibleGrowMode( wx.FLEX_GROWMODE_ALL )
 		
-		self.m_searchTypeCheck = wx.CheckBox( self, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, 0 )
-		fgSizer2.Add( self.m_searchTypeCheck, 0, wx.ALL|wx.ALIGN_CENTER_HORIZONTAL, 5 )
-		
 		self.m_searchTypeText = wx.StaticText( self, wx.ID_ANY, u"Search Type", wx.DefaultPosition, wx.DefaultSize, 0 )
 		self.m_searchTypeText.Wrap( -1 )
 		fgSizer2.Add( self.m_searchTypeText, 0, wx.ALL|wx.ALIGN_CENTER_HORIZONTAL, 5 )
@@ -324,9 +321,6 @@ class OptionsFrame ( wx.Frame ):
 		self.m_searchType = wx.Choice( self, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, m_searchTypeChoices, 0 )
 		self.m_searchType.SetSelection( 0 )
 		fgSizer2.Add( self.m_searchType, 0, wx.ALL|wx.EXPAND, 5 )
-		
-		self.m_filterLevelCheck = wx.CheckBox( self, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, 0 )
-		fgSizer2.Add( self.m_filterLevelCheck, 0, wx.ALL|wx.ALIGN_CENTER_HORIZONTAL, 5 )
 		
 		self.m_filterLevelText = wx.StaticText( self, wx.ID_ANY, u"Filter Level", wx.DefaultPosition, wx.DefaultSize, 0 )
 		self.m_filterLevelText.Wrap( -1 )
@@ -337,9 +331,6 @@ class OptionsFrame ( wx.Frame ):
 		self.m_filterLevel.SetSelection( 0 )
 		fgSizer2.Add( self.m_filterLevel, 0, wx.ALL|wx.ALIGN_CENTER_HORIZONTAL|wx.ALIGN_CENTER_VERTICAL|wx.EXPAND, 5 )
 		
-		self.m_filterSourceCheck = wx.CheckBox( self, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, 0 )
-		fgSizer2.Add( self.m_filterSourceCheck, 0, wx.ALL|wx.ALIGN_CENTER_HORIZONTAL, 5 )
-		
 		self.m_filterSourceText = wx.StaticText( self, wx.ID_ANY, u"Filter Source", wx.DefaultPosition, wx.DefaultSize, 0 )
 		self.m_filterSourceText.Wrap( -1 )
 		fgSizer2.Add( self.m_filterSourceText, 0, wx.ALL|wx.ALIGN_CENTER_HORIZONTAL, 5 )
@@ -348,9 +339,6 @@ class OptionsFrame ( wx.Frame ):
 		self.m_filterSource = wx.Choice( self, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, m_filterSourceChoices, 0 )
 		self.m_filterSource.SetSelection( 0 )
 		fgSizer2.Add( self.m_filterSource, 0, wx.ALL|wx.ALIGN_CENTER_HORIZONTAL|wx.EXPAND, 5 )
-		
-		self.m_groupLevelCheck = wx.CheckBox( self, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, 0 )
-		fgSizer2.Add( self.m_groupLevelCheck, 0, wx.ALL|wx.ALIGN_CENTER_HORIZONTAL, 5 )
 		
 		self.m_groupLevelText = wx.StaticText( self, wx.ID_ANY, u"Group Level", wx.DefaultPosition, wx.DefaultSize, 0 )
 		self.m_groupLevelText.Wrap( -1 )
@@ -361,9 +349,6 @@ class OptionsFrame ( wx.Frame ):
 		self.m_groupLevel.SetSelection( 0 )
 		fgSizer2.Add( self.m_groupLevel, 0, wx.ALL|wx.ALIGN_CENTER_HORIZONTAL|wx.EXPAND, 5 )
 		
-		self.m_hitTypeCheck = wx.CheckBox( self, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, 0 )
-		fgSizer2.Add( self.m_hitTypeCheck, 0, wx.ALL|wx.ALIGN_CENTER_HORIZONTAL, 5 )
-		
 		self.m_hitTypeText = wx.StaticText( self, wx.ID_ANY, u"Hit Type", wx.DefaultPosition, wx.DefaultSize, 0 )
 		self.m_hitTypeText.Wrap( -1 )
 		fgSizer2.Add( self.m_hitTypeText, 0, wx.ALL|wx.ALIGN_CENTER_HORIZONTAL, 5 )
@@ -373,9 +358,6 @@ class OptionsFrame ( wx.Frame ):
 		self.m_hitType.SetSelection( 0 )
 		fgSizer2.Add( self.m_hitType, 0, wx.ALL|wx.ALIGN_CENTER_HORIZONTAL|wx.EXPAND, 5 )
 		
-		self.m_identityCheck = wx.CheckBox( self, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, 0 )
-		fgSizer2.Add( self.m_identityCheck, 0, wx.ALL|wx.ALIGN_CENTER_HORIZONTAL, 5 )
-		
 		self.m_identityText = wx.StaticText( self, wx.ID_ANY, u"Identity", wx.DefaultPosition, wx.DefaultSize, 0 )
 		self.m_identityText.Wrap( -1 )
 		fgSizer2.Add( self.m_identityText, 0, wx.ALL|wx.ALIGN_CENTER_HORIZONTAL, 5 )
@@ -383,18 +365,12 @@ class OptionsFrame ( wx.Frame ):
 		self.m_identity = wx.SpinCtrl( self, wx.ID_ANY, u"60", wx.DefaultPosition, wx.DefaultSize, wx.SP_ARROW_KEYS, 0, 100, 60 )
 		fgSizer2.Add( self.m_identity, 0, wx.ALL, 5 )
 		
-		self.m_lengthCheck = wx.CheckBox( self, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, 0 )
-		fgSizer2.Add( self.m_lengthCheck, 0, wx.ALL|wx.ALIGN_CENTER_HORIZONTAL, 5 )
-		
 		self.m_lengthText = wx.StaticText( self, wx.ID_ANY, u"Length", wx.DefaultPosition, wx.DefaultSize, 0 )
 		self.m_lengthText.Wrap( -1 )
 		fgSizer2.Add( self.m_lengthText, 0, wx.ALL|wx.ALIGN_CENTER_HORIZONTAL, 5 )
 		
 		self.m_length = wx.SpinCtrl( self, wx.ID_ANY, u"15", wx.DefaultPosition, wx.DefaultSize, wx.SP_ARROW_KEYS, 0, 50, 15 )
 		fgSizer2.Add( self.m_length, 0, wx.ALL, 5 )
-		
-		self.m_sourceCheck = wx.CheckBox( self, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, 0 )
-		fgSizer2.Add( self.m_sourceCheck, 0, wx.ALL|wx.ALIGN_CENTER_HORIZONTAL, 5 )
 		
 		self.m_sourceText = wx.StaticText( self, wx.ID_ANY, u"Source", wx.DefaultPosition, wx.DefaultSize, 0 )
 		self.m_sourceText.Wrap( -1 )
