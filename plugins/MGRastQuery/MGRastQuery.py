@@ -84,6 +84,9 @@ class Options(OptionsFrame):
 		return "&source=%s" %self.m_source.GetString(self.m_source.GetCurrentSelection())
 	#	else:
 	#		return ""
+	
+	def GetSequence(self):
+		return self.m_sequences.IsChecked()
 			
 	def OnOK(self,event):
 		self.Hide()
@@ -94,6 +97,7 @@ class Options(OptionsFrame):
 class MGRastQuery(MGRASTQueryLayout):
 	#	Global variables to store queried information
 	__obs__ = []
+	__sequences__ = []
 	__selectedTaxon__= set()
 	__description__=""
 	__options__=""
@@ -159,7 +163,7 @@ class MGRastQuery(MGRASTQueryLayout):
 				self.__selectedTaxon__.clear()
 			#	test data for multiple study search mgm4440037.3 mgm4440055.3 mgm4440064.3
 				for tax in taxon:
-					self.__selectedTaxon__.add((tax,"dummy value"))
+					self.__selectedTaxon__.add(("dummy value",tax))
 				self.OnCalculate(wx.EVT_BUTTON)
 			else:
 				matches=self.MGRastSpecific.GETTAXRESULT(taxon,searchType,minLatitude,maxLatitude,minLongitude,maxLongitude,self.m_Summary)				
@@ -174,8 +178,11 @@ class MGRastQuery(MGRASTQueryLayout):
 	#
 	######################
 	def OnCalculate(self,event):
+		self.MGRastSpecific.RESETSEQUENCE()
 		self.__obs__=[]
 		self.__metaVals__={}
+		self.__sequences__=[]
+		sequence = {}
 		self.m_Summary.SetLabel("\n")
 		records,distLocations = 0,0
 		searchType = self.__options__.GetSearchType()
@@ -196,6 +203,8 @@ class MGRastQuery(MGRASTQueryLayout):
 				self.__TAXON__= taxonomy
 				if obs:	
 					self.__obs__.append(obs)
+				if sequence:
+					self.__sequences__.append(sequence)
 				# add all unique key/val pairs from json files
 				for key,value in metaVals.iteritems():
 					if key in self.__metaVals__:
@@ -207,6 +216,16 @@ class MGRastQuery(MGRASTQueryLayout):
 				index += 1
 				if (time.time() - startTime) < 1:
 					sleep.time(1)
+				# Now query again for the Sequence to that study
+				if self.__options__.GetSequence():
+					fileTypes = 'Sequence data files (*.fasta)|*.fasta'
+					dlg = wx.FileDialog(self, "Save plot", "", "", fileTypes, wx.SAVE)
+					if dlg.ShowModal()==wx.ID_OK:
+						filename =	dlg.GetFilename()
+						dir = dlg.GetDirectory()
+						file_split = filename.split(".",1)
+						outFile = ("%s/%s_sequenceData.fasta.gz" % (dir,file_split[0]))	
+					sequence = self.MGRastSpecific.GETSEQUENCES(tax[1],self.m_Progress,outFile)
 		else:
 			wx.MessageBox("Please select some Taxa.")
 		self.m_Progress.WriteText("Done\n")
@@ -270,6 +289,8 @@ class MGRastQuery(MGRASTQueryLayout):
 			#	print metKey
 				self.GBIFGeneric.WRITEEXPORT(OUTLfile,OUTLText,"Site ID,Latitude,Longitude,Cell ID,%s\n" %metKey)
 				self.GBIFGeneric.WRITEEXPORT(OUTSfile,OUTSText,"Sequence ID,Site ID,CellLat,CellLong,Richness,%s,Taxonomy\n" %taxonLevels)
+			#	if self.__options__.GetSequence():
+			#		self.MGRastSpecific.WRITESEQUENCES(dir,file_split[0],self.__sequences__)
 			dlg.Destroy()
 		else:
 			wx.MessageBox("Please make a successful MG-RAST Query first.")
@@ -330,5 +351,5 @@ class MGRastQuery(MGRASTQueryLayout):
 		event.GetClientData().SetInsertionPoint(len(str2))
 	
 	def OnOptions(self,event):
-		self.__options__.Show()
+		self.__options__.Show()		
 		
