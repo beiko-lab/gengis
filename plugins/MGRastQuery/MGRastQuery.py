@@ -97,7 +97,6 @@ class Options(OptionsFrame):
 class MGRastQuery(MGRASTQueryLayout):
 	#	Global variables to store queried information
 	__obs__ = []
-	__sequences__ = []
 	__selectedTaxon__= set()
 	__description__=""
 	__options__=""
@@ -181,7 +180,6 @@ class MGRastQuery(MGRASTQueryLayout):
 		self.MGRastSpecific.RESETSEQUENCE()
 		self.__obs__=[]
 		self.__metaVals__={}
-		self.__sequences__=[]
 		sequence = {}
 		self.m_Summary.SetLabel("\n")
 		records,distLocations = 0,0
@@ -225,16 +223,10 @@ class MGRastQuery(MGRASTQueryLayout):
 						dir = dlg.GetDirectory()
 						file_split = filename.split(".",1)
 						outFile = ("%s/%s_sequenceData.fasta.gz" % (dir,file_split[0]))	
-					sequence = self.MGRastSpecific.GETSEQUENCES(tax[1],self.m_Progress,outFile)
+					self.MGRastSpecific.GETSEQUENCES(tax[1],self.m_Progress,outFile)
 		else:
 			wx.MessageBox("Please select some Taxa.")
 		self.m_Progress.WriteText("Done\n")
-		
-	#	Present the number of locations a user is about to query
-	#	Used as a check by the user to know they aren't going to produce way too much data.
-	def OnPreCalculate(self,event):
-		#stufstufstu
-		return 0
 		
 	#	Redirects User to Wiki page for this plugin
 	def OnHelp(self, event):

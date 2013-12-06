@@ -301,7 +301,7 @@ class MGRastSpecific:
 	def GETSEQUENCES(self,study,m_Progress,outFile):
 		m_Progress.WriteText("Grabbing Sequences.\n")
 		url="http://api.metagenomics.anl.gov/1/annotation/sequence/%s"%(study)
-		Report = 50000
+		Report = 10000
 		
 		try:
 			html=urllib2.urlopen(url)
@@ -344,6 +344,7 @@ class MGRastSpecific:
 		html.close()
 		localFile.close()
 
+	# Resets if the next sequence is the first that has been seen
 	def RESETSEQUENCE(self):
 		self.sequenceFirst = True
 	
