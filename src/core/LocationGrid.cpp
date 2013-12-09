@@ -421,30 +421,13 @@ void LocationGrid::FillTiles()
 			easting = locationLayers[i]->GetLocationController()->GetEasting();
 			northing = locationLayers[i]->GetLocationController()->GetNorthing();
 		}
-		
-		for ( uint j = 0; j < m_tileModels.size(); j++)
-		{
-			std::pair<float,float> top = m_tileModels[j]->GetTopLeft();
-			std::pair<float,float> bottom = m_tileModels[j]->GetBottomRight();
-			
-			// floating point was proving not to be precise enough at this stage. comparing 33.180000 < 33.1800000000 was equating to true
-			int eastingP = floor(easting * 100);
-			int northingP = floor(northing * 100);
-			int topFirst = floor(top.first * 100);
-			int topSecond = floor(top.second * 100);
-			int bottomFirst = floor(bottom.first * 100);
-			int bottomSecond = floor(bottom.second * 100);
 
-
-			if ( topFirst <= eastingP
-				&& topSecond >= northingP
-				&& bottomFirst > eastingP
-				&& bottomSecond < northingP )
-			{
-				m_tileModels[j]->AddLocationLayer(locationLayers[i]);
-				break;
-			}
-		}
+		Point3D locationCoord;
+		GeoCoord locationGeo( easting,northing );
+		App::Inst().GetMapController()->GetMapModel()->LatLongToGrid(locationGeo,locationCoord);
+		Point2D locPoint(locationCoord.x,locationCoord.z);
+		TileModelPtr tile = FindLocationTile(locPoint);
+		tile->AddLocationLayer(locationLayers[i]);
 	}
 	// now set tile true values for every tile
 	for ( uint j = 0; j < m_tileModels.size(); j++)
@@ -507,6 +490,7 @@ void LocationGrid::SetLocationColours()
 	}
 }
 
+// find a tile based on OpenGL coordinates
 TileModelPtr LocationGrid::FindLocationTile(Point2D loc)
 {
 //  TESTING
