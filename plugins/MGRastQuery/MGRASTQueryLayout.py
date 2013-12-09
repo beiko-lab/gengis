@@ -288,9 +288,9 @@ class MGRASTQueryLayout ( wx.Frame ):
 class OptionsFrame ( wx.Frame ):
 	
 	def __init__( self, parent ):
-		wx.Frame.__init__ ( self, parent, id = wx.ID_ANY, title = wx.EmptyString, pos = wx.DefaultPosition, size = wx.Size( 352,360 ), style = wx.DEFAULT_FRAME_STYLE|wx.TAB_TRAVERSAL )
+		wx.Frame.__init__ ( self, parent, id = wx.ID_ANY, title = wx.EmptyString, pos = wx.DefaultPosition, size = wx.Size( 352,372 ), style = wx.DEFAULT_FRAME_STYLE|wx.TAB_TRAVERSAL )
 		
-		self.SetSizeHintsSz( wx.Size( 352,360 ), wx.DefaultSize )
+		self.SetSizeHintsSz( wx.Size( 352,372 ), wx.DefaultSize )
 		self.SetBackgroundColour( wx.SystemSettings.GetColour( wx.SYS_COLOUR_BTNFACE ) )
 		
 		sbSizer6 = wx.StaticBoxSizer( wx.StaticBox( self, wx.ID_ANY, u"Options" ), wx.VERTICAL )
@@ -392,8 +392,11 @@ class OptionsFrame ( wx.Frame ):
 		
 		bSizer11 = wx.BoxSizer( wx.VERTICAL )
 		
+		
+		bSizer11.AddSpacer( ( 0, 0), 1, wx.EXPAND, 5 )
+		
 		self.m_OptionsClose = wx.Button( self, wx.ID_ANY, u"OK", wx.DefaultPosition, wx.DefaultSize, 0 )
-		bSizer11.Add( self.m_OptionsClose, 0, wx.ALL|wx.ALIGN_RIGHT, 5 )
+		bSizer11.Add( self.m_OptionsClose, 0, wx.ALL|wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 5 )
 		
 		sbSizer6.Add( bSizer11, 1, wx.EXPAND, 5 )
 		
