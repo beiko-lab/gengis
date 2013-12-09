@@ -398,7 +398,7 @@ void LocationGrid::InitTiles()
 			ID.append(StringTools::ToStringW("_"));
 			ID.append(StringTools::ToStringW(topLeftGeo.northing,2));
 			std::map<std::wstring,std::wstring> data;
-			TileModelPtr tile(new TileModel(ID,std::make_pair(topLeftGeo.easting,topLeftGeo.northing),std::make_pair(bottomRightGeo.easting,bottomRightGeo.northing),data));
+			TileModelPtr tile(new TileModel(ID,Point2D(topLeftGeo.easting,topLeftGeo.northing),Point2D(bottomRightGeo.easting,bottomRightGeo.northing),data));
 			m_tileModels.push_back(tile);
 			col2++;
 		}
@@ -580,7 +580,7 @@ void LocationGrid::SetOriginOffset( std::wstring selectedName )
 		//find which tile this location belongs in
 		TileModelPtr tile = FindLocationTile( Point2D(locationCoord.x,locationCoord.z) );
 
-		GeoCoord tileOrigin( tile->GetTopLeft().first, tile->GetTopLeft().second ); 
+		GeoCoord tileOrigin( tile->GetTopLeft().x, tile->GetTopLeft().y ); 
 		Point3D tileCoord;
 		App::Inst().GetMapController()->GetMapModel()->LatLongToGrid( tileOrigin, tileCoord );
 
@@ -633,7 +633,7 @@ void LocationGrid::SetOriginOffset( Point2D coord )
 		//find which tile this location belongs in
 		TileModelPtr tile = FindLocationTile( Point2D(locationCoord.x,locationCoord.z) );
 
-		GeoCoord tileOrigin( tile->GetTopLeft().first, tile->GetTopLeft().second ); 
+		GeoCoord tileOrigin( tile->GetTopLeft().x, tile->GetTopLeft().y ); 
 		Point3D tileCoord;
 		App::Inst().GetMapController()->GetMapModel()->LatLongToGrid( tileOrigin, tileCoord );
 
