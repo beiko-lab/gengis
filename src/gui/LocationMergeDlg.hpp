@@ -42,6 +42,8 @@ namespace GenGIS
 		/** OK button event handler. */
 		void OnOK( wxCommandEvent& event );
 
+		void OnAbout( wxCommandEvent& event);
+
 		/**Cancel button event handler. */
 		void OnCancel( wxCommandEvent& event ){ Destroy();}
 
