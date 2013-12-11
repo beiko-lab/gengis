@@ -22,6 +22,7 @@
 
 import re
 import wx
+import GenGIS
 from decimal import Decimal
 from operator import itemgetter
 
@@ -137,5 +138,17 @@ class GBIFGeneric:
 	# the bound will be returned, as the val is not within the default borders
 	def BorderTest(self,bound,val,func):
 		res = func(bound,val)
-		res = res if (-1*bound > res) else bound
+		if func == "max":
+			res = res if (-1*bound > res) else bound
+		if func == "min":
+			res = res if (-1*bound < res) else bound
+		
 		return res
+		
+	def	SpecialUTMConversion(self, x, y):
+		convPoint=GenGIS.Point3D()
+		convCoord=GenGIS.GeoCoord(x,y)
+		GenGIS.MapController.GeoToGrid(GenGIS.layerTree.GetMapLayer(0).GetController(),convCoord,convPoint)
+		GenGIS.MapController.GridToGeo(GenGIS.layerTree.GetMapLayer(0).GetController(),convPoint,convCoord)
+		return convCoord
+
