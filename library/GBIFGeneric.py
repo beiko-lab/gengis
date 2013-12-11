@@ -129,3 +129,13 @@ class GBIFGeneric:
 			OUTL.close()
 		except IOError:
 			wx.MessageBox("File could not be written. Perhaps another program is using it.")
+	
+	# tests if a value falls within the default space of a map
+	# if it violates on either side, it is still assumed to belong to
+	# the bound it is being tested against
+	# ex val = 4200, bound = -180 (lower bound) func = max
+	# the bound will be returned, as the val is not within the default borders
+	def BorderTest(self,bound,val,func):
+		res = func(bound,val)
+		res = res if (-1*bound > res) else bound
+		return res

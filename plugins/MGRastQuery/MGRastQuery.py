@@ -134,11 +134,12 @@ class MGRastQuery(MGRASTQueryLayout):
 				self.m_MaxLon.SetValue(str(MaxLon))
 			else:
 				#Text boxes hate non String types. use int to round, and string to make them fit the container
-				self.m_MinLat.SetValue(str(max(MinLat,borders.y1)))
-				self.m_MaxLat.SetValue(str(min(MaxLat,borders.dy)))
-				self.m_MinLon.SetValue(str(max(MinLon,borders.x1)))
-				self.m_MaxLon.SetValue(str(min(MaxLon,borders.dx)))
-
+				#testing borders
+				self.m_MinLat.SetValue(str(self.GBIFGeneric.BorderTest(MinLat,borders.y1,max)))
+				self.m_MaxLat.SetValue(str(self.GBIFGeneric.BorderTest(MaxLat,borders.dy,min)))
+				
+				self.m_MinLon.SetValue(str(self.GBIFGeneric.BorderTest(MinLon,borders.x1,max)))
+				self.m_MaxLon.SetValue(str(self.GBIFGeneric.BorderTest(MaxLon,borders.dx,min)))
 			
 	#	Query GBIF for Taxa in Lat/Lon Boundary
 	def OnSearch(self,event):
