@@ -12,3 +12,4 @@ mac/i386/library3rd/ftgl/
 mac/i386/library3rd/lib/
 mac/i386/library3rd/site-packages/
 mac/i386/library3rd/wxPython/
+plugins/WorldClimQuery/data/*
