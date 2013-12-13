@@ -33,6 +33,7 @@
 #include "../core/LocationSetController.hpp"
 #include "../utils/StringTools.hpp"
 #include "../utils/ColourMapDiscrete.hpp"
+#include "../core/StudyController.hpp"
 
 #include "../utils/ErrorGL.hpp"
 
@@ -416,7 +417,12 @@ void LocationGrid::FillTiles()
 		float easting = StringTools::ToDouble(data[StringTools::ToStringW("Longitude")]);
 		float northing = StringTools::ToDouble(data[StringTools::ToStringW("Latitude")]);
 		// check if long and lat values exist. if they don't use easting and westing
-		if( easting != easting || northing != northing || !(easting<=DBL_MAX && easting >= -DBL_MAX) || !(northing<=DBL_MAX && northing >= -DBL_MAX) )
+		if( easting != easting || 
+			northing != northing ||
+			!(easting<=DBL_MAX && easting >= -DBL_MAX) ||
+			!(northing<=DBL_MAX && northing >= -DBL_MAX)||
+			!App::Inst().GetStudyController()->IsUsingProjection() ||
+			!App::Inst().GetStudyController()->IsUsingGeographic() )
 		{
 			easting = locationLayers[i]->GetLocationController()->GetEasting();
 			northing = locationLayers[i]->GetLocationController()->GetNorthing();
