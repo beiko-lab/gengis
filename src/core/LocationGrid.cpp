@@ -416,13 +416,15 @@ void LocationGrid::FillTiles()
 		std::map<std::wstring,std::wstring> data = locationLayers[i]->GetLocationController()->GetData();
 		float easting = StringTools::ToDouble(data[StringTools::ToStringW("Longitude")]);
 		float northing = StringTools::ToDouble(data[StringTools::ToStringW("Latitude")]);
+		
+		
 		// check if long and lat values exist. if they don't use easting and westing
 		if( easting != easting || 
 			northing != northing ||
 			!(easting<=DBL_MAX && easting >= -DBL_MAX) ||
 			!(northing<=DBL_MAX && northing >= -DBL_MAX)||
-			!App::Inst().GetStudyController()->IsUsingProjection() ||
-			!App::Inst().GetStudyController()->IsUsingGeographic() )
+			(!App::Inst().GetStudyController()->IsUsingProjection() &&
+			!App::Inst().GetStudyController()->IsUsingGeographic() ) )
 		{
 			easting = locationLayers[i]->GetLocationController()->GetEasting();
 			northing = locationLayers[i]->GetLocationController()->GetNorthing();
