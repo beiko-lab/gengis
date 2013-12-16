@@ -108,7 +108,8 @@ class WorldClimQuery( WorldClimQueryLayout ):
 		
 		self.txtLog.AppendText('Retrieving ' + self.m_Measures.GetStringSelection() + ' data...\n')
 		
-		activeLocLayers = GenGIS.layerTree.GetLocationSetLayer(0).GetAllActiveLocationLayers()
+	#	activeLocLayers = GenGIS.layerTree.GetLocationSetLayer(0).GetAllActiveLocationLayers()
+		activeLocLayers = GenGIS.layerTree.GetLocationSetLayer(0).GetAllLocationLayers()
 		lat_lon = []
 		for locLayer in activeLocLayers:
 			if 'Latitude' in locLayer.GetController().GetData().keys():
