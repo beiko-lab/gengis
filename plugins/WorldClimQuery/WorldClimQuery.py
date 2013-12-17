@@ -108,7 +108,8 @@ class WorldClimQuery( WorldClimQueryLayout ):
 		
 		self.txtLog.AppendText('Retrieving ' + self.m_Measures.GetStringSelection() + ' data...\n')
 		
-		activeLocLayers = GenGIS.layerTree.GetLocationSetLayer(0).GetAllActiveLocationLayers()
+	#	activeLocLayers = GenGIS.layerTree.GetLocationSetLayer(0).GetAllActiveLocationLayers()
+		activeLocLayers = GenGIS.layerTree.GetLocationSetLayer(0).GetAllLocationLayers()
 		lat_lon = []
 		for locLayer in activeLocLayers:
 			if 'Latitude' in locLayer.GetController().GetData().keys():
@@ -128,7 +129,7 @@ class WorldClimQuery( WorldClimQueryLayout ):
 				
 			lat_lon.append( (lat,lon) )
 		# GETS SOME FORM OF DATA
-		dataSet = self.fileTranslations[ self.m_Measures.GetStringSelection() ]
+		dataSet = self.fileTranslations[ self.m_Measures.GetStringSelection() ].lower()
 		dat = pybioclim.get_dataset(dataSet)
 		array = dat.ReadAsArray()
 		values = pybioclim.get_values(dataSet,lat_lon)
@@ -154,6 +155,9 @@ class WorldClimQuery( WorldClimQueryLayout ):
 		self.Close()
 		self.about.Close()
 	
+	def OnClose(self,event):
+		self.about.Close()
+		event.Skip()
 	
 	def OnHelp(self, event):
 		wx.LaunchDefaultBrowser( 'http://kiwi.cs.dal.ca/GenGIS/index.php/Description_of_GenGIS_plugins#Worldclim_Query' )
