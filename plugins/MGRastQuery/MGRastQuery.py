@@ -307,6 +307,7 @@ class MGRastQuery(MGRASTQueryLayout):
 	
 	#	Close the Plugin
 	def OnClose(self, event):
+		self.__options__.Close()
 		event.Skip()
 	
 	#	Close the Plugin
