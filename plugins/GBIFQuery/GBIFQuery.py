@@ -69,7 +69,7 @@ class GBIFQuery(GBIFQueryLayout):
 			geographic = GenGIS.StudyController.IsUsingGeographic(GenGIS.study.GetController())
 			projected = GenGIS.StudyController.IsUsingProjection(GenGIS.study.GetController())
 			if(not (geographic or projected)):
-				wx.MessageBox("Geographic coordinates are not being used in the current map file. Only geographic coordinates are compatible with GBIF. Geographic range will need to be manually set, and any returned data will not display correctly.","Warning")
+				wx.MessageBox("Geographic coordinates are not being used in the current map file. Only geographic coordinates are compatible with MG-RAST. Geographic range will need to be manually set, and any returned data will not display correctly.","Warning")
 				self.m_AddData.Disable()
 				self.m_MinLat.SetValue(str(MinLat))
 				self.m_MaxLat.SetValue(str(MaxLat))
@@ -77,10 +77,20 @@ class GBIFQuery(GBIFQueryLayout):
 				self.m_MaxLon.SetValue(str(MaxLon))
 			else:
 				#Text boxes hate non String types. use int to round, and string to make them fit the container
-				self.m_MinLat.SetValue(str(max(MinLat,borders.y1)))
-				self.m_MaxLat.SetValue(str(min(MaxLat,borders.dy)))
-				self.m_MinLon.SetValue(str(max(MinLon,borders.x1)))
-				self.m_MaxLon.SetValue(str(min(MaxLon,borders.dx)))
+				
+				# if projected coordinates but not geographic, a conversion may be possible
+				if(projected and not geographic):
+					convTop = self.GBIFGeneric.SpecialUTMConversion(borders.x1,borders.y1)
+					convBottom = self.GBIFGeneric.SpecialUTMConversion(borders.dx,borders.dy)
+					borders.x1 = convTop.easting
+					borders.y1 = convTop.northing
+					borders.dx = convBottom.easting
+					borders.dy = convBottom.northing
+				#limiting borders
+				self.m_MinLat.SetValue(str("%.1f" %self.GBIFGeneric.BorderTest(MinLat,borders.y1,max)))
+				self.m_MaxLat.SetValue(str("%.1f" %self.GBIFGeneric.BorderTest(MaxLat,borders.dy,min)))
+				self.m_MinLon.SetValue(str("%.1f" %self.GBIFGeneric.BorderTest(MinLon,borders.x1,max)))
+				self.m_MaxLon.SetValue(str("%.1f" %self.GBIFGeneric.BorderTest(MaxLon,borders.dx,min)))
 			
 	#	Query GBIF for Taxa in Lat/Lon Boundary
 	def OnSearch(self,event):
