@@ -814,6 +814,14 @@ void LayerTreeController::OnLayerRemove( wxCommandEvent& event )
 								Log::Inst().Error("OnLayerRemove(): Unhandle case encountered.");
 							}
 						}
+						else
+						{
+							int answer = wxMessageBox(wxT("Removing Location Layers is not recommended by GenGIS. Deactivating them instead is recommended. Continue with removal?"),
+							wxT("Warning"), wxYES_NO | wxCANCEL | wxICON_INFORMATION);
+							
+							if (answer == wxNO)
+								return;
+						}
 					}
 				}
 			}

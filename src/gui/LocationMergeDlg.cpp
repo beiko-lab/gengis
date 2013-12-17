@@ -64,7 +64,7 @@ void LocationMergeDlg::Init()
 		m_locationSetCheckbox->InsertItems(1,&mystring,0);
 	}
 
-	m_description->SetLabel(wxT("Combine two or more Location Sets into one and insert it into top of the location stack. This allows the new layer to be used with GenGIS plugins. Selecting only one Location Set creates an exact copy of that Location Set."));
+	m_description->SetLabel(wxT("Combine two or more Location Sets into one and insert it into top of the location stack. This allows the new layer to be used with GenGIS plugins. Selecting only one Location Set creates an exact copy of that Location Set. Special care should be taken when using the 'Remove layers...' option, as when layers are combined the intersection of their data is taken. This means that the new layer may not be an exact duplicate of the layers used to create it."));
 	wxSize size;
 	size = bSizer1->GetSize();
 	
