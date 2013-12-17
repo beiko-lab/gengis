@@ -22,6 +22,7 @@
 
 import re
 import wx
+import GenGIS
 from decimal import Decimal
 from operator import itemgetter
 
@@ -129,3 +130,25 @@ class GBIFGeneric:
 			OUTL.close()
 		except IOError:
 			wx.MessageBox("File could not be written. Perhaps another program is using it.")
+	
+	# tests if a value falls within the default space of a map
+	# if it violates on either side, it is still assumed to belong to
+	# the bound it is being tested against
+	# ex val = 4200, bound = -180 (lower bound) func = max
+	# the bound will be returned, as the val is not within the default borders
+	def BorderTest(self,bound,val,func):
+		res = func(bound,val)
+		if func == "max":
+			res = res if (-1*bound > res) else bound
+		if func == "min":
+			res = res if (-1*bound < res) else bound
+		
+		return res
+		
+	def	SpecialUTMConversion(self, x, y):
+		convPoint=GenGIS.Point3D()
+		convCoord=GenGIS.GeoCoord(x,y)
+		GenGIS.MapController.GeoToGrid(GenGIS.layerTree.GetMapLayer(0).GetController(),convCoord,convPoint)
+		GenGIS.MapController.GridToGeo(GenGIS.layerTree.GetMapLayer(0).GetController(),convPoint,convCoord)
+		return convCoord
+
