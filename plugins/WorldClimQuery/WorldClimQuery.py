@@ -130,7 +130,7 @@ class WorldClimQuery( WorldClimQueryLayout ):
 			lat_lon.append( (lat,lon) )
 		# GETS SOME FORM OF DATA
 		dataSet = self.fileTranslations[ self.m_Measures.GetStringSelection() ]
-		dat = pybioclim.get_dataset(dataSet)
+		dat = pybioclim.get_dataset(dataSet.lower())
 		array = dat.ReadAsArray()
 		values = pybioclim.get_values(dataSet,lat_lon)
 		metadata = []
@@ -155,6 +155,9 @@ class WorldClimQuery( WorldClimQueryLayout ):
 		self.Close()
 		self.about.Close()
 	
+	def OnClose(self,event):
+		self.about.Close()
+		event.Skip()
 	
 	def OnHelp(self, event):
 		wx.LaunchDefaultBrowser( 'http://kiwi.cs.dal.ca/GenGIS/index.php/Description_of_GenGIS_plugins#Worldclim_Query' )
