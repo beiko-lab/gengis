@@ -129,8 +129,8 @@ class WorldClimQuery( WorldClimQueryLayout ):
 				
 			lat_lon.append( (lat,lon) )
 		# GETS SOME FORM OF DATA
-		dataSet = self.fileTranslations[ self.m_Measures.GetStringSelection() ]
-		dat = pybioclim.get_dataset(dataSet.lower())
+		dataSet = self.fileTranslations[ self.m_Measures.GetStringSelection() ].lower()
+		dat = pybioclim.get_dataset(dataSet)
 		array = dat.ReadAsArray()
 		values = pybioclim.get_values(dataSet,lat_lon)
 		metadata = []
