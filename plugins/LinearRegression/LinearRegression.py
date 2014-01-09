@@ -41,7 +41,7 @@ class LinearRegression( LinearRegressionLayout ):
 		
 		# check that required data has been loaded
 		if GenGIS.layerTree.GetNumMapLayers() == 0 or GenGIS.layerTree.GetNumLocationSetLayers() == 0 or GenGIS.layerTree.GetNumSequenceLayers() == 0:
-			wx.MessageBox("This plugin requires map and location data to be loaded.", "Additional data required.")
+			wx.MessageBox("This plugin requires map, location and sequence data to be loaded.", "Additional data required.")
 			self.Close()
 			return
 		
