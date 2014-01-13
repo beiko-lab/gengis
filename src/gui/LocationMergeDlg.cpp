@@ -54,6 +54,7 @@ LocationMergeDlg::~LocationMergeDlg()
 
 void LocationMergeDlg::Init()
 {
+	
 	//get location layers
 	//for each location layer create a checkbox for them
 	LayerTreeControllerPtr layerTree = App::Inst().GetLayerTreeController();
@@ -63,15 +64,10 @@ void LocationMergeDlg::Init()
 		wxString const mystring = wxString( layerName.c_str() );
 		m_locationSetCheckbox->InsertItems(1,&mystring,0);
 	}
-
-	m_description->SetLabel(wxT("Combine two or more Location Sets into one and insert it into top of the location stack. This allows the new layer to be used with GenGIS plugins. Selecting only one Location Set creates an exact copy of that Location Set. Special care should be taken when using the 'Remove layers...' option, as when layers are combined the intersection of their data is taken. This means that the new layer may not be an exact duplicate of the layers used to create it."));
-	wxSize size;
-	size = bSizer1->GetSize();
-	
-	m_description->Wrap(size.GetWidth());
 }
 void LocationMergeDlg::OnOK(wxCommandEvent& event)
-{
+{	
+	bool noChecked = true;
 	int numItems = m_locationSetCheckbox->GetCount();
 	if( numItems > 0)
 	{
@@ -91,6 +87,7 @@ void LocationMergeDlg::OnOK(wxCommandEvent& event)
 		{
 			if(m_locationSetCheckbox->IsChecked(locSet))
 			{
+				noChecked = false;
 				LocationSetLayerPtr locationSet = layerTree->GetLocationSetLayer( locSet );
 				std::vector<std::wstring> fields = locationSet->GetLocationSetController()->GetMetadataFields();
 				if(firstLay)
@@ -131,7 +128,14 @@ void LocationMergeDlg::OnOK(wxCommandEvent& event)
 				
 			}
 		}
-		
+
+		// if no checked layers were found, destroy
+		if(noChecked)
+		{
+			Destroy();
+			return;
+		}
+
 		//Finds the indexes of all checked boxes
 		for(int locSet = 0; locSet < numItems; locSet++)
 		{
@@ -327,4 +331,11 @@ void LocationMergeDlg::RemoveLocationSetLayers ( std::vector<LocationSetLayerPtr
 		wxCommandEvent dummy;
 		App::Inst().GetLayerTreeController()->OnLayerRemove(dummy);
 	}
+}
+
+void LocationMergeDlg::OnAbout( wxCommandEvent& event )
+{
+	wxString description = wxT("Combine two or more Location Sets into one and insert it into top of the location stack. This allows the new layer to be used with GenGIS plugins. Selecting only one Location Set creates an exact copy of that Location Set.");
+
+	wxMessageBox( description, wxT("About") , wxOK | wxICON_INFORMATION);
 }
