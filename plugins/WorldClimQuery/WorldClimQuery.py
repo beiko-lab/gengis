@@ -192,7 +192,10 @@ class WorldClimQuery( WorldClimQueryLayout ):
 					if file.endswith('.bil'):
 						meta = {}
 						meta = pybioclim.metadata[file]
-						desc = meta['variable']
+						if 'variable' in meta.keys():
+							desc = meta['variable']
+						else:
+							desc = file
 						name = file.split('.')
 						fileTrans[ desc ] = name[0]
 		print fileTrans
