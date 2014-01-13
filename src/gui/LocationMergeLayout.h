@@ -15,7 +15,6 @@
 #include <wx/colour.h>
 #include <wx/settings.h>
 #include <wx/checkbox.h>
-#include <wx/stattext.h>
 #include <wx/button.h>
 #include <wx/sizer.h>
 #include <wx/frame.h>
@@ -34,12 +33,14 @@ class LocationMergeLayout : public wxFrame
 		wxBoxSizer* bSizer1;
 		wxCheckListBox* m_locationSetCheckbox;
 		wxCheckBox* m_remove;
-		wxStaticText* m_description;
 		wxButton* m_OK;
+		
+		wxButton* m_About;
 		wxButton* m_Close;
 		
 		// Virtual event handlers, overide them in your derived class
 		virtual void OnOK( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnAbout( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnClose( wxCommandEvent& event ) { event.Skip(); }
 		
 	
