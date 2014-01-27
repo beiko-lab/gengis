@@ -22,7 +22,7 @@ Public functions:       Internaldate2tuple
 
 __version__ = "2.58"
 
-import binascii, os, random, re, socket, sys, time
+import binascii, errno, random, re, socket, subprocess, sys, time
 
 __all__ = ["IMAP4", "IMAP4_stream", "Internaldate2tuple",
            "Int2AP", "ParseFlags", "Time2Internaldate"]
@@ -226,8 +226,7 @@ class IMAP4:
         """
         self.host = host
         self.port = port
-        self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.sock.connect((host, port))
+        self.sock = socket.create_connection((host, port))
         self.file = self.sock.makefile('rb')
 
 
@@ -249,7 +248,14 @@ class IMAP4:
     def shutdown(self):
         """Close I/O established in "open"."""
         self.file.close()
-        self.sock.close()
+        try:
+            self.sock.shutdown(socket.SHUT_RDWR)
+        except socket.error as e:
+            # The server might already have closed the connection
+            if e.errno != errno.ENOTCONN:
+                raise
+        finally:
+            self.sock.close()
 
 
     def socket(self):
@@ -727,7 +733,7 @@ class IMAP4:
     def thread(self, threading_algorithm, charset, *search_criteria):
         """IMAPrev1 extension THREAD command.
 
-        (type, [data]) = <instance>.thread(threading_alogrithm, charset, search_criteria, ...)
+        (type, [data]) = <instance>.thread(threading_algorithm, charset, search_criteria, ...)
         """
         name = 'THREAD'
         typ, dat = self._simple_command(name, threading_algorithm, charset, *search_criteria)
@@ -752,7 +758,7 @@ class IMAP4:
                               ', '.join(Commands[command])))
         name = 'UID'
         typ, dat = self._simple_command(name, command, *args)
-        if command in ('SEARCH', 'SORT'):
+        if command in ('SEARCH', 'SORT', 'THREAD'):
             name = command
         else:
             name = 'FETCH'
@@ -884,14 +890,17 @@ class IMAP4:
 
 
     def _command_complete(self, name, tag):
-        self._check_bye()
+        # BYE is expected after LOGOUT
+        if name != 'LOGOUT':
+            self._check_bye()
         try:
             typ, data = self._get_tagged_response(tag)
         except self.abort, val:
             raise self.abort('command: %s => %s' % (name, val))
         except self.error, val:
             raise self.error('command: %s => %s' % (name, val))
-        self._check_bye()
+        if name != 'LOGOUT':
+            self._check_bye()
         if typ == 'BAD':
             raise self.error('%s command error: %s %s' % (name, typ, data))
         return typ, data
@@ -1002,6 +1011,8 @@ class IMAP4:
             raise self.abort('socket error: EOF')
 
         # Protocol mandates all lines terminated by CRLF
+        if not line.endswith('\r\n'):
+            raise self.abort('socket error: unterminated line')
 
         line = line[:-2]
         if __debug__:
@@ -1145,31 +1156,19 @@ else:
             """
             self.host = host
             self.port = port
-            self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            self.sock.connect((host, port))
+            self.sock = socket.create_connection((host, port))
             self.sslobj = ssl.wrap_socket(self.sock, self.keyfile, self.certfile)
+            self.file = self.sslobj.makefile('rb')
 
 
         def read(self, size):
             """Read 'size' bytes from remote."""
-            # sslobj.read() sometimes returns < size bytes
-            chunks = []
-            read = 0
-            while read < size:
-                data = self.sslobj.read(min(size-read, 16384))
-                read += len(data)
-                chunks.append(data)
-
-            return ''.join(chunks)
+            return self.file.read(size)
 
 
         def readline(self):
             """Read line from remote."""
-            line = []
-            while 1:
-                char = self.sslobj.read(1)
-                line.append(char)
-                if char == "\n": return ''.join(line)
+            return self.file.readline()
 
 
         def send(self, data):
@@ -1185,6 +1184,7 @@ else:
 
         def shutdown(self):
             """Close I/O established in "open"."""
+            self.file.close()
             self.sock.close()
 
 
@@ -1212,7 +1212,7 @@ class IMAP4_stream(IMAP4):
 
     Instantiate with: IMAP4_stream(command)
 
-            where "command" is a string that can be passed to os.popen2()
+            where "command" is a string that can be passed to subprocess.Popen()
 
     for more documentation see the docstring of the parent class IMAP4.
     """
@@ -1232,7 +1232,11 @@ class IMAP4_stream(IMAP4):
         self.port = None
         self.sock = None
         self.file = None
-        self.writefile, self.readfile = os.popen2(self.command)
+        self.process = subprocess.Popen(self.command,
+            stdin=subprocess.PIPE, stdout=subprocess.PIPE,
+            shell=True, close_fds=True)
+        self.writefile = self.process.stdin
+        self.readfile = self.process.stdout
 
 
     def read(self, size):
@@ -1255,6 +1259,7 @@ class IMAP4_stream(IMAP4):
         """Close I/O established in "open"."""
         self.readfile.close()
         self.writefile.close()
+        self.process.wait()
 
 
 
@@ -1306,9 +1311,10 @@ Mon2num = {'Jan': 1, 'Feb': 2, 'Mar': 3, 'Apr': 4, 'May': 5, 'Jun': 6,
         'Jul': 7, 'Aug': 8, 'Sep': 9, 'Oct': 10, 'Nov': 11, 'Dec': 12}
 
 def Internaldate2tuple(resp):
-    """Convert IMAP4 INTERNALDATE to UT.
+    """Parse an IMAP4 INTERNALDATE string.
 
-    Returns Python time module tuple.
+    Return corresponding local time.  The return value is a
+    time.struct_time instance or None if the string has wrong format.
     """
 
     mo = InternalDate.match(resp)
@@ -1375,9 +1381,14 @@ def ParseFlags(resp):
 
 def Time2Internaldate(date_time):
 
-    """Convert 'date_time' to IMAP4 INTERNALDATE representation.
+    """Convert date_time to IMAP4 INTERNALDATE representation.
 
-    Return string in form: '"DD-Mmm-YYYY HH:MM:SS +HHMM"'
+    Return string in form: '"DD-Mmm-YYYY HH:MM:SS +HHMM"'.  The
+    date_time argument can be a number (int or float) representing
+    seconds since epoch (as returned by time.time()), a 9-tuple
+    representing local time (as returned by time.localtime()), or a
+    double-quoted string.  In the last case, it is assumed to already
+    be in the correct format.
     """
 
     if isinstance(date_time, (int, float)):

@@ -1,5 +1,5 @@
-rem Syntax Highlighting Test File for Dos Batch Scripts
-rem Comment Line
+:: Syntax Highlighting Test File for Dos Batch Scripts
+:: Comment Line
 
 :BEGIN
 set HELLO="WORLD"

@@ -1,4 +1,6 @@
 #!/usr/bin/env python
+from __future__ import division, print_function, absolute_import
+
 
 def configuration(parent_package='',top_path=None):
     from numpy.distutils.misc_util import Configuration
@@ -6,6 +8,8 @@ def configuration(parent_package='',top_path=None):
     config = Configuration('lib',parent_package,top_path)
     config.add_subpackage('blas')
     config.add_subpackage('lapack')
+
+    config.add_data_files('tests/*.py')
 
     return config
 

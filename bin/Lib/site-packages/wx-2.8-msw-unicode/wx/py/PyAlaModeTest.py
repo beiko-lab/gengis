@@ -1,8 +1,9 @@
+#!/usr/bin/env python
 """PyAlaModeTest is a programmer's editor."""
 
 __author__ = "Patrick K. O'Brien <pobrien@orbtech.com>"
-__cvsid__ = "$Id: PyAlaModeTest.py 26212 2004-03-15 13:42:37Z PKO $"
-__revision__ = "$Revision: 26212 $"[11:-2]
+__cvsid__ = "$Id: PyAlaModeTest.py 63479 2010-02-14 05:24:22Z RD $"
+__revision__ = "$Revision: 63479 $"[11:-2]
 
 import wx
 from wx import py

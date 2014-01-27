@@ -5,15 +5,15 @@
 # Author:      Robin Dunn
 #
 # Created:     15-Sept-2008
-# RCS-ID:      $Id: graphics.py 57751 2009-01-02 04:40:15Z RD $
+# RCS-ID:      $Id: graphics.py 63527 2010-02-19 22:40:57Z RD $
 # Copyright:   (c) 2008 by Total Control Software
 # Licence:     wxWindows license
 #----------------------------------------------------------------------
 
 """
 This module implements an API similar to wx.GraphicsContext and the
-related classes.  The implementation for all platforms is done using
-Cairo, via the wx.lib.wxcairo glue module.
+related classes.  In this case the implementation for all platforms is
+done using Cairo, via the wx.lib.wxcairo glue module.
 
 Why do this?  Why not just use wx.GraphicsContext everywhere?  Using
 Cairo on every platform enables us to more easily be totally
@@ -285,7 +285,7 @@ class GraphicsPen(GraphicsObject):
             
         elif self._style in [wx.DOT, wx.DOT_DASH, wx.LONG_DASH, wx.SHORT_DASH]:
             ctx.set_source_rgba( *_colourToValues(self._colour) )
-            ctx.set_dashes( _stdDashes(self._style, self._width) )
+            ctx.set_dash( _stdDashes(self._style, self._width) )
         
         elif self._style in [wx.BDIAGONAL_HATCH, wx.CROSSDIAG_HATCH, wx.FDIAGONAL_HATCH,
                              wx.CROSS_HATCH, wx.HORIZONTAL_HATCH, wx.VERTICAL_HATCH]:
@@ -764,7 +764,7 @@ class GraphicsPath(GraphicsObject):
         return self
 
 
-    def AddQuadCurveToPoint(self):
+    def AddQuadCurveToPoint(self, cx, cy, x, y):
         """
         Adds a quadratic Bexier curve from the current point, using a
         control point and an end point.
@@ -921,7 +921,14 @@ class GraphicsContext(GraphicsObject):
 
     @staticmethod
     def CreateMeasuringContext():
-        raise NotImplementedError("TODO")
+        """
+        If you need a temporary context just to quickly measure some
+        text extents, or etc. then using this function will be a
+        little less expensive than creating a real DC for it.
+        """
+        surface = cairo.ImageSurface(FORMAT_ARGB32, 1, 1)
+        ctx = cairo.Context(surface)
+        return GraphicsContext(ctx)
 
     @staticmethod
     def CreateFromSurface(surface):
@@ -1263,7 +1270,7 @@ class GraphicsContext(GraphicsObject):
             self._DrawText(text, x, y, angle)
             
 
-    def GetFulltextExtent(self, text):
+    def GetFullTextExtent(self, text):
         """
         Returns the (width, height, descent, externalLeading) of the
         text using the current font.
@@ -1290,7 +1297,7 @@ class GraphicsContext(GraphicsObject):
         Returns the (width, height) of the text using the current
         font.
         """
-        (width, height, descent, externalLeading) = self.GetFulltextExtent(text)
+        (width, height, descent, externalLeading) = self.GetFullTextExtent(text)
         return (width, height)
 
     
@@ -1308,7 +1315,7 @@ class GraphicsContext(GraphicsObject):
             bmp = GraphicsBitmap.CreateFromBitmap(bmp)
 
         # In case we're scaling the image by using a width and height
-        # different than the bitmap's size create a pattern
+        # different than the bitmap's size, create a pattern
         # transformation on the surface and draw the transformed
         # pattern.
         self.PushState()
@@ -1317,8 +1324,8 @@ class GraphicsContext(GraphicsObject):
         bw, bh = bmp.Size
         if w == -1: w = bw
         if h == -1: h = bh
-        scaleX = w / bw
-        scaleY = h / bh
+        scaleX = w / float(bw)
+        scaleY = h / float(bh)
 
         self._context.scale(scaleX, scaleY)
         self._context.translate(x, y)

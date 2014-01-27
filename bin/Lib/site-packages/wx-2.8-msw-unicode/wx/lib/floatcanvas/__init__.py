@@ -76,13 +76,14 @@ Copyright: Christopher Barker
 License: Same as the version of wxPython you are using it with.
 
 TRAC site for some docs and updates:
-http://morticia.cs.dal.ca/FloatCanvas/
-
-SVN for latest code:
-svn://morticia.cs.dal.ca/FloatCanvas
+http://trac.paulmcnett.com/floatcanvas
 
 Mailing List:
-http://mail.mithis.com/cgi-bin/mailman/listinfo/floatcanvas
+http://mail.paulmcnett.com/cgi-bin/mailman/listinfo/floatcanvas
+
+The latest code is in the main wx SVN:
+
+http://svn.wxwidgets.org/viewvc/wx/wxPython/3rdParty/FloatCanvas/
 
 Check for updates or answers to questions, send me an email.
 Please let me know if you're using this!!!

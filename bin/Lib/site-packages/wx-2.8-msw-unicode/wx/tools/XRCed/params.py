@@ -2,7 +2,7 @@
 # Purpose:      Classes for parameter introduction
 # Author:       Roman Rolinsky <rolinsky@mema.ucl.ac.be>
 # Created:      22.08.2001
-# RCS-ID:       $Id: params.py 54812 2008-07-29 13:39:00Z ROL $
+# RCS-ID:       $Id: params.py 65408 2010-08-25 22:52:11Z RD $
 
 '''
 Visual C{Param*} classes for populating C{AtrtibutePanel} with attribute editing
@@ -394,8 +394,9 @@ class ParamText(PPanel):
     '''Text attribute.'''
     textWidth = -1
     proportion = 0
-    def __init__(self, parent, name, style=0, **kargs):
+    def __init__(self, parent, name, **kargs):
         PPanel.__init__(self, parent, name)
+        style = kargs.pop('style', 0)
         textWidth = kargs.pop('textWidth', self.textWidth)
         option = kargs.pop('proportion', self.proportion)
         if textWidth == -1: option = 1
@@ -424,7 +425,7 @@ ParamPosSize = MetaParamText(80)
 class ParamComment(ParamText):
     '''Comment node editing.'''
     def __init__(self, parent, name):
-        ParamText.__init__(self, parent, name, 330,
+        ParamText.__init__(self, parent, name, textWidth=330,
                            style=wx.TE_PROCESS_ENTER)
 
 class ContentDialog(wx.Dialog):
@@ -912,7 +913,7 @@ class StylePanel(wx.Panel):
         topSizer = wx.BoxSizer(wx.HORIZONTAL)
         if genericStyles:
             # Generic styles
-            sizer = wx.GridSizer(len(genericStyles), 1, 1, 5)
+            sizer = wx.GridSizer(cols=1, vgap=1, hgap=5)
             label = wx.StaticText(self, label='Generic')
             label.SetFont(g.labelFont())
             sizer.Add(label, 0, wx.LEFT, 20)
@@ -925,7 +926,7 @@ class StylePanel(wx.Panel):
             topSizer.Add(sizer)
         if styles:
             # Specific styles
-            sizer = wx.GridSizer(len(styles), 1, 1, 5)
+            sizer = wx.GridSizer(cols=1, vgap=1, hgap=5)
             if genericStyles:
                 label = wx.StaticText(self, label='Specific')
                 label.SetFont(g.labelFont())

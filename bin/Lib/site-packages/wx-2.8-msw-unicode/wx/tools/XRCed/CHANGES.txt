@@ -1,3 +1,23 @@
+0.1.8-8
+-------
+
+Fixed several issues related to comment nodes. Test view for a "pragma" 
+comment node executes it.
+
+0.1.8-7
+-------
+
+Restored a feature present in the old XRCed: interpreted comment nodes
+(inserted using 'comment' command from the top-level pull-down menu). 
+Comments starting with '%' are executed in the context of main module 
+(xrced.py) when the file is being loaded. This allows, for example, to
+preload external resource files as follows:
+
+%Manager.addExternal('external.xrc')
+
+where external.xrc may contain resources references by the current
+resource file (using object_ref tag).
+
 0.1.8-6
 -------
 

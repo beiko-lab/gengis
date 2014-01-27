@@ -2,7 +2,7 @@
 # SUPERTOOLTIP wxPython IMPLEMENTATION
 #
 # Andrea Gavana, @ 07 October 2008
-# Latest Revision: 30 January 2009, 09.00 GMT
+# Latest Revision: 02 Aug 2010, 09.00 GMT
 #
 #
 # TODO List
@@ -26,11 +26,16 @@
 # --------------------------------------------------------------------------------- #
 
 """
+SuperToolTip is a class that mimics the behaviour of `wx.TipWindow` and generic tooltip
+windows, although it is a custom-drawn widget. 
+
+
 Description
 ===========
 
-SuperToolTip is a class that mimics the behaviour of wx.TipWindow and generic tooltip
-windows, although it is a custom-drawn widget. 
+SuperToolTip is a class that mimics the behaviour of `wx.TipWindow` and generic tooltip
+windows, although it is a custom-drawn widget.
+
 This class supports:
 
 * Blended triple-gradient for the tooltip background;
@@ -55,8 +60,26 @@ SuperToolTip has been tested on the following platforms:
   * Windows (Windows XP).
 
 
-Latest Revision: Andrea Gavana @ 30 January 2009, 09.00 GMT
-Version 0.2
+Window Styles
+=============
+
+`No particular window styles are available for this class.`
+
+
+Events Processing
+=================
+
+`No custom events are available for this class.`
+
+
+License And Version
+===================
+
+SuperToolTip is distributed under the wxPython license.
+
+Latest Revision: Andrea Gavana @ 02 Aug 2010, 09.00 GMT
+
+Version 0.4
 
 """
 
@@ -85,55 +108,54 @@ if wx.Platform == "__WXMSW__":
 
 # Define a bunch of predefined colour schemes...
 
-_colorSchemes = {"Beige": (wx.Colour(255,255,255), wx.Colour(242,242,223), wx.Colour(198,195,160), wx.Colour(0,0,0)),
-                 "Blue": (wx.Colour(255,255,255), wx.Colour(202,220,246), wx.Colour(150,180,222), wx.Colour(0,0,0)),
-                 "Blue 2": (wx.Colour(255,255,255), wx.Colour(228,236,248), wx.Colour(198,214,235), wx.Colour(0,0,0)),
-                 "Blue 3": (wx.Colour(255,255,255), wx.Colour(213,233,243), wx.Colour(151,195,216), wx.Colour(0,0,0)),
-                 "Blue 4": (wx.Colour(255,255,255), wx.Colour(227,235,255), wx.Colour(102,153,255), wx.Colour(0,0,0)),
-                 "Blue Glass": (wx.Colour(182,226,253), wx.Colour(137,185,232), wx.Colour(188,244,253), wx.Colour(0,0,0)),
-                 "Blue Glass 2": (wx.Colour(192,236,255), wx.Colour(147,195,242), wx.Colour(198,254,255), wx.Colour(0,0,0)),
-                 "Blue Glass 3": (wx.Colour(212,255,255), wx.Colour(167,215,255), wx.Colour(218,255,255), wx.Colour(0,0,0)),
-                 "Blue Inverted": (wx.Colour(117,160,222), wx.Colour(167,210,240), wx.Colour(233,243,255), wx.Colour(0,0,0)),
-                 "Blue Shift": (wx.Colour(124,178,190), wx.Colour(13,122,153),  wx.Colour(0,89,116),    wx.Colour(255,255,255)),
-                 "CodeProject": (wx.Colour(255,250,172), wx.Colour(255,207,157), wx.Colour(255,153,0),   wx.Colour(0,0,0)),
-                 "Dark Gray": (wx.Colour(195,195,195), wx.Colour(168,168,168), wx.Colour(134,134,134), wx.Colour(255,255,255)),
-                 "Deep Purple": (wx.Colour(131,128,164), wx.Colour(112,110,143), wx.Colour(90,88,117),   wx.Colour(255,255,255)),
-                 "Electric Blue": (wx.Colour(224,233,255), wx.Colour(135,146,251), wx.Colour(99,109,233),  wx.Colour(0,0,0)),
-                 "Firefox": (wx.Colour(255,254,207), wx.Colour(254,248,125), wx.Colour(225,119,24),  wx.Colour(0,0,0)),
-                 "Gold": (wx.Colour(255,202,0),   wx.Colour(255,202,0),   wx.Colour(255,202,0),   wx.Colour(0,0,0)),
-                 "Gold Shift": (wx.Colour(178,170,107), wx.Colour(202,180,32),  wx.Colour(162,139,1),   wx.Colour(255,255,255)),
-                 "Gray": (wx.Colour(255,255,255), wx.Colour(228,228,228), wx.Colour(194,194,194), wx.Colour(0,0,0)),
-                 "Green": (wx.Colour(234,241,223), wx.Colour(211,224,180), wx.Colour(182,200,150), wx.Colour(0,0,0)),
-                 "Green Shift": (wx.Colour(129,184,129), wx.Colour(13,185,15),   wx.Colour(1,125,1), wx.Colour(255,255,255)),
-                 "Light Green": (wx.Colour(174,251,171), wx.Colour(145,221,146), wx.Colour(90,176,89),   wx.Colour(0,0,0)),
-                 "NASA Blue": (wx.Colour(0,91,134),    wx.Colour(0,100,150),   wx.Colour(0,105,160),   wx.Colour(255,255,255)),
-                 "Office 2007 Blue": (wx.Colour(255,255,255), wx.Colour(242,246,251), wx.Colour(202,218,239), wx.Colour(76,76,76)),
-                 "Orange Shift": (wx.Colour(179,120,80),  wx.Colour(183,92,19),   wx.Colour(157,73,1),    wx.Colour(255,255,255)),
-                 "Outlook Green": (wx.Colour(236,242,208), wx.Colour(219,230,187), wx.Colour(195,210,155), wx.Colour(0,0,0)),
-                 "Pale Green": (wx.Colour(249,255,248), wx.Colour(206,246,209), wx.Colour(148,225,155), wx.Colour(0,0,0)),
-                 "Pink Blush": (wx.Colour(255,254,255), wx.Colour(255,231,242), wx.Colour(255,213,233), wx.Colour(0,0,0)),
-                 "Pink Shift": (wx.Colour(202,135,188), wx.Colour(186,8,158),   wx.Colour(146,2,116),   wx.Colour(255,255,255)),
-                 "Pretty Pink": (wx.Colour(255,240,249), wx.Colour(253,205,217), wx.Colour(255,150,177), wx.Colour(0,0,0)),
-                 "Red": (wx.Colour(255,183,176), wx.Colour(253,157,143), wx.Colour(206,88,78),   wx.Colour(0,0,0)),
-                 "Red Shift": (wx.Colour(186,102,102), wx.Colour(229,23,9),    wx.Colour(182,11,1),    wx.Colour(255,255,255)),
-                 "Silver": (wx.Colour(255,255,255), wx.Colour(242,242,246), wx.Colour(212,212,224), wx.Colour(0,0,0)),
-                 "Silver 2": (wx.Colour(255,255,255), wx.Colour(242,242,248), wx.Colour(222,222,228), wx.Colour(0,0,0)),
-                 "Silver Glass": (wx.Colour(158,158,158), wx.Colour(255,255,255), wx.Colour(105,105,105), wx.Colour(0,0,0)),
-                 "Silver Inverted": (wx.Colour(161,160,186), wx.Colour(199,201,213), wx.Colour(255,255,255), wx.Colour(0,0,0)),
-                 "Silver Inverted 2": (wx.Colour(181,180,206), wx.Colour(219,221,233), wx.Colour(255,255,255), wx.Colour(0,0,0)),
-                 "Soylent Green": (wx.Colour(134,211,131), wx.Colour(105,181,106), wx.Colour(50,136,49),   wx.Colour(255,255,255)),
-                 "Spring Green": (wx.Colour(154,231,151), wx.Colour(125,201,126), wx.Colour(70,156,69),   wx.Colour(255,255,255)),
-                 "Too Blue": (wx.Colour(255,255,255), wx.Colour(225,235,244), wx.Colour(188,209,226), wx.Colour(0,0,0)),
-                 "Totally Green": (wx.Colour(190,230,160), wx.Colour(190,230,160), wx.Colour(190,230,160), wx.Colour(0,0,0)),
-                 "XP Blue": (wx.Colour(119,185,236), wx.Colour(81,144,223),  wx.Colour(36,76,171),   wx.Colour(255,255,255)),
-                 "Yellow": (wx.Colour(255,255,220), wx.Colour(255,231,161), wx.Colour(254,218,108), wx.Colour(0,0,0))}
-
+_colourSchemes = {"Beige": (wx.Colour(255,255,255), wx.Colour(242,242,223), wx.Colour(198,195,160), wx.Colour(0,0,0)),
+                  "Blue": (wx.Colour(255,255,255), wx.Colour(202,220,246), wx.Colour(150,180,222), wx.Colour(0,0,0)),
+                  "Blue 2": (wx.Colour(255,255,255), wx.Colour(228,236,248), wx.Colour(198,214,235), wx.Colour(0,0,0)),
+                  "Blue 3": (wx.Colour(255,255,255), wx.Colour(213,233,243), wx.Colour(151,195,216), wx.Colour(0,0,0)),
+                  "Blue 4": (wx.Colour(255,255,255), wx.Colour(227,235,255), wx.Colour(102,153,255), wx.Colour(0,0,0)),
+                  "Blue Glass": (wx.Colour(182,226,253), wx.Colour(137,185,232), wx.Colour(188,244,253), wx.Colour(0,0,0)),
+                  "Blue Glass 2": (wx.Colour(192,236,255), wx.Colour(147,195,242), wx.Colour(198,254,255), wx.Colour(0,0,0)),
+                  "Blue Glass 3": (wx.Colour(212,255,255), wx.Colour(167,215,255), wx.Colour(218,255,255), wx.Colour(0,0,0)),
+                  "Blue Inverted": (wx.Colour(117,160,222), wx.Colour(167,210,240), wx.Colour(233,243,255), wx.Colour(0,0,0)),
+                  "Blue Shift": (wx.Colour(124,178,190), wx.Colour(13,122,153),  wx.Colour(0,89,116),    wx.Colour(255,255,255)),
+                  "CodeProject": (wx.Colour(255,250,172), wx.Colour(255,207,157), wx.Colour(255,153,0),   wx.Colour(0,0,0)),
+                  "Dark Gray": (wx.Colour(195,195,195), wx.Colour(168,168,168), wx.Colour(134,134,134), wx.Colour(255,255,255)),
+                  "Deep Purple": (wx.Colour(131,128,164), wx.Colour(112,110,143), wx.Colour(90,88,117),   wx.Colour(255,255,255)),
+                  "Electric Blue": (wx.Colour(224,233,255), wx.Colour(135,146,251), wx.Colour(99,109,233),  wx.Colour(0,0,0)),
+                  "Firefox": (wx.Colour(255,254,207), wx.Colour(254,248,125), wx.Colour(225,119,24),  wx.Colour(0,0,0)),
+                  "Gold": (wx.Colour(255,202,0),   wx.Colour(255,202,0),   wx.Colour(255,202,0),   wx.Colour(0,0,0)),
+                  "Gold Shift": (wx.Colour(178,170,107), wx.Colour(202,180,32),  wx.Colour(162,139,1),   wx.Colour(255,255,255)),
+                  "Gray": (wx.Colour(255,255,255), wx.Colour(228,228,228), wx.Colour(194,194,194), wx.Colour(0,0,0)),
+                  "Green": (wx.Colour(234,241,223), wx.Colour(211,224,180), wx.Colour(182,200,150), wx.Colour(0,0,0)),
+                  "Green Shift": (wx.Colour(129,184,129), wx.Colour(13,185,15),   wx.Colour(1,125,1), wx.Colour(255,255,255)),
+                  "Light Green": (wx.Colour(174,251,171), wx.Colour(145,221,146), wx.Colour(90,176,89),   wx.Colour(0,0,0)),
+                  "NASA Blue": (wx.Colour(0,91,134),    wx.Colour(0,100,150),   wx.Colour(0,105,160),   wx.Colour(255,255,255)),
+                  "Office 2007 Blue": (wx.Colour(255,255,255), wx.Colour(242,246,251), wx.Colour(202,218,239), wx.Colour(76,76,76)),
+                  "Orange Shift": (wx.Colour(179,120,80),  wx.Colour(183,92,19),   wx.Colour(157,73,1),    wx.Colour(255,255,255)),
+                  "Outlook Green": (wx.Colour(236,242,208), wx.Colour(219,230,187), wx.Colour(195,210,155), wx.Colour(0,0,0)),
+                  "Pale Green": (wx.Colour(249,255,248), wx.Colour(206,246,209), wx.Colour(148,225,155), wx.Colour(0,0,0)),
+                  "Pink Blush": (wx.Colour(255,254,255), wx.Colour(255,231,242), wx.Colour(255,213,233), wx.Colour(0,0,0)),
+                  "Pink Shift": (wx.Colour(202,135,188), wx.Colour(186,8,158),   wx.Colour(146,2,116),   wx.Colour(255,255,255)),
+                  "Pretty Pink": (wx.Colour(255,240,249), wx.Colour(253,205,217), wx.Colour(255,150,177), wx.Colour(0,0,0)),
+                  "Red": (wx.Colour(255,183,176), wx.Colour(253,157,143), wx.Colour(206,88,78),   wx.Colour(0,0,0)),
+                  "Red Shift": (wx.Colour(186,102,102), wx.Colour(229,23,9),    wx.Colour(182,11,1),    wx.Colour(255,255,255)),
+                  "Silver": (wx.Colour(255,255,255), wx.Colour(242,242,246), wx.Colour(212,212,224), wx.Colour(0,0,0)),
+                  "Silver 2": (wx.Colour(255,255,255), wx.Colour(242,242,248), wx.Colour(222,222,228), wx.Colour(0,0,0)),
+                  "Silver Glass": (wx.Colour(158,158,158), wx.Colour(255,255,255), wx.Colour(105,105,105), wx.Colour(0,0,0)),
+                  "Silver Inverted": (wx.Colour(161,160,186), wx.Colour(199,201,213), wx.Colour(255,255,255), wx.Colour(0,0,0)),
+                  "Silver Inverted 2": (wx.Colour(181,180,206), wx.Colour(219,221,233), wx.Colour(255,255,255), wx.Colour(0,0,0)),
+                  "Soylent Green": (wx.Colour(134,211,131), wx.Colour(105,181,106), wx.Colour(50,136,49),   wx.Colour(255,255,255)),
+                  "Spring Green": (wx.Colour(154,231,151), wx.Colour(125,201,126), wx.Colour(70,156,69),   wx.Colour(255,255,255)),
+                  "Too Blue": (wx.Colour(255,255,255), wx.Colour(225,235,244), wx.Colour(188,209,226), wx.Colour(0,0,0)),
+                  "Totally Green": (wx.Colour(190,230,160), wx.Colour(190,230,160), wx.Colour(190,230,160), wx.Colour(0,0,0)),
+                  "XP Blue": (wx.Colour(119,185,236), wx.Colour(81,144,223),  wx.Colour(36,76,171),   wx.Colour(255,255,255)),
+                  "Yellow": (wx.Colour(255,255,220), wx.Colour(255,231,161), wx.Colour(254,218,108), wx.Colour(0,0,0))}
 
 
 def GetStyleKeys():
     """ Returns the predefined styles keywords. """
 
-    schemes = _colorSchemes.keys()
+    schemes = _colourSchemes.keys()
     schemes.sort()
     return schemes
 
@@ -142,7 +164,7 @@ def MakeBold(font):
     """
     Makes a font bold. Utility method.
 
-    @param font: the font to be made bold.
+    :param `font`: the font to be made bold.
     """
 
     newFont = wx.Font(font.GetPointSize(), font.GetFamily(), font.GetStyle(),
@@ -155,7 +177,7 @@ def ExtractLink(line):
     """
     Extract the link from an hyperlink line.
 
-    @param line: the line of text to be processed.
+    :param `line`: the line of text to be processed.
     """
 
     line = line[4:]
@@ -174,8 +196,8 @@ class ToolTipWindowBase(object):
         """
         Default class constructor.
 
-        @param parent: the L{SuperToolTip} parent widget;
-        @param classParent: the L{SuperToolTip} class object.
+        :param `parent`: the L{SuperToolTip} parent widget;
+        :param `classParent`: the L{SuperToolTip} class object.
         """
 
         self._spacing = 6
@@ -197,7 +219,11 @@ class ToolTipWindowBase(object):
                 
 
     def OnPaint(self, event):
-        """ Handles the wx.EVT_PAINT event for L{SuperToolTip}. """
+        """
+        Handles the ``wx.EVT_PAINT`` event for L{SuperToolTip}.
+
+        :param `event`: a `wx.PaintEvent` event to be processed.
+        """
 
         # Go with double buffering...
         dc = wx.BufferedPaintDC(self)
@@ -345,21 +371,35 @@ class ToolTipWindowBase(object):
 
 
     def OnEraseBackground(self, event):
-        """ Handles the wx.EVT_ERASE_BACKGROUND event for L{SuperToolTip}. """
+        """
+        Handles the ``wx.EVT_ERASE_BACKGROUND`` event for L{SuperToolTip}.
+
+        :param `event`: a `wx.EraseEvent` event to be processed.
+
+        :note: This method is intentionally empty to reduce flicker.        
+        """
 
         # This is intentionally empty to reduce flicker        
         pass
 
 
     def OnSize(self, event):
-        """ Handles the wx.EVT_SIZE event for L{SuperToolTip}. """
+        """
+        Handles the ``wx.EVT_SIZE`` event for L{SuperToolTip}.
+
+        :param `event`: a `wx.SizeEvent` event to be processed.
+        """
 
         self.Refresh()
         event.Skip()
 
 
     def OnMouseMotion(self, event):
-        """ Handles the wx.EVT_MOTION event for L{SuperToolTip}. """
+        """
+        Handles the ``wx.EVT_MOTION`` event for L{SuperToolTip}.
+
+        :param `event`: a `wx.MouseEvent` event to be processed.
+        """
 
         x, y = event.GetPosition()
         for rect in self._hyperlinkRect:
@@ -377,9 +417,11 @@ class ToolTipWindowBase(object):
 
     def OnDestroy(self, event):
         """
-        Handles the wx.EVT_LEFT_DOWN, wx.EVT_LEFT_DCLICK and wx.EVT_KILL_FOCUS
+        Handles the ``wx.EVT_LEFT_DOWN``, ``wx.EVT_LEFT_DCLICK`` and ``wx.EVT_KILL_FOCUS``
         events for L{SuperToolTip}. All these events destroy the L{SuperToolTip},
         unless the user clicked on one hyperlink.
+
+        :param `event`: a `wx.MouseEvent` or a `wx.FocusEvent` event to be processed.
         """
 
         if not isinstance(event, wx.MouseEvent):
@@ -405,7 +447,10 @@ class ToolTipWindowBase(object):
         """
         Start the timer which set the alpha channel for L{SuperToolTip}.
 
-        @param isShow: whether L{SuperToolTip} is being shown or deleted.        
+        :param `isShow`: whether L{SuperToolTip} is being shown or deleted.
+
+        :note: This method is available only on Windows and requires Mark Hammond's
+         pywin32 package.
         """
 
         if self._alphaTimer.IsRunning():
@@ -422,7 +467,7 @@ class ToolTipWindowBase(object):
         """
         Sets the L{SuperToolTip} font globally.
 
-        @param font: the font to set.
+        :param `font`: the font to set.
         """
 
         wx.PopupWindow.SetFont(self, font)
@@ -443,9 +488,12 @@ class ToolTipWindowBase(object):
 
     def DropShadow(self, drop=True):
         """
-        Adds a shadow under the window (Windows XP only).
+        Adds a shadow under the window.
 
-        @param drop: whether to drop a shadow or not.
+        :param `drop`: whether to drop a shadow or not.
+
+        :note: This method is available only on Windows and requires Mark Hammond's
+         pywin32 package.
         """
 
         if not _libimported:
@@ -490,7 +538,11 @@ class ToolTipWindowBase(object):
 
 
     def AlphaCycle(self, event):
-        """ Handles the wx.EVT_TIMER event for L{SuperToolTip}. """
+        """
+        Handles the ``wx.EVT_TIMER`` event for L{SuperToolTip}.
+
+        :param `event`: a `wx.TimerEvent` event to be processed.
+        """
 
         # Increase (or decrease) the alpha channel
         self.amount += self.delta
@@ -513,7 +565,10 @@ class ToolTipWindowBase(object):
         """
         Makes the L{SuperToolTip} window transparent.
 
-        @param amount: the alpha channel value.
+        :param `amount`: the alpha channel value.
+
+        :note: This method is available only on Windows and requires Mark Hammond's
+         pywin32 package.
         """
 
         if not _libimported:
@@ -643,8 +698,8 @@ if wx.Platform == "__WXMAC__":
             """
             Default class constructor.
 
-            @param parent: the L{SuperToolTip} widget parent;
-            @param classParent: the L{SuperToolTip} object parent.
+            :param `parent`: the L{SuperToolTip} parent widget;
+            :param `classParent`: the L{SuperToolTip} class object.
             """
             
             wx.Frame.__init__(self, parent, style=wx.NO_BORDER|wx.FRAME_FLOAT_ON_PARENT|wx.FRAME_NO_TASKBAR|wx.POPUP_WINDOW)
@@ -655,16 +710,16 @@ else:
 
     class ToolTipWindow(ToolTipWindowBase, wx.PopupWindow):
         """
-        A simple wx.PopupWindow that holds fancy tooltips.
-        Not available on Mac as wx.PopupWindow is not implemented.
+        A simple `wx.PopupWindow` that holds fancy tooltips.
+        Not available on Mac as `wx.PopupWindow` is not implemented there.
         """
         
         def __init__(self, parent, classParent):
             """
             Default class constructor.
 
-            @param parent: the L{SuperToolTip} parent;
-            @param classParent: the L{SuperToolTip} object parent.
+            :param `parent`: the L{SuperToolTip} parent widget;
+            :param `classParent`: the L{SuperToolTip} class object.
             """
 
             wx.PopupWindow.__init__(self, parent)
@@ -683,12 +738,12 @@ class SuperToolTip(object):
         """
         Default class constructor.
 
-        @param message: the main message in L{SuperToolTip} body;
-        @param bodyImage: the image in the L{SuperToolTip} body;
-        @param header: the header text;
-        @param headerBmp: the header bitmap;
-        @param footer: the footer text;
-        @param footerBmp: the footer bitmap.
+        :param `message`: the main message in L{SuperToolTip} body;
+        :param `bodyImage`: the image in the L{SuperToolTip} body;
+        :param `header`: the header text;
+        :param `headerBmp`: the header bitmap;
+        :param `footer`: the footer text;
+        :param `footerBmp`: the footer bitmap.
         """
         
         self._superToolTip = None
@@ -718,13 +773,14 @@ class SuperToolTip(object):
         
         self.SetStartDelay()
         self.SetEndDelay()
+        self.ApplyStyle("XP Blue")
 
 
     def SetTarget(self, widget):
         """
         Sets the target window for L{SuperToolTip}.
 
-        @param widget: the widget to which L{SuperToolTip} is associated. 
+        :param `widget`: the widget to which L{SuperToolTip} is associated. 
         """
 
         self._widget = widget
@@ -746,7 +802,7 @@ class SuperToolTip(object):
         """
         Sets the time delay (in seconds) after which the L{SuperToolTip} is created.
 
-        @param delay: the delay in seconds.
+        :param `delay`: the delay in seconds.
         """
                 
         self._startDelayTime = float(delay)        
@@ -762,7 +818,7 @@ class SuperToolTip(object):
         """
         Sets the delay time (in seconds) after which the L{SuperToolTip} is destroyed.
 
-        @param delay: the delay in seconds.
+        :param `delay`: the delay in seconds.
         """
         
         self._endDelayTime = float(delay)
@@ -775,7 +831,11 @@ class SuperToolTip(object):
     
 
     def OnWidgetEnter(self, event):
-        """Starts the L{SuperToolTip} timer for creation, handles the wx.EVT_ENTER_WINDOW event."""
+        """
+        Starts the L{SuperToolTip} timer for creation, handles the ``wx.EVT_ENTER_WINDOW`` event.
+
+        :param `event`: a `wx.MouseEvent` event to be processed.
+        """
         
         if self._superToolTip:
             # Not yet created
@@ -795,7 +855,11 @@ class SuperToolTip(object):
 
         
     def OnWidgetLeave(self, event):
-        """ Handles the wx.EVT_LEAVE_WINDOW for the target widgets. """
+        """
+        Handles the ``wx.EVT_LEAVE_WINDOW`` event for the target widgets.
+
+        :param `event`: a `wx.MouseEvent` event to be processed.
+        """
 
         pos = wx.GetMousePosition()
         realPos = self._widget.ScreenToClient(pos)
@@ -817,6 +881,11 @@ class SuperToolTip(object):
         self._endTimer.Stop()
         
         event.Skip()
+
+    def GetTipWindow(self):
+        """ Return the TipWindow, will return None if not yet created """
+ 
+        return self._superToolTip
         
 
     def OnStartTimer(self):
@@ -849,6 +918,31 @@ class SuperToolTip(object):
         self._endTimer.Stop()
         
 
+    def DoShowNow(self):
+        """ Create the L{SuperToolTip} immediately. """
+
+        if self._superToolTip:
+            # need to destroy it if already exists, 
+            # otherwise we might end up with many of them
+            self._superToolTip.Destroy()
+
+        tip = ToolTipWindow(self._widget, self)
+        self._superToolTip = tip
+        self._superToolTip.CalculateBestSize()
+        self._superToolTip.SetPosition(wx.GetMousePosition())
+        self._superToolTip.DropShadow(self.GetDropShadow())
+        
+        # need to stop this, otherwise we get into trouble when leaving the window
+        self._startTimer.Stop()
+        
+        if self.GetUseFade():
+            self._superToolTip.StartAlpha(True)
+        else:
+            self._superToolTip.Show()
+        
+        self._endTimer.Start(self._endDelayTime*1000)
+
+
     def OnDestroy(self, event):
         """ Handles the L{SuperToolTip} target destruction. """
 
@@ -866,7 +960,7 @@ class SuperToolTip(object):
         """
         Sets the header bitmap for L{SuperToolTip}.
 
-        @param bmp: the bitmap to use.
+        :param `bmp`: the header bitmap, a valid `wx.Bitmap` object.
         """
 
         self._headerBmp = bmp
@@ -884,7 +978,7 @@ class SuperToolTip(object):
         """
         Sets the header text.
 
-        @param header: the header text to display.
+        :param `header`: the header text to display.
         """
 
         self._header = header        
@@ -900,9 +994,10 @@ class SuperToolTip(object):
 
     def SetDrawHeaderLine(self, draw):
         """
-        Whether to draw a separator line after the header or not.
+        Sets whether to draw a separator line after the header or not.
 
-        @param draw: bool value.
+        :param `draw`: ``True`` to draw a separator line after the header, ``False``
+         otherwise.
         """
 
         self._topLine = draw
@@ -920,7 +1015,7 @@ class SuperToolTip(object):
         """
         Sets the main body bitmap for L{SuperToolTip}.
 
-        @param bmp: the bitmap to use.
+        :param `bmp`: the body bitmap, a valid `wx.Bitmap` object.
         """
 
         self._embeddedImage = bmp
@@ -936,9 +1031,10 @@ class SuperToolTip(object):
 
     def SetDrawFooterLine(self, draw):
         """
-        Whether to draw a separator line before the footer or not.
+        Sets whether to draw a separator line before the footer or not.
 
-        @param draw: bool value.
+        :param `draw`: ``True`` to draw a separator line before the footer, ``False``
+         otherwise.
         """
 
         self._bottomLine = draw
@@ -956,7 +1052,7 @@ class SuperToolTip(object):
         """
         Sets the footer bitmap for L{SuperToolTip}.
 
-        @param bmp: the bitmap to use.
+        :param `bmp`: the footer bitmap, a valid `wx.Bitmap` object.
         """
 
         self._footerBmp = bmp
@@ -974,7 +1070,7 @@ class SuperToolTip(object):
         """
         Sets the footer text.
 
-        @param footer: the footer text to display.
+        :param `footer`: the footer text to display.
         """
 
         self._footer = footer       
@@ -992,7 +1088,7 @@ class SuperToolTip(object):
         """
         Sets the main body message for L{SuperToolTip}.
 
-        @param message: the message to display in the body.
+        :param `message`: the message to display in the body.
         """
 
         self._message = message
@@ -1010,7 +1106,7 @@ class SuperToolTip(object):
         """
         Sets the top gradient colour for L{SuperToolTip}.
 
-        @param colour: the colour to use as top colour.
+        :param `colour`: the colour to use as top colour, a valid `wx.Colour` object.
         """
 
         self._topColour = colour
@@ -1022,7 +1118,7 @@ class SuperToolTip(object):
         """
         Sets the middle gradient colour for L{SuperToolTip}.
 
-        @param colour: the colour to use as middle colour.
+        :param `colour`: the colour to use as middle colour, a valid `wx.Colour` object.
         """
 
         self._middleColour = colour
@@ -1034,7 +1130,7 @@ class SuperToolTip(object):
         """
         Sets the bottom gradient colour for L{SuperToolTip}.
 
-        @param colour: the colour to use as bottom colour.
+        :param `colour`: the colour to use as bottom colour, a valid `wx.Colour` object.
         """
 
         self._bottomColour = colour
@@ -1046,7 +1142,7 @@ class SuperToolTip(object):
         """
         Sets the text colour for L{SuperToolTip}.
 
-        @param colour: the colour to use as text colour.
+        :param `colour`: the colour to use as text colour, a valid `wx.Colour` object.
         """
 
         self._textColour = colour
@@ -1105,7 +1201,8 @@ class SuperToolTip(object):
         """
         Sets the font for the main body message.
 
-        @param font: the font to use for the main body message.
+        :param `font`: the font to use for the main body message, a valid `wx.Font`
+         object.
         """
 
         self._messageFont = font
@@ -1117,7 +1214,8 @@ class SuperToolTip(object):
         """
         Sets the font for the header text.
 
-        @param font: the font to use for the header text.
+        :param `font`: the font to use for the header text, a valid `wx.Font`
+         object.
         """
 
         self._headerFont = font
@@ -1129,7 +1227,8 @@ class SuperToolTip(object):
         """
         Sets the font for the footer text.
 
-        @param font: the font to use for the footer text.
+        :param `font`: the font to use for the footer text, a valid `wx.Font`
+         object.
         """
 
         self._footerFont = font
@@ -1141,7 +1240,8 @@ class SuperToolTip(object):
         """
         Sets the font for the hyperlink text.
 
-        @param font: the font to use for the hyperlink text.
+        :param `font`: the font to use for the hyperlink text, a valid `wx.Font`
+         object.
         """
 
         self._hyperlinkFont = font
@@ -1177,9 +1277,10 @@ class SuperToolTip(object):
         """
         Whether to draw a shadow below L{SuperToolTip} or not.
 
-        @param drop: boolean value.
-        @note: this functionality is available only in Windows XP
-               with Mark Hammond win32all extensions installed.
+        :param `drop`: ``True`` to drop a shadow below the control, ``False`` otherwise.
+        
+        :note: This method is available only on Windows and requires Mark Hammond's
+         pywin32 package.
         """
 
         self._dropShadow = drop
@@ -1191,8 +1292,8 @@ class SuperToolTip(object):
         """
         Returns whether a shadow below L{SuperToolTip} is drawn or not.
 
-        @note: this functionality is available only in Windows XP
-               with Mark Hammond win32all extensions installed.
+        :note: This method is available only on Windows and requires Mark Hammond's
+         pywin32 package.
         """
 
         return self._dropShadow
@@ -1202,9 +1303,10 @@ class SuperToolTip(object):
         """
         Whether to use a fade in/fade out effect or not.
 
-        @param fade: boolean value.
-        @note: this functionality is available only in Windows XP
-               with Mark Hammond win32all extensions installed.
+        :param `fade`: ``True`` to use a fade in/fade out effect, ``False`` otherwise.
+        
+        :note: This method is available only on Windows and requires Mark Hammond's
+         pywin32 package.
         """
         
         self._useFade = fade
@@ -1214,8 +1316,8 @@ class SuperToolTip(object):
         """
         Returns whether a fade in/fade out effect is used or not.
 
-        @note: this functionality is available only in Windows XP
-               with Mark Hammond win32all extensions installed.
+        :note: This method is available only on Windows and requires Mark Hammond's
+         pywin32 package.
         """
 
         return self._useFade
@@ -1225,14 +1327,14 @@ class SuperToolTip(object):
         """
         Applies none of the predefined styles.
 
-        @param style: one of the predefined styles available at the
-                      beginning of the module.
+        :param `style`: one of the predefined styles available at the
+         beginning of the module.
         """
 
-        if style not in _colorSchemes:
+        if style not in _colourSchemes:
             raise Exception("Invalid style '%s' selected"%style)
 
-        top, middle, bottom, text = _colorSchemes[style]
+        top, middle, bottom, text = _colourSchemes[style]
         self._topColour = top
         self._middleColour = middle
         self._bottomColour = bottom
@@ -1246,7 +1348,7 @@ class SuperToolTip(object):
         """
         Globally (application-wide) enables/disables L{SuperToolTip}.
 
-        @param enable: whether to enable or disable L{SuperToolTip}.
+        :param `enable`: ``True`` to enable L{SuperToolTip} globally, ``False`` otherwise.
         """
 
         wx.GetApp().__superToolTip = enable

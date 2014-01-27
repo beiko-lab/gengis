@@ -12,11 +12,11 @@ Provides custom events for the editors controls/objects to utilize
 """
 
 __author__ = "Cody Precord <cprecord@editra.org>"
-__svnid__ = "$Id: ed_event.py 52855 2008-03-27 14:53:06Z CJP $"
-__revision__ = "$Revision: 52855 $"
+__svnid__ = "$Id: ed_event.py 63789 2010-03-30 02:25:17Z CJP $"
+__revision__ = "$Revision: 63789 $"
 
 #-----------------------------------------------------------------------------#
-# Dependancies
+# Dependencies
 import wx
 
 #-----------------------------------------------------------------------------#

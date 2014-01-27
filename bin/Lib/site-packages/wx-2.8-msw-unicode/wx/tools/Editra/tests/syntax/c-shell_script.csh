@@ -1,4 +1,3 @@
-#!/bin/csh -f
 # Some Comments about this file
 
 echo "Hello, World!"

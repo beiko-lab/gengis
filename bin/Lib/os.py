@@ -263,7 +263,7 @@ def walk(top, topdown=True, onerror=None, followlinks=False):
             dirs.remove('CVS')  # don't visit CVS directories
     """
 
-    from os.path import join, isdir, islink
+    islink, join, isdir = path.islink, path.join, path.isdir
 
     # We may not have read permission for top, in which case we can't
     # get a list of the files the directory contains.  os.path.walk
@@ -289,9 +289,9 @@ def walk(top, topdown=True, onerror=None, followlinks=False):
     if topdown:
         yield top, dirs, nondirs
     for name in dirs:
-        path = join(top, name)
-        if followlinks or not islink(path):
-            for x in walk(path, topdown, onerror, followlinks):
+        new_path = join(top, name)
+        if followlinks or not islink(new_path):
+            for x in walk(new_path, topdown, onerror, followlinks):
                 yield x
     if not topdown:
         yield top, dirs, nondirs
@@ -336,7 +336,7 @@ def execlpe(file, *args):
     execvpe(file, args[:-1], env)
 
 def execvp(file, args):
-    """execp(file, args)
+    """execvp(file, args)
 
     Execute the executable file (which is searched for along $PATH)
     with argument list args, replacing the current process.
@@ -514,11 +514,7 @@ def getenv(key, default=None):
 __all__.append("getenv")
 
 def _exists(name):
-    try:
-        eval(name)
-        return True
-    except NameError:
-        return False
+    return name in globals()
 
 # Supply spawn*() (probably only for Unix)
 if _exists("fork") and not _exists("spawnv") and _exists("execv"):
@@ -670,8 +666,9 @@ if _exists("fork"):
 
             import subprocess
             PIPE = subprocess.PIPE
-            p = subprocess.Popen(cmd, shell=True, bufsize=bufsize,
-                                 stdin=PIPE, stdout=PIPE, close_fds=True)
+            p = subprocess.Popen(cmd, shell=isinstance(cmd, basestring),
+                                 bufsize=bufsize, stdin=PIPE, stdout=PIPE,
+                                 close_fds=True)
             return p.stdin, p.stdout
         __all__.append("popen2")
 
@@ -689,9 +686,9 @@ if _exists("fork"):
 
             import subprocess
             PIPE = subprocess.PIPE
-            p = subprocess.Popen(cmd, shell=True, bufsize=bufsize,
-                                 stdin=PIPE, stdout=PIPE, stderr=PIPE,
-                                 close_fds=True)
+            p = subprocess.Popen(cmd, shell=isinstance(cmd, basestring),
+                                 bufsize=bufsize, stdin=PIPE, stdout=PIPE,
+                                 stderr=PIPE, close_fds=True)
             return p.stdin, p.stdout, p.stderr
         __all__.append("popen3")
 
@@ -709,8 +706,8 @@ if _exists("fork"):
 
             import subprocess
             PIPE = subprocess.PIPE
-            p = subprocess.Popen(cmd, shell=True, bufsize=bufsize,
-                                 stdin=PIPE, stdout=PIPE,
+            p = subprocess.Popen(cmd, shell=isinstance(cmd, basestring),
+                                 bufsize=bufsize, stdin=PIPE, stdout=PIPE,
                                  stderr=subprocess.STDOUT, close_fds=True)
             return p.stdin, p.stdout
         __all__.append("popen4")
@@ -741,22 +738,3 @@ try:
                      _make_statvfs_result)
 except NameError: # statvfs_result may not exist
     pass
-
-if not _exists("urandom"):
-    def urandom(n):
-        """urandom(n) -> str
-
-        Return a string of n random bytes suitable for cryptographic use.
-
-        """
-        try:
-            _urandomfd = open("/dev/urandom", O_RDONLY)
-        except (OSError, IOError):
-            raise NotImplementedError("/dev/urandom (or equivalent) not found")
-        try:
-            bs = b""
-            while n - len(bs) >= 1:
-                bs += read(_urandomfd, n - len(bs))
-        finally:
-            close(_urandomfd)
-        return bs

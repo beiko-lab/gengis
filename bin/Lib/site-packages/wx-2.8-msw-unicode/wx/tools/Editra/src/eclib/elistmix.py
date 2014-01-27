@@ -16,13 +16,13 @@ in a ListCtrl.
 """
 
 __author__ = "Cody Precord <cprecord@editra.org>"
-__svnid__ = "$Id: elistmix.py 57345 2008-12-14 23:47:52Z CJP $"
-__revision__ = "$Revision: 57345 $"
+__svnid__ = "$Id: elistmix.py 66204 2010-11-18 14:00:28Z CJP $"
+__revision__ = "$Revision: 66204 $"
 
 __all__ = ["ListRowHighlighter", "HIGHLIGHT_EVEN", "HIGHLIGHT_ODD"]
 
 #--------------------------------------------------------------------------#
-# Dependancies
+# Dependencies
 import wx
 
 #--------------------------------------------------------------------------#
@@ -47,14 +47,23 @@ class ListRowHighlighter:
         self._color = color
         self._defaultb = wx.SystemSettings.GetColour(wx.SYS_COLOUR_LISTBOX)
         self._mode = mode
+        self._refresh_timer = wx.Timer(self)
 
         # Event Handlers
-        self.Bind(wx.EVT_LIST_INSERT_ITEM, lambda evt: self.RefreshRows())
-        self.Bind(wx.EVT_LIST_DELETE_ITEM, lambda evt: self.RefreshRows())
+        self.Bind(wx.EVT_LIST_INSERT_ITEM, lambda evt: self._RestartTimer())
+        self.Bind(wx.EVT_LIST_DELETE_ITEM, lambda evt: self._RestartTimer())
+        self.Bind(wx.EVT_TIMER,
+                  lambda evt: self.RefreshRows(),
+                  self._refresh_timer)
 
+    def _RestartTimer(self):
+        if self._refresh_timer.IsRunning():
+            self._refresh_timer.Stop()
+        self._refresh_timer.Start(100, oneShot=True)
+            
     def RefreshRows(self):
         """Re-color all the rows"""
-        for row in xrange(self.GetItemCount()):
+        for row in range(self.GetItemCount()):
             if self._defaultb is None:
                 self._defaultb = self.GetItemBackgroundColour(row)
 
@@ -79,7 +88,7 @@ class ListRowHighlighter:
     def SetHighlightColor(self, color):
         """Set the color used to highlight the rows. Call L{RefreshRows} after
         this if you wish to update all the rows highlight colors.
-        @param color: wx.Color or None to set default
+        @param color: wx.Colour or None to set default
 
         """
         self._color = color

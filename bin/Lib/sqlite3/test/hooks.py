@@ -1,7 +1,7 @@
 #-*- coding: ISO-8859-1 -*-
 # pysqlite2/test/hooks.py: tests for various SQLite-specific hooks
 #
-# Copyright (C) 2006 Gerhard Häring <gh@ghaering.de>
+# Copyright (C) 2006-2007 Gerhard Häring <gh@ghaering.de>
 #
 # This file is part of pysqlite.
 #
@@ -37,7 +37,7 @@ class CollationTests(unittest.TestCase):
             con.create_collation("X", 42)
             self.fail("should have raised a TypeError")
         except TypeError, e:
-            self.failUnlessEqual(e.args[0], "parameter must be callable")
+            self.assertEqual(e.args[0], "parameter must be callable")
 
     def CheckCreateCollationNotAscii(self):
         con = sqlite.connect(":memory:")
@@ -74,7 +74,7 @@ class CollationTests(unittest.TestCase):
             result = con.execute(sql).fetchall()
             self.fail("should have raised an OperationalError")
         except sqlite.OperationalError, e:
-            self.failUnlessEqual(e.args[0].lower(), "no such collation sequence: mycoll")
+            self.assertEqual(e.args[0].lower(), "no such collation sequence: mycoll")
 
     def CheckCollationRegisterTwice(self):
         """
@@ -105,9 +105,80 @@ class CollationTests(unittest.TestCase):
             if not e.args[0].startswith("no such collation sequence"):
                 self.fail("wrong OperationalError raised")
 
+class ProgressTests(unittest.TestCase):
+    def CheckProgressHandlerUsed(self):
+        """
+        Test that the progress handler is invoked once it is set.
+        """
+        con = sqlite.connect(":memory:")
+        progress_calls = []
+        def progress():
+            progress_calls.append(None)
+            return 0
+        con.set_progress_handler(progress, 1)
+        con.execute("""
+            create table foo(a, b)
+            """)
+        self.assertTrue(progress_calls)
+
+
+    def CheckOpcodeCount(self):
+        """
+        Test that the opcode argument is respected.
+        """
+        con = sqlite.connect(":memory:")
+        progress_calls = []
+        def progress():
+            progress_calls.append(None)
+            return 0
+        con.set_progress_handler(progress, 1)
+        curs = con.cursor()
+        curs.execute("""
+            create table foo (a, b)
+            """)
+        first_count = len(progress_calls)
+        progress_calls = []
+        con.set_progress_handler(progress, 2)
+        curs.execute("""
+            create table bar (a, b)
+            """)
+        second_count = len(progress_calls)
+        self.assertTrue(first_count > second_count)
+
+    def CheckCancelOperation(self):
+        """
+        Test that returning a non-zero value stops the operation in progress.
+        """
+        con = sqlite.connect(":memory:")
+        progress_calls = []
+        def progress():
+            progress_calls.append(None)
+            return 1
+        con.set_progress_handler(progress, 1)
+        curs = con.cursor()
+        self.assertRaises(
+            sqlite.OperationalError,
+            curs.execute,
+            "create table bar (a, b)")
+
+    def CheckClearHandler(self):
+        """
+        Test that setting the progress handler to None clears the previously set handler.
+        """
+        con = sqlite.connect(":memory:")
+        action = []
+        def progress():
+            action.append(1)
+            return 0
+        con.set_progress_handler(progress, 1)
+        con.set_progress_handler(None, 1)
+        con.execute("select 1 union select 2 union select 3").fetchall()
+        self.assertEqual(len(action), 0, "progress handler was not cleared")
+
 def suite():
     collation_suite = unittest.makeSuite(CollationTests, "Check")
-    return unittest.TestSuite((collation_suite,))
+    progress_suite = unittest.makeSuite(ProgressTests, "Check")
+    return unittest.TestSuite((collation_suite, progress_suite))
 
 def test():
     runner = unittest.TextTestRunner()

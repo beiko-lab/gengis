@@ -1,8 +1,13 @@
+from __future__ import absolute_import, print_function
+
 # still needed
 # tests for MingW32Compiler
 # don't know how to test gcc_exists() and msvc_exists()...
 
-import os, sys, tempfile, warnings
+import os
+import sys
+import tempfile
+import warnings
 
 from numpy.testing import TestCase, assert_
 
@@ -12,6 +17,7 @@ from scipy.weave import build_tools
 warnings.filterwarnings('ignore',
                 message="specified build_dir",
                 module='scipy.weave')
+
 
 def is_writable(val):
     return os.access(val,os.W_OK)

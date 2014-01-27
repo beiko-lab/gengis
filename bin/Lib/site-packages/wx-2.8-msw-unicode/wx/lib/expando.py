@@ -6,7 +6,7 @@
 # Author:      Robin Dunn
 #
 # Created:     18-Sept-2006
-# RCS-ID:      $Id: expando.py 43142 2006-11-07 05:17:30Z RD $
+# RCS-ID:      $Id: expando.py 61396 2009-07-10 22:41:37Z RD $
 # Copyright:   (c) 2006 by Total Control Software
 # Licence:     wxWindows license
 #
@@ -70,6 +70,7 @@ class ExpandoTextCtrl(wx.TextCtrl):
             wx.CallAfter(self._adjustCtrl)
                         
         self.Bind(wx.EVT_TEXT, self.OnTextChanged)
+        self.Bind(wx.EVT_SIZE, self.OnSize)
 
 
     def SetMaxHeight(self, h):
@@ -111,6 +112,12 @@ class ExpandoTextCtrl(wx.TextCtrl):
         self._adjustCtrl()
         evt.Skip()
         
+
+    def OnSize(self, evt):
+        # The number of lines needed can change when the ctrl is resized too.
+        self._adjustCtrl()
+        evt.Skip()
+
 
     def _adjustCtrl(self):
         # if the current number of lines is different than before

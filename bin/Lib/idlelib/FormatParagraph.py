@@ -15,7 +15,7 @@
 # * Fancy comments, like this bulleted list, arent handled :-)
 
 import re
-from configHandler import idleConf
+from idlelib.configHandler import idleConf
 
 class FormatParagraph:
 
@@ -54,7 +54,7 @@ class FormatParagraph:
             # If the block ends in a \n, we dont want the comment
             # prefix inserted after it. (Im not sure it makes sense to
             # reformat a comment block that isnt made of complete
-            # lines, but whatever!)  Can't think of a clean soltution,
+            # lines, but whatever!)  Can't think of a clean solution,
             # so we hack away
             block_suffix = ""
             if not newdata[-1]:

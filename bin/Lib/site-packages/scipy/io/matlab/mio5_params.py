@@ -4,10 +4,11 @@ See also mio5_utils.pyx where these same constants arise as c enums.
 
 If you make changes in this file, don't forget to change mio5_utils.pyx
 '''
+from __future__ import division, print_function, absolute_import
 
 import numpy as np
 
-from miobase import convert_dtypes
+from .miobase import convert_dtypes
 
 miINT8 = 1
 miUINT8 = 2
@@ -48,7 +49,7 @@ mxINT64_CLASS = 14
 mxUINT64_CLASS = 15
 mxFUNCTION_CLASS = 16
 # Not doing anything with these at the moment.
-mxOPAQUE_CLASS = 17 # This appears to be a function workspace
+mxOPAQUE_CLASS = 17  # This appears to be a function workspace
 # https://www-old.cae.wisc.edu/pipermail/octave-maintainers/2007-May/002824.html
 mxOBJECT_CLASS_FROM_MATRIX_H = 18
 
@@ -92,6 +93,25 @@ mclass_dtypes_template = {
     mxDOUBLE_CLASS: 'f8',
     }
 
+mclass_info = {
+    mxINT8_CLASS: 'int8',
+    mxUINT8_CLASS: 'uint8',
+    mxINT16_CLASS: 'int16',
+    mxUINT16_CLASS: 'uint16',
+    mxINT32_CLASS: 'int32',
+    mxUINT32_CLASS: 'uint32',
+    mxINT64_CLASS: 'int64',
+    mxUINT64_CLASS: 'uint64',
+    mxSINGLE_CLASS: 'single',
+    mxDOUBLE_CLASS: 'double',
+    mxCELL_CLASS: 'cell',
+    mxSTRUCT_CLASS: 'struct',
+    mxOBJECT_CLASS: 'object',
+    mxCHAR_CLASS: 'char',
+    mxSPARSE_CLASS: 'sparse',
+    mxFUNCTION_CLASS: 'function',
+    mxOPAQUE_CLASS: 'opaque',
+    }
 
 NP_TO_MTYPES = {
     'f8': miDOUBLE,
