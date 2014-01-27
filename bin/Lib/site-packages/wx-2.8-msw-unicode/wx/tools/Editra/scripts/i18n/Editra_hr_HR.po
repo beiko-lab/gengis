@@ -1,0 +1,2982 @@
+# Croatian translation for editra
+# Copyright (c) 2009 Rosetta Contributors and Canonical Ltd 2009
+# This file is distributed under the same license as the editra package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2009.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: editra\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2010-12-05 17:02-0600\n"
+"PO-Revision-Date: 2009-08-28 16:48+0000\n"
+"Last-Translator: Miro Glavić <glavicmiro@gmail.com>\n"
+"Language-Team: Croatian <hr@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2010-10-02 15:37+0000\n"
+"X-Generator: Launchpad (build Unknown)\n"
+
+#: ../../src/ed_search.py:429
+#, python-format
+msgid "\"%s\" was not found"
+msgstr "\"%s\" nije pronađen"
+
+#: ../../src/ed_search.py:638
+#, python-format
+msgid "%d matches were replaced."
+msgstr "%d podudarnosti su zamijenjene."
+
+#: ../../src/util.py:369
+#, python-format
+msgid "%s Source File"
+msgstr "%s Izvorna Datoteka"
+
+#: ../../src/ed_main.py:609
+#, python-format
+msgid ""
+"%s could not be found.\n"
+"Perhaps it's been moved or deleted."
+msgstr ""
+"%s nije pronađen.\n"
+"Moguće je da je pomjeren ili obrisan."
+
+#: ../../src/ed_stc.py:1794
+#, python-format
+msgid "%s does not exist"
+msgstr "%s ne postoji"
+
+#: ../../src/ed_editv.py:442
+#, python-format
+msgid ""
+"%s has been deleted since its last save point.\n"
+"\n"
+"Would you like to save it again?"
+msgstr ""
+"%s nije bio obrisan od zadnjeg spremanja.\n"
+"\n"
+"Hoćete li ga ponovo spremiti?"
+
+#: ../../src/ed_editv.py:462
+#, python-format
+msgid ""
+"%s has been modified by another application.\n"
+"\n"
+"Would you like to reload it?"
+msgstr ""
+"%s je promijenjen sa drugom aplikacijom.\n"
+"\n"
+"Da li ga želite ponovo učitati?"
+
+#: ../../src/ed_menu.py:829
+msgid "&About..."
+msgstr "&O..."
+
+#: ../../src/ed_menu.py:521
+msgid "&Close Tab"
+msgstr "&Zatvori karticu"
+
+#: ../../src/ed_menu.py:581
+msgid "&Copy"
+msgstr "&Kopiraj"
+
+#: ../../src/ed_menu.py:645
+msgid "&Edit"
+msgstr "&Uredi"
+
+#: ../../src/ed_menu.py:567
+msgid "&File"
+msgstr "&Datoteka"
+
+#: ../../src/ed_menu.py:629
+msgid "&Find"
+msgstr "&Traži"
+
+#: ../../src/ed_menu.py:719
+msgid "&Font"
+msgstr "&Pismo"
+
+#: ../../src/ed_menu.py:689
+msgid "&Goto Line"
+msgstr "&Idi na Red"
+
+#: ../../src/ed_main.py:150 ../../src/ed_menu.py:843
+msgid "&Help"
+msgstr "&Pomoć"
+
+#: ../../src/ed_menu.py:511
+msgid "&New Tab"
+msgstr "&Nova Kartica"
+
+#: ../../src/ed_menu.py:516
+msgid "&Open"
+msgstr "&Otvori"
+
+#: ../../src/ed_menu.py:583
+msgid "&Paste"
+msgstr "&Zalijepi"
+
+#: ../../src/ed_menu.py:562
+msgid "&Print"
+msgstr "&Ispiši"
+
+#: ../../src/ed_menu.py:632
+msgid "&Quick Find"
+msgstr "&Brzo Pronalaženje"
+
+#: ../../src/ed_menu.py:528
+msgid "&Save"
+msgstr "&Spremi"
+
+#: ../../src/ed_menu.py:793
+msgid "&Settings"
+msgstr "&Postavke"
+
+#: ../../src/ed_menu.py:706
+msgid "&Toolbar"
+msgstr "&Alatna Traka"
+
+#: ../../src/ed_menu.py:820
+msgid "&Tools"
+msgstr "&Alati"
+
+#: ../../src/ed_menu.py:576
+msgid "&Undo"
+msgstr "&Poništi"
+
+#: ../../src/ed_menu.py:710
+msgid "&View"
+msgstr "&Pogledaj"
+
+#: ../../plugins/Launch/launch/cfgdlg.py:306
+msgid "**Alias**"
+msgstr "**Alias**"
+
+#: ../../plugins/Launch/launch/cfgdlg.py:306
+msgid "**New Value**"
+msgstr "**Nova Vrijednost**"
+
+#: ../../src/eclib/filterdlg.py:76
+msgid "<< Remove"
+msgstr ""
+
+#: ../../src/eclib/errdlg.py:322 ../../plugins/Launch/launch/launch.py:596
+msgid "Abort"
+msgstr "Odustani"
+
+#: ../../src/ed_menu.py:830
+msgid "About"
+msgstr "O"
+
+#: ../../src/ed_cmdbar.py:761
+#, python-format
+msgid "Access Denied: %s"
+msgstr "Pristup Odbijen: %s"
+
+#: ../../src/eclib/filterdlg.py:75
+msgid "Add >>"
+msgstr ""
+
+#: ../../plugins/Launch/launch/cfgdlg.py:242
+msgid "Add a new executable"
+msgstr "Dodaj novu izvršnu"
+
+#: ../../src/ed_menu.py:597
+msgid "Add a new line after the current line"
+msgstr "Dodaj novi red poslije aktivnog reda"
+
+#: ../../src/ed_menu.py:599
+msgid "Add a new line before the current line"
+msgstr "Dodaj novi red prije aktivnog reda"
+
+#: ../../src/ed_menu.py:627
+msgid "Add and remove bookmarks"
+msgstr "Dodaj i ukloni knjižne oznake"
+
+#: ../../src/prefdlg.py:777
+msgid "Adds extra scrolling room after last line"
+msgstr ""
+
+#: ../../src/prefdlg.py:197
+msgid "Advanced"
+msgstr "Napredan"
+
+#: ../../plugins/Launch/launch/cfgdlg.py:527
+msgid "Alias"
+msgstr "Alias"
+
+#: ../../src/ed_log.py:170 ../../src/ed_log.py:245
+msgid "All"
+msgstr "Sve"
+
+#: ../../plugins/codebrowser/codebrowser/cbconfig.py:42
+msgid "Alphabetically"
+msgstr ""
+
+#: ../../src/Editra.py:601
+#, python-format
+msgid ""
+"An updated version of Editra is available\n"
+"Would you like to download Editra %s now?"
+msgstr ""
+"Ažurirana Editra inačica je na raspolaganju.\n"
+"Da li želite da preuzmete Editra %s sada?"
+
+#: ../../src/prefdlg.py:763
+msgid "AntiAliasing"
+msgstr "ProtuPreklapanje"
+
+#: ../../src/prefdlg.py:191
+msgid "Appearance"
+msgstr "Izgled"
+
+#: ../../src/prefdlg.py:1768
+msgid "Apply"
+msgstr "Primijeni"
+
+#: ../../src/eclib/filemgrdlg.py:167
+#, python-format
+msgid "Are you sure want to delete %s?"
+msgstr ""
+
+#: ../../src/plugdlg.py:1060
+#, python-format
+msgid ""
+"Are you sure you want to uninstall %s?\n"
+"This cannot be undone."
+msgstr ""
+
+#: ../../plugins/Launch/launch/launch.py:192
+#, fuzzy
+msgid "Arguments"
+msgstr "Argumenti Skripte"
+
+#: ../../src/style_editor.py:607
+msgid "Attributes"
+msgstr "Atributi"
+
+#: ../../plugins/Launch/launch/cfgdlg.py:416
+msgid "Audible feedback when errors are detected"
+msgstr "Zvučna obavijest kod otkrivanja grešaka"
+
+#: ../../src/ed_main.py:1251
+msgid "Aui Pane Navigator"
+msgstr "Navigator Aui Okna"
+
+#: ../../src/plugdlg.py:948 ../../src/plugdlg.py:1129
+#, python-format
+msgid "Author: %s"
+msgstr "Autor: %s"
+
+#: ../../src/ed_menu.py:778 ../../src/prefdlg.py:944
+msgid "Auto-Completion"
+msgstr "Auto-Kompletiranje"
+
+#: ../../src/ed_menu.py:780 ../../src/prefdlg.py:954
+msgid "Auto-Indent"
+msgstr "Auto-Uvlaka"
+
+#: ../../src/perspective.py:73
+msgid "Automatic"
+msgstr ""
+
+#: ../../src/prefdlg.py:500
+msgid "Automatically Backup Files"
+msgstr "Automatski Spremi Rezervu Datoteka"
+
+#: ../../plugins/Launch/launch/cfgdlg.py:413
+msgid "Automatically clear buffer between runs"
+msgstr "Automatski obriši međuspremnik između izvođenja"
+
+#: ../../src/prefdlg.py:532
+msgid "Automatically reload files when changes are detected on disk"
+msgstr "Automatski preučitaj datoteke kad su otkrivene promjene na disku"
+
+#: ../../src/perspective.py:74
+msgid "Automatically save/use window state from last session"
+msgstr "Automatski spremi/upotrijebi stanje prozora iz zadnje sesije"
+
+#: ../../src/prefdlg.py:740
+msgid "Automatically trim whitespace on save"
+msgstr "Automatski podreži prazninu kod spremanja"
+
+#: ../../src/style_editor.py:596 ../../plugins/Launch/launch/cfgdlg.py:436
+msgid "Background"
+msgstr "Pozadina"
+
+#: ../../src/prefdlg.py:746
+msgid "Backspace Unindents"
+msgstr "Povratna tipka uklanja uvlake"
+
+#: ../../src/prefdlg.py:506
+msgid "Backup Path:"
+msgstr ""
+
+#: ../../src/prefdlg.py:503
+msgid "Backup buffer to file periodically"
+msgstr "Periodično napravi rezervnu kopiju međuspremnika u datoteku"
+
+#: ../../src/style_editor.py:171
+msgid "Base new theme on existing one"
+msgstr "Baziraj novu temu na postojećoj"
+
+#: ../../src/prefdlg.py:1742
+msgid "Binding"
+msgstr "Povezivanje"
+
+#: ../../src/prefdlg.py:2156
+msgid "Black/White"
+msgstr "Crno/Bijelo"
+
+#: ../../plugins/filebrowser/filebrowser/browser.py:417
+msgid "Bookmark Selected Path(s)"
+msgstr "Označi Odabrane Puteve"
+
+#: ../../src/ed_menu.py:626
+msgid "Bookmarks"
+msgstr "Knjižne oznake"
+
+#: ../../src/ed_menu.py:783 ../../src/prefdlg.py:924
+msgid "Bracket Highlighting"
+msgstr "Označi Srednju Zagradu"
+
+#: ../../plugins/Launch/launch/cfgdlg.py:546
+msgid "Browse"
+msgstr "Pretraži"
+
+#: ../../src/ed_menu.py:838
+msgid "Bug Tracker..."
+msgstr ""
+
+#: ../../src/ed_cmdbar.py:559
+#, python-format
+msgid "Can't change directory to: %s"
+msgstr "Nemoguće promijeniti direktorij u: %s"
+
+#: ../../src/ed_search.py:1248 ../../src/style_editor.py:131
+#: ../../src/updater.py:568
+msgid "Cancel"
+msgstr "Poništi"
+
+#: ../../src/updater.py:645
+msgid "Canceled"
+msgstr "Poništeno"
+
+#: ../../src/ed_statbar.py:186
+msgid "Change Encoding"
+msgstr ""
+
+#: ../../src/ed_menu.py:720
+msgid "Change Font Settings"
+msgstr "Promijeni Postavke Pisma"
+
+#: ../../src/ed_statbar.py:60 ../../src/ed_statbar.py:63
+#: ../../src/ed_statbar.py:66
+#, python-format
+msgid "Change line endings to %s"
+msgstr "Promijeni završetke redova u %s"
+
+#: ../../src/ed_statbar.py:185
+msgid "Change the encoding of the current document."
+msgstr ""
+
+#: ../../src/perspective.py:130
+#, python-format
+msgid "Change view to \"%s\""
+msgstr "Promijeni pogled na \"%s\""
+
+#: ../../src/prefdlg.py:282
+msgid "Changes made in this dialog are saved in your current profile. Some Items such as Language require the program to be restarted before taking effect."
+msgstr "Promjene napravljene u ovom dijalogu su spremljene u vaš trenutačni profil. Neke stvari, kao Jezik, zahtijevaju da program bude ponovo pokrenut prije nego ovo ima učinka."
+
+#: ../../src/plugdlg.py:232
+msgid "Changes will take affect once the program has been restarted"
+msgstr "Promjene će postati učinkovite kad se program ponovo pokrene."
+
+#: ../../src/prefdlg.py:1534
+msgid "Check"
+msgstr "Provjeri"
+
+#: ../../src/prefdlg.py:412
+msgid "Check for updates on startup"
+msgstr "Provjeri dopune na početku"
+
+#: ../../src/prefdlg.py:527
+msgid "Check if on disk file has been modified by others"
+msgstr "Provjeri da li je datoteka na disku promijenjena od nekog drugog"
+
+#: ../../src/prefdlg.py:561
+msgid "Check spelling while typing"
+msgstr ""
+
+#: ../../src/eclib/finddlg.py:790
+msgid "Choose Folder"
+msgstr "Odaberi Mapu"
+
+#: ../../src/eclib/finddlg.py:1118
+msgid "Choose Search Folder"
+msgstr "Odaberi Mapu za Pretraživanje"
+
+#: ../../src/ed_main.py:698
+msgid "Choose a Save Location"
+msgstr "Odaberi Lokaciju za Spremanje"
+
+#: ../../src/ed_pages.py:175
+msgid "Choose an Encoding"
+msgstr "Odaberi Šifriranje"
+
+#: ../../plugins/Launch/launch/cfgdlg.py:555
+msgid "Choose and executable"
+msgstr "Odaberi izvršnu"
+
+#: ../../plugins/codebrowser/codebrowser/cbrowser.py:50
+msgid "Class Definitions"
+msgstr "Definicije Klase"
+
+#: ../../src/ed_log.py:140 ../../src/ed_search.py:1257
+#: ../../plugins/Launch/launch/launch.py:210
+#: ../../plugins/PyShell/PyShell/__init__.py:114
+msgid "Clear"
+msgstr "Očisti"
+
+#: ../../plugins/Launch/launch/cfgdlg.py:524
+msgid "Click on an item to edit"
+msgstr "Klikni na stavku za uređivanje"
+
+#: ../../src/ed_editv.py:230
+#, python-format
+msgid "Close \"%s\""
+msgstr "Zatvori \"%s\""
+
+#: ../../src/ed_editv.py:232
+msgid "Close All"
+msgstr "Zatvori Sve"
+
+#: ../../src/ed_menu.py:525
+msgid "Close All Tabs"
+msgstr "Zatvori Sve Kartice"
+
+#: ../../src/ed_menu.py:522
+msgid "Close Current Tab"
+msgstr "Zatvori Trenutnu Karticu"
+
+#: ../../src/ed_editv.py:231
+msgid "Close Other Tabs"
+msgstr ""
+
+#: ../../src/ed_menu.py:524
+msgid "Close Window"
+msgstr "Zatvori Prozor"
+
+#: ../../src/ed_menu.py:526
+msgid "Close all open tabs"
+msgstr "Zatvori sve otvorene kartice"
+
+#: ../../src/ed_menu.py:524
+msgid "Close the current window"
+msgstr "Zatvori aktivni prozor"
+
+#: ../../src/prefdlg.py:676
+msgid "Code"
+msgstr "Kod"
+
+#: ../../plugins/codebrowser/codebrowser/cbrowser.py:90
+msgid "Code Browser"
+msgstr "Pretraživač Koda"
+
+#: ../../src/ed_menu.py:680 ../../src/ed_menu.py:785 ../../src/prefdlg.py:926
+msgid "Code Folding"
+msgstr "Slaganje Koda"
+
+#: ../../src/ed_menu.py:681
+msgid "Code folding toggle actions"
+msgstr "Akcije Promjene Slaganja Koda"
+
+#: ../../plugins/codebrowser/codebrowser/__init__.py:48
+#: ../../plugins/codebrowser/codebrowser/__init__.py:95
+msgid "CodeBrowser"
+msgstr "PretraživačKoda"
+
+#: ../../src/style_editor.py:579
+msgid "Color"
+msgstr "Boja"
+
+#: ../../src/ed_menu.py:788
+msgid "Color Highlight Code Syntax"
+msgstr "Kodna Sintaksa Boje Označavanja"
+
+#: ../../src/prefdlg.py:1100 ../../plugins/PyShell/PyShell/__init__.py:109
+msgid "Color Scheme"
+msgstr "Shema Boja"
+
+#: ../../src/prefdlg.py:2158
+msgid "Colour/Default"
+msgstr "Boja/Zadana"
+
+#: ../../src/prefdlg.py:2157
+msgid "Colour/White"
+msgstr "Boja/Bijela"
+
+#: ../../src/ed_menu.py:592
+msgid "Column Mode"
+msgstr "Stubni Mod"
+
+#: ../../src/ed_cmdbar.py:407
+msgid "Command"
+msgstr "Naredba"
+
+#: ../../src/ed_menu.py:620
+msgid "Commands that affect an entire line"
+msgstr "Naredbe koje utječu na cijeli red"
+
+#: ../../src/prefdlg.py:1344
+msgid "Configuration"
+msgstr "Konfiguracija"
+
+#: ../../src/plugdlg.py:192
+msgid "Configuration Changes Made"
+msgstr "Konfiguracione Promjene Urađene"
+
+#: ../../src/plugdlg.py:119 ../../src/plugdlg.py:956
+msgid "Configure"
+msgstr "Konfiguriraj"
+
+#: ../../src/ed_menu.py:559
+msgid "Configure Printer"
+msgstr "Konfiguriraj Pisač"
+
+#: ../../src/ed_menu.py:734
+msgid "Convert selected text to all lowercase letters"
+msgstr "Pretvori odabrani tekst na sve mala slova"
+
+#: ../../src/ed_menu.py:732
+msgid "Convert selected text to all uppercase letters"
+msgstr "Pretvori odabrani tekst na sve velika slova"
+
+#: ../../src/ed_menu.py:746
+msgid "Convert spaces to tabs in selected/all text"
+msgstr "Pretvori prorede u kartice u odabranom/cijelom tekstu"
+
+#: ../../src/ed_menu.py:748
+msgid "Convert tabs to spaces in selected/all text"
+msgstr "Pretvori kartice u prorede u odabranom/cijelom tekstu"
+
+#: ../../src/ed_editv.py:363 ../../src/ed_toolbar.py:85
+msgid "Copy"
+msgstr "Kopiraj"
+
+#: ../../src/ed_menu.py:606
+msgid "Copy Current Line"
+msgstr "Kopiraj Aktivni Red"
+
+#: ../../src/ed_editv.py:234
+msgid "Copy Full Path"
+msgstr "Kopiraj Cijeli Put"
+
+#: ../../src/ed_menu.py:605
+msgid "Copy Line"
+msgstr "Kopiraj Red"
+
+#: ../../src/ed_menu.py:582 ../../src/ed_toolbar.py:86
+msgid "Copy Selected Text to Clipboard"
+msgstr "Kopiraj Odabrani Tekst u Međumemoriju"
+
+#: ../../src/ed_main.py:1562
+msgid "Copyright"
+msgstr "Autorsko pravo"
+
+#: ../../src/eclib/finddlg.py:845
+msgid "Count"
+msgstr "Broj"
+
+#: ../../plugins/filebrowser/filebrowser/browser.py:429
+#: ../../plugins/filebrowser/filebrowser/browser.py:548
+#, python-format
+msgid "Create Archive of \"%s\""
+msgstr "Kreiraj Arhivu od \"%s\""
+
+#: ../../src/eclib/infodlg.py:193
+msgid "Created"
+msgstr "Kreiran"
+
+#: ../../src/ed_menu.py:579
+msgid "Cu&t"
+msgstr "Izrež&i"
+
+#: ../../src/eclib/finddlg.py:713
+#, fuzzy
+msgid "Current Directory"
+msgstr "Otvori Direktorij?"
+
+#: ../../src/eclib/finddlg.py:712
+msgid "Current Document"
+msgstr "Aktivni Dokument"
+
+#: ../../src/ed_cmdbar.py:116
+msgid "Customize"
+msgstr ""
+
+#: ../../src/ed_main.py:1450
+msgid "Customize Menu"
+msgstr ""
+
+#: ../../src/ed_menu.py:471
+msgid "Customize the items shown in this menu."
+msgstr ""
+
+#: ../../src/ed_menu.py:470
+msgid "Customize..."
+msgstr ""
+
+#: ../../src/ed_editv.py:362 ../../src/ed_toolbar.py:83
+msgid "Cut"
+msgstr "Izreži"
+
+#: ../../src/ed_menu.py:602
+msgid "Cut Current Line"
+msgstr "Izreži Aktivni Red"
+
+#: ../../src/ed_menu.py:601
+msgid "Cut Line"
+msgstr "Izreži Red"
+
+#: ../../src/ed_menu.py:580 ../../src/ed_toolbar.py:84
+msgid "Cut Selected Text from File"
+msgstr "Izreži Odabrani Tekst iz Datoteke"
+
+#: ../../src/ed_menu.py:587
+msgid "Cycle Clipboard"
+msgstr "Pročisti Međumemoriju"
+
+#: ../../src/ed_menu.py:588
+msgid "Cycle through recent clipboard text"
+msgstr "Pročisti nedavni međumemorijski tekst"
+
+#: ../../src/ed_search.py:62 ../../src/ed_search.py:66
+msgid "DECODING ERROR"
+msgstr "GREŠKA U DEKODIRANJU"
+
+#: ../../plugins/Launch/launch/cfgdlg.py:228
+msgid "Default"
+msgstr "Zadano"
+
+#: ../../src/prefdlg.py:758
+msgid "Default EOL Mode"
+msgstr "Zadani EOL Mod"
+
+#: ../../src/prefdlg.py:917
+msgid "Default Lexer"
+msgstr "Zadani Lexer"
+
+#: ../../src/prefdlg.py:1202
+msgid "Default Perspective"
+msgstr "Zadana Perpektiva"
+
+#: ../../src/prefdlg.py:915
+msgid "Default highlighing for new documents"
+msgstr "Zadano označavanje za nove dokumente"
+
+#: ../../plugins/codebrowser/codebrowser/cbrowser.py:50
+msgid "Defines"
+msgstr "Definira"
+
+#: ../../src/prefdlg.py:1711
+msgid "Delete"
+msgstr "Obriši"
+
+#: ../../src/eclib/filemgrdlg.py:175
+msgid "Delete Error"
+msgstr ""
+
+#: ../../src/eclib/filemgrdlg.py:168
+msgid "Delete File?"
+msgstr ""
+
+#: ../../src/ed_menu.py:603
+msgid "Delete Line"
+msgstr "Obriši Liniju"
+
+#: ../../src/perspective.py:271
+msgid "Delete Perspective"
+msgstr "Obriši Perspektivu"
+
+#: ../../src/perspective.py:71
+msgid "Delete Saved View"
+msgstr "Obriši Spremljeni Pogled"
+
+#: ../../src/ed_menu.py:604
+msgid "Delete the selected line(s)"
+msgstr "Obriši odabrane redove"
+
+#: ../../plugins/filebrowser/filebrowser/browser.py:488
+#: ../../plugins/filebrowser/filebrowser/browser.py:657
+msgid "Desktop"
+msgstr "Radna površina"
+
+#: ../../src/prefdlg.py:568
+msgid "Dictionary"
+msgstr ""
+
+#: ../../src/eclib/finddlg.py:802
+msgid "Direction"
+msgstr "Smjer"
+
+#: ../../src/prefdlg.py:399
+msgid "Disable Error Reporter"
+msgstr "Onesposobi Izvještača Grešaka"
+
+#: ../../src/prefdlg.py:1244
+msgid "Display Font"
+msgstr "Prikaži Pismo"
+
+#: ../../src/plugdlg.py:179
+msgid "Do you wish to exit?"
+msgstr "Želite izaći?"
+
+#: ../../src/ed_pages.py:988
+#, python-format
+msgid ""
+"Do you wish to open all %d files in this directory?\n"
+"\n"
+"Warning: opening many files at once may cause the editor to temporarily  freeze."
+msgstr ""
+"Da li želite otvoriti sve %d datoteke u ovom direktoriju?\n"
+"\n"
+"Upozorenje: otvaranje više datoteka odjednom može izazvati privremeno zamrzavanje urednika."
+
+#: ../../src/prefdlg.py:193
+msgid "Document"
+msgstr "Dokument"
+
+#: ../../src/eclib/finddlg.py:806
+msgid "Down"
+msgstr "Dolje"
+
+#: ../../src/plugdlg.py:120 ../../src/plugdlg.py:460 ../../src/plugdlg.py:1108
+#: ../../src/prefdlg.py:1529
+msgid "Download"
+msgstr "Preuzimanje"
+
+#: ../../src/plugdlg.py:483
+msgid "Downloaded"
+msgstr "Preuzeto"
+
+#: ../../src/plugdlg.py:595 ../../src/updater.py:604
+msgid "Downloading"
+msgstr "Preuzimanje"
+
+#: ../../src/updater.py:567
+#, python-format
+msgid "Downloading To: %s"
+msgstr "Preuzimanje NA: %s"
+
+#: ../../src/Editra.py:607 ../../src/prefdlg.py:1570
+msgid "Downloading Update"
+msgstr "Ažuriranje Preuzimanja"
+
+#: ../../src/updater.py:565
+#, python-format
+msgid "Downloading: %s"
+msgstr "Preuzimanje: %s"
+
+#: ../../src/plugdlg.py:178
+msgid "Downloads are incomplete"
+msgstr "Preuzimanja su nekompletna"
+
+#: ../../plugins/filebrowser/filebrowser/browser.py:428
+msgid "Duplicate"
+msgstr "Duplikat"
+
+#: ../../src/ed_menu.py:607
+msgid "Duplicate Line"
+msgstr "Dupliciraj Red"
+
+#: ../../src/ed_menu.py:608
+msgid "Duplicate the current line"
+msgstr "Dupliciraj aktivni red"
+
+#: ../../src/ed_menu.py:564
+msgid "E&xit"
+msgstr "I&zlaz"
+
+#: ../../src/ed_menu.py:765
+msgid "EOL Mode"
+msgstr "EOL Mod"
+
+#: ../../src/ed_main.py:674
+#, python-format
+msgid "ERROR: %s"
+msgstr "GREŠKA: %s"
+
+#: ../../src/ed_main.py:714
+#, python-format
+msgid "ERROR: Failed to save %s"
+msgstr "GREŠKA: Neuspjeh u spremanju %s"
+
+#: ../../src/prefdlg.py:928
+msgid "Edge Guide"
+msgstr "Vodič Ruba"
+
+#: ../../plugins/filebrowser/filebrowser/browser.py:413
+msgid "Edit"
+msgstr "Uredi"
+
+#: ../../src/ed_menu.py:642
+msgid "Edit Preferences / Settings"
+msgstr "Uredi Povlastice / Postavke"
+
+#: ../../src/ed_menu.py:809
+msgid "Edit the way syntax is highlighted"
+msgstr "Uredi način označavanja sintakse"
+
+#: ../../src/ed_menu.py:673
+msgid "Editor"
+msgstr "Urednik"
+
+#: ../../src/ed_menu.py:804
+msgid "Editor Command"
+msgstr "Urednička Naredba"
+
+#: ../../src/prefdlg.py:383
+msgid "Editor Mode"
+msgstr "Urednički Mod"
+
+#: ../../src/ed_log.py:79
+msgid "Editra Log"
+msgstr "Editra Dnevnik"
+
+#: ../../src/ed_mdlg.py:85
+#, python-format
+msgid ""
+"Editra could not open %(filename)s\n"
+"\n"
+"Error:\n"
+"%(errormsg)s"
+msgstr ""
+"Editra nije mogla otvoriti %(filename)s\n"
+"\n"
+"Greška:\n"
+"%(errormsg)s"
+
+#: ../../src/ed_main.py:1552
+msgid "Editra is a programmers text editor."
+msgstr "Editra je programerski urednik teksta"
+
+#: ../../src/ed_menu.py:837
+msgid "Editra translations project"
+msgstr "Editra projekt prevođenja"
+
+#: ../../src/ed_main.py:439
+msgid "Editra: Open"
+msgstr ""
+
+#: ../../plugins/codebrowser/codebrowser/cbrowser.py:57
+msgid "Elements"
+msgstr ""
+
+#: ../../src/ed_pages.py:377
+msgid "Empty File"
+msgstr "Prazna Datoteka"
+
+#: ../../src/plugdlg.py:949
+msgid "Enable"
+msgstr "Omogući"
+
+#: ../../src/prefdlg.py:956
+msgid "Enable Vi Emulation"
+msgstr "Omogući Vi Emulaciju"
+
+#: ../../src/ed_menu.py:593
+msgid "Enable column edit mode."
+msgstr "Omogući mod uređenja stupca"
+
+#: ../../src/prefdlg.py:578
+msgid "Enchant Path"
+msgstr ""
+
+#: ../../src/prefdlg.py:494
+msgid "Encoding to try when auto detection fails"
+msgstr "Šifriranje za probati ako auto detekcija ne uspije"
+
+#: ../../src/ed_menu.py:766
+msgid "End of line character formatting"
+msgstr "Formatiranje znaka za kraj reda"
+
+#: ../../src/eclib/colorsetter.py:82
+msgid "Enter a hex color value"
+msgstr "Unesi heks vrijednost boje"
+
+#: ../../src/style_editor.py:260
+msgid "Enter style sheet name"
+msgstr "Unesi naziv formatne liste"
+
+#: ../../src/prefdlg.py:1906
+msgid "Enter the name of the new key profile"
+msgstr "Unesi ime novog ključnog profila"
+
+#: ../../src/eclib/finddlg.py:823
+msgid "Enter wildcard shell patterns for matching files (*.txt)."
+msgstr "Unesi višeznačne ljušturne uzorke za podudarne datoteke (*.txt)."
+
+#: ../../src/ed_editv.py:189 ../../src/plugdlg.py:838
+msgid "Error"
+msgstr "Greška"
+
+#: ../../src/ed_mdlg.py:87
+msgid "Error Opening File"
+msgstr "Greška u Otvaranju Datoteke"
+
+#: ../../src/ed_pages.py:327
+msgid "Error Saving Session File"
+msgstr "Greška Kod Spremanja Datoteke Sesije"
+
+#: ../../plugins/Launch/launch/cfgdlg.py:446
+msgid "Error Text"
+msgstr "Tekst Greške"
+
+#: ../../src/eclib/errdlg.py:318
+msgid "Error Traceback:"
+msgstr "Traženje Uzroka Greške:"
+
+#: ../../src/ed_search.py:544 ../../src/ed_search.py:705
+#, python-format
+msgid ""
+"Error in regular expression expansion.The replace action cannot be completed.\n"
+"\n"
+"Error Message: %s"
+msgstr ""
+"Greška u ekspanziji regularnog izraza. Akcija zamjene ne može biti završena.\n"
+"\n"
+"Poruka o Grešci: %s"
+
+#: ../../src/dev_tool.py:252
+msgid ""
+"Error: Something unexpected happend\n"
+"Help improve Editra by clicking on Report Error\n"
+"to send the Error Traceback shown below."
+msgstr ""
+"Greška: Nešto neočekivano se dogodilo.\n"
+"Pomozite poboljšati Editra klikom na Prijavi Grešku\n"
+"da pošaljete Istražitelja Greške prikazanog ispod."
+
+#: ../../src/ed_main.py:1502
+#, python-format
+msgid "Error: Unable to open %s"
+msgstr "Greška: Nemoguće otvoriti %s"
+
+#: ../../src/plugdlg.py:129
+msgid "Errors"
+msgstr "Greške"
+
+#: ../../plugins/Launch/launch/cfgdlg.py:528
+msgid "Executable Commands"
+msgstr "Izvršne Naredbe"
+
+#: ../../plugins/Launch/launch/cfgdlg.py:213
+msgid "Executables"
+msgstr "Izvršne"
+
+#: ../../plugins/Launch/launch/launch.py:749
+msgid "Exit Code"
+msgstr "Izlazni Kod"
+
+#: ../../src/ed_menu.py:564
+msgid "Exit the Program"
+msgstr "Zatvori Program"
+
+#: ../../src/eclib/errdlg.py:323
+msgid "Exit the application"
+msgstr "Zatvorite program"
+
+#: ../../src/style_editor.py:133
+msgid "Export"
+msgstr "Izvoz"
+
+#: ../../src/style_editor.py:261
+msgid "Export Style Sheet"
+msgstr "Izvezi Formatnu Listu"
+
+#: ../../src/prefdlg.py:947
+msgid "Extended Auto-Comp"
+msgstr "Prošireni Auto-Comp"
+
+#: ../../src/prefdlg.py:2045
+msgid "Extensions (space separated, no dots)"
+msgstr "Dodaci (odvojeni razmakom, ne točkama)"
+
+#: ../../src/ed_menu.py:769
+msgid "F&ormat"
+msgstr "F&ormat"
+
+#: ../../src/updater.py:683
+msgid "Failed"
+msgstr "Neuspjelo"
+
+#: ../../src/ed_print.py:112
+msgid "Failed to create print preview"
+msgstr "Neuspjela kreacija pregleda ispisa"
+
+#: ../../src/plugdlg.py:840
+#, python-format
+msgid "Failed to install %d plugins"
+msgstr "Neuspjelo instaliranje %d priključaka"
+
+#: ../../src/prefdlg.py:647
+msgid "Failed to load Enchant"
+msgstr ""
+
+#: ../../src/ed_editv.py:187
+#, python-format
+msgid ""
+"Failed to reload %(filename)s:\n"
+"Error: %(errmsg)s"
+msgstr ""
+"Neuspjeh kod ponovnog učitavanja %(filename)s:\n"
+"Greška: %(errmsg)s"
+
+#: ../../src/ed_main.py:1232
+#, python-format
+msgid "Failed to reload the file with: %(encoding)s"
+msgstr "Neuspjeh kod ponovnog učitavanja datoteke sa: %(encoding)s"
+
+#: ../../src/ed_mdlg.py:104
+#, python-format
+msgid ""
+"Failed to save file: %(filename)s\n"
+"\n"
+"Error:\n"
+"%(errormsg)s"
+msgstr ""
+"Neuspjeh spremanja datoteke: %(filename)s\n"
+"\n"
+"Greška:\n"
+"%(errormsg)s"
+
+#: ../../src/ed_menu.py:839
+msgid "Feedback"
+msgstr "Povratna informacija"
+
+#: ../../plugins/filebrowser/filebrowser/browser.py:232
+msgid "File Browser"
+msgstr "Pretraživač Datoteka"
+
+#: ../../src/eclib/finddlg.py:716
+msgid "File Filters:"
+msgstr "Filteri Datoteka:"
+
+#: ../../src/prefdlg.py:475
+msgid "File History Length"
+msgstr "Dužina Povijesti Datoteke"
+
+#: ../../src/ed_main.py:611
+msgid "File Not Found"
+msgstr "Datoteka Nije Pronađena"
+
+#: ../../src/prefdlg.py:543
+msgid "File Settings"
+msgstr "Postavke Datoteka"
+
+#: ../../src/eclib/infodlg.py:115
+msgid "File Stat Failed"
+msgstr "Neuspjela Statistika Datoteke"
+
+#: ../../plugins/Launch/launch/cfgdlg.py:208
+msgid "File Type"
+msgstr "Vrsta Datoteke"
+
+#: ../../src/ed_stc.py:612
+#, python-format
+msgid "File backup performed: %s"
+msgstr "Spremanje rezerve datoteke obavljeno: %s"
+
+#: ../../src/ed_stc.py:1841
+msgid "File is Read Only and cannot be saved"
+msgstr "Datoteka je samo za čitanje i ne može biti spremljena"
+
+#: ../../src/ed_pages.py:214
+msgid ""
+"File is already open in an existing page.\n"
+"Do you wish to open it again?"
+msgstr ""
+"Datoteka je već otvorena na aktivnoj stranici.\n"
+"Da li želite da je ponovo otvorite?"
+
+#: ../../src/prefdlg.py:305 ../../src/eclib/filemgrdlg.py:218
+msgid "Files"
+msgstr ""
+
+#: ../../src/ed_search.py:1302
+#, python-format
+msgid "Files Searched: %d"
+msgstr "Pretražene Datoteke: %d"
+
+#: ../../src/prefdlg.py:1094
+msgid "Filetype Associations"
+msgstr "Asocijacije Vrste Datoteke"
+
+#: ../../src/ed_cmdbar.py:261 ../../src/ed_search.py:147
+#: ../../src/ed_search.py:151 ../../src/ed_toolbar.py:90
+#: ../../src/eclib/finddlg.py:632 ../../src/eclib/finddlg.py:767
+#: ../../src/eclib/finddlg.py:843
+msgid "Find"
+msgstr "Traži"
+
+#: ../../src/ed_cmdbar.py:277 ../../src/eclib/finddlg.py:846
+msgid "Find All"
+msgstr "Traži Sve"
+
+#: ../../src/ed_search.py:309
+msgid "Find Count"
+msgstr "Pronađi Broj"
+
+#: ../../src/ed_menu.py:636
+msgid "Find Next"
+msgstr "Traži Slijedeće"
+
+#: ../../src/eclib/finddlg.py:812
+msgid "Find Options"
+msgstr "Opcije Pronalaženja"
+
+#: ../../src/ed_menu.py:634
+msgid "Find Previous"
+msgstr "Traži Prethodno"
+
+#: ../../src/ed_menu.py:638
+msgid "Find Selected"
+msgstr "Pronađi Odabrano"
+
+#: ../../src/ed_menu.py:629 ../../src/ed_toolbar.py:90
+msgid "Find Text"
+msgstr "Traži Tekst"
+
+#: ../../src/ed_menu.py:631 ../../src/ed_toolbar.py:92
+msgid "Find and Replace Text"
+msgstr "Pronađi i Zamijeni Tekst"
+
+#: ../../src/eclib/finddlg.py:765
+msgid "Find what"
+msgstr "Što Pronaći"
+
+#: ../../src/ed_menu.py:630
+msgid "Find/R&eplace"
+msgstr "Pronađi/Z&amijeni"
+
+#: ../../src/ed_search.py:147 ../../src/ed_search.py:151
+#: ../../src/ed_toolbar.py:91
+msgid "Find/Replace"
+msgstr "Pronađi/Zamijeni"
+
+#: ../../src/updater.py:680
+msgid "Finished"
+msgstr "Završeno"
+
+#: ../../src/plugdlg.py:486
+msgid "Finshed downloading plugins"
+msgstr "Završeno preuzimanje priključaka"
+
+#: ../../src/util.py:357 ../../src/eclib/infodlg.py:292
+msgid "Folder"
+msgstr "Mapa"
+
+#: ../../src/style_editor.py:628
+msgid "Font"
+msgstr "Pismo"
+
+#: ../../src/style_editor.py:623
+msgid "Font Settings"
+msgstr "Postavke Pisma"
+
+#: ../../src/style_editor.py:584 ../../plugins/Launch/launch/cfgdlg.py:433
+msgid "Foreground"
+msgstr "Prednji plan"
+
+#: ../../src/prefdlg.py:796
+msgid "Format"
+msgstr "Format"
+
+#: ../../src/ed_stc.py:1187
+msgid "Format EOL?"
+msgstr "Formatiraj EOL?"
+
+#: ../../src/ed_menu.py:757 ../../src/ed_menu.py:760 ../../src/ed_menu.py:763
+#, python-format
+msgid "Format all EOL characters to %s Mode"
+msgstr "Formatiraj sve EOL znake u %s Mod"
+
+#: ../../plugins/codebrowser/codebrowser/cbrowser.py:50
+msgid "Function Definitions"
+msgstr "Definicije Funkcija"
+
+#: ../../plugins/codebrowser/codebrowser/cbrowser.py:56
+msgid "Functions"
+msgstr "Funkcije"
+
+#: ../../src/prefdlg.py:189 ../../src/prefdlg.py:675 ../../src/prefdlg.py:968
+#: ../../plugins/Launch/launch/cfgdlg.py:173
+msgid "General"
+msgstr "Općenito"
+
+#: ../../src/generator.py:289 ../../src/generator.py:676
+#: ../../src/generator.py:879
+#, python-format
+msgid "Generate %s"
+msgstr "Generiraj %s"
+
+#: ../../src/generator.py:116
+msgid "Generate Code and Documents"
+msgstr "Generiraj Kod i Dokumenta"
+
+#: ../../src/generator.py:290 ../../src/generator.py:880
+#, python-format
+msgid "Generate a %s version of the current document"
+msgstr "Generiraj %s verziju aktivnog dokumenta"
+
+#: ../../src/generator.py:677
+#, python-format
+msgid "Generate an %s version of the current document"
+msgstr "Generiraj %s verziju aktivnog dokumenta"
+
+#: ../../src/generator.py:115
+msgid "Generator"
+msgstr "Generator"
+
+#: ../../plugins/filebrowser/filebrowser/browser.py:422
+msgid "Get Info"
+msgstr "Uzmi Podatke"
+
+#: ../../plugins/codebrowser/codebrowser/cbrowser.py:51
+msgid "Global Variables"
+msgstr "Globalne Varijable"
+
+#: ../../plugins/codebrowser/codebrowser/cbrowser.py:385
+#, python-format
+msgid "Goto \"%s\""
+msgstr "Idi na \"%s\""
+
+#: ../../src/ed_cmdbar.py:437
+msgid "Goto Line"
+msgstr "Idi na Red"
+
+#: ../../src/ed_menu.py:690
+msgid "Goto Line Number"
+msgstr "Idi na Redni Broj"
+
+#: ../../src/ed_menu.py:691
+msgid "Goto Matching Brace"
+msgstr "Idi na Odgovarujuću Veliku Zagradu"
+
+#: ../../src/ed_menu.py:805
+msgid "Goto command buffer"
+msgstr "Idi na naredbeni međuspremnik"
+
+#: ../../src/ed_menu.py:695
+msgid "Goto next position in history."
+msgstr "Idi na slijedeću poziciju u povijesti."
+
+#: ../../src/ed_menu.py:635
+msgid "Goto previous match"
+msgstr "Idi na prethodnu podudarnost"
+
+#: ../../src/ed_menu.py:697
+msgid "Goto previous position in history."
+msgstr "Idi na prethodnu poziciju u povijesti."
+
+#: ../../src/ed_menu.py:637
+msgid "Goto the next match"
+msgstr "Idi na slijedeću podudarnost"
+
+#: ../../src/prefdlg.py:932
+msgid "Guide Column"
+msgstr "Stubac Vodiča"
+
+#: ../../src/ed_menu.py:784
+msgid "Highlight Brackets/Braces"
+msgstr "Označi Srednje/Velike Zagrade"
+
+#: ../../src/ed_menu.py:660 ../../src/prefdlg.py:937
+msgid "Highlight Caret Line"
+msgstr "Označi Red sa Znakom za Umetanje"
+
+#: ../../src/ed_menu.py:661
+msgid "Highlight the background of the current line"
+msgstr "Označi pozadinu aktivnog reda"
+
+#: ../../plugins/filebrowser/filebrowser/browser.py:486
+msgid "Home directory"
+msgstr "Glavni Direktorij"
+
+#: ../../src/ed_main.py:1554
+msgid "Homepage"
+msgstr "Početna stranica"
+
+#: ../../src/prefdlg.py:1180
+msgid "Icon Theme"
+msgstr "Tema Sličica"
+
+#: ../../src/prefdlg.py:1225
+msgid "Icons"
+msgstr "Ikone"
+
+#: ../../plugins/codebrowser/codebrowser/cbrowser.py:51
+msgid "Identities"
+msgstr "Identiteti"
+
+#: ../../plugins/codebrowser/codebrowser/cbrowser.py:57
+msgid "Imports"
+msgstr ""
+
+#: ../../src/ed_menu.py:726
+msgid "Indent Lines"
+msgstr "Uvuci Redove"
+
+#: ../../src/prefdlg.py:732
+msgid "Indent Width"
+msgstr "Širina Uvlake"
+
+#: ../../src/ed_menu.py:727
+msgid "Indent the selected lines"
+msgstr "Uvuci odabrane redove"
+
+#: ../../src/ed_menu.py:663 ../../src/prefdlg.py:940
+msgid "Indentation Guides"
+msgstr "Vodiči Uvlačenja"
+
+#: ../../src/eclib/infodlg.py:58
+msgid "Info"
+msgstr "Informacije"
+
+#: ../../plugins/Launch/launch/cfgdlg.py:453
+msgid "Info Text"
+msgstr "Informacijski Tekst"
+
+#: ../../src/prefdlg.py:977
+msgid "Input Helpers"
+msgstr "Pomoćnici Unosa"
+
+#: ../../src/ed_menu.py:737
+msgid "Insert spaces instead of tab characters with tab key"
+msgstr "Umetni razmak umjesto znake kartice sa ključem kartice"
+
+#: ../../src/plugdlg.py:121 ../../src/plugdlg.py:763
+msgid "Install"
+msgstr "Instaliraj"
+
+#: ../../src/plugdlg.py:770
+msgid ""
+"Install the plugins for all users\n"
+" **requires administrative privileges**"
+msgstr ""
+"Instaliraj priključke za sve korisnike\n"
+" **zahtijeva administrativne privilegije**"
+
+#: ../../src/plugdlg.py:767
+msgid "Install the plugins only for the current user"
+msgstr "Instaliraj priključke samo za aktivnog korisnika"
+
+#: ../../src/plugdlg.py:842
+msgid "Installation Error"
+msgstr "Greška u Instaliranju"
+
+#: ../../src/prefdlg.py:1510
+msgid "Installed Version"
+msgstr "Instalirana Verzija"
+
+#: ../../src/ed_pages.py:356
+msgid "Invalid File"
+msgstr "Nevažeća Datoteka"
+
+#: ../../src/ed_cmdbar.py:776
+msgid "Invalid Path"
+msgstr ""
+
+#: ../../src/ed_search.py:349
+#, python-format
+msgid "Invalid expression \"%s\""
+msgstr "Nevažeći Izraz \"%s\""
+
+#: ../../src/ed_pages.py:370
+msgid "Invalid file"
+msgstr "Nevažeća datoteka"
+
+#: ../../src/ed_pages.py:972
+#, python-format
+msgid "Invalid file: %s"
+msgstr "Nevažeća datoteka: %s"
+
+#: ../../src/prefdlg.py:2159
+msgid "Inverse"
+msgstr "Obrnut"
+
+#: ../../src/ed_menu.py:610
+msgid "Join Lines"
+msgstr "Spoji linije"
+
+#: ../../src/ed_menu.py:611
+msgid "Join the Selected Lines"
+msgstr "Sastavi Odabrane Redove"
+
+#: ../../plugins/filebrowser/filebrowser/browser.py:101
+msgid "Jump to Saved Path"
+msgstr "Prebaci na Spremljeni Put"
+
+#: ../../src/prefdlg.py:1738
+msgid "Key"
+msgstr "Ključ"
+
+#: ../../src/prefdlg.py:1707
+msgid "Key Profile"
+msgstr "Ključni Profil"
+
+#: ../../src/prefdlg.py:1622
+msgid "Keybindings"
+msgstr "Ključne veze"
+
+#: ../../src/eclib/infodlg.py:182
+msgid "Kind"
+msgstr "Vrsta"
+
+#: ../../plugins/codebrowser/codebrowser/cbrowser.py:51
+msgid "Labels"
+msgstr "Oznake"
+
+#: ../../src/prefdlg.py:417
+msgid "Language"
+msgstr "Jezik"
+
+#: ../../src/prefdlg.py:1516
+msgid "Latest Version"
+msgstr "Zadnja Verzija"
+
+#: ../../plugins/Launch/launch/__init__.py:140
+msgid "Launch"
+msgstr "Pokreni"
+
+#: ../../plugins/Launch/launch/cfgdlg.py:112
+msgid "Launch Configuration"
+msgstr "Lansiraj Konfiguraciju"
+
+#: ../../src/prefdlg.py:1230
+msgid "Layout"
+msgstr "Raspored"
+
+#: ../../src/prefdlg.py:2043
+msgid "Lexer"
+msgstr "Lexer"
+
+#: ../../src/ed_menu.py:479
+msgid "Lexers"
+msgstr "Lexers"
+
+#: ../../src/prefdlg.py:648
+msgid "Library Error"
+msgstr ""
+
+#: ../../src/ed_main.py:1556
+msgid "License: wxWindows (see COPYING.txt for full license)"
+msgstr "Dozvola: wxWindows (pogledaj COPYING.txt za kompletnu dozvolu)"
+
+#: ../../src/ed_menu.py:619
+msgid "Line Edit"
+msgstr "Uređivanje Reda"
+
+#: ../../plugins/codebrowser/codebrowser/cbconfig.py:44
+#, fuzzy
+msgid "Line Number"
+msgstr "Idi na Redni Broj"
+
+#: ../../src/ed_stc.py:752
+#, python-format
+msgid "Line: %(lnum)d  Column: %(cnum)d"
+msgstr "Red: %(lnum)d  Stubac: %(cnum)d"
+
+#: ../../src/prefdlg.py:401
+msgid "Load Last Session"
+msgstr "Učitaj Zadnju Sesiju"
+
+#: ../../src/ed_menu.py:543
+msgid "Load Profile"
+msgstr "Učitaj Profil"
+
+#: ../../src/ed_menu.py:552
+msgid "Load Session"
+msgstr "Učitaj Sesiju"
+
+#: ../../src/ed_main.py:754 ../../src/ed_menu.py:544
+msgid "Load a Custom Profile"
+msgstr "Učitaj Prilagođeni Profil"
+
+#: ../../src/ed_main.py:804
+msgid "Load a Session file"
+msgstr "Učitaj datoteku Sesije"
+
+#: ../../src/ed_menu.py:553
+msgid "Load a saved session."
+msgstr "Učitaj spremljenu sesiju."
+
+#: ../../src/ed_menu.py:546
+msgid "Load and save custom Profiles"
+msgstr "Učitaj i spremi prilagođene Profile"
+
+#: ../../src/ed_menu.py:555
+msgid "Load and save custom sessions."
+msgstr "Učitaj i spremi podešene esije."
+
+#: ../../src/prefdlg.py:403
+msgid "Load files from last session on startup"
+msgstr "Učitaj datoteke sa zadnje sesije pri podizanju sustava"
+
+#: ../../src/ed_main.py:760
+#, python-format
+msgid "Loaded Profile: %s"
+msgstr "Učitan Profil: %s"
+
+#: ../../src/ed_main.py:818
+#, python-format
+msgid "Loaded Session: %s"
+msgstr "Učitana Sesija: %s"
+
+#: ../../src/prefdlg.py:438
+msgid "Locale Settings"
+msgstr "Lokalne Postavke"
+
+#: ../../plugins/Launch/launch/launch.py:182
+#, fuzzy
+msgid "Lock File"
+msgstr "Pogledaj u"
+
+#: ../../src/eclib/finddlg.py:793
+msgid "Look in"
+msgstr "Pogledaj u"
+
+#: ../../src/ed_menu.py:733
+msgid "Lowercase"
+msgstr "Mala slova"
+
+#: ../../plugins/codebrowser/codebrowser/cbrowser.py:52
+msgid "Macro Definitions"
+msgstr "Makro Definicije"
+
+#: ../../src/ed_script.py:201 ../../src/ed_script.py:211
+msgid "Macro Manager"
+msgstr "Makro Upravitelj"
+
+#: ../../plugins/codebrowser/codebrowser/cbrowser.py:51
+msgid "Macros"
+msgstr "Makronaredbe"
+
+#: ../../src/prefdlg.py:1220
+msgid "Main display font for various UI components"
+msgstr "Glavno prikazno pismo za različite UI komponente"
+
+#: ../../src/ed_menu.py:807
+msgid "Manage, Download, and Install plugins"
+msgstr "Nadgledaj, Preuzmi i Intaliraj priključke"
+
+#: ../../src/ed_menu.py:481
+msgid "Manually Set a Lexer/Syntax"
+msgstr "Ručno postavi Lexer/Syntax"
+
+#: ../../src/ed_cmdbar.py:283
+msgid "Match Case"
+msgstr "Slučaj Podudarnosti"
+
+#: ../../src/eclib/finddlg.py:814
+msgid "Match case"
+msgstr "Slučaj podudarnosti"
+
+#: ../../src/ed_main.py:1428 ../../src/ed_menu.py:686
+msgid "Maximize Editor"
+msgstr "Urednik Maksimiziranja"
+
+#: ../../src/prefdlg.py:1720
+msgid "Menu"
+msgstr "Izbornik"
+
+#: ../../plugins/Launch/launch/cfgdlg.py:174
+msgid "Misc"
+msgstr "Razno"
+
+#: ../../src/ed_pages.py:391
+msgid "Missing session files"
+msgstr "Nedostaju datoteke sesije"
+
+#: ../../src/ed_stc.py:1184
+msgid ""
+"Mixed EOL characters detected.\n"
+"\n"
+"Would you like to format them to all be the same?"
+msgstr ""
+"Otkriveni su različiti EOL znakovi.\n"
+"\n"
+"Da li želite da ih formatirate da budu svi isti?"
+
+#: ../../src/eclib/infodlg.py:163 ../../src/eclib/infodlg.py:195
+msgid "Modified"
+msgstr "Promijenjeno"
+
+#: ../../src/prefdlg.py:1730
+msgid "Modifier 1"
+msgstr "Modifikator 1"
+
+#: ../../src/prefdlg.py:1734
+msgid "Modifier 2"
+msgstr "Modifikator 2"
+
+#: ../../plugins/codebrowser/codebrowser/cbrowser.py:56
+msgid "Modules"
+msgstr "Moduli"
+
+#: ../../src/ed_menu.py:617
+msgid "Move Current Line Down"
+msgstr "Pomakni Aktivni Red Dolje"
+
+#: ../../src/ed_menu.py:614
+msgid "Move Current Line Up"
+msgstr "Pomakni Aktivni Red Gore"
+
+#: ../../src/ed_editv.py:227
+msgid "Move Tab to New Window"
+msgstr "Pomjeri Karticu na Novi Prozor"
+
+#: ../../src/ed_menu.py:692
+msgid "Move caret matching brace"
+msgstr "Pomakni veliku zagradu koja odgovara znaku za umetanje"
+
+#: ../../src/ed_menu.py:618
+msgid "Move the current line down"
+msgstr "Pomakni aktivni red dolje"
+
+#: ../../src/ed_menu.py:615
+msgid "Move the current line up"
+msgstr "Pomakni aktivni red gore"
+
+#: ../../plugins/filebrowser/filebrowser/browser.py:62
+msgid "Move to Recycle Bin"
+msgstr "Prebaci u Koš za Otpatke"
+
+#: ../../plugins/filebrowser/filebrowser/browser.py:64
+msgid "Move to Trash"
+msgstr "Prebaci u Smeće"
+
+#: ../../plugins/codebrowser/codebrowser/cbrowser.py:52
+msgid "Namespaces"
+msgstr "Prostori za ime"
+
+#: ../../src/prefdlg.py:195
+msgid "Network"
+msgstr "Mreža"
+
+#: ../../src/ed_toolbar.py:74 ../../src/prefdlg.py:1710
+#: ../../src/style_editor.py:173
+msgid "New"
+msgstr "Novi"
+
+#: ../../src/ed_menu.py:513
+msgid "New &Window"
+msgstr "Novi &Prozor"
+
+#: ../../plugins/filebrowser/filebrowser/browser.py:426
+msgid "New File"
+msgstr "Nova Datoteka"
+
+#: ../../plugins/filebrowser/filebrowser/browser.py:425
+msgid "New Folder"
+msgstr "Nova Mapa"
+
+#: ../../src/ed_menu.py:596
+msgid "New Line After"
+msgstr "Novi Red Iza"
+
+#: ../../src/ed_menu.py:598
+msgid "New Line Before"
+msgstr "Novi Red Ispred"
+
+#: ../../src/prefdlg.py:1905
+msgid "New Profile"
+msgstr "Novi Profil"
+
+#: ../../src/ed_editv.py:226
+msgid "New Tab"
+msgstr "Nova Kartica"
+
+#: ../../src/ed_cmdbar.py:263
+msgid "Next"
+msgstr "Slijedeći"
+
+#: ../../src/ed_menu.py:699
+msgid "Next Bookmark"
+msgstr "Slijedeća Knjižna Oznaka"
+
+#: ../../src/ed_menu.py:694
+msgid "Next Position"
+msgstr "Slijedeća Pozicija"
+
+#: ../../src/plugdlg.py:370 ../../src/plugin.py:721
+msgid "No Description Available"
+msgstr "Nema Raspoloživog Opisa"
+
+#: ../../src/ed_editv.py:392
+msgid "No Suggestions"
+msgstr ""
+
+#: ../../src/ed_pages.py:982
+msgid "No Valid Files to Open"
+msgstr "Nema Važećih Datoteka za Otvoriti"
+
+#: ../../src/prefdlg.py:1804
+msgid "None"
+msgstr "Nijedan"
+
+#: ../../src/prefdlg.py:2160
+msgid "Normal"
+msgstr "Normalno"
+
+#: ../../src/ed_search.py:618
+msgid "Not implemented"
+msgstr "Nije implementirano"
+
+#: ../../src/style_editor.py:129
+msgid "Ok"
+msgstr "U redu"
+
+#: ../../src/ed_glob.py:385 ../../src/ed_mdlg.py:137
+msgid "Old Machintosh (\\r)"
+msgstr "Stari Mackintosh (\\r)"
+
+#: ../../src/ed_menu.py:756 ../../src/ed_menu.py:758 ../../src/prefdlg.py:753
+msgid "Old Macintosh (\\r)"
+msgstr "Stari Macintosh (\\r)"
+
+#: ../../src/ed_menu.py:834
+msgid "Online Documentation..."
+msgstr "Internet Dokumentacija..."
+
+#: ../../src/ed_menu.py:835
+msgid "Online project documentation and help guides"
+msgstr "Internet projektna dokumentacija i priručnik za pomoć"
+
+#: ../../src/ed_menu.py:516 ../../src/ed_toolbar.py:75
+msgid "Open"
+msgstr "Otvori"
+
+#: ../../src/ed_menu.py:518
+msgid "Open &Recent"
+msgstr "Otvori &Skorašnje"
+
+#: ../../plugins/PyShell/PyShell/__init__.py:66
+msgid "Open A Python Shell"
+msgstr "Otvori Python Ljušturu"
+
+#: ../../plugins/codebrowser/codebrowser/cbrowser.py:91
+msgid "Open Code Browser Sidepanel"
+msgstr "Otvori Bočni Panel Pretraživača Koda"
+
+#: ../../src/ed_pages.py:993
+msgid "Open Directory?"
+msgstr "Otvori Direktorij?"
+
+#: ../../src/eclib/finddlg.py:713
+msgid "Open Documents"
+msgstr "Otvori Dokumente"
+
+#: ../../src/ed_pages.py:216
+msgid "Open File"
+msgstr "Otvori Datoteku"
+
+#: ../../plugins/filebrowser/filebrowser/browser.py:233
+msgid "Open File Browser Sidepanel"
+msgstr "Otvori Bočni Panel Pretraživača Datoteka"
+
+#: ../../src/prefdlg.py:521
+msgid "Open files in new windows by default"
+msgstr "Standardno otvori datoteke u novim prozorima"
+
+#: ../../src/ed_menu.py:633
+msgid "Open the Quick Find Bar"
+msgstr "Otvori Traku za Brzo Pronalaženje"
+
+#: ../../plugins/filebrowser/filebrowser/browser.py:414
+msgid "Open with "
+msgstr "Otvori sa "
+
+#: ../../src/ed_pages.py:1013
+#, python-format
+msgid "Opened file: %s"
+msgstr "Otvorena datoteka: %s"
+
+#: ../../src/ed_main.py:1499
+#, python-format
+msgid "Opening %s"
+msgstr "Otvaranje %s"
+
+#: ../../src/ed_menu.py:585
+msgid "P&aste After"
+msgstr "Z&alijepi Nakon"
+
+#: ../../plugins/codebrowser/codebrowser/cbrowser.py:52
+msgid "Packages"
+msgstr "Paketi"
+
+#: ../../src/ed_menu.py:558
+msgid "Page Set&up"
+msgstr "Pos&tavke Stranice"
+
+#: ../../src/ed_print.py:229
+#, python-format
+msgid "Page: %d"
+msgstr "Stranica: %d"
+
+#: ../../src/ed_menu.py:684
+msgid "Pane Navigator"
+msgstr "Navigator Okna"
+
+#: ../../src/prefdlg.py:1410
+msgid "Password"
+msgstr "Lozinka"
+
+#: ../../src/ed_editv.py:364 ../../src/ed_toolbar.py:87
+msgid "Paste"
+msgstr "Zalijepi"
+
+#: ../../src/ed_menu.py:584 ../../src/ed_toolbar.py:88
+msgid "Paste Text from Clipboard to File"
+msgstr "Zalijepi Tekst sa Međumemorije u Datoteku"
+
+#: ../../src/ed_menu.py:586
+msgid "Paste Text from Clipboard to File after the cursor"
+msgstr "Zalijepi Tekst sa Međumemorije u Datoteku iza pokazivača"
+
+#: ../../src/prefdlg.py:583 ../../src/prefdlg.py:584
+msgid "Path to libenchant"
+msgstr ""
+
+#: ../../plugins/filebrowser/filebrowser/browser.py:109
+msgid "Pathmarks"
+msgstr "Putokazi"
+
+#: ../../src/eclib/infodlg.py:197
+msgid "Permissions"
+msgstr "Dozvole"
+
+#: ../../src/perspective.py:253
+msgid "Perspective Name"
+msgstr "Naziv Perspektive"
+
+#: ../../src/perspective.py:270
+msgid "Perspective to Delete"
+msgstr "Perspektiva za Obrisati"
+
+#: ../../src/ed_main.py:141
+msgid "Perspectives"
+msgstr "Prepektive"
+
+#: ../../plugins/Launch/launch/cfgdlg.py:439
+msgid "Plain Text"
+msgstr "Običan tekst"
+
+#: ../../src/ed_main.py:1555
+msgid "Platform Info"
+msgstr "Podaci o Platformi"
+
+#: ../../src/Editra.py:902
+msgid "Please check the preferences dialog to check your preferences"
+msgstr "Molimo pogledajte dijalog povlastica da provjerite vaše povlastice"
+
+#: ../../src/Editra.py:1111
+msgid "Please check the preferences dialog to verify your preferences"
+msgstr "Molimo provjerite dijalog povlastica za verificiranje povlastica."
+
+#: ../../src/ed_main.py:1083 ../../src/ed_menu.py:806
+msgid "Plugin Manager"
+msgstr "Upravitelj Priključaka"
+
+#: ../../src/prefdlg.py:1395
+msgid "Port Number"
+msgstr "Broj Ulaza"
+
+#: ../../src/ed_menu.py:641
+msgid "Pr&eferences"
+msgstr "Po&stavke"
+
+#: ../../src/prefdlg.py:496
+msgid "Prefered Encoding"
+msgstr "Povlašteno Šifriranje"
+
+#: ../../src/prefdlg.py:106
+msgid "Preferences - Editra"
+msgstr "Povlastice - Editra"
+
+#: ../../src/style_editor.py:694
+#, fuzzy
+msgid "Preview File"
+msgstr "Pregled"
+
+#: ../../src/ed_menu.py:561
+msgid "Preview Printout"
+msgstr "Pregled Ispisa"
+
+#: ../../src/ed_cmdbar.py:271
+msgid "Previous"
+msgstr "Prethodni"
+
+#: ../../src/ed_menu.py:701
+msgid "Previous Bookmark"
+msgstr "Prethodna Knjižna Oznaka"
+
+#: ../../src/ed_menu.py:696
+msgid "Previous Position"
+msgstr "Prethodna Pozicija"
+
+#: ../../src/prefdlg.py:812
+msgid "Primary Font"
+msgstr "Primarno Pismo"
+
+#: ../../src/ed_toolbar.py:77
+msgid "Print"
+msgstr "Ispiši"
+
+#: ../../src/ed_menu.py:562 ../../src/ed_toolbar.py:78
+msgid "Print Current File"
+msgstr "Ispiši Aktivnu Datoteku"
+
+#: ../../src/ed_print.py:113
+msgid "Print Error"
+msgstr "Greška pri ispisu"
+
+#: ../../src/ed_menu.py:560
+msgid "Print Pre&view"
+msgstr "Pre&gled Ispisa"
+
+#: ../../src/ed_print.py:105
+msgid "Print Preview"
+msgstr "Pregled Ispisa"
+
+#: ../../src/ed_print.py:131
+msgid "Printer Error"
+msgstr "Greška Štampača"
+
+#: ../../src/prefdlg.py:391
+msgid "Printer Mode"
+msgstr "Mod Pisača"
+
+#: ../../plugins/codebrowser/codebrowser/cbrowser.py:53
+msgid "Procedure Definitions"
+msgstr "Definicije Procedura"
+
+#: ../../src/ed_main.py:735 ../../src/ed_main.py:756 ../../src/ed_menu.py:545
+msgid "Profile"
+msgstr "Profil"
+
+#: ../../src/ed_main.py:740
+#, python-format
+msgid "Profile Saved as: %s"
+msgstr "Profil Spremljen kao: %s"
+
+#: ../../src/Editra.py:904 ../../src/Editra.py:1113
+msgid "Profile Updated"
+msgstr "Profil Ažuriran"
+
+#: ../../plugins/Launch/launch/launch.py:176
+msgid "Program Executable Command"
+msgstr "Izvršna Naredba Programa"
+
+#: ../../plugins/codebrowser/codebrowser/cbrowser.py:53
+msgid "Programs"
+msgstr "Programi"
+
+#: ../../src/ed_menu.py:831
+msgid "Project Homepage..."
+msgstr "Projekt Početna Stranica..."
+
+#: ../../plugins/codebrowser/codebrowser/cbrowser.py:53
+msgid "Protocols"
+msgstr "Protokoli"
+
+#: ../../src/prefdlg.py:1381
+msgid "Proxy Settings"
+msgstr "Proxy Postavke"
+
+#: ../../src/prefdlg.py:1391
+msgid "Proxy URL"
+msgstr "Proxy URL"
+
+#: ../../plugins/codebrowser/codebrowser/cbrowser.py:56
+msgid "Public Functions"
+msgstr "Javne Funkcije"
+
+#: ../../plugins/codebrowser/codebrowser/cbrowser.py:57
+msgid "Public Subroutines"
+msgstr "Javne Podrutine"
+
+#: ../../src/ed_shelf.py:117
+msgid "Put an item on the Shelf"
+msgstr "Stavi stvar na Policu"
+
+#: ../../src/updater.py:673
+#, python-format
+msgid "Rate: %.2f Kb/s"
+msgstr "Brzina: %.2f Kb/s"
+
+#: ../../plugins/Launch/launch/__init__.py:100
+msgid "Re-run the last run program"
+msgstr "Ponovo izvedi zadnji izvedeni program"
+
+#: ../../src/ed_stc.py:1842
+msgid "Read Only"
+msgstr "Samo za Čitanje"
+
+#: ../../src/ed_search.py:801
+msgid "Recent Searches"
+msgstr "Skorašnje Pretrage"
+
+#: ../../src/ed_menu.py:519
+msgid "Recently Opened Files"
+msgstr "Nedavno Otvorene Datoteke"
+
+#: ../../src/ed_stc.py:1457
+msgid "Recording Finished"
+msgstr "Snimanje Završeno"
+
+#: ../../src/ed_stc.py:1444
+msgid "Recording Macro"
+msgstr "Snimanje Makro"
+
+#: ../../src/ed_editv.py:360 ../../src/ed_menu.py:577
+#: ../../src/ed_toolbar.py:81
+msgid "Redo"
+msgstr "Ponovi"
+
+#: ../../src/ed_menu.py:577 ../../src/ed_toolbar.py:81
+msgid "Redo Last Undo"
+msgstr "Obnovi zadnje Poništeno"
+
+#: ../../src/ed_search.py:350
+msgid "Regex Compile Error"
+msgstr "Greška kod Regex Kompajliranja"
+
+#: ../../src/ed_cmdbar.py:294
+msgid "Regular Expression"
+msgstr "Regularni Izraz"
+
+#: ../../src/eclib/finddlg.py:816
+msgid "Regular expression"
+msgstr "Regularni izraz"
+
+#: ../../src/ed_editv.py:465
+msgid "Reload File?"
+msgstr "Ponovo Učitaj Datoteku?"
+
+#: ../../src/ed_menu.py:536
+msgid "Reload the file with a specified encoding"
+msgstr "Ponovo učitaj datoteku sa specificiranim šifriranjem"
+
+#: ../../src/ed_main.py:1220
+msgid "Reload with Encoding"
+msgstr "Ponovo Učitaj sa Šifriranjem"
+
+#: ../../src/ed_menu.py:535
+msgid "Reload with Encoding..."
+msgstr "Ponovi Učitavanje sa Kodiranjem..."
+
+#: ../../src/prefdlg.py:524
+msgid "Remember File Position"
+msgstr "Zapamti Poziciju Datoteke"
+
+#: ../../src/prefdlg.py:1210
+msgid "Remember Window Position on Exit"
+msgstr "Zapamti Poziciju Prozora pri Izlasku"
+
+#: ../../src/prefdlg.py:1207
+msgid "Remember Window Size on Exit"
+msgstr "Zapamti Veličinu Prozora pri Izlasku"
+
+#: ../../src/ed_menu.py:624
+msgid "Remove All Bookmarks"
+msgstr "Ukloni Sve Knjižne Oznake"
+
+#: ../../plugins/filebrowser/filebrowser/browser.py:103
+msgid "Remove Saved Path"
+msgstr "Ukloni Spremljeni Put"
+
+#: ../../src/ed_menu.py:625
+msgid "Remove all bookmarks from the current document"
+msgstr "Ukloni sve knjižne oznake iz aktivnog dokumenta"
+
+#: ../../plugins/Launch/launch/cfgdlg.py:244
+msgid "Remove selection from list"
+msgstr "Ukloni selekciju sa liste"
+
+#: ../../src/ed_menu.py:750
+msgid "Remove trailing whitespace"
+msgstr "Ukloni krajnju prazninu"
+
+#: ../../plugins/filebrowser/filebrowser/browser.py:423
+msgid "Rename"
+msgstr "Preimenuj"
+
+#: ../../src/eclib/finddlg.py:635 ../../src/eclib/finddlg.py:844
+msgid "Replace"
+msgstr "Zamijeni"
+
+#: ../../src/eclib/finddlg.py:847
+msgid "Replace All"
+msgstr "Zamijeni Sve"
+
+#: ../../src/ed_search.py:547 ../../src/ed_search.py:708
+msgid "Replace Error"
+msgstr "Zamijeni Grešku"
+
+#: ../../src/eclib/finddlg.py:778
+msgid "Replace with"
+msgstr "Zamijeni sa"
+
+#: ../../src/eclib/errdlg.py:324
+msgid "Report Error"
+msgstr "Greška u Izvješću"
+
+#: ../../src/ed_editv.py:445
+msgid "Resave File?"
+msgstr "Ponovo Spremi Datoteku?"
+
+#: ../../src/ed_main.py:1430
+msgid "Restore Editor"
+msgstr "Restauriraj Urednika"
+
+#: ../../src/plugdlg.py:673
+msgid "Retrieving Plugin List"
+msgstr "Pronalaženje Liste Priključaka"
+
+#: ../../plugins/filebrowser/filebrowser/browser.py:415
+msgid "Reveal in "
+msgstr "Objavi u "
+
+#: ../../src/ed_menu.py:534
+msgid "Revert file to last save point"
+msgstr "Vrati datoteku u trenutak zadnjeg spremanja"
+
+#: ../../src/prefdlg.py:1111 ../../src/prefdlg.py:1766
+msgid "Revert to Default"
+msgstr "Vrati na Zadanu Vrijednost"
+
+#: ../../src/ed_menu.py:533
+msgid "Revert to Saved"
+msgstr "Vrati na Spremljeno"
+
+#: ../../plugins/Launch/launch/__init__.py:93
+#: ../../plugins/Launch/launch/launch.py:202
+#: ../../plugins/Launch/launch/launch.py:602
+msgid "Run"
+msgstr "Pokreni"
+
+#: ../../plugins/Launch/launch/__init__.py:98
+msgid "Run last executed"
+msgstr "Pokreni zadnje izvršeno"
+
+#: ../../plugins/Launch/launch/__init__.py:76
+msgid "Run script from current buffer"
+msgstr "Izvedi skriptu sa aktivnim međuspremnikom"
+
+#: ../../plugins/Launch/launch/__init__.py:95
+msgid "Run the file associated with the current buffer in Launch"
+msgstr "Izvedi datoteku pridruženu aktivnom međuspremniku u Launch"
+
+#: ../../src/ed_toolbar.py:76
+msgid "Save"
+msgstr "Spremi"
+
+#: ../../src/ed_editv.py:229
+#, python-format
+msgid "Save \"%s\""
+msgstr "Spremi \"%s\""
+
+#: ../../src/ed_menu.py:529
+msgid "Save &As"
+msgstr "Spremi &Kao"
+
+#: ../../src/ed_menu.py:530
+msgid "Save All"
+msgstr "Spremi Sve"
+
+#: ../../src/ed_menu.py:529 ../../src/eclib/filemgrdlg.py:121
+msgid "Save As"
+msgstr "Spremi Kao"
+
+#: ../../src/ed_editv.py:501
+msgid "Save Changes?"
+msgstr "Spremi Promjene?"
+
+#: ../../src/ed_menu.py:528 ../../src/ed_toolbar.py:76
+msgid "Save Current File"
+msgstr "Spremi Aktivnu Datoteku"
+
+#: ../../src/ed_menu.py:542
+msgid "Save Current Settings to a New Profile"
+msgstr "Spremi Aktivne Postavke u Novi Profil"
+
+#: ../../src/perspective.py:69
+msgid "Save Current View"
+msgstr "Spremi Trenutni Pogled"
+
+#: ../../src/ed_mdlg.py:106
+msgid "Save Error"
+msgstr "Greška pri Spremanju"
+
+#: ../../src/perspective.py:254
+msgid "Save Perspective"
+msgstr "Spremi Perspektivu"
+
+#: ../../src/ed_menu.py:541
+msgid "Save Profile"
+msgstr "Spremi Profil"
+
+#: ../../plugins/filebrowser/filebrowser/browser.py:100
+msgid "Save Selected Paths"
+msgstr "Spremi Odabrani Put"
+
+#: ../../src/ed_menu.py:550
+msgid "Save Session"
+msgstr "Spremi sesiju"
+
+#: ../../src/style_editor.py:220
+msgid "Save Styles"
+msgstr "Spremi Stilove"
+
+#: ../../src/ed_menu.py:531
+msgid "Save all open pages"
+msgstr "Spremi sve otvorene stranice"
+
+#: ../../src/ed_menu.py:551
+msgid "Save the current session."
+msgstr "Spremi aktivnu sesiju."
+
+#: ../../src/perspective.py:70
+msgid "Save the current window layout"
+msgstr "Spremi izgled aktivnog prozora"
+
+#: ../../src/ed_main.py:717
+#, python-format
+msgid "Saved File As: %s"
+msgstr "Spremi Datoteku Kao: %s"
+
+#: ../../src/ed_main.py:671
+#, python-format
+msgid "Saved File: %s"
+msgstr "Spremi Datoteku: %s"
+
+#: ../../src/ed_search.py:1301
+#, python-format
+msgid "Search Complete: %d matching lines where found."
+msgstr "Pretraga Završena: %d podudarnih redova pronađeno."
+
+#: ../../src/eclib/finddlg.py:817
+msgid "Search Recursively"
+msgstr "Pretražuj Suvratno"
+
+#: ../../src/ed_search.py:1275
+msgid "Search Started"
+msgstr "Pretraga Započeta"
+
+#: ../../src/ed_search.py:1294
+msgid "Search complete"
+msgstr "Pretraga Završena"
+
+#: ../../src/ed_menu.py:639
+msgid "Search for the currently selected phrase"
+msgstr "Potraži trenutačno odabranu frazu"
+
+#: ../../plugins/filebrowser/filebrowser/browser.py:420
+msgid "Search in directory"
+msgstr "Potraži u direktoriju"
+
+#: ../../src/ed_search.py:408
+msgid "Search wrapped to bottom"
+msgstr "Pretraga omotana na dno"
+
+#: ../../src/ed_search.py:403
+msgid "Search wrapped to top"
+msgstr "Pretraga omotana na vrh"
+
+#: ../../src/ed_search.py:1385
+#, python-format
+msgid "Searching in: %s"
+msgstr "Pretraživanje u: %s"
+
+#: ../../src/prefdlg.py:815
+msgid "Secondary Font"
+msgstr "Sekundardno Pismo"
+
+#: ../../plugins/codebrowser/codebrowser/cbrowser.py:54
+msgid "Sections"
+msgstr "Sekcije"
+
+#: ../../src/ed_menu.py:590
+msgid "Select &All"
+msgstr "Odaberi &Sve"
+
+#: ../../src/ed_editv.py:369
+msgid "Select All"
+msgstr "Odaberi Sve"
+
+#: ../../src/ed_menu.py:591
+msgid "Select All Text in Document"
+msgstr "Odaberi Sav Tekst u Dokumentu"
+
+#: ../../src/ed_main.py:1219
+msgid "Select an encoding to reload the file with"
+msgstr "Odaberi šifriranje za ponovno učitavanje datoteke"
+
+#: ../../src/plugdlg.py:501
+msgid "Select plugins to download"
+msgstr "Odaberi priključke za preuzimanje"
+
+#: ../../src/eclib/finddlg.py:712
+msgid "Selected Text"
+msgstr "Odabrani Tekst"
+
+#: ../../src/ed_pages.py:371
+msgid "Selected file is not a valid session file"
+msgstr "Odabrana datoteka nije važeća datoteka sesije"
+
+#: ../../src/ed_menu.py:840
+msgid "Send bug reports and suggestions"
+msgstr "Pošalji izvještaje o greškama i sugestije"
+
+#: ../../src/ed_main.py:779 ../../src/ed_main.py:806
+msgid "Session"
+msgstr "Sesija"
+
+#: ../../src/ed_main.py:794
+#, python-format
+msgid "Session Saved as: %s"
+msgstr "Sesija Spremljena kao: %s"
+
+#: ../../src/ed_pages.py:356
+msgid "Session file doesn't exist."
+msgstr "Datoteka sesije ne postoji."
+
+#: ../../src/ed_pages.py:377
+msgid "Session file is empty."
+msgstr "Datoteka sesije je prazna."
+
+#: ../../src/ed_menu.py:554
+msgid "Sessions"
+msgstr "Sesije"
+
+#: ../../src/eclib/ecpickers.py:80
+msgid "Set Font"
+msgstr "Postavi Pismo"
+
+#: ../../src/style_editor.py:697
+msgid "Set the preview file type"
+msgstr "Postavi vrstu datoteke za pregled"
+
+#: ../../src/prefdlg.py:789
+msgid "Sets a secondary font used for special regions when syntax highlighting is in use"
+msgstr "Postavlja sekundarno pismo korišteno za specijalne odjeljke kad je označena sintaksa u upotrebi."
+
+#: ../../src/prefdlg.py:784
+msgid "Sets the main/default font of the document"
+msgstr "Postavlja glavno/zadano pismo dokumenta"
+
+#: ../../plugins/Launch/launch/launch.py:169
+msgid "Settings"
+msgstr "Postavke"
+
+#: ../../src/ed_shelf.py:116
+msgid "Shelf"
+msgstr "Polica"
+
+#: ../../src/ed_menu.py:667 ../../src/ed_menu.py:668 ../../src/prefdlg.py:765
+msgid "Show EOL Markers"
+msgstr "Prikaži EOL Oznake"
+
+#: ../../src/ed_menu.py:665
+msgid "Show Edge Guide"
+msgstr "Prikaži Vodič Ruba"
+
+#: ../../plugins/filebrowser/filebrowser/browser.py:218
+msgid "Show Hidden Files"
+msgstr "Prikaži Skrivene Datoteke"
+
+#: ../../src/prefdlg.py:1191
+msgid "Show Icons on Tabs"
+msgstr "Prikaži Ikone na Karticama"
+
+#: ../../src/ed_menu.py:664
+msgid "Show Indentation Guides"
+msgstr "Prikaži Vodiče Uvlačenja"
+
+#: ../../src/ed_menu.py:670
+msgid "Show Line Number Margin"
+msgstr "Prikaži Marginu Rednog Broja"
+
+#: ../../src/ed_menu.py:669 ../../src/prefdlg.py:767
+msgid "Show Line Numbers"
+msgstr "Prikaži Redne Brojeve"
+
+#: ../../src/ed_shelf.py:369
+msgid "Show Shelf"
+msgstr "Prikaži Policu"
+
+#: ../../src/prefdlg.py:405
+msgid "Show Splash Screen"
+msgstr "Prikaži Poprskani Zaslon"
+
+#: ../../src/ed_menu.py:705 ../../src/prefdlg.py:1212
+msgid "Show Status Bar"
+msgstr "Prikaži Statusnu Traku"
+
+#: ../../src/ed_menu.py:707 ../../src/prefdlg.py:1214
+msgid "Show Toolbar"
+msgstr "Prikaži Alatnu Traku"
+
+#: ../../src/ed_menu.py:671 ../../src/prefdlg.py:769
+msgid "Show Whitespace"
+msgstr "Prikaži Prazninu"
+
+#: ../../src/ed_menu.py:672
+msgid "Show Whitespace Markers"
+msgstr "Prikaži Oznake Praznine"
+
+#: ../../src/ed_log.py:132
+msgid "Show output from"
+msgstr "Prikaži izlaz iz"
+
+#: ../../src/ed_shelf.py:371
+msgid "Show the Shelf"
+msgstr "Prikaži Policu"
+
+#: ../../src/ed_menu.py:666
+msgid "Show the edge column guide"
+msgstr "U"
+
+#: ../../src/style_editor.py:644 ../../src/eclib/infodlg.py:189
+msgid "Size"
+msgstr "Veličina"
+
+#: ../../src/ed_pages.py:392
+msgid "Some files in saved session could not be found on disk:\n"
+msgstr "Neke datoteke iz spremljene sesije nisu pronađene na disku:\n"
+
+#: ../../src/style_editor.py:218
+msgid "Some styles have been changed would you like to save before exiting?"
+msgstr "Neki stilovi su bili promijenjeni. Hoćete li da spremite prije nego izađete?"
+
+#: ../../src/ed_search.py:617
+#, fuzzy
+msgid "Sorry will be ready for future version"
+msgstr "Oprostite, biti ćemo spremni za slijedeću inačicu"
+
+#: ../../plugins/codebrowser/codebrowser/cbconfig.py:40
+#, fuzzy
+msgid "Sorting"
+msgstr "Postavke"
+
+#: ../../src/ed_menu.py:745
+msgid "Spaces to Tabs"
+msgstr "Razmaci na Kartice"
+
+#: ../../src/prefdlg.py:557
+msgid "Spell Checking"
+msgstr ""
+
+#: ../../src/ed_toolbar.py:74
+msgid "Start a New File"
+msgstr "Pokreni Novu Datoteku"
+
+#: ../../src/style_editor.py:174
+msgid "Start a blank new style"
+msgstr "Pokreni čist novi stil"
+
+#: ../../src/ed_menu.py:512
+msgid "Start a new file in a new tab"
+msgstr "Pokreni novu datoteku u novoj kartici"
+
+#: ../../src/ed_menu.py:514
+msgid "Start a new file in a new window"
+msgstr "Pokreni novu datoteku u novom prozoru"
+
+#: ../../src/prefdlg.py:959
+msgid "Start in Normal Mode"
+msgstr "Počni u Normalnom Modu"
+
+#: ../../src/prefdlg.py:304
+msgid "Startup"
+msgstr ""
+
+#: ../../src/prefdlg.py:427
+msgid "Startup Settings"
+msgstr "Postavke Podizanja"
+
+#: ../../src/updater.py:290
+msgid "Status Unknown"
+msgstr "Status Nepoznat"
+
+#: ../../src/ed_menu.py:808 ../../src/style_editor.py:63
+msgid "Style Editor"
+msgstr "Urednik Stila"
+
+#: ../../src/style_editor.py:190
+#: ../../plugins/codebrowser/codebrowser/cbrowser.py:54
+msgid "Style Tags"
+msgstr "Oznake Stila"
+
+#: ../../src/style_editor.py:166
+msgid "Style Theme"
+msgstr "Tema Stila"
+
+#: ../../plugins/codebrowser/codebrowser/cbrowser.py:55
+msgid "Subroutine Declarations"
+msgstr "Deklaracije Podrutine"
+
+#: ../../plugins/codebrowser/codebrowser/cbrowser.py:54
+msgid "Subroutines"
+msgstr "Podrutine"
+
+#: ../../src/plugdlg.py:831
+msgid "Successfully Installed Plugins"
+msgstr "Uspješno Instalirani Priključci"
+
+#: ../../src/ed_menu.py:477 ../../src/syntax/syntax.py:315
+#, python-format
+msgid "Switch Lexer to %s"
+msgstr "Zamijeni Lexer u %s"
+
+#: ../../src/ed_menu.py:787 ../../src/prefdlg.py:677 ../../src/prefdlg.py:1084
+msgid "Syntax Highlighting"
+msgstr "Označavanje Sintakse"
+
+#: ../../src/plugdlg.py:769
+msgid "System Directory"
+msgstr "Sustavni Direktorij"
+
+#: ../../src/prefdlg.py:724
+msgid "Tab Width"
+msgstr "Širina Kartice"
+
+#: ../../src/ed_menu.py:747
+msgid "Tabs to Spaces"
+msgstr "Kartice na Razmake"
+
+#: ../../plugins/codebrowser/codebrowser/cbrowser.py:55
+msgid "Task Definitions"
+msgstr "Definicije Zadataka"
+
+#: ../../plugins/Launch/launch/cfgdlg.py:405
+msgid "Text Colors"
+msgstr "Boje Teksta"
+
+#: ../../src/util.py:361
+msgid "Text Document"
+msgstr "Tekstualni Dokument"
+
+#: ../../src/ed_pages.py:165
+#, python-format
+msgid ""
+"The correct encoding of '%s' could not be determined.\n"
+"\n"
+"Choose an encoding and select Ok to open the file with the chosen encoding.\n"
+"Click Cancel to abort opening the file"
+msgstr ""
+"Ispravno šifriranje '%s' nije moglo biti utvrđeno.\n"
+"\n"
+"Odaberite šifriranje i kliknite Ok da otvorite datoteku sa odabranim šifriranjem.\n"
+"Kliknite Cancel da prekinete otvaranje datoteke."
+
+#: ../../src/ed_editv.py:498
+#, python-format
+msgid ""
+"The file: \"%s\" has been modified since the last save point.\n"
+"\n"
+"Would you like to save the changes?"
+msgstr ""
+"Datoteka: \"%s\" je bila modificirana poslije zadnjeg spremanja.\n"
+"\n"
+"Da li želite spremiti promjene?"
+
+#: ../../plugins/Launch/launch/launch.py:735
+msgid "The requested command could not be executed."
+msgstr ""
+
+#: ../../src/ed_search.py:308
+#, python-format
+msgid "The search term '%(term)s' was found %(count)d times."
+msgstr "Izraz za pretragu '%(term)s' je pronađen %(count)d puta."
+
+#: ../../src/ed_pages.py:980
+#, python-format
+msgid "There are no files that Editra can open in %s"
+msgstr "Nema datoteka koje Editra može otvoriti u %s"
+
+#: ../../src/ed_print.py:129
+msgid ""
+"There was an error when printing.\n"
+"Check that your printer is properly connected."
+msgstr ""
+"Imali ste grešku kod ispisa.\n"
+"Provjerite da je vaš šatmpač pravilno prikopčan."
+
+#: ../../src/plugdlg.py:408
+msgid "This plugin requires a newer version of Editra."
+msgstr "Ovaj priključak zahtijeva noviju Editra inačicu."
+
+#: ../../src/plugdlg.py:1066
+msgid "This plugin will be uninstalled on next program launch."
+msgstr ""
+
+#: ../../src/ed_editv.py:367
+msgid "To Lowercase"
+msgstr "Na Mala Slova"
+
+#: ../../src/ed_editv.py:366
+msgid "To Uppercase"
+msgstr "Na Velika Slova"
+
+#: ../../src/plugdlg.py:752
+msgid ""
+"To add a new item drag and drop the plugin file into the list.\n"
+"\n"
+"To remove an item select it and hit Delete or Backspace."
+msgstr ""
+"Za dodati novu stavku, prevucite i spustite datoteku priključka na listu.\n"
+"\n"
+"Za ukloniti stavku, odaberite istu i kliknite Delete ili Backspace."
+
+#: ../../plugins/filebrowser/filebrowser/browser.py:93
+#, python-format
+msgid "To open multiple files at once %s+Click to select the desired files/folders then hit Enter to open them all at once"
+msgstr "Za otvoriti više datoteka odjednom, %s+Click da odaberete željenu datoteku/mapu, pa zatim kliknite Enter da ih sve otvorite odjednom"
+
+#: ../../src/ed_menu.py:781
+msgid "Toggle Auto-Indentation functionality"
+msgstr "Mijenjaj Funkcionalnost Auto-Uvlačenja"
+
+#: ../../src/ed_menu.py:622
+msgid "Toggle Bookmark"
+msgstr "Prebacuj Knjižnu Oznaku"
+
+#: ../../src/ed_menu.py:786
+msgid "Toggle Code Folding"
+msgstr "Mijenjaj slaganje Koda"
+
+#: ../../src/ed_menu.py:722
+msgid "Toggle Comment"
+msgstr "Prebacuj Komentar"
+
+#: ../../src/ed_menu.py:687
+msgid "Toggle Editor Maximization"
+msgstr "Prebacuj Maksimiziranje Urednika"
+
+#: ../../src/ed_menu.py:674
+msgid "Toggle Editor View Options"
+msgstr "Prebacuj Opcije Pregleda Urednika"
+
+#: ../../src/ed_menu.py:678 ../../src/ed_menu.py:679
+msgid "Toggle all folds"
+msgstr "Mijenjaj sve slogove"
+
+#: ../../src/ed_menu.py:623
+msgid "Toggle bookmark of the current line"
+msgstr "Prebacuj knjižnu oznaku trenutnog reda"
+
+#: ../../src/ed_menu.py:723
+msgid "Toggle comment on the selected line(s)"
+msgstr "Prebacuj komentar na odabranim redovima"
+
+#: ../../src/ed_menu.py:677
+msgid "Toggle current fold"
+msgstr "Mijenjaj aktivni slog"
+
+#: ../../src/ed_menu.py:676
+msgid "Toggle fold"
+msgstr "Mijenjaj slog"
+
+#: ../../src/prefdlg.py:1185
+msgid "Toolbar Icon Size"
+msgstr "Veličina Ikone Alatne Trake"
+
+#: ../../src/ed_menu.py:836
+msgid "Translate Editra..."
+msgstr "Prevedite Editra..."
+
+#: ../../src/prefdlg.py:1238
+msgid "Transparency"
+msgstr "Prozirnost"
+
+#: ../../src/ed_menu.py:612
+msgid "Transpose Line"
+msgstr "Zamijeni Redove"
+
+#: ../../src/ed_menu.py:613
+msgid "Transpose the current line with the previous one"
+msgstr "Zamijeni aktivan red sa prethodnim"
+
+#: ../../src/ed_menu.py:749
+msgid "Trim Trailing Whitespace"
+msgstr "Podreži Krajnju Prazninu"
+
+#: ../../src/prefdlg.py:773
+msgid "Turn off for better performance"
+msgstr "Isključi za bolju učinkovitost"
+
+#: ../../src/util.py:184
+msgid "Unable to accept dropped file or text"
+msgstr "Nemoguće prihvatiti odbačenu datoteku ili tekst"
+
+#: ../../src/eclib/filemgrdlg.py:174
+#, python-format
+msgid "Unable to delete %s"
+msgstr ""
+
+#: ../../src/plugdlg.py:506
+msgid "Unable to retrieve plugin list"
+msgstr "Nemoguće pronaći listu priključaka"
+
+#: ../../src/ed_editv.py:359 ../../src/ed_toolbar.py:80
+msgid "Undo"
+msgstr "Vrati"
+
+#: ../../src/ed_menu.py:576 ../../src/ed_toolbar.py:80
+msgid "Undo Last Action"
+msgstr "Poništi Zadnju Akciju"
+
+#: ../../src/ed_menu.py:728
+msgid "Unindent Lines"
+msgstr "Ukloni Uvučene Redove"
+
+#: ../../src/ed_menu.py:729
+msgid "Unindent the selected lines"
+msgstr "Ukloni odabrane uvučene redove"
+
+#: ../../src/plugdlg.py:952
+msgid "Uninstall"
+msgstr ""
+
+#: ../../src/plugdlg.py:1062
+msgid "Uninstall Plugin"
+msgstr ""
+
+#: ../../src/ed_glob.py:386 ../../src/ed_mdlg.py:137 ../../src/ed_menu.py:759
+#: ../../src/ed_menu.py:761 ../../src/prefdlg.py:753
+msgid "Unix (\\n)"
+msgstr "Unix (\\n)"
+
+#: ../../src/plugdlg.py:366 ../../src/plugdlg.py:372 ../../src/plugdlg.py:419
+#: ../../src/plugdlg.py:423 ../../src/plugin.py:722 ../../src/util.py:367
+#: ../../src/eclib/infodlg.py:298
+msgid "Unknown"
+msgstr "Nepoznat"
+
+#: ../../plugins/filebrowser/filebrowser/browser.py:596
+msgid "Untitled_File"
+msgstr "Datoteka_Bez naslova"
+
+#: ../../plugins/filebrowser/filebrowser/browser.py:594
+msgid "Untitled_Folder"
+msgstr "Mapa_Bez naslova"
+
+#: ../../src/eclib/finddlg.py:804
+msgid "Up"
+msgstr "Gore"
+
+#: ../../src/prefdlg.py:1348
+msgid "Update"
+msgstr "Ažuriraj"
+
+#: ../../src/Editra.py:603
+msgid "Update Available"
+msgstr "Ažuriranje Dostupno"
+
+#: ../../src/ed_menu.py:731
+msgid "Uppercase"
+msgstr "Velika slova"
+
+#: ../../src/ed_menu.py:779
+msgid "Use Auto Completion when available"
+msgstr "Koristi Auto Kompletiranje ako je raspoloživo"
+
+#: ../../src/prefdlg.py:1386
+msgid "Use Proxy"
+msgstr "Koristi Proxy"
+
+#: ../../src/ed_menu.py:736
+msgid "Use Soft Tabs"
+msgstr "Koristi Mekane Kartice"
+
+#: ../../src/prefdlg.py:743
+msgid "Use Tabs Instead of Spaces"
+msgstr "Koristi Kartice Umjesto Razmaka"
+
+#: ../../src/prefdlg.py:511
+msgid "Used to set a custom backup path. If not specified the backup will be put in the same directory as the file."
+msgstr ""
+
+#: ../../src/plugdlg.py:765
+msgid "User Directory"
+msgstr "Korisnički Direktorij"
+
+#: ../../src/prefdlg.py:1403
+msgid "Username"
+msgstr "Korisničko ime"
+
+#: ../../src/ed_log.py:80
+msgid "View Editra's console log"
+msgstr "Pogledaj Editra dnevnik kontrolne ploče"
+
+#: ../../src/ed_menu.py:700
+msgid "View Line of Next Bookmark"
+msgstr "Pogledaj Liniju Slijedeće Knjižne Oznake"
+
+#: ../../src/ed_menu.py:702
+msgid "View Line of Previous Bookmark"
+msgstr "Pogledaj Liniju Prethodne Knjižne Oznake"
+
+#: ../../src/prefdlg.py:804
+msgid "View Options"
+msgstr "Opcije Pregleda"
+
+#: ../../src/prefdlg.py:775
+msgid "View Virtual Space After Last Line"
+msgstr ""
+
+#: ../../src/ed_script.py:202
+msgid "View and Edit Macros"
+msgstr "Pregledaj i Uredi Makro naredbe"
+
+#: ../../src/ed_menu.py:685
+msgid "View pane selection list"
+msgstr "Pogledaj listu odabira panela"
+
+#: ../../src/ed_menu.py:832
+#, python-format
+msgid "Visit the project homepage %s"
+msgstr "Posjetite početnu stranicu projekta %s"
+
+#: ../../src/prefdlg.py:922
+msgid "Visual Helpers"
+msgstr "Vizualni Pomoćnici"
+
+#: ../../src/prefdlg.py:537
+msgid "Warn when mixed eol characters are detected"
+msgstr "Upozori kad su otkriveni miješani eol znakovi"
+
+#: ../../plugins/Launch/launch/cfgdlg.py:460
+msgid "Warning Text"
+msgstr "Tekst Upozorenja"
+
+#: ../../src/prefdlg.py:950
+msgid "Warning suggestions will include context insensitive results"
+msgstr "Prijedlozi upozorenja će uključiti rezultate nebitne za sadržaj"
+
+#: ../../src/eclib/infodlg.py:191
+msgid "Where"
+msgstr "Gdje"
+
+#: ../../src/ed_main.py:733
+msgid "Where to Save Profile?"
+msgstr "Gdje Spremiti Profil?"
+
+#: ../../src/ed_main.py:777
+msgid "Where to Save Session?"
+msgstr "Gdje Spremiti Sesiju?"
+
+#: ../../src/ed_menu.py:751
+msgid "Whitespace"
+msgstr "Praznina"
+
+#: ../../src/ed_menu.py:752
+msgid "Whitespace formating commands"
+msgstr "Naredbe formatiranja praznine"
+
+#: ../../src/ed_cmdbar.py:290
+msgid "Whole Word"
+msgstr ""
+
+#: ../../src/eclib/finddlg.py:815
+msgid "Whole word"
+msgstr "Cijela riječ"
+
+#: ../../src/ed_glob.py:387 ../../src/ed_mdlg.py:138 ../../src/ed_menu.py:762
+#: ../../src/ed_menu.py:764 ../../src/prefdlg.py:754
+msgid "Windows (\\r\\n)"
+msgstr "Windows (\\r\\n)"
+
+#: ../../src/ed_menu.py:739 ../../src/prefdlg.py:771
+msgid "Word Wrap"
+msgstr "Omatanje Teksta"
+
+#: ../../src/ed_menu.py:740
+msgid "Wrap Text Horizontally"
+msgstr "Omotaj Tekst Horizontalno"
+
+#: ../../plugins/Launch/launch/cfgdlg.py:419
+msgid "Wrap lines in output buffer"
+msgstr ""
+
+#: ../../src/ed_main.py:1553
+#, python-format
+msgid "Written in 100%% Python."
+msgstr "Napisano u 100%% Python."
+
+#: ../../src/plugdlg.py:190
+msgid "You must restart Editra before your changes will take full affect."
+msgstr "Morate ponovo pokrenuti Editra da bi promjene imale pun efekt."
+
+#: ../../src/Editra.py:900 ../../src/Editra.py:1109
+msgid "Your profile has been updated to the latest version"
+msgstr "Vaš profil je ažuriran do najnovije inačice"
+
+#: ../../src/ed_menu.py:656 ../../src/ed_menu.py:657
+msgid "Zoom Default"
+msgstr "Uobičajeno Zumiranje"
+
+#: ../../src/ed_menu.py:655
+msgid "Zoom In"
+msgstr "Približi"
+
+#: ../../src/ed_menu.py:654
+msgid "Zoom Out"
+msgstr "Udalji"
+
+#: ../../plugins/Launch/launch/launch.py:189
+msgid "args"
+msgstr "argumenti"
+
+#: ../../src/style_editor.py:611
+msgid "bold"
+msgstr "podebljano"
+
+#: ../../src/ed_cmdbar.py:871
+msgid "cwd: "
+msgstr "cwd: "
+
+#: ../../src/style_editor.py:612
+msgid "eol"
+msgstr "eol"
+
+#: ../../plugins/Launch/launch/launch.py:173
+msgid "exec"
+msgstr "izvršni"
+
+#: ../../src/style_editor.py:613
+msgid "italic"
+msgstr "kurziv"
+
+#: ../../src/style_editor.py:614
+msgid "underline"
+msgstr "podcrtaj"
+
+#: ../../src/ed_pages.py:237
+msgid "untitled"
+msgstr ""
+
+#: ../../src/ed_pages.py:235
+#, python-format
+msgid "untitled %d"
+msgstr ""
+
+#~ msgid "Syntax Files"
+#~ msgstr "Sintaksne Datoteke"
+
+#~ msgid "Unable to retrieve version info"
+#~ msgstr "Nemoguće pronaći podatke o inačici"

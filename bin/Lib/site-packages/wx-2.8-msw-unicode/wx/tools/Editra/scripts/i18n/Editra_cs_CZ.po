@@ -1,0 +1,3018 @@
+# translation of _editra-cs.po to
+# Czech translation for editra
+# Copyright (c) 2008 Rosetta Contributors and Canonical Ltd 2008
+# This file is distributed under the same license as the editra package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2008.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: _editra-cs\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2010-12-05 17:02-0600\n"
+"PO-Revision-Date: 2010-06-06 19:24+0000\n"
+"Last-Translator: Konki <pavel.konkol@seznam.cz>\n"
+"Language-Team: <cs@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2011-02-26 20:32+0000\n"
+"X-Generator: Launchpad (build 12460)\n"
+
+#: ../../src/ed_search.py:429
+#, python-format
+msgid "\"%s\" was not found"
+msgstr "\"%s\" nebylo nalezeno"
+
+#: ../../src/ed_search.py:638
+#, python-format
+msgid "%d matches were replaced."
+msgstr "Bylo nahrazeno %d výskytů."
+
+#: ../../src/util.py:369
+#, python-format
+msgid "%s Source File"
+msgstr "%s Zdrojový soubor"
+
+#: ../../src/ed_main.py:609
+#, python-format
+msgid ""
+"%s could not be found.\n"
+"Perhaps it's been moved or deleted."
+msgstr ""
+"%s nebyl nalezen.\n"
+"Možná byl přesunut nebo vymazán."
+
+#: ../../src/ed_stc.py:1794
+#, python-format
+msgid "%s does not exist"
+msgstr "%s neexistuje"
+
+#: ../../src/ed_editv.py:442
+#, python-format
+msgid ""
+"%s has been deleted since its last save point.\n"
+"\n"
+"Would you like to save it again?"
+msgstr ""
+"Soubor %s byl smazán od svého posledního uložení.\n"
+"\n"
+"Chcete ho uložit znovu?"
+
+#: ../../src/ed_editv.py:462
+#, python-format
+msgid ""
+"%s has been modified by another application.\n"
+"\n"
+"Would you like to reload it?"
+msgstr ""
+"%s byl změněn jinou aplikací.\n"
+"\n"
+"Přejete si ho obnovit?"
+
+#: ../../src/ed_menu.py:829
+msgid "&About..."
+msgstr "&O programu"
+
+#: ../../src/ed_menu.py:521
+msgid "&Close Tab"
+msgstr "Zavřít &kartu"
+
+#: ../../src/ed_menu.py:581
+msgid "&Copy"
+msgstr "&Kopírovat"
+
+#: ../../src/ed_menu.py:645
+msgid "&Edit"
+msgstr "&Úpravy"
+
+#: ../../src/ed_menu.py:567
+msgid "&File"
+msgstr "&Soubor"
+
+#: ../../src/ed_menu.py:629
+msgid "&Find"
+msgstr "Na&jít"
+
+#: ../../src/ed_menu.py:719
+msgid "&Font"
+msgstr "&Písmo"
+
+#: ../../src/ed_menu.py:689
+msgid "&Goto Line"
+msgstr "Přejít na řádek"
+
+#: ../../src/ed_main.py:150 ../../src/ed_menu.py:843
+msgid "&Help"
+msgstr "&Nápověda"
+
+#: ../../src/ed_menu.py:511
+msgid "&New Tab"
+msgstr "&Nová karta"
+
+#: ../../src/ed_menu.py:516
+msgid "&Open"
+msgstr "&Otevřít"
+
+#: ../../src/ed_menu.py:583
+msgid "&Paste"
+msgstr "&Vložit"
+
+#: ../../src/ed_menu.py:562
+msgid "&Print"
+msgstr "&Tisk"
+
+#: ../../src/ed_menu.py:632
+msgid "&Quick Find"
+msgstr "&Rychlé hledání"
+
+#: ../../src/ed_menu.py:528
+msgid "&Save"
+msgstr "&Uložit"
+
+#: ../../src/ed_menu.py:793
+msgid "&Settings"
+msgstr "&Nastavení"
+
+#: ../../src/ed_menu.py:706
+msgid "&Toolbar"
+msgstr "Nás&trojová lišta"
+
+#: ../../src/ed_menu.py:820
+msgid "&Tools"
+msgstr "&Nástroje"
+
+#: ../../src/ed_menu.py:576
+msgid "&Undo"
+msgstr "&Zpět"
+
+#: ../../src/ed_menu.py:710
+msgid "&View"
+msgstr "Zo&brazit"
+
+#: ../../plugins/Launch/launch/cfgdlg.py:306
+msgid "**Alias**"
+msgstr "**Alias**"
+
+#: ../../plugins/Launch/launch/cfgdlg.py:306
+msgid "**New Value**"
+msgstr "**Nová hodnota**"
+
+#: ../../src/eclib/filterdlg.py:76
+msgid "<< Remove"
+msgstr "<< Odstranit"
+
+#: ../../src/eclib/errdlg.py:322 ../../plugins/Launch/launch/launch.py:596
+msgid "Abort"
+msgstr "Zrušit"
+
+#: ../../src/ed_menu.py:830
+msgid "About"
+msgstr "O programu"
+
+#: ../../src/ed_cmdbar.py:761
+#, python-format
+msgid "Access Denied: %s"
+msgstr "Přístup odepřen: %s"
+
+#: ../../src/eclib/filterdlg.py:75
+msgid "Add >>"
+msgstr "Přidat >>"
+
+#: ../../plugins/Launch/launch/cfgdlg.py:242
+msgid "Add a new executable"
+msgstr "Přidat nový spustitelný soubor"
+
+#: ../../src/ed_menu.py:597
+msgid "Add a new line after the current line"
+msgstr "Přidat nový řádek za stávající"
+
+#: ../../src/ed_menu.py:599
+msgid "Add a new line before the current line"
+msgstr "Přidat nový řádek před stávající"
+
+#: ../../src/ed_menu.py:627
+msgid "Add and remove bookmarks"
+msgstr "Přidat nebo odebrat záložky"
+
+#: ../../src/prefdlg.py:777
+msgid "Adds extra scrolling room after last line"
+msgstr ""
+
+#: ../../src/prefdlg.py:197
+msgid "Advanced"
+msgstr "Pokročilé"
+
+#: ../../plugins/Launch/launch/cfgdlg.py:527
+msgid "Alias"
+msgstr "Alias"
+
+#: ../../src/ed_log.py:170 ../../src/ed_log.py:245
+msgid "All"
+msgstr "Vše"
+
+#: ../../plugins/codebrowser/codebrowser/cbconfig.py:42
+msgid "Alphabetically"
+msgstr ""
+
+#: ../../src/Editra.py:601
+#, python-format
+msgid ""
+"An updated version of Editra is available\n"
+"Would you like to download Editra %s now?"
+msgstr ""
+"Nová verze programu Editra je k dispozici\n"
+"Chcete stáhout Editra %s ?"
+
+#: ../../src/prefdlg.py:763
+msgid "AntiAliasing"
+msgstr "AntiAliasing"
+
+#: ../../src/prefdlg.py:191
+msgid "Appearance"
+msgstr "Vzhled"
+
+#: ../../src/prefdlg.py:1768
+msgid "Apply"
+msgstr "Použít"
+
+#: ../../src/eclib/filemgrdlg.py:167
+#, python-format
+msgid "Are you sure want to delete %s?"
+msgstr "Opravdu chcete odstranit %s?"
+
+#: ../../src/plugdlg.py:1060
+#, python-format
+msgid ""
+"Are you sure you want to uninstall %s?\n"
+"This cannot be undone."
+msgstr ""
+"Jste si jistý, že chcete odinstalovat %s?\n"
+"Toto nelze vrátit zpět."
+
+#: ../../plugins/Launch/launch/launch.py:192
+#, fuzzy
+msgid "Arguments"
+msgstr "Argumenty skriptu"
+
+#: ../../src/style_editor.py:607
+msgid "Attributes"
+msgstr "Atributy"
+
+#: ../../plugins/Launch/launch/cfgdlg.py:416
+msgid "Audible feedback when errors are detected"
+msgstr "Zvukové upozornění při detekování chyb"
+
+#: ../../src/ed_main.py:1251
+msgid "Aui Pane Navigator"
+msgstr "Aui Pane Navigátor"
+
+#: ../../src/plugdlg.py:948 ../../src/plugdlg.py:1129
+#, python-format
+msgid "Author: %s"
+msgstr "Autor: %s"
+
+#: ../../src/ed_menu.py:778 ../../src/prefdlg.py:944
+msgid "Auto-Completion"
+msgstr "Automatické doplňování"
+
+#: ../../src/ed_menu.py:780 ../../src/prefdlg.py:954
+msgid "Auto-Indent"
+msgstr "Automatické odsazování"
+
+#: ../../src/perspective.py:73
+msgid "Automatic"
+msgstr "Automaticky"
+
+#: ../../src/prefdlg.py:500
+msgid "Automatically Backup Files"
+msgstr "Automaticky zálohovat soubory"
+
+#: ../../plugins/Launch/launch/cfgdlg.py:413
+msgid "Automatically clear buffer between runs"
+msgstr "Automaticky vyčistit buffer mezi spouštěním"
+
+#: ../../src/prefdlg.py:532
+msgid "Automatically reload files when changes are detected on disk"
+msgstr "Automaticky obnovit soubory, pokud jsou na disku detekovány změny"
+
+#: ../../src/perspective.py:74
+msgid "Automatically save/use window state from last session"
+msgstr "Automaticky uložit/použít stav okna z minulého sezení"
+
+#: ../../src/prefdlg.py:740
+msgid "Automatically trim whitespace on save"
+msgstr "Automaticky upravit prázdné prostory při uložení"
+
+#: ../../src/style_editor.py:596 ../../plugins/Launch/launch/cfgdlg.py:436
+msgid "Background"
+msgstr "Pozadí"
+
+#: ../../src/prefdlg.py:746
+msgid "Backspace Unindents"
+msgstr "Backspace maže odsazení"
+
+#: ../../src/prefdlg.py:506
+msgid "Backup Path:"
+msgstr ""
+
+#: ../../src/prefdlg.py:503
+msgid "Backup buffer to file periodically"
+msgstr "Pravidelně zálohovat vyrovnávací paměť do souboru"
+
+#: ../../src/style_editor.py:171
+msgid "Base new theme on existing one"
+msgstr "Vytvořit nové téma na základě existujícího"
+
+#: ../../src/prefdlg.py:1742
+msgid "Binding"
+msgstr "Vazba"
+
+#: ../../src/prefdlg.py:2156
+msgid "Black/White"
+msgstr "Černá/bílá"
+
+#: ../../plugins/filebrowser/filebrowser/browser.py:417
+msgid "Bookmark Selected Path(s)"
+msgstr "Uložit do Záložek vybranou cestu"
+
+#: ../../src/ed_menu.py:626
+msgid "Bookmarks"
+msgstr "Záložky"
+
+#: ../../src/ed_menu.py:783 ../../src/prefdlg.py:924
+msgid "Bracket Highlighting"
+msgstr "Zvýrazňovat závorky"
+
+#: ../../plugins/Launch/launch/cfgdlg.py:546
+msgid "Browse"
+msgstr "Procházet"
+
+#: ../../src/ed_menu.py:838
+msgid "Bug Tracker..."
+msgstr ""
+
+#: ../../src/ed_cmdbar.py:559
+#, python-format
+msgid "Can't change directory to: %s"
+msgstr "Není možné změnit adresář na: %s"
+
+#: ../../src/ed_search.py:1248 ../../src/style_editor.py:131
+#: ../../src/updater.py:568
+msgid "Cancel"
+msgstr "Zrušit"
+
+#: ../../src/updater.py:645
+msgid "Canceled"
+msgstr "Zrušeno"
+
+#: ../../src/ed_statbar.py:186
+msgid "Change Encoding"
+msgstr "Změnit kódování"
+
+#: ../../src/ed_menu.py:720
+msgid "Change Font Settings"
+msgstr "Změnit nastavení písma"
+
+#: ../../src/ed_statbar.py:60 ../../src/ed_statbar.py:63
+#: ../../src/ed_statbar.py:66
+#, python-format
+msgid "Change line endings to %s"
+msgstr "Změnit konce řádků na %s"
+
+#: ../../src/ed_statbar.py:185
+msgid "Change the encoding of the current document."
+msgstr "Změnit kódování aktuálního dokumentu."
+
+#: ../../src/perspective.py:130
+#, python-format
+msgid "Change view to \"%s\""
+msgstr "Změnit zobrazení na \"%s\""
+
+#: ../../src/prefdlg.py:282
+msgid "Changes made in this dialog are saved in your current profile. Some Items such as Language require the program to be restarted before taking effect."
+msgstr "Změny provedené v tomto dialogu jsou uloženy ve stávajícím profilu. Některé věci, jako například jazyk, vyžadují restartování programu, aby se změny projevily."
+
+#: ../../src/plugdlg.py:232
+msgid "Changes will take affect once the program has been restarted"
+msgstr "Změny se projeví po restartování programu"
+
+#: ../../src/prefdlg.py:1534
+msgid "Check"
+msgstr "Ověřit"
+
+#: ../../src/prefdlg.py:412
+msgid "Check for updates on startup"
+msgstr "Zkontrolovat dostupnost aktualizací při spuštění"
+
+#: ../../src/prefdlg.py:527
+msgid "Check if on disk file has been modified by others"
+msgstr "Zkontrolovat jestli soubor na disku byl změněn ostatními"
+
+#: ../../src/prefdlg.py:561
+msgid "Check spelling while typing"
+msgstr "Kontrola pravopisu při psaní"
+
+#: ../../src/eclib/finddlg.py:790
+msgid "Choose Folder"
+msgstr "Vybrat složku"
+
+#: ../../src/eclib/finddlg.py:1118
+msgid "Choose Search Folder"
+msgstr "Vyberte složku vyhledávání"
+
+#: ../../src/ed_main.py:698
+msgid "Choose a Save Location"
+msgstr "Vybrat cestu k uložení"
+
+#: ../../src/ed_pages.py:175
+msgid "Choose an Encoding"
+msgstr "Vyberte kódování"
+
+#: ../../plugins/Launch/launch/cfgdlg.py:555
+msgid "Choose and executable"
+msgstr "Vybrat a spustit"
+
+#: ../../plugins/codebrowser/codebrowser/cbrowser.py:50
+msgid "Class Definitions"
+msgstr "Definice tříd"
+
+#: ../../src/ed_log.py:140 ../../src/ed_search.py:1257
+#: ../../plugins/Launch/launch/launch.py:210
+#: ../../plugins/PyShell/PyShell/__init__.py:114
+msgid "Clear"
+msgstr "Smazat"
+
+#: ../../plugins/Launch/launch/cfgdlg.py:524
+msgid "Click on an item to edit"
+msgstr "Klikněte na položku pro upravení"
+
+#: ../../src/ed_editv.py:230
+#, python-format
+msgid "Close \"%s\""
+msgstr "Zavřít \"%s\""
+
+#: ../../src/ed_editv.py:232
+msgid "Close All"
+msgstr "Zavřít vše"
+
+#: ../../src/ed_menu.py:525
+msgid "Close All Tabs"
+msgstr "Zavřít všechny karty"
+
+#: ../../src/ed_menu.py:522
+msgid "Close Current Tab"
+msgstr "Zavřít současnou kartu"
+
+#: ../../src/ed_editv.py:231
+msgid "Close Other Tabs"
+msgstr "Zavřít ostatní záložky"
+
+#: ../../src/ed_menu.py:524
+msgid "Close Window"
+msgstr "Zavřít okno"
+
+#: ../../src/ed_menu.py:526
+msgid "Close all open tabs"
+msgstr "Zavřít všechny otevřené karty"
+
+#: ../../src/ed_menu.py:524
+msgid "Close the current window"
+msgstr "Zavřít aktuální okno"
+
+#: ../../src/prefdlg.py:676
+msgid "Code"
+msgstr "Kód"
+
+#: ../../plugins/codebrowser/codebrowser/cbrowser.py:90
+msgid "Code Browser"
+msgstr "Prohlížeč kódu"
+
+#: ../../src/ed_menu.py:680 ../../src/ed_menu.py:785 ../../src/prefdlg.py:926
+msgid "Code Folding"
+msgstr "Skládání kódu"
+
+#: ../../src/ed_menu.py:681
+msgid "Code folding toggle actions"
+msgstr "Skládací kód přepínače akcí"
+
+#: ../../plugins/codebrowser/codebrowser/__init__.py:48
+#: ../../plugins/codebrowser/codebrowser/__init__.py:95
+msgid "CodeBrowser"
+msgstr "Prohlížeč kódu"
+
+#: ../../src/style_editor.py:579
+msgid "Color"
+msgstr "Barva"
+
+#: ../../src/ed_menu.py:788
+msgid "Color Highlight Code Syntax"
+msgstr "Barevné zvýrazňování kódu"
+
+#: ../../src/prefdlg.py:1100 ../../plugins/PyShell/PyShell/__init__.py:109
+msgid "Color Scheme"
+msgstr "Barevné téma"
+
+#: ../../src/prefdlg.py:2158
+msgid "Colour/Default"
+msgstr "Barva/Přednastavené"
+
+#: ../../src/prefdlg.py:2157
+msgid "Colour/White"
+msgstr "Barva/bílá"
+
+#: ../../src/ed_menu.py:592
+msgid "Column Mode"
+msgstr "Sloupcový režim"
+
+#: ../../src/ed_cmdbar.py:407
+msgid "Command"
+msgstr "Příkaz"
+
+#: ../../src/ed_menu.py:620
+msgid "Commands that affect an entire line"
+msgstr "Příkazy, co ovlivní celý řádek"
+
+#: ../../src/prefdlg.py:1344
+msgid "Configuration"
+msgstr "Nastavení"
+
+#: ../../src/plugdlg.py:192
+msgid "Configuration Changes Made"
+msgstr "Konfigurační změny vykonány"
+
+#: ../../src/plugdlg.py:119 ../../src/plugdlg.py:956
+msgid "Configure"
+msgstr "Nastavit"
+
+#: ../../src/ed_menu.py:559
+msgid "Configure Printer"
+msgstr "Nastavení tiskárny"
+
+#: ../../src/ed_menu.py:734
+msgid "Convert selected text to all lowercase letters"
+msgstr "Konvertovat vybraný text na malá písmena"
+
+#: ../../src/ed_menu.py:732
+msgid "Convert selected text to all uppercase letters"
+msgstr "Konvertovat vybraný text na velká písmena"
+
+#: ../../src/ed_menu.py:746
+msgid "Convert spaces to tabs in selected/all text"
+msgstr "Zaměnit mezery za tabulátory ve vybraném/celém textu"
+
+#: ../../src/ed_menu.py:748
+msgid "Convert tabs to spaces in selected/all text"
+msgstr "Zaměnit tabulátory za mezery ve vybraném/celém textu"
+
+#: ../../src/ed_editv.py:363 ../../src/ed_toolbar.py:85
+msgid "Copy"
+msgstr "Kopírovat"
+
+#: ../../src/ed_menu.py:606
+msgid "Copy Current Line"
+msgstr "Kopírovat stávající řádek"
+
+#: ../../src/ed_editv.py:234
+msgid "Copy Full Path"
+msgstr "Kopírovat plnou cestu"
+
+#: ../../src/ed_menu.py:605
+msgid "Copy Line"
+msgstr "Kopírovat řádek"
+
+#: ../../src/ed_menu.py:582 ../../src/ed_toolbar.py:86
+msgid "Copy Selected Text to Clipboard"
+msgstr "Kopírovat vybraný text do schránky"
+
+#: ../../src/ed_main.py:1562
+msgid "Copyright"
+msgstr "Copyright"
+
+#: ../../src/eclib/finddlg.py:845
+msgid "Count"
+msgstr "Počet"
+
+#: ../../plugins/filebrowser/filebrowser/browser.py:429
+#: ../../plugins/filebrowser/filebrowser/browser.py:548
+#, python-format
+msgid "Create Archive of \"%s\""
+msgstr "Vytvořit archiv z \"%s\""
+
+#: ../../src/eclib/infodlg.py:193
+msgid "Created"
+msgstr "Vytvořeno"
+
+#: ../../src/ed_menu.py:579
+msgid "Cu&t"
+msgstr "&Vyjmout"
+
+#: ../../src/eclib/finddlg.py:713
+#, fuzzy
+msgid "Current Directory"
+msgstr "Otevřít složku?"
+
+#: ../../src/eclib/finddlg.py:712
+msgid "Current Document"
+msgstr "Současný dokument"
+
+#: ../../src/ed_cmdbar.py:116
+msgid "Customize"
+msgstr "Přizpůsobit"
+
+#: ../../src/ed_main.py:1450
+msgid "Customize Menu"
+msgstr "Upravit menu"
+
+#: ../../src/ed_menu.py:471
+msgid "Customize the items shown in this menu."
+msgstr "Vlastní položky uvedené v tomto menu."
+
+#: ../../src/ed_menu.py:470
+msgid "Customize..."
+msgstr "Upravit..."
+
+#: ../../src/ed_editv.py:362 ../../src/ed_toolbar.py:83
+msgid "Cut"
+msgstr "Vyjmout"
+
+#: ../../src/ed_menu.py:602
+msgid "Cut Current Line"
+msgstr "Vyjmout stávající řádek"
+
+#: ../../src/ed_menu.py:601
+msgid "Cut Line"
+msgstr "Vyjmout řádek"
+
+#: ../../src/ed_menu.py:580 ../../src/ed_toolbar.py:84
+msgid "Cut Selected Text from File"
+msgstr "Vyjmout vybraný text ze souboru"
+
+#: ../../src/ed_menu.py:587
+msgid "Cycle Clipboard"
+msgstr "Cyklus schránky"
+
+#: ../../src/ed_menu.py:588
+msgid "Cycle through recent clipboard text"
+msgstr "Cyklus skrz nedávný text ve schránce"
+
+#: ../../src/ed_search.py:62 ../../src/ed_search.py:66
+msgid "DECODING ERROR"
+msgstr "CHYBA DEKÓDOVÁNÍ"
+
+#: ../../plugins/Launch/launch/cfgdlg.py:228
+msgid "Default"
+msgstr "Výchozí"
+
+#: ../../src/prefdlg.py:758
+msgid "Default EOL Mode"
+msgstr "Výchozí EOL mód"
+
+#: ../../src/prefdlg.py:917
+msgid "Default Lexer"
+msgstr "Výchozí syntaxe"
+
+#: ../../src/prefdlg.py:1202
+msgid "Default Perspective"
+msgstr "Výchozí pohled"
+
+#: ../../src/prefdlg.py:915
+msgid "Default highlighing for new documents"
+msgstr "Výchozí zvýrazňování pro nové dokumenty"
+
+#: ../../plugins/codebrowser/codebrowser/cbrowser.py:50
+msgid "Defines"
+msgstr "Definuje"
+
+#: ../../src/prefdlg.py:1711
+msgid "Delete"
+msgstr "Smazat"
+
+#: ../../src/eclib/filemgrdlg.py:175
+msgid "Delete Error"
+msgstr "Chyba při mazání"
+
+#: ../../src/eclib/filemgrdlg.py:168
+msgid "Delete File?"
+msgstr "Smazat soubor?"
+
+#: ../../src/ed_menu.py:603
+msgid "Delete Line"
+msgstr "Smazat řádek"
+
+#: ../../src/perspective.py:271
+msgid "Delete Perspective"
+msgstr "Smazat pohled"
+
+#: ../../src/perspective.py:71
+msgid "Delete Saved View"
+msgstr "Smazat uložený pohled"
+
+#: ../../src/ed_menu.py:604
+msgid "Delete the selected line(s)"
+msgstr "Smazat vybrané řádky"
+
+#: ../../plugins/filebrowser/filebrowser/browser.py:488
+#: ../../plugins/filebrowser/filebrowser/browser.py:657
+msgid "Desktop"
+msgstr "Pracovní plocha"
+
+#: ../../src/prefdlg.py:568
+msgid "Dictionary"
+msgstr "Slovník"
+
+#: ../../src/eclib/finddlg.py:802
+msgid "Direction"
+msgstr "Směr"
+
+#: ../../src/prefdlg.py:399
+msgid "Disable Error Reporter"
+msgstr "Vypnout Error Reporter"
+
+#: ../../src/prefdlg.py:1244
+msgid "Display Font"
+msgstr "Zobrazené písmo"
+
+#: ../../src/plugdlg.py:179
+msgid "Do you wish to exit?"
+msgstr "Přejete si ukončit tuto aplikaci?"
+
+#: ../../src/ed_pages.py:988
+#, python-format
+msgid ""
+"Do you wish to open all %d files in this directory?\n"
+"\n"
+"Warning: opening many files at once may cause the editor to temporarily  freeze."
+msgstr ""
+"Přejete si otevřít všechny %d soubory v tomto adresáři?\n"
+"\n"
+"Varování: otevření více souborů najednou může způsobit dočasné zamrznutí editoru."
+
+#: ../../src/prefdlg.py:193
+msgid "Document"
+msgstr "Dokument"
+
+#: ../../src/eclib/finddlg.py:806
+msgid "Down"
+msgstr "Dolů"
+
+#: ../../src/plugdlg.py:120 ../../src/plugdlg.py:460 ../../src/plugdlg.py:1108
+#: ../../src/prefdlg.py:1529
+msgid "Download"
+msgstr "Stáhnout"
+
+#: ../../src/plugdlg.py:483
+msgid "Downloaded"
+msgstr "Staženo"
+
+#: ../../src/plugdlg.py:595 ../../src/updater.py:604
+msgid "Downloading"
+msgstr "Stahuji"
+
+#: ../../src/updater.py:567
+#, python-format
+msgid "Downloading To: %s"
+msgstr "Stahuji do: %s"
+
+#: ../../src/Editra.py:607 ../../src/prefdlg.py:1570
+msgid "Downloading Update"
+msgstr "Stahuji aktualizaci"
+
+#: ../../src/updater.py:565
+#, python-format
+msgid "Downloading: %s"
+msgstr "Stahuji: %s"
+
+#: ../../src/plugdlg.py:178
+msgid "Downloads are incomplete"
+msgstr "Stahování není dokončeno"
+
+#: ../../plugins/filebrowser/filebrowser/browser.py:428
+msgid "Duplicate"
+msgstr "Duplikovat"
+
+#: ../../src/ed_menu.py:607
+msgid "Duplicate Line"
+msgstr "Duplikovat řádek"
+
+#: ../../src/ed_menu.py:608
+msgid "Duplicate the current line"
+msgstr "Duplikovat stávající řádek"
+
+#: ../../src/ed_menu.py:564
+msgid "E&xit"
+msgstr "&Konec"
+
+#: ../../src/ed_menu.py:765
+msgid "EOL Mode"
+msgstr "EOL Mód"
+
+#: ../../src/ed_main.py:674
+#, python-format
+msgid "ERROR: %s"
+msgstr "CHYBA: %s"
+
+#: ../../src/ed_main.py:714
+#, python-format
+msgid "ERROR: Failed to save %s"
+msgstr "CHYBA: Uložení souboru \"%s\" se nezdařilo"
+
+#: ../../src/prefdlg.py:928
+msgid "Edge Guide"
+msgstr "Vodící okrajová čára"
+
+#: ../../plugins/filebrowser/filebrowser/browser.py:413
+msgid "Edit"
+msgstr "Upravit"
+
+#: ../../src/ed_menu.py:642
+msgid "Edit Preferences / Settings"
+msgstr "Upravit nastavení"
+
+#: ../../src/ed_menu.py:809
+msgid "Edit the way syntax is highlighted"
+msgstr "Změnte zvýrazňování syntaxe"
+
+#: ../../src/ed_menu.py:673
+msgid "Editor"
+msgstr "Editor"
+
+#: ../../src/ed_menu.py:804
+msgid "Editor Command"
+msgstr "Příkaz Editoru"
+
+#: ../../src/prefdlg.py:383
+msgid "Editor Mode"
+msgstr "Mód editoru"
+
+#: ../../src/ed_log.py:79
+msgid "Editra Log"
+msgstr "Editra log"
+
+#: ../../src/ed_mdlg.py:85
+#, python-format
+msgid ""
+"Editra could not open %(filename)s\n"
+"\n"
+"Error:\n"
+"%(errormsg)s"
+msgstr ""
+"Editra nemohl otevřít %(filename)s\n"
+"\n"
+"Chyba:\n"
+"%(errormsg)s"
+
+#: ../../src/ed_main.py:1552
+msgid "Editra is a programmers text editor."
+msgstr "Editra je programátorský textový editor"
+
+#: ../../src/ed_menu.py:837
+msgid "Editra translations project"
+msgstr "Projekt překládání aplikace Editra"
+
+#: ../../src/ed_main.py:439
+msgid "Editra: Open"
+msgstr ""
+
+#: ../../plugins/codebrowser/codebrowser/cbrowser.py:57
+msgid "Elements"
+msgstr ""
+
+#: ../../src/ed_pages.py:377
+msgid "Empty File"
+msgstr "Prázdný soubor"
+
+#: ../../src/plugdlg.py:949
+msgid "Enable"
+msgstr "Zapnout"
+
+#: ../../src/prefdlg.py:956
+msgid "Enable Vi Emulation"
+msgstr "Povolit emulaci Vi"
+
+#: ../../src/ed_menu.py:593
+msgid "Enable column edit mode."
+msgstr "Povolit režim úprav sloupců."
+
+#: ../../src/prefdlg.py:578
+msgid "Enchant Path"
+msgstr ""
+
+#: ../../src/prefdlg.py:494
+msgid "Encoding to try when auto detection fails"
+msgstr "Zkusit kódování pokud selže automatická detekce"
+
+#: ../../src/ed_menu.py:766
+msgid "End of line character formatting"
+msgstr "Formátování znaku konce řádky"
+
+#: ../../src/eclib/colorsetter.py:82
+msgid "Enter a hex color value"
+msgstr "Zadejte hexadecimální hodnotu barvy"
+
+#: ../../src/style_editor.py:260
+msgid "Enter style sheet name"
+msgstr "Zadejte název stylu"
+
+#: ../../src/prefdlg.py:1906
+msgid "Enter the name of the new key profile"
+msgstr "Vložte jméno nového profilu klávesových zkratek"
+
+#: ../../src/eclib/finddlg.py:823
+msgid "Enter wildcard shell patterns for matching files (*.txt)."
+msgstr ""
+
+#: ../../src/ed_editv.py:189 ../../src/plugdlg.py:838
+msgid "Error"
+msgstr "Chyba"
+
+#: ../../src/ed_mdlg.py:87
+msgid "Error Opening File"
+msgstr "Chyba při otevírání souboru"
+
+#: ../../src/ed_pages.py:327
+msgid "Error Saving Session File"
+msgstr ""
+
+#: ../../plugins/Launch/launch/cfgdlg.py:446
+msgid "Error Text"
+msgstr "Chybový text"
+
+#: ../../src/eclib/errdlg.py:318
+msgid "Error Traceback:"
+msgstr "Výpis Chyby:"
+
+#: ../../src/ed_search.py:544 ../../src/ed_search.py:705
+#, python-format
+msgid ""
+"Error in regular expression expansion.The replace action cannot be completed.\n"
+"\n"
+"Error Message: %s"
+msgstr ""
+
+#: ../../src/dev_tool.py:252
+msgid ""
+"Error: Something unexpected happend\n"
+"Help improve Editra by clicking on Report Error\n"
+"to send the Error Traceback shown below."
+msgstr ""
+
+#: ../../src/ed_main.py:1502
+#, python-format
+msgid "Error: Unable to open %s"
+msgstr "Chyba: Nemohu otevřít %s"
+
+#: ../../src/plugdlg.py:129
+msgid "Errors"
+msgstr "Chyby"
+
+#: ../../plugins/Launch/launch/cfgdlg.py:528
+msgid "Executable Commands"
+msgstr "Spustitelné příkazy"
+
+#: ../../plugins/Launch/launch/cfgdlg.py:213
+msgid "Executables"
+msgstr "Příkazy"
+
+#: ../../plugins/Launch/launch/launch.py:749
+msgid "Exit Code"
+msgstr "Ukončit kód"
+
+#: ../../src/ed_menu.py:564
+msgid "Exit the Program"
+msgstr "Ukončit program"
+
+#: ../../src/eclib/errdlg.py:323
+msgid "Exit the application"
+msgstr "Ukončí aplikaci"
+
+#: ../../src/style_editor.py:133
+msgid "Export"
+msgstr "Export"
+
+#: ../../src/style_editor.py:261
+msgid "Export Style Sheet"
+msgstr "Exportovat kaskádový styl"
+
+#: ../../src/prefdlg.py:947
+msgid "Extended Auto-Comp"
+msgstr ""
+
+#: ../../src/prefdlg.py:2045
+msgid "Extensions (space separated, no dots)"
+msgstr "Rozšíření (oddělené mezerou, bez teček)"
+
+#: ../../src/ed_menu.py:769
+msgid "F&ormat"
+msgstr "F&ormát"
+
+#: ../../src/updater.py:683
+msgid "Failed"
+msgstr "Selhalo"
+
+#: ../../src/ed_print.py:112
+msgid "Failed to create print preview"
+msgstr "Chyba při vytváření náhledu tisku"
+
+#: ../../src/plugdlg.py:840
+#, python-format
+msgid "Failed to install %d plugins"
+msgstr "Instalace %d pluginů selhala"
+
+#: ../../src/prefdlg.py:647
+msgid "Failed to load Enchant"
+msgstr "Chyba při načítání Enchant"
+
+#: ../../src/ed_editv.py:187
+#, python-format
+msgid ""
+"Failed to reload %(filename)s:\n"
+"Error: %(errmsg)s"
+msgstr ""
+"Selhalo znovunačtení souboru %(filename)s:\n"
+"Chyba: %(errmsg)s"
+
+#: ../../src/ed_main.py:1232
+#, python-format
+msgid "Failed to reload the file with: %(encoding)s"
+msgstr "Chyba při znovunačítání souboru s: %(encoding)s"
+
+#: ../../src/ed_mdlg.py:104
+#, python-format
+msgid ""
+"Failed to save file: %(filename)s\n"
+"\n"
+"Error:\n"
+"%(errormsg)s"
+msgstr ""
+"Selhalo ukládání souboru: %(filename)s\n"
+"\n"
+"Chyba:\n"
+"%(errormsg)s"
+
+#: ../../src/ed_menu.py:839
+msgid "Feedback"
+msgstr "Zpětná vazba"
+
+#: ../../plugins/filebrowser/filebrowser/browser.py:232
+msgid "File Browser"
+msgstr "Prohlížeč souborů"
+
+#: ../../src/eclib/finddlg.py:716
+msgid "File Filters:"
+msgstr "Souborové filtry:"
+
+#: ../../src/prefdlg.py:475
+msgid "File History Length"
+msgstr "Počet souborů v historii"
+
+#: ../../src/ed_main.py:611
+msgid "File Not Found"
+msgstr "Soubor nenalezen"
+
+#: ../../src/prefdlg.py:543
+msgid "File Settings"
+msgstr "Nastavení souboru"
+
+#: ../../src/eclib/infodlg.py:115
+msgid "File Stat Failed"
+msgstr "Chyba statusu souboru"
+
+#: ../../plugins/Launch/launch/cfgdlg.py:208
+msgid "File Type"
+msgstr "Typ souboru"
+
+#: ../../src/ed_stc.py:612
+#, python-format
+msgid "File backup performed: %s"
+msgstr "Záložní soubor provedl: %s"
+
+#: ../../src/ed_stc.py:1841
+msgid "File is Read Only and cannot be saved"
+msgstr "Soubor je pouze pro čtení a nemůže být uložen"
+
+#: ../../src/ed_pages.py:214
+msgid ""
+"File is already open in an existing page.\n"
+"Do you wish to open it again?"
+msgstr ""
+"Soubor je již otevřen v existující kartě.\n"
+"Chcete ho znovu otevřít?"
+
+#: ../../src/prefdlg.py:305 ../../src/eclib/filemgrdlg.py:218
+msgid "Files"
+msgstr "Soubory"
+
+#: ../../src/ed_search.py:1302
+#, python-format
+msgid "Files Searched: %d"
+msgstr "Vyhledané soubory: %d"
+
+#: ../../src/prefdlg.py:1094
+msgid "Filetype Associations"
+msgstr "Asociace Souborů"
+
+#: ../../src/ed_cmdbar.py:261 ../../src/ed_search.py:147
+#: ../../src/ed_search.py:151 ../../src/ed_toolbar.py:90
+#: ../../src/eclib/finddlg.py:632 ../../src/eclib/finddlg.py:767
+#: ../../src/eclib/finddlg.py:843
+msgid "Find"
+msgstr "Najít"
+
+#: ../../src/ed_cmdbar.py:277 ../../src/eclib/finddlg.py:846
+msgid "Find All"
+msgstr "Najít vše"
+
+#: ../../src/ed_search.py:309
+msgid "Find Count"
+msgstr "Najít počet"
+
+#: ../../src/ed_menu.py:636
+msgid "Find Next"
+msgstr "Najít následující"
+
+#: ../../src/eclib/finddlg.py:812
+msgid "Find Options"
+msgstr "Možnosti vyhledávání"
+
+#: ../../src/ed_menu.py:634
+msgid "Find Previous"
+msgstr "Najít předchozí"
+
+#: ../../src/ed_menu.py:638
+msgid "Find Selected"
+msgstr "Najít vybrané"
+
+#: ../../src/ed_menu.py:629 ../../src/ed_toolbar.py:90
+msgid "Find Text"
+msgstr "Najít text"
+
+#: ../../src/ed_menu.py:631 ../../src/ed_toolbar.py:92
+msgid "Find and Replace Text"
+msgstr "Najít a Nahradit text"
+
+#: ../../src/eclib/finddlg.py:765
+msgid "Find what"
+msgstr "Najít co"
+
+#: ../../src/ed_menu.py:630
+msgid "Find/R&eplace"
+msgstr "Najít/Na&hradit"
+
+#: ../../src/ed_search.py:147 ../../src/ed_search.py:151
+#: ../../src/ed_toolbar.py:91
+msgid "Find/Replace"
+msgstr "Najít/Nahradit"
+
+#: ../../src/updater.py:680
+msgid "Finished"
+msgstr "Dokončeno"
+
+#: ../../src/plugdlg.py:486
+msgid "Finshed downloading plugins"
+msgstr "Stahování pluginu dokončeno"
+
+#: ../../src/util.py:357 ../../src/eclib/infodlg.py:292
+msgid "Folder"
+msgstr "Složka"
+
+#: ../../src/style_editor.py:628
+msgid "Font"
+msgstr "Písmo"
+
+#: ../../src/style_editor.py:623
+msgid "Font Settings"
+msgstr "Nastavení písem"
+
+#: ../../src/style_editor.py:584 ../../plugins/Launch/launch/cfgdlg.py:433
+msgid "Foreground"
+msgstr "Popředí"
+
+#: ../../src/prefdlg.py:796
+msgid "Format"
+msgstr "Formát"
+
+#: ../../src/ed_stc.py:1187
+msgid "Format EOL?"
+msgstr ""
+
+#: ../../src/ed_menu.py:757 ../../src/ed_menu.py:760 ../../src/ed_menu.py:763
+#, python-format
+msgid "Format all EOL characters to %s Mode"
+msgstr "Formátovat všechny EOL znaky do %s módu"
+
+#: ../../plugins/codebrowser/codebrowser/cbrowser.py:50
+msgid "Function Definitions"
+msgstr "Definice funkce"
+
+#: ../../plugins/codebrowser/codebrowser/cbrowser.py:56
+msgid "Functions"
+msgstr "Funkce"
+
+#: ../../src/prefdlg.py:189 ../../src/prefdlg.py:675 ../../src/prefdlg.py:968
+#: ../../plugins/Launch/launch/cfgdlg.py:173
+msgid "General"
+msgstr "Obecné"
+
+#: ../../src/generator.py:289 ../../src/generator.py:676
+#: ../../src/generator.py:879
+#, python-format
+msgid "Generate %s"
+msgstr "Generovat %s"
+
+#: ../../src/generator.py:116
+msgid "Generate Code and Documents"
+msgstr "Generovat kód a dokumenty"
+
+#: ../../src/generator.py:290 ../../src/generator.py:880
+#, python-format
+msgid "Generate a %s version of the current document"
+msgstr "Generovat %s verzi stávajícího dokumentu"
+
+#: ../../src/generator.py:677
+#, python-format
+msgid "Generate an %s version of the current document"
+msgstr "Generovat %s verzi stávajícího dokumentu"
+
+#: ../../src/generator.py:115
+msgid "Generator"
+msgstr "Generátor"
+
+#: ../../plugins/filebrowser/filebrowser/browser.py:422
+msgid "Get Info"
+msgstr "Získat informace"
+
+#: ../../plugins/codebrowser/codebrowser/cbrowser.py:51
+msgid "Global Variables"
+msgstr "Globální proměnné"
+
+#: ../../plugins/codebrowser/codebrowser/cbrowser.py:385
+#, python-format
+msgid "Goto \"%s\""
+msgstr "Jít na \"%s\""
+
+#: ../../src/ed_cmdbar.py:437
+msgid "Goto Line"
+msgstr "Jít na řádek"
+
+#: ../../src/ed_menu.py:690
+msgid "Goto Line Number"
+msgstr "Jít na číslo řádku"
+
+#: ../../src/ed_menu.py:691
+msgid "Goto Matching Brace"
+msgstr "Jít na nalezený výskyt"
+
+#: ../../src/ed_menu.py:805
+msgid "Goto command buffer"
+msgstr "Jít na příkazový buffer"
+
+#: ../../src/ed_menu.py:695
+msgid "Goto next position in history."
+msgstr "Jít na další pozici v historii."
+
+#: ../../src/ed_menu.py:635
+msgid "Goto previous match"
+msgstr ""
+
+#: ../../src/ed_menu.py:697
+msgid "Goto previous position in history."
+msgstr "Přejít na předchozí pozici v historii."
+
+#: ../../src/ed_menu.py:637
+msgid "Goto the next match"
+msgstr ""
+
+#: ../../src/prefdlg.py:932
+msgid "Guide Column"
+msgstr "Vodící sloupec"
+
+#: ../../src/ed_menu.py:784
+msgid "Highlight Brackets/Braces"
+msgstr "Zvýrazňovat závorky/nálezy"
+
+#: ../../src/ed_menu.py:660 ../../src/prefdlg.py:937
+msgid "Highlight Caret Line"
+msgstr "Zvýraznit aktuální řádek"
+
+#: ../../src/ed_menu.py:661
+msgid "Highlight the background of the current line"
+msgstr "Zvýraznit pozadí aktuálního řádku"
+
+#: ../../plugins/filebrowser/filebrowser/browser.py:486
+msgid "Home directory"
+msgstr "Domovský adresář"
+
+#: ../../src/ed_main.py:1554
+msgid "Homepage"
+msgstr "Domovská stránka"
+
+#: ../../src/prefdlg.py:1180
+msgid "Icon Theme"
+msgstr "Motiv ikon"
+
+#: ../../src/prefdlg.py:1225
+msgid "Icons"
+msgstr "Ikony"
+
+#: ../../plugins/codebrowser/codebrowser/cbrowser.py:51
+msgid "Identities"
+msgstr "Identity"
+
+#: ../../plugins/codebrowser/codebrowser/cbrowser.py:57
+msgid "Imports"
+msgstr ""
+
+#: ../../src/ed_menu.py:726
+msgid "Indent Lines"
+msgstr "Odsadit řádky"
+
+#: ../../src/prefdlg.py:732
+msgid "Indent Width"
+msgstr "Šířka odsazení"
+
+#: ../../src/ed_menu.py:727
+msgid "Indent the selected lines"
+msgstr "Odsadit vybrané řádky"
+
+#: ../../src/ed_menu.py:663 ../../src/prefdlg.py:940
+msgid "Indentation Guides"
+msgstr "Vodící čára odsazení"
+
+#: ../../src/eclib/infodlg.py:58
+msgid "Info"
+msgstr "Informace"
+
+#: ../../plugins/Launch/launch/cfgdlg.py:453
+msgid "Info Text"
+msgstr "Info text"
+
+#: ../../src/prefdlg.py:977
+msgid "Input Helpers"
+msgstr "Pomůcky vkládání"
+
+#: ../../src/ed_menu.py:737
+msgid "Insert spaces instead of tab characters with tab key"
+msgstr "Vkládat mezery místo tabulátoru"
+
+#: ../../src/plugdlg.py:121 ../../src/plugdlg.py:763
+msgid "Install"
+msgstr "Instalovat"
+
+#: ../../src/plugdlg.py:770
+msgid ""
+"Install the plugins for all users\n"
+" **requires administrative privileges**"
+msgstr ""
+"Instalovat pluginy pro všechny uživatele\n"
+" **vyžaduje práva administrátora**"
+
+#: ../../src/plugdlg.py:767
+msgid "Install the plugins only for the current user"
+msgstr "Instalovat pluginy pouze pro stávajícího uživatele"
+
+#: ../../src/plugdlg.py:842
+msgid "Installation Error"
+msgstr "Chyba při instalaci"
+
+#: ../../src/prefdlg.py:1510
+msgid "Installed Version"
+msgstr "Nainstalovaná verze"
+
+#: ../../src/ed_pages.py:356
+msgid "Invalid File"
+msgstr "Neplatný soubor"
+
+#: ../../src/ed_cmdbar.py:776
+msgid "Invalid Path"
+msgstr "Neplatná cesta"
+
+#: ../../src/ed_search.py:349
+#, python-format
+msgid "Invalid expression \"%s\""
+msgstr "Neplatný výraz \"%s\""
+
+#: ../../src/ed_pages.py:370
+msgid "Invalid file"
+msgstr "Neplatný soubor"
+
+#: ../../src/ed_pages.py:972
+#, python-format
+msgid "Invalid file: %s"
+msgstr "Chybný soubor: %s"
+
+#: ../../src/prefdlg.py:2159
+msgid "Inverse"
+msgstr "Převrácená hodnota"
+
+#: ../../src/ed_menu.py:610
+msgid "Join Lines"
+msgstr "Spojit řádky"
+
+#: ../../src/ed_menu.py:611
+msgid "Join the Selected Lines"
+msgstr "Spojit vybrané řádky"
+
+#: ../../plugins/filebrowser/filebrowser/browser.py:101
+msgid "Jump to Saved Path"
+msgstr "Jít na uloženou cestu"
+
+#: ../../src/prefdlg.py:1738
+msgid "Key"
+msgstr "Klávesa"
+
+#: ../../src/prefdlg.py:1707
+msgid "Key Profile"
+msgstr "Profil klávesových zkratek"
+
+#: ../../src/prefdlg.py:1622
+msgid "Keybindings"
+msgstr "Klávesové zkratky"
+
+#: ../../src/eclib/infodlg.py:182
+msgid "Kind"
+msgstr "Druh"
+
+#: ../../plugins/codebrowser/codebrowser/cbrowser.py:51
+msgid "Labels"
+msgstr "Popisky"
+
+#: ../../src/prefdlg.py:417
+msgid "Language"
+msgstr "Jazyk"
+
+#: ../../src/prefdlg.py:1516
+msgid "Latest Version"
+msgstr "Poslední verze"
+
+#: ../../plugins/Launch/launch/__init__.py:140
+msgid "Launch"
+msgstr "Spustit"
+
+#: ../../plugins/Launch/launch/cfgdlg.py:112
+msgid "Launch Configuration"
+msgstr "Konfigurace Launch"
+
+#: ../../src/prefdlg.py:1230
+msgid "Layout"
+msgstr "Rozvržení"
+
+#: ../../src/prefdlg.py:2043
+msgid "Lexer"
+msgstr "Syntaxe"
+
+#: ../../src/ed_menu.py:479
+msgid "Lexers"
+msgstr "Syntaxe"
+
+#: ../../src/prefdlg.py:648
+msgid "Library Error"
+msgstr "Chyba knihovny"
+
+#: ../../src/ed_main.py:1556
+msgid "License: wxWindows (see COPYING.txt for full license)"
+msgstr "License: wxWindows (viz COPYING.txt)"
+
+#: ../../src/ed_menu.py:619
+msgid "Line Edit"
+msgstr "Úprava řádku"
+
+#: ../../plugins/codebrowser/codebrowser/cbconfig.py:44
+#, fuzzy
+msgid "Line Number"
+msgstr "Jít na číslo řádku"
+
+#: ../../src/ed_stc.py:752
+#, python-format
+msgid "Line: %(lnum)d  Column: %(cnum)d"
+msgstr ""
+
+#: ../../src/prefdlg.py:401
+msgid "Load Last Session"
+msgstr "Načíst poslední sezení"
+
+#: ../../src/ed_menu.py:543
+msgid "Load Profile"
+msgstr "Načíst profil"
+
+#: ../../src/ed_menu.py:552
+msgid "Load Session"
+msgstr ""
+
+#: ../../src/ed_main.py:754 ../../src/ed_menu.py:544
+msgid "Load a Custom Profile"
+msgstr "Načíst profil"
+
+#: ../../src/ed_main.py:804
+msgid "Load a Session file"
+msgstr ""
+
+#: ../../src/ed_menu.py:553
+msgid "Load a saved session."
+msgstr ""
+
+#: ../../src/ed_menu.py:546
+msgid "Load and save custom Profiles"
+msgstr "Načíst a uložit profily"
+
+#: ../../src/ed_menu.py:555
+msgid "Load and save custom sessions."
+msgstr ""
+
+#: ../../src/prefdlg.py:403
+msgid "Load files from last session on startup"
+msgstr "Načíst soubory z posledního sezení při spuštění"
+
+#: ../../src/ed_main.py:760
+#, python-format
+msgid "Loaded Profile: %s"
+msgstr "Načtený profil: %s"
+
+#: ../../src/ed_main.py:818
+#, python-format
+msgid "Loaded Session: %s"
+msgstr ""
+
+#: ../../src/prefdlg.py:438
+msgid "Locale Settings"
+msgstr "Místní nastavení"
+
+#: ../../plugins/Launch/launch/launch.py:182
+#, fuzzy
+msgid "Lock File"
+msgstr "%s Zdrojový soubor"
+
+#: ../../src/eclib/finddlg.py:793
+msgid "Look in"
+msgstr ""
+
+#: ../../src/ed_menu.py:733
+msgid "Lowercase"
+msgstr "Malá písmena"
+
+#: ../../plugins/codebrowser/codebrowser/cbrowser.py:52
+msgid "Macro Definitions"
+msgstr "Definice maker"
+
+#: ../../src/ed_script.py:201 ../../src/ed_script.py:211
+msgid "Macro Manager"
+msgstr ""
+
+#: ../../plugins/codebrowser/codebrowser/cbrowser.py:51
+msgid "Macros"
+msgstr "Makra"
+
+#: ../../src/prefdlg.py:1220
+msgid "Main display font for various UI components"
+msgstr "Základní font pro zobrazení UI komponent"
+
+#: ../../src/ed_menu.py:807
+msgid "Manage, Download, and Install plugins"
+msgstr "Spravovat, Stahovat a Instalovat pluginy"
+
+#: ../../src/ed_menu.py:481
+msgid "Manually Set a Lexer/Syntax"
+msgstr "Manuálně nastavit syntaxi"
+
+#: ../../src/ed_cmdbar.py:283
+msgid "Match Case"
+msgstr "Odpovídá případu"
+
+#: ../../src/eclib/finddlg.py:814
+msgid "Match case"
+msgstr ""
+
+#: ../../src/ed_main.py:1428 ../../src/ed_menu.py:686
+msgid "Maximize Editor"
+msgstr ""
+
+#: ../../src/prefdlg.py:1720
+msgid "Menu"
+msgstr "Menu"
+
+#: ../../plugins/Launch/launch/cfgdlg.py:174
+msgid "Misc"
+msgstr "Různé"
+
+#: ../../src/ed_pages.py:391
+msgid "Missing session files"
+msgstr ""
+
+#: ../../src/ed_stc.py:1184
+msgid ""
+"Mixed EOL characters detected.\n"
+"\n"
+"Would you like to format them to all be the same?"
+msgstr ""
+
+#: ../../src/eclib/infodlg.py:163 ../../src/eclib/infodlg.py:195
+msgid "Modified"
+msgstr "Změněn"
+
+#: ../../src/prefdlg.py:1730
+msgid "Modifier 1"
+msgstr "Modifikátor 1"
+
+#: ../../src/prefdlg.py:1734
+msgid "Modifier 2"
+msgstr "Modifikátor 2"
+
+#: ../../plugins/codebrowser/codebrowser/cbrowser.py:56
+msgid "Modules"
+msgstr "Moduly"
+
+#: ../../src/ed_menu.py:617
+msgid "Move Current Line Down"
+msgstr ""
+
+#: ../../src/ed_menu.py:614
+msgid "Move Current Line Up"
+msgstr ""
+
+#: ../../src/ed_editv.py:227
+msgid "Move Tab to New Window"
+msgstr ""
+
+#: ../../src/ed_menu.py:692
+msgid "Move caret matching brace"
+msgstr "Posunout kurzor na nalezený výskyt"
+
+#: ../../src/ed_menu.py:618
+msgid "Move the current line down"
+msgstr ""
+
+#: ../../src/ed_menu.py:615
+msgid "Move the current line up"
+msgstr ""
+
+#: ../../plugins/filebrowser/filebrowser/browser.py:62
+msgid "Move to Recycle Bin"
+msgstr "Přesunout do koše"
+
+#: ../../plugins/filebrowser/filebrowser/browser.py:64
+msgid "Move to Trash"
+msgstr "Přesunout do koše"
+
+#: ../../plugins/codebrowser/codebrowser/cbrowser.py:52
+msgid "Namespaces"
+msgstr "Názvy míst"
+
+#: ../../src/prefdlg.py:195
+msgid "Network"
+msgstr "Síť"
+
+#: ../../src/ed_toolbar.py:74 ../../src/prefdlg.py:1710
+#: ../../src/style_editor.py:173
+msgid "New"
+msgstr "Nový"
+
+#: ../../src/ed_menu.py:513
+msgid "New &Window"
+msgstr "Nové &okno"
+
+#: ../../plugins/filebrowser/filebrowser/browser.py:426
+msgid "New File"
+msgstr "Nový soubor"
+
+#: ../../plugins/filebrowser/filebrowser/browser.py:425
+msgid "New Folder"
+msgstr "Nová složka"
+
+#: ../../src/ed_menu.py:596
+msgid "New Line After"
+msgstr "Nový řádek po"
+
+#: ../../src/ed_menu.py:598
+msgid "New Line Before"
+msgstr "Nový řádek před"
+
+#: ../../src/prefdlg.py:1905
+msgid "New Profile"
+msgstr "Nový profil"
+
+#: ../../src/ed_editv.py:226
+msgid "New Tab"
+msgstr ""
+
+#: ../../src/ed_cmdbar.py:263
+msgid "Next"
+msgstr "Další"
+
+#: ../../src/ed_menu.py:699
+msgid "Next Bookmark"
+msgstr "Další záložka"
+
+#: ../../src/ed_menu.py:694
+msgid "Next Position"
+msgstr ""
+
+#: ../../src/plugdlg.py:370 ../../src/plugin.py:721
+msgid "No Description Available"
+msgstr "Popis není dostupný"
+
+#: ../../src/ed_editv.py:392
+msgid "No Suggestions"
+msgstr ""
+
+#: ../../src/ed_pages.py:982
+msgid "No Valid Files to Open"
+msgstr "Žádné validní soubory k otevření"
+
+#: ../../src/prefdlg.py:1804
+msgid "None"
+msgstr "Žádný"
+
+#: ../../src/prefdlg.py:2160
+msgid "Normal"
+msgstr ""
+
+#: ../../src/ed_search.py:618
+msgid "Not implemented"
+msgstr ""
+
+#: ../../src/style_editor.py:129
+msgid "Ok"
+msgstr "Ok"
+
+#: ../../src/ed_glob.py:385 ../../src/ed_mdlg.py:137
+msgid "Old Machintosh (\\r)"
+msgstr ""
+
+#: ../../src/ed_menu.py:756 ../../src/ed_menu.py:758 ../../src/prefdlg.py:753
+msgid "Old Macintosh (\\r)"
+msgstr ""
+
+#: ../../src/ed_menu.py:834
+msgid "Online Documentation..."
+msgstr ""
+
+#: ../../src/ed_menu.py:835
+msgid "Online project documentation and help guides"
+msgstr "Online projekt dokumentace a nápovědy"
+
+#: ../../src/ed_menu.py:516 ../../src/ed_toolbar.py:75
+msgid "Open"
+msgstr "Otevřít"
+
+#: ../../src/ed_menu.py:518
+msgid "Open &Recent"
+msgstr ""
+
+#: ../../plugins/PyShell/PyShell/__init__.py:66
+msgid "Open A Python Shell"
+msgstr "Otevřít Python Shell"
+
+#: ../../plugins/codebrowser/codebrowser/cbrowser.py:91
+msgid "Open Code Browser Sidepanel"
+msgstr "Otevřít postranní panel Prohlížeče Kódu"
+
+#: ../../src/ed_pages.py:993
+msgid "Open Directory?"
+msgstr "Otevřít složku?"
+
+#: ../../src/eclib/finddlg.py:713
+msgid "Open Documents"
+msgstr ""
+
+#: ../../src/ed_pages.py:216
+msgid "Open File"
+msgstr "Otevřít soubor"
+
+#: ../../plugins/filebrowser/filebrowser/browser.py:233
+msgid "Open File Browser Sidepanel"
+msgstr "Otevřít postranní panel Prohlížeče Souborů"
+
+#: ../../src/prefdlg.py:521
+msgid "Open files in new windows by default"
+msgstr "Otevírat soubory v nových oknech"
+
+#: ../../src/ed_menu.py:633
+msgid "Open the Quick Find Bar"
+msgstr "Otevřít panel rychlého hledání"
+
+#: ../../plugins/filebrowser/filebrowser/browser.py:414
+msgid "Open with "
+msgstr "Otevřít s "
+
+#: ../../src/ed_pages.py:1013
+#, python-format
+msgid "Opened file: %s"
+msgstr "Otevřený soubor: %s"
+
+#: ../../src/ed_main.py:1499
+#, python-format
+msgid "Opening %s"
+msgstr "Otevírám %s"
+
+#: ../../src/ed_menu.py:585
+msgid "P&aste After"
+msgstr ""
+
+#: ../../plugins/codebrowser/codebrowser/cbrowser.py:52
+msgid "Packages"
+msgstr "Balíčky"
+
+#: ../../src/ed_menu.py:558
+msgid "Page Set&up"
+msgstr "Nas&tavení stránky"
+
+#: ../../src/ed_print.py:229
+#, python-format
+msgid "Page: %d"
+msgstr "Stránka: %d"
+
+#: ../../src/ed_menu.py:684
+msgid "Pane Navigator"
+msgstr ""
+
+#: ../../src/prefdlg.py:1410
+msgid "Password"
+msgstr "Heslo"
+
+#: ../../src/ed_editv.py:364 ../../src/ed_toolbar.py:87
+msgid "Paste"
+msgstr "Vložit"
+
+#: ../../src/ed_menu.py:584 ../../src/ed_toolbar.py:88
+msgid "Paste Text from Clipboard to File"
+msgstr "Vložit text ze schránky do souboru"
+
+#: ../../src/ed_menu.py:586
+msgid "Paste Text from Clipboard to File after the cursor"
+msgstr ""
+
+#: ../../src/prefdlg.py:583 ../../src/prefdlg.py:584
+msgid "Path to libenchant"
+msgstr ""
+
+#: ../../plugins/filebrowser/filebrowser/browser.py:109
+msgid "Pathmarks"
+msgstr ""
+
+#: ../../src/eclib/infodlg.py:197
+msgid "Permissions"
+msgstr "Práva"
+
+#: ../../src/perspective.py:253
+msgid "Perspective Name"
+msgstr "Jméno pohledu"
+
+#: ../../src/perspective.py:270
+msgid "Perspective to Delete"
+msgstr "Smazat pohled"
+
+#: ../../src/ed_main.py:141
+msgid "Perspectives"
+msgstr "Pohledy"
+
+#: ../../plugins/Launch/launch/cfgdlg.py:439
+msgid "Plain Text"
+msgstr "Prostý text"
+
+#: ../../src/ed_main.py:1555
+msgid "Platform Info"
+msgstr "Informace o platformě"
+
+#: ../../src/Editra.py:902
+msgid "Please check the preferences dialog to check your preferences"
+msgstr ""
+
+#: ../../src/Editra.py:1111
+msgid "Please check the preferences dialog to verify your preferences"
+msgstr ""
+
+#: ../../src/ed_main.py:1083 ../../src/ed_menu.py:806
+msgid "Plugin Manager"
+msgstr "Správce pluginů"
+
+#: ../../src/prefdlg.py:1395
+msgid "Port Number"
+msgstr "Číslo portu"
+
+#: ../../src/ed_menu.py:641
+msgid "Pr&eferences"
+msgstr "Na&stavení"
+
+#: ../../src/prefdlg.py:496
+msgid "Prefered Encoding"
+msgstr ""
+
+#: ../../src/prefdlg.py:106
+msgid "Preferences - Editra"
+msgstr "Nastavení - Editra"
+
+#: ../../src/style_editor.py:694
+#, fuzzy
+msgid "Preview File"
+msgstr "Náhled"
+
+#: ../../src/ed_menu.py:561
+msgid "Preview Printout"
+msgstr "Náhled tisku"
+
+#: ../../src/ed_cmdbar.py:271
+msgid "Previous"
+msgstr "Předchozí"
+
+#: ../../src/ed_menu.py:701
+msgid "Previous Bookmark"
+msgstr "Předchozí záložka"
+
+#: ../../src/ed_menu.py:696
+msgid "Previous Position"
+msgstr ""
+
+#: ../../src/prefdlg.py:812
+msgid "Primary Font"
+msgstr "Primární písmo"
+
+#: ../../src/ed_toolbar.py:77
+msgid "Print"
+msgstr "Tisk"
+
+#: ../../src/ed_menu.py:562 ../../src/ed_toolbar.py:78
+msgid "Print Current File"
+msgstr "Vytisknout stávající soubor"
+
+#: ../../src/ed_print.py:113
+msgid "Print Error"
+msgstr ""
+
+#: ../../src/ed_menu.py:560
+msgid "Print Pre&view"
+msgstr "Náhle&d tisku"
+
+#: ../../src/ed_print.py:105
+msgid "Print Preview"
+msgstr "Náhled tisku"
+
+#: ../../src/ed_print.py:131
+msgid "Printer Error"
+msgstr ""
+
+#: ../../src/prefdlg.py:391
+msgid "Printer Mode"
+msgstr "Mód Tisku"
+
+#: ../../plugins/codebrowser/codebrowser/cbrowser.py:53
+msgid "Procedure Definitions"
+msgstr "Definice procedur"
+
+#: ../../src/ed_main.py:735 ../../src/ed_main.py:756 ../../src/ed_menu.py:545
+msgid "Profile"
+msgstr "Profil"
+
+#: ../../src/ed_main.py:740
+#, python-format
+msgid "Profile Saved as: %s"
+msgstr "Profil uložen jako: %s"
+
+#: ../../src/Editra.py:904 ../../src/Editra.py:1113
+msgid "Profile Updated"
+msgstr "Profil aktualizován"
+
+#: ../../plugins/Launch/launch/launch.py:176
+msgid "Program Executable Command"
+msgstr ""
+
+#: ../../plugins/codebrowser/codebrowser/cbrowser.py:53
+msgid "Programs"
+msgstr "Programy"
+
+#: ../../src/ed_menu.py:831
+msgid "Project Homepage..."
+msgstr ""
+
+#: ../../plugins/codebrowser/codebrowser/cbrowser.py:53
+msgid "Protocols"
+msgstr "Protokoly"
+
+#: ../../src/prefdlg.py:1381
+msgid "Proxy Settings"
+msgstr "Nastavení proxy"
+
+#: ../../src/prefdlg.py:1391
+msgid "Proxy URL"
+msgstr "URL proxy serveru"
+
+#: ../../plugins/codebrowser/codebrowser/cbrowser.py:56
+msgid "Public Functions"
+msgstr ""
+
+#: ../../plugins/codebrowser/codebrowser/cbrowser.py:57
+msgid "Public Subroutines"
+msgstr ""
+
+#: ../../src/ed_shelf.py:117
+msgid "Put an item on the Shelf"
+msgstr "Dát do Shelfu"
+
+#: ../../src/updater.py:673
+#, python-format
+msgid "Rate: %.2f Kb/s"
+msgstr "Míra: %.2f Kb/s"
+
+#: ../../plugins/Launch/launch/__init__.py:100
+msgid "Re-run the last run program"
+msgstr ""
+
+#: ../../src/ed_stc.py:1842
+msgid "Read Only"
+msgstr ""
+
+#: ../../src/ed_search.py:801
+msgid "Recent Searches"
+msgstr "Nedávná hledání"
+
+#: ../../src/ed_menu.py:519
+msgid "Recently Opened Files"
+msgstr "Nedávno otevřené soubory"
+
+#: ../../src/ed_stc.py:1457
+msgid "Recording Finished"
+msgstr "Nahrávání dokončeno"
+
+#: ../../src/ed_stc.py:1444
+msgid "Recording Macro"
+msgstr "Nahrávám makro"
+
+#: ../../src/ed_editv.py:360 ../../src/ed_menu.py:577
+#: ../../src/ed_toolbar.py:81
+msgid "Redo"
+msgstr "Znovu"
+
+#: ../../src/ed_menu.py:577 ../../src/ed_toolbar.py:81
+msgid "Redo Last Undo"
+msgstr "Zrušit vrácení"
+
+#: ../../src/ed_search.py:350
+msgid "Regex Compile Error"
+msgstr ""
+
+#: ../../src/ed_cmdbar.py:294
+msgid "Regular Expression"
+msgstr ""
+
+#: ../../src/eclib/finddlg.py:816
+msgid "Regular expression"
+msgstr ""
+
+#: ../../src/ed_editv.py:465
+msgid "Reload File?"
+msgstr "Načíst znovu soubor?"
+
+#: ../../src/ed_menu.py:536
+msgid "Reload the file with a specified encoding"
+msgstr ""
+
+#: ../../src/ed_main.py:1220
+msgid "Reload with Encoding"
+msgstr ""
+
+#: ../../src/ed_menu.py:535
+msgid "Reload with Encoding..."
+msgstr ""
+
+#: ../../src/prefdlg.py:524
+msgid "Remember File Position"
+msgstr "Pamatovat si polohu souboru"
+
+#: ../../src/prefdlg.py:1210
+msgid "Remember Window Position on Exit"
+msgstr "Pamatovat si polohu okna na konci"
+
+#: ../../src/prefdlg.py:1207
+msgid "Remember Window Size on Exit"
+msgstr "Pamatovat si velikost okna na konci"
+
+#: ../../src/ed_menu.py:624
+msgid "Remove All Bookmarks"
+msgstr "Smazat všechy záložky"
+
+#: ../../plugins/filebrowser/filebrowser/browser.py:103
+msgid "Remove Saved Path"
+msgstr "Smazat uloženou cestu"
+
+#: ../../src/ed_menu.py:625
+msgid "Remove all bookmarks from the current document"
+msgstr "Smazat všechny záložky ze stávajícího souboru"
+
+#: ../../plugins/Launch/launch/cfgdlg.py:244
+msgid "Remove selection from list"
+msgstr "Odstranit výběr z listu"
+
+#: ../../src/ed_menu.py:750
+msgid "Remove trailing whitespace"
+msgstr "Odstranit koncové mezery"
+
+#: ../../plugins/filebrowser/filebrowser/browser.py:423
+msgid "Rename"
+msgstr "Přejmenovat"
+
+#: ../../src/eclib/finddlg.py:635 ../../src/eclib/finddlg.py:844
+msgid "Replace"
+msgstr ""
+
+#: ../../src/eclib/finddlg.py:847
+msgid "Replace All"
+msgstr ""
+
+#: ../../src/ed_search.py:547 ../../src/ed_search.py:708
+msgid "Replace Error"
+msgstr ""
+
+#: ../../src/eclib/finddlg.py:778
+msgid "Replace with"
+msgstr ""
+
+#: ../../src/eclib/errdlg.py:324
+msgid "Report Error"
+msgstr "Ohlásit chybu"
+
+#: ../../src/ed_editv.py:445
+msgid "Resave File?"
+msgstr "Znovu uložit soubor?"
+
+#: ../../src/ed_main.py:1430
+msgid "Restore Editor"
+msgstr ""
+
+#: ../../src/plugdlg.py:673
+msgid "Retrieving Plugin List"
+msgstr "Získávám seznam pluginů"
+
+#: ../../plugins/filebrowser/filebrowser/browser.py:415
+msgid "Reveal in "
+msgstr "Zobrazit v "
+
+#: ../../src/ed_menu.py:534
+msgid "Revert file to last save point"
+msgstr ""
+
+#: ../../src/prefdlg.py:1111 ../../src/prefdlg.py:1766
+msgid "Revert to Default"
+msgstr "Vrátit se na výchozí"
+
+#: ../../src/ed_menu.py:533
+msgid "Revert to Saved"
+msgstr ""
+
+#: ../../plugins/Launch/launch/__init__.py:93
+#: ../../plugins/Launch/launch/launch.py:202
+#: ../../plugins/Launch/launch/launch.py:602
+msgid "Run"
+msgstr "Spustit"
+
+#: ../../plugins/Launch/launch/__init__.py:98
+msgid "Run last executed"
+msgstr ""
+
+#: ../../plugins/Launch/launch/__init__.py:76
+msgid "Run script from current buffer"
+msgstr "Spustit  skript ze stávajícího bufferu"
+
+#: ../../plugins/Launch/launch/__init__.py:95
+msgid "Run the file associated with the current buffer in Launch"
+msgstr "Spustit asociovaný soubor se stávajícím bufferem v Launch pluginu"
+
+#: ../../src/ed_toolbar.py:76
+msgid "Save"
+msgstr "Uložit"
+
+#: ../../src/ed_editv.py:229
+#, python-format
+msgid "Save \"%s\""
+msgstr ""
+
+#: ../../src/ed_menu.py:529
+msgid "Save &As"
+msgstr "Uložit j&ako"
+
+#: ../../src/ed_menu.py:530
+msgid "Save All"
+msgstr "Uložit vše"
+
+#: ../../src/ed_menu.py:529 ../../src/eclib/filemgrdlg.py:121
+msgid "Save As"
+msgstr "Uložit jako"
+
+#: ../../src/ed_editv.py:501
+msgid "Save Changes?"
+msgstr "Uložit změny?"
+
+#: ../../src/ed_menu.py:528 ../../src/ed_toolbar.py:76
+msgid "Save Current File"
+msgstr "Uložit aktuální soubor"
+
+#: ../../src/ed_menu.py:542
+msgid "Save Current Settings to a New Profile"
+msgstr "Uložit aktuální nastavení do profilu"
+
+#: ../../src/perspective.py:69
+msgid "Save Current View"
+msgstr "Uložit aktuální zobrazení"
+
+#: ../../src/ed_mdlg.py:106
+msgid "Save Error"
+msgstr "Chyba při ukládání"
+
+#: ../../src/perspective.py:254
+msgid "Save Perspective"
+msgstr "Uložit pohled"
+
+#: ../../src/ed_menu.py:541
+msgid "Save Profile"
+msgstr "Uložit profil"
+
+#: ../../plugins/filebrowser/filebrowser/browser.py:100
+msgid "Save Selected Paths"
+msgstr "Uložit vybrané cesty"
+
+#: ../../src/ed_menu.py:550
+msgid "Save Session"
+msgstr ""
+
+#: ../../src/style_editor.py:220
+msgid "Save Styles"
+msgstr "Uložit styly"
+
+#: ../../src/ed_menu.py:531
+msgid "Save all open pages"
+msgstr "Uložit všechny otevřené karty"
+
+#: ../../src/ed_menu.py:551
+msgid "Save the current session."
+msgstr ""
+
+#: ../../src/perspective.py:70
+msgid "Save the current window layout"
+msgstr "Uložit stávající layout okna"
+
+#: ../../src/ed_main.py:717
+#, python-format
+msgid "Saved File As: %s"
+msgstr "Soubor byl uložen jako: %s"
+
+#: ../../src/ed_main.py:671
+#, python-format
+msgid "Saved File: %s"
+msgstr "Soubor byl uložen: %s"
+
+#: ../../src/ed_search.py:1301
+#, python-format
+msgid "Search Complete: %d matching lines where found."
+msgstr ""
+
+#: ../../src/eclib/finddlg.py:817
+msgid "Search Recursively"
+msgstr ""
+
+#: ../../src/ed_search.py:1275
+msgid "Search Started"
+msgstr ""
+
+#: ../../src/ed_search.py:1294
+msgid "Search complete"
+msgstr ""
+
+#: ../../src/ed_menu.py:639
+msgid "Search for the currently selected phrase"
+msgstr ""
+
+#: ../../plugins/filebrowser/filebrowser/browser.py:420
+msgid "Search in directory"
+msgstr ""
+
+#: ../../src/ed_search.py:408
+msgid "Search wrapped to bottom"
+msgstr ""
+
+#: ../../src/ed_search.py:403
+msgid "Search wrapped to top"
+msgstr ""
+
+#: ../../src/ed_search.py:1385
+#, python-format
+msgid "Searching in: %s"
+msgstr ""
+
+#: ../../src/prefdlg.py:815
+msgid "Secondary Font"
+msgstr "Sekundární písmo"
+
+#: ../../plugins/codebrowser/codebrowser/cbrowser.py:54
+msgid "Sections"
+msgstr "Sekce"
+
+#: ../../src/ed_menu.py:590
+msgid "Select &All"
+msgstr "Vybr&at vše"
+
+#: ../../src/ed_editv.py:369
+msgid "Select All"
+msgstr "Vybrat vše"
+
+#: ../../src/ed_menu.py:591
+msgid "Select All Text in Document"
+msgstr "Vybrat všechen text v dokumentu"
+
+#: ../../src/ed_main.py:1219
+msgid "Select an encoding to reload the file with"
+msgstr ""
+
+#: ../../src/plugdlg.py:501
+msgid "Select plugins to download"
+msgstr "Vyberte pluginy ke stažení"
+
+#: ../../src/eclib/finddlg.py:712
+msgid "Selected Text"
+msgstr ""
+
+#: ../../src/ed_pages.py:371
+msgid "Selected file is not a valid session file"
+msgstr ""
+
+#: ../../src/ed_menu.py:840
+msgid "Send bug reports and suggestions"
+msgstr "Odeslat chybová hlášení a návrhy"
+
+#: ../../src/ed_main.py:779 ../../src/ed_main.py:806
+msgid "Session"
+msgstr ""
+
+#: ../../src/ed_main.py:794
+#, python-format
+msgid "Session Saved as: %s"
+msgstr ""
+
+#: ../../src/ed_pages.py:356
+msgid "Session file doesn't exist."
+msgstr ""
+
+#: ../../src/ed_pages.py:377
+msgid "Session file is empty."
+msgstr ""
+
+#: ../../src/ed_menu.py:554
+msgid "Sessions"
+msgstr ""
+
+#: ../../src/eclib/ecpickers.py:80
+msgid "Set Font"
+msgstr "Nastavit písmo"
+
+#: ../../src/style_editor.py:697
+msgid "Set the preview file type"
+msgstr "Nastavit typ souboru pro náhled"
+
+#: ../../src/prefdlg.py:789
+msgid "Sets a secondary font used for special regions when syntax highlighting is in use"
+msgstr "Nastaví sekundární písmo používané pro speciální oblasti při zvýrazňování syntaxe"
+
+#: ../../src/prefdlg.py:784
+msgid "Sets the main/default font of the document"
+msgstr "Nastaví hlavní písmo dokumentu"
+
+#: ../../plugins/Launch/launch/launch.py:169
+msgid "Settings"
+msgstr "Nastavení"
+
+#: ../../src/ed_shelf.py:116
+msgid "Shelf"
+msgstr "Shelf"
+
+#: ../../src/ed_menu.py:667 ../../src/ed_menu.py:668 ../../src/prefdlg.py:765
+msgid "Show EOL Markers"
+msgstr "Ukazovat EOL značky"
+
+#: ../../src/ed_menu.py:665
+msgid "Show Edge Guide"
+msgstr "Ukazovat okrajovou vodící čáru"
+
+#: ../../plugins/filebrowser/filebrowser/browser.py:218
+msgid "Show Hidden Files"
+msgstr "Zobrazovat skryté soubory"
+
+#: ../../src/prefdlg.py:1191
+msgid "Show Icons on Tabs"
+msgstr ""
+
+#: ../../src/ed_menu.py:664
+msgid "Show Indentation Guides"
+msgstr "Zobrazovat čáry odsazení"
+
+#: ../../src/ed_menu.py:670
+msgid "Show Line Number Margin"
+msgstr "Zobrazovat okraje u zobrazení čísla řádků"
+
+#: ../../src/ed_menu.py:669 ../../src/prefdlg.py:767
+msgid "Show Line Numbers"
+msgstr "Zobrazovat čísla řádků"
+
+#: ../../src/ed_shelf.py:369
+msgid "Show Shelf"
+msgstr "Zobrazovat Shelf"
+
+#: ../../src/prefdlg.py:405
+msgid "Show Splash Screen"
+msgstr "Zobrazovat úvodní obrazovku"
+
+#: ../../src/ed_menu.py:705 ../../src/prefdlg.py:1212
+msgid "Show Status Bar"
+msgstr "Zobrazovat stavový řádek"
+
+#: ../../src/ed_menu.py:707 ../../src/prefdlg.py:1214
+msgid "Show Toolbar"
+msgstr "Zobrazovat nástrojovou lištu"
+
+#: ../../src/ed_menu.py:671 ../../src/prefdlg.py:769
+msgid "Show Whitespace"
+msgstr "Zobrazovat bílé znaky"
+
+#: ../../src/ed_menu.py:672
+msgid "Show Whitespace Markers"
+msgstr "Zobrazovat značky bílých znaků"
+
+#: ../../src/ed_log.py:132
+msgid "Show output from"
+msgstr ""
+
+#: ../../src/ed_shelf.py:371
+msgid "Show the Shelf"
+msgstr "Zobrazovat Shelf"
+
+#: ../../src/ed_menu.py:666
+msgid "Show the edge column guide"
+msgstr "Zobrazit krajní vodící čáru"
+
+#: ../../src/style_editor.py:644 ../../src/eclib/infodlg.py:189
+msgid "Size"
+msgstr "Velikost"
+
+#: ../../src/ed_pages.py:392
+msgid "Some files in saved session could not be found on disk:\n"
+msgstr ""
+
+#: ../../src/style_editor.py:218
+msgid "Some styles have been changed would you like to save before exiting?"
+msgstr "Některé styly byly změněny chcete je uložit před ukončením?"
+
+#: ../../src/ed_search.py:617
+msgid "Sorry will be ready for future version"
+msgstr ""
+
+#: ../../plugins/codebrowser/codebrowser/cbconfig.py:40
+#, fuzzy
+msgid "Sorting"
+msgstr "Nastavení"
+
+#: ../../src/ed_menu.py:745
+msgid "Spaces to Tabs"
+msgstr "Mezery na tabulátory"
+
+#: ../../src/prefdlg.py:557
+msgid "Spell Checking"
+msgstr ""
+
+#: ../../src/ed_toolbar.py:74
+msgid "Start a New File"
+msgstr "Začít nový soubor"
+
+#: ../../src/style_editor.py:174
+msgid "Start a blank new style"
+msgstr "Začít nový prázdný styl"
+
+#: ../../src/ed_menu.py:512
+msgid "Start a new file in a new tab"
+msgstr "Začít nový soubor v nové kartě"
+
+#: ../../src/ed_menu.py:514
+msgid "Start a new file in a new window"
+msgstr "Začít nový soubor v novém okně"
+
+#: ../../src/prefdlg.py:959
+msgid "Start in Normal Mode"
+msgstr ""
+
+#: ../../src/prefdlg.py:304
+msgid "Startup"
+msgstr ""
+
+#: ../../src/prefdlg.py:427
+msgid "Startup Settings"
+msgstr "Nastavení po spuštění"
+
+#: ../../src/updater.py:290
+msgid "Status Unknown"
+msgstr "Neznámý status"
+
+#: ../../src/ed_menu.py:808 ../../src/style_editor.py:63
+msgid "Style Editor"
+msgstr "Editor Stylu"
+
+#: ../../src/style_editor.py:190
+#: ../../plugins/codebrowser/codebrowser/cbrowser.py:54
+msgid "Style Tags"
+msgstr "Tagy stylu"
+
+#: ../../src/style_editor.py:166
+msgid "Style Theme"
+msgstr "Téma stylu"
+
+#: ../../plugins/codebrowser/codebrowser/cbrowser.py:55
+msgid "Subroutine Declarations"
+msgstr "Deklarace podprogramu"
+
+#: ../../plugins/codebrowser/codebrowser/cbrowser.py:54
+msgid "Subroutines"
+msgstr "Podprogramy"
+
+#: ../../src/plugdlg.py:831
+msgid "Successfully Installed Plugins"
+msgstr "Úspěšně nainstalované pluginy"
+
+#: ../../src/ed_menu.py:477 ../../src/syntax/syntax.py:315
+#, python-format
+msgid "Switch Lexer to %s"
+msgstr "Změnit syntaxy na %s"
+
+#: ../../src/ed_menu.py:787 ../../src/prefdlg.py:677 ../../src/prefdlg.py:1084
+msgid "Syntax Highlighting"
+msgstr "Zvýrazňování syntaxe"
+
+#: ../../src/plugdlg.py:769
+msgid "System Directory"
+msgstr "Systémová složka"
+
+#: ../../src/prefdlg.py:724
+msgid "Tab Width"
+msgstr "Šířka tabulátoru"
+
+#: ../../src/ed_menu.py:747
+msgid "Tabs to Spaces"
+msgstr "Tabulátory na mezery"
+
+#: ../../plugins/codebrowser/codebrowser/cbrowser.py:55
+msgid "Task Definitions"
+msgstr "Popisy úkolů"
+
+#: ../../plugins/Launch/launch/cfgdlg.py:405
+msgid "Text Colors"
+msgstr "Barvy textu"
+
+#: ../../src/util.py:361
+msgid "Text Document"
+msgstr "Textový dokument"
+
+#: ../../src/ed_pages.py:165
+#, python-format
+msgid ""
+"The correct encoding of '%s' could not be determined.\n"
+"\n"
+"Choose an encoding and select Ok to open the file with the chosen encoding.\n"
+"Click Cancel to abort opening the file"
+msgstr ""
+
+#: ../../src/ed_editv.py:498
+#, python-format
+msgid ""
+"The file: \"%s\" has been modified since the last save point.\n"
+"\n"
+"Would you like to save the changes?"
+msgstr ""
+"Soubor \"%s\" byl od posledího uložení změněn.\n"
+"\n"
+"Chcete uložit změny?"
+
+#: ../../plugins/Launch/launch/launch.py:735
+msgid "The requested command could not be executed."
+msgstr ""
+
+#: ../../src/ed_search.py:308
+#, python-format
+msgid "The search term '%(term)s' was found %(count)d times."
+msgstr ""
+
+#: ../../src/ed_pages.py:980
+#, python-format
+msgid "There are no files that Editra can open in %s"
+msgstr "V %s nejsou žádné soubory které by aplikace Editra mohla otevřít"
+
+#: ../../src/ed_print.py:129
+msgid ""
+"There was an error when printing.\n"
+"Check that your printer is properly connected."
+msgstr ""
+
+#: ../../src/plugdlg.py:408
+msgid "This plugin requires a newer version of Editra."
+msgstr ""
+
+#: ../../src/plugdlg.py:1066
+msgid "This plugin will be uninstalled on next program launch."
+msgstr ""
+
+#: ../../src/ed_editv.py:367
+msgid "To Lowercase"
+msgstr ""
+
+#: ../../src/ed_editv.py:366
+msgid "To Uppercase"
+msgstr ""
+
+#: ../../src/plugdlg.py:752
+msgid ""
+"To add a new item drag and drop the plugin file into the list.\n"
+"\n"
+"To remove an item select it and hit Delete or Backspace."
+msgstr ""
+"Pro přidání pluginu táhněte a pusťte soubor pluginu do seznamu.\n"
+"\n"
+"K odebrání můžete použít Delete nebo Backspace."
+
+#: ../../plugins/filebrowser/filebrowser/browser.py:93
+#, python-format
+msgid "To open multiple files at once %s+Click to select the desired files/folders then hit Enter to open them all at once"
+msgstr "Pro otevření více souborů najednou %s+ Vyberte soubory/složky a pak stiskněte Enter pro jejich otevření"
+
+#: ../../src/ed_menu.py:781
+msgid "Toggle Auto-Indentation functionality"
+msgstr "Zapnout automatické odsazování"
+
+#: ../../src/ed_menu.py:622
+msgid "Toggle Bookmark"
+msgstr "Přidat záložku"
+
+#: ../../src/ed_menu.py:786
+msgid "Toggle Code Folding"
+msgstr "Zapnout skládání kódu"
+
+#: ../../src/ed_menu.py:722
+msgid "Toggle Comment"
+msgstr ""
+
+#: ../../src/ed_menu.py:687
+msgid "Toggle Editor Maximization"
+msgstr ""
+
+#: ../../src/ed_menu.py:674
+msgid "Toggle Editor View Options"
+msgstr "Možnosti zobrazení editoru"
+
+#: ../../src/ed_menu.py:678 ../../src/ed_menu.py:679
+msgid "Toggle all folds"
+msgstr ""
+
+#: ../../src/ed_menu.py:623
+msgid "Toggle bookmark of the current line"
+msgstr "Přidat záložku na aktuální řádku"
+
+#: ../../src/ed_menu.py:723
+msgid "Toggle comment on the selected line(s)"
+msgstr ""
+
+#: ../../src/ed_menu.py:677
+msgid "Toggle current fold"
+msgstr ""
+
+#: ../../src/ed_menu.py:676
+msgid "Toggle fold"
+msgstr ""
+
+#: ../../src/prefdlg.py:1185
+msgid "Toolbar Icon Size"
+msgstr "Velikost ikon lišty nástrojů"
+
+#: ../../src/ed_menu.py:836
+msgid "Translate Editra..."
+msgstr ""
+
+#: ../../src/prefdlg.py:1238
+msgid "Transparency"
+msgstr "Průhlednost"
+
+#: ../../src/ed_menu.py:612
+msgid "Transpose Line"
+msgstr "Prohodit řádky"
+
+#: ../../src/ed_menu.py:613
+msgid "Transpose the current line with the previous one"
+msgstr "Prohodí aktuální řádek s tím předchozím"
+
+#: ../../src/ed_menu.py:749
+msgid "Trim Trailing Whitespace"
+msgstr "Smazat bílé znaky na konci"
+
+#: ../../src/prefdlg.py:773
+msgid "Turn off for better performance"
+msgstr "Vypněte pro zlepšení výkonu"
+
+#: ../../src/util.py:184
+msgid "Unable to accept dropped file or text"
+msgstr ""
+
+#: ../../src/eclib/filemgrdlg.py:174
+#, python-format
+msgid "Unable to delete %s"
+msgstr ""
+
+#: ../../src/plugdlg.py:506
+msgid "Unable to retrieve plugin list"
+msgstr "Nemohu získat pluginů"
+
+#: ../../src/ed_editv.py:359 ../../src/ed_toolbar.py:80
+msgid "Undo"
+msgstr "Zpět"
+
+#: ../../src/ed_menu.py:576 ../../src/ed_toolbar.py:80
+msgid "Undo Last Action"
+msgstr "Vrátit poslední akci"
+
+#: ../../src/ed_menu.py:728
+msgid "Unindent Lines"
+msgstr "Smazat odsazení řádky"
+
+#: ../../src/ed_menu.py:729
+msgid "Unindent the selected lines"
+msgstr "Smazat odsazení vybraných řádek"
+
+#: ../../src/plugdlg.py:952
+msgid "Uninstall"
+msgstr ""
+
+#: ../../src/plugdlg.py:1062
+msgid "Uninstall Plugin"
+msgstr ""
+
+#: ../../src/ed_glob.py:386 ../../src/ed_mdlg.py:137 ../../src/ed_menu.py:759
+#: ../../src/ed_menu.py:761 ../../src/prefdlg.py:753
+msgid "Unix (\\n)"
+msgstr "Unix (\\n)"
+
+#: ../../src/plugdlg.py:366 ../../src/plugdlg.py:372 ../../src/plugdlg.py:419
+#: ../../src/plugdlg.py:423 ../../src/plugin.py:722 ../../src/util.py:367
+#: ../../src/eclib/infodlg.py:298
+msgid "Unknown"
+msgstr "Neznámý"
+
+#: ../../plugins/filebrowser/filebrowser/browser.py:596
+msgid "Untitled_File"
+msgstr "Nepojmenovaný_soubor"
+
+#: ../../plugins/filebrowser/filebrowser/browser.py:594
+msgid "Untitled_Folder"
+msgstr "Nepojmenovaná_složka"
+
+#: ../../src/eclib/finddlg.py:804
+msgid "Up"
+msgstr ""
+
+#: ../../src/prefdlg.py:1348
+msgid "Update"
+msgstr "Aktualizovat"
+
+#: ../../src/Editra.py:603
+msgid "Update Available"
+msgstr "Je dostupná aktualizace"
+
+#: ../../src/ed_menu.py:731
+msgid "Uppercase"
+msgstr "Velká písmena"
+
+#: ../../src/ed_menu.py:779
+msgid "Use Auto Completion when available"
+msgstr "Použít Auto-Completion, pokud je dostupné"
+
+#: ../../src/prefdlg.py:1386
+msgid "Use Proxy"
+msgstr "Použít proxy"
+
+#: ../../src/ed_menu.py:736
+msgid "Use Soft Tabs"
+msgstr "Vkládat mezery místo tabulátoru"
+
+#: ../../src/prefdlg.py:743
+msgid "Use Tabs Instead of Spaces"
+msgstr "Použít tabulátory místo mezer"
+
+#: ../../src/prefdlg.py:511
+msgid "Used to set a custom backup path. If not specified the backup will be put in the same directory as the file."
+msgstr ""
+
+#: ../../src/plugdlg.py:765
+msgid "User Directory"
+msgstr "Adresář uživatele"
+
+#: ../../src/prefdlg.py:1403
+msgid "Username"
+msgstr "Uživatelské jméno"
+
+#: ../../src/ed_log.py:80
+msgid "View Editra's console log"
+msgstr "Zobrazit log z konzole Editra"
+
+#: ../../src/ed_menu.py:700
+msgid "View Line of Next Bookmark"
+msgstr "Přejít na řádek další záložky"
+
+#: ../../src/ed_menu.py:702
+msgid "View Line of Previous Bookmark"
+msgstr "Přejít na řádek předchozí záložky"
+
+#: ../../src/prefdlg.py:804
+msgid "View Options"
+msgstr "Zobrazit volby"
+
+#: ../../src/prefdlg.py:775
+msgid "View Virtual Space After Last Line"
+msgstr ""
+
+#: ../../src/ed_script.py:202
+msgid "View and Edit Macros"
+msgstr ""
+
+#: ../../src/ed_menu.py:685
+msgid "View pane selection list"
+msgstr ""
+
+#: ../../src/ed_menu.py:832
+#, python-format
+msgid "Visit the project homepage %s"
+msgstr "Navštívit domovské stránky projektu %s"
+
+#: ../../src/prefdlg.py:922
+msgid "Visual Helpers"
+msgstr "Vizuální pomůcky"
+
+#: ../../src/prefdlg.py:537
+msgid "Warn when mixed eol characters are detected"
+msgstr ""
+
+#: ../../plugins/Launch/launch/cfgdlg.py:460
+msgid "Warning Text"
+msgstr "Varování"
+
+#: ../../src/prefdlg.py:950
+msgid "Warning suggestions will include context insensitive results"
+msgstr ""
+
+#: ../../src/eclib/infodlg.py:191
+msgid "Where"
+msgstr "Kam"
+
+#: ../../src/ed_main.py:733
+msgid "Where to Save Profile?"
+msgstr "Kam chcete uložit profil?"
+
+#: ../../src/ed_main.py:777
+msgid "Where to Save Session?"
+msgstr ""
+
+#: ../../src/ed_menu.py:751
+msgid "Whitespace"
+msgstr "Bílé znaky"
+
+#: ../../src/ed_menu.py:752
+msgid "Whitespace formating commands"
+msgstr "Příkazy pro formátování bílých znaků"
+
+#: ../../src/ed_cmdbar.py:290
+msgid "Whole Word"
+msgstr ""
+
+#: ../../src/eclib/finddlg.py:815
+msgid "Whole word"
+msgstr ""
+
+#: ../../src/ed_glob.py:387 ../../src/ed_mdlg.py:138 ../../src/ed_menu.py:762
+#: ../../src/ed_menu.py:764 ../../src/prefdlg.py:754
+msgid "Windows (\\r\\n)"
+msgstr "Windows (\\r\\n)"
+
+#: ../../src/ed_menu.py:739 ../../src/prefdlg.py:771
+msgid "Word Wrap"
+msgstr "Zalamovat slova"
+
+#: ../../src/ed_menu.py:740
+msgid "Wrap Text Horizontally"
+msgstr "Zalomovat text horizontálně"
+
+#: ../../plugins/Launch/launch/cfgdlg.py:419
+msgid "Wrap lines in output buffer"
+msgstr ""
+
+#: ../../src/ed_main.py:1553
+#, python-format
+msgid "Written in 100%% Python."
+msgstr "Napsáno na 100%% v Pythonu."
+
+#: ../../src/plugdlg.py:190
+msgid "You must restart Editra before your changes will take full affect."
+msgstr ""
+
+#: ../../src/Editra.py:900 ../../src/Editra.py:1109
+msgid "Your profile has been updated to the latest version"
+msgstr "Váš profil byl aktualizován"
+
+#: ../../src/ed_menu.py:656 ../../src/ed_menu.py:657
+msgid "Zoom Default"
+msgstr "Normální velikost"
+
+#: ../../src/ed_menu.py:655
+msgid "Zoom In"
+msgstr "Zvětšit"
+
+#: ../../src/ed_menu.py:654
+msgid "Zoom Out"
+msgstr "Zmenšit"
+
+#: ../../plugins/Launch/launch/launch.py:189
+msgid "args"
+msgstr "argumenty"
+
+#: ../../src/style_editor.py:611
+msgid "bold"
+msgstr "tučné"
+
+#: ../../src/ed_cmdbar.py:871
+msgid "cwd: "
+msgstr ""
+
+#: ../../src/style_editor.py:612
+msgid "eol"
+msgstr "eol"
+
+#: ../../plugins/Launch/launch/launch.py:173
+msgid "exec"
+msgstr "exec"
+
+#: ../../src/style_editor.py:613
+msgid "italic"
+msgstr "kurzíva"
+
+#: ../../src/style_editor.py:614
+msgid "underline"
+msgstr "podtržené"
+
+#: ../../src/ed_pages.py:237
+msgid "untitled"
+msgstr ""
+
+#: ../../src/ed_pages.py:235
+#, python-format
+msgid "untitled %d"
+msgstr ""
+
+#~ msgid ""
+#~ "%s could not be found\n"
+#~ "Perhaps its been moved or deleted"
+#~ msgstr ""
+#~ "Soubor %s nemohl být nalezen\n"
+#~ "Možná byl přesunut nebo smazán"
+
+#~ msgid ""
+#~ "%s has been modified by another application.\n"
+#~ "\n"
+#~ "Would you like to Reload it?"
+#~ msgstr ""
+#~ "Soubor %s byl upraven jinou aplikací.\n"
+#~ "\n"
+#~ "Chcete ho znovu načíst?"
+
+#~ msgid "&About"
+#~ msgstr "&O programu"
+
+#~ msgid "Changed color scheme to %s"
+#~ msgstr "Barevné téma bylo změněno na %s"
+
+#~ msgid "Choose a File"
+#~ msgstr "Vybrat soubor"
+
+#~ msgid ""
+#~ "Do you wish to open all %d files in this directory?\n"
+#~ "\n"
+#~ "Warning opening many files at once may cause the editor to temporarly  freeze."
+#~ msgstr ""
+#~ "Přejete si otevřít všech %d souborů i této složce?\n"
+#~ "\n"
+#~ "Varování: otevřením mnoha souborů najednou můžete způsobit dočasné zamrznutí editoru."
+
+#~ msgid "Finished Installing Plugins"
+#~ msgstr "Instalování pluginu dokončeno"
+
+#~ msgid "Go to configuration page?"
+#~ msgstr "Jít na konfigurační stránku?"
+
+#~ msgid "Online Documentation"
+#~ msgstr "Online dokumentace"
+
+#~ msgid "Project Homepage"
+#~ msgstr "Domovská stránka projektu"
+
+#~ msgid "Syntax Files"
+#~ msgstr "Soubory se syntaxí"
+
+#~ msgid "Translate Editra"
+#~ msgstr "Přeložit Editra"
+
+#~ msgid "Unable to retrieve version info"
+#~ msgstr "Nemohu získat informace o verzi"
