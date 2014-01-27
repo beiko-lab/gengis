@@ -1110,7 +1110,6 @@ wxPanel* PythonInterface::GetPythonPanel() const
 	Py_DECREF(builtins);
 
 	// Make a method that makes the wxPython panel and return it.
-//	char* pythonPanelCode = "import sys\nsys.path.insert(0,'./GenGIS.app/Contents/Resources') # Mac location \nsys.path.insert(0,'C:\\Users\\Admin\\Documents\\GitHub\\gengis\\src\\python') # Windows location \nfrom PythonCode import PythonInterpreter\n\ndef makePanel(parent):\n    pyPanel = PythonInterpreter(parent)\n    return pyPanel\n";
 	char* pythonPanelCode = "import sys\nsys.path.insert(0,'./GenGIS.app/Contents/Resources') # Mac location \nsys.path.insert(0,'.') # Windows location \nfrom PythonCode import PythonInterpreter\n\ndef makePanel(parent):\n    pyPanel = PythonInterpreter(parent)\n    return pyPanel\n";
 	result = PyRun_String(pythonPanelCode, Py_file_input, globals, globals);
 
