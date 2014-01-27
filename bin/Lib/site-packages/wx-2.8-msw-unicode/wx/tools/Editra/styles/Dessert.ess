@@ -4,19 +4,18 @@
  * License: wxWindows License
  */
 default_style {
-		fore:#CCCCCC;
-		back:#333333;
-		face:%(primary)s;
-		size:%(size)d;
-
+        fore:#CCCCCC;
+        back:#333333;
+        face:%(primary)s;
+        size:%(size)d;
 }
 
 number2_style {
-		fore:#CCCCCC;
+        fore:#CCCCCC;
 }
 
 stringeol_style {
-		fore:#FF0000;
+        fore:#FF0000;
 }
 
 caret_line {
@@ -24,146 +23,146 @@ caret_line {
 }
 
 comment_style {
-		fore:#999999;
+        fore:#999999;
 }
 
 keyword_style {
-		fore:#F0E68C;
+        fore:#F0E68C;
 }
 
 keyword3_style {
-		fore:#CD5C5C;
+        fore:#CD5C5C;
 }
 
 guide_style {
-		fore:#CCCCCC;
+        fore:#CCCCCC;
 }
 
 keyword4_style {
-		fore:#CCCCCC;
+        fore:#CCCCCC;
 }
 
 ideol_style {
-		fore:#CCCCCC;
+        fore:#CCCCCC;
 }
 
 array_style {
-		fore:#87CEEB;
+        fore:#87CEEB;
 }
 
 global_style {
-		fore:#CCCCCC;
+        fore:#CCCCCC;
 }
 
 line_num {
-		fore:#CCCCCC;
+        fore:#CCCCCC;
 }
 
 pre2_style {
-		fore:#CCCCCC;
+        fore:#CCCCCC;
 }
 
 string_style {
-		fore:#98FB98;
+        fore:#98FB98;
 }
 
 class_style {
-		fore:#87CEEB;
+        fore:#87CEEB;
 }
 
 ctrl_char {
-		fore:#CCCCCC;
+        fore:#CCCCCC;
 }
 
 marker_style {
-		fore:#CCCCCC;
+        fore:#CCCCCC;
 }
 
 keyword2_style {
-		fore:#87CEEB;
+        fore:#87CEEB;
 }
 
 class2_style {
-		fore:#CCCCCC;
+        fore:#CCCCCC;
 }
 
 unknown_style {
-		fore:#CCCCCC;
+        fore:#CCCCCC;
 }
 
 calltip {
-		fore:#CCCCCC;
+        fore:#CCCCCC;
 }
 
 scalar_style {
-		fore:#CCCCCC;
+        fore:#CCCCCC;
 }
 
 char_style {
-		fore:#98FB98;
+        fore:#98FB98;
 }
 
 here_style {
-		fore:#CCCCCC;
+        fore:#CCCCCC;
 }
 
 number_style {
-		fore:#CCCCCC;
+        fore:#CCCCCC;
 }
 
 regex_style {
-		fore:#CCCCCC;
+        fore:#CCCCCC;
 }
 
 folder_style {
-		fore:#CCCCCC;
+        fore:#CCCCCC;
 }
 
 pre_style {
-		fore:#CCCCCC;
+        fore:#CCCCCC;
 }
 
 decor_style {
-		fore:#87CEEB;
+        fore:#87CEEB;
 }
 
 scalar2_style {
-		fore:#CCCCCC;
+        fore:#CCCCCC;
 }
 
 funct_style {
-		fore:#CCCCCC;
+        fore:#CCCCCC;
 }
 
 brace_good {
-		fore:#CCCCCC;
+        fore:#CCCCCC;
 }
 
 error_style {
-		fore:#CD5C5C;
+        fore:#CD5C5C;
 }
 
 directive_style {
-		fore:#CCCCCC;
+        fore:#CCCCCC;
 }
 
 btick_style {
-		fore:#CCCCCC;
+        fore:#CCCCCC;
 }
 
 operator_style {
-		fore:#BDB76B;
+        fore:#BDB76B;
 }
 
 margin_style {
-		fore:#CCCCCC;
+        fore:#CCCCCC;
 }
 
 brace_bad {
-		fore:#CCCCCC;
+        fore:#CCCCCC;
 }
 
 dockey_style {
-		fore:#CCCCCC;
+        fore:#CCCCCC;
 }
 

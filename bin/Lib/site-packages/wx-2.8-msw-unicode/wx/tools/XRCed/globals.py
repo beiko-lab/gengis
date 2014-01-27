@@ -2,7 +2,7 @@
 # Purpose:      XRC editor, global variables
 # Author:       Roman Rolinsky <rolinsky@mema.ucl.ac.be>
 # Created:      02.12.2002
-# RCS-ID:       $Id: globals.py 54812 2008-07-29 13:39:00Z ROL $
+# RCS-ID:       $Id: globals.py 64627 2010-06-18 18:17:45Z ROL $
 
 import os,sys
 import wx
@@ -20,7 +20,7 @@ logger = logging.getLogger('xrced')
 
 progname = 'xrced'
 ProgName = 'XRCed'
-version = '0.2.0-5'
+version = '0.2.0-8'
 # Minimal wxWidgets version
 MinWxVersion = (2,8,0)
 if wx.VERSION[:3] < MinWxVersion:
@@ -67,6 +67,7 @@ _debug = False                  # default debug flag
 def set_debug(v):
     global _debug
     _debug = v
+    logger.setLevel(logging.DEBUG)
 def get_debug():
     return _debug
 
@@ -130,9 +131,9 @@ class MyDataObject(wx.PyDataObjectSimple):
         return True
 
 # Test for object elements (!!! move somewhere?)
-def is_object(node):
+def is_element(node):
     return node.nodeType == node.ELEMENT_NODE and \
-           node.tagName in ['object', 'object_ref', 'component']
-#or \
-#           node.nodeType == node.COMMENT_NODE
+        node.tagName in ['object', 'object_ref', 'component']
 
+def is_object(node):
+    return is_element(node) or node.nodeType == node.COMMENT_NODE

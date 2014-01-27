@@ -1,3 +1,5 @@
+from __future__ import division, print_function, absolute_import
+
 from numpy.testing import assert_, assert_equal, assert_almost_equal, \
         assert_array_almost_equal, assert_raises, assert_array_equal, \
         dec, TestCase, run_module_suite
@@ -5,6 +7,8 @@ from numpy import mgrid, pi, sin, ogrid, poly1d, linspace
 import numpy as np
 
 from scipy.interpolate import interp1d, interp2d, lagrange
+
+from scipy.lib._gcutils import assert_deallocated
 
 
 class TestInterp2D(TestCase):
@@ -24,6 +28,58 @@ class TestInterp2D(TestCase):
         z = sin(x[None,:] + y[:,None]/2.)
         I = interp2d(x, y, z)
         assert_almost_equal(I(1.0, 2.0), sin(2.0), decimal=2)
+
+    def test_interp2d_meshgrid_input_unsorted(self):
+        np.random.seed(1234)
+        x = linspace(0, 2, 16)
+        y = linspace(0, pi, 21)
+
+        z = sin(x[None,:] + y[:,None]/2.)
+        ip1 = interp2d(x.copy(), y.copy(), z, kind='cubic')
+
+        np.random.shuffle(x)
+        z = sin(x[None,:] + y[:,None]/2.)
+        ip2 = interp2d(x.copy(), y.copy(), z, kind='cubic')
+
+        np.random.shuffle(x)
+        np.random.shuffle(y)
+        z = sin(x[None,:] + y[:,None]/2.)
+        ip3 = interp2d(x, y, z, kind='cubic')
+
+        x = linspace(0, 2, 31)
+        y = linspace(0, pi, 30)
+
+        assert_equal(ip1(x, y), ip2(x, y))
+        assert_equal(ip1(x, y), ip3(x, y))
+
+    def test_interp2d_linear(self):
+        # Ticket #898
+        a = np.zeros([5, 5])
+        a[2, 2] = 1.0
+        x = y = np.arange(5)
+        b = interp2d(x, y, a, 'linear')
+        assert_almost_equal(b(2.0, 1.5), np.array([0.5]), decimal=2)
+        assert_almost_equal(b(2.0, 2.5), np.array([0.5]), decimal=2)
+
+    def test_interp2d_bounds(self):
+        x = np.linspace(0, 1, 5)
+        y = np.linspace(0, 2, 7)
+        z = x[:,None]**2 + y[None,:]
+
+        ix = np.linspace(-1, 3, 31)
+        iy = np.linspace(-1, 3, 33)
+
+        b = interp2d(x, y, z, bounds_error=True)
+        assert_raises(ValueError, b, ix, iy)
+
+        b = interp2d(x, y, z, fill_value=np.nan)
+        iz = b(ix, iy)
+        mx = (ix < 0) | (ix > 1)
+        my = (iy < 0) | (iy > 2)
+        assert_(np.isnan(iz[my,:]).all())
+        assert_(np.isnan(iz[:,mx]).all())
+        assert_(np.isfinite(iz[~my,:][:,~mx]).all())
+
 
 class TestInterp1D(object):
 
@@ -76,7 +132,6 @@ class TestInterp1D(object):
         assert_raises(ValueError, interp1d, self.x10, self.y1)
         assert_raises(ValueError, interp1d, self.x1, self.y1)
 
-
     def test_init(self):
         """ Check that the attributes are initialized appropriately by the
         constructor.
@@ -115,7 +170,6 @@ class TestInterp1D(object):
             interp1d(self.x10, self.y210).y,
             self.y210,
         )
-
 
     def test_linear(self):
         """ Check the actual implementation of linear interpolation.
@@ -323,6 +377,16 @@ class TestInterp1D(object):
         #yield self._nd_check_interp, 'zero'
         #yield self._nd_check_interp, 'zero'
         pass
+
+    def test_circular_refs(self):
+        # Test interp1d can be automatically garbage collected
+        x = np.linspace(0, 1)
+        y = np.linspace(0, 1)
+        # Confirm interp can be released from memory after use
+        with assert_deallocated(interp1d, x, y) as interp:
+            new_y = interp([0.1, 0.2])
+            del interp
+
 
 class TestLagrange(TestCase):
 

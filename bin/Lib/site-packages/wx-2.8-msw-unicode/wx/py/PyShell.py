@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 """PyShell is a python shell application."""
 
 # The next two lines, and the other code below that makes use of
@@ -8,8 +9,8 @@ import __main__
 original = __main__.__dict__.keys()
 
 __author__ = "Patrick K. O'Brien <pobrien@orbtech.com>"
-__cvsid__ = "$Id: PyShell.py 41078 2006-09-09 00:38:53Z RD $"
-__revision__ = "$Revision: 41078 $"[11:-2]
+__cvsid__ = "$Id: PyShell.py 63479 2010-02-14 05:24:22Z RD $"
+__revision__ = "$Revision: 63479 $"[11:-2]
 
 import wx
 import os

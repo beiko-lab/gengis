@@ -2,7 +2,7 @@
 # Purpose:      View classes
 # Author:       Roman Rolinsky <rolinsky@femagsoft.com>
 # Created:      07.06.2007
-# RCS-ID:       $Id: view.py 53700 2008-05-22 15:59:07Z ROL $
+# RCS-ID:       $Id: view.py 64107 2010-04-22 14:05:36Z ROL $
 
 import os
 from XMLTree import XMLTree
@@ -411,7 +411,6 @@ class Frame(wx.Frame):
                 if dlg.FindWindowById(id).IsChecked():
                     d[p] = str(c.GetValue())
                 elif p in d: del d[p]
-#            conf.allowExec = ('ask', 'yes', 'no')[dlg.radio_allow_exec.GetSelection()]
             conf.useAUI = dlg.check_AUI.GetValue()
             conf.toolPanelType = ['TB','FPB'][dlg.radio_toolPanelType.GetSelection()]
             conf.toolThumbSize = dlg.slider_thumbSize.GetValue()
@@ -424,6 +423,7 @@ class Frame(wx.Frame):
             conf.TB_copy = dlg.check_TB_copy.GetValue()
             conf.TB_move = dlg.check_TB_move.GetValue()
             conf.useSubclassing = dlg.check_useSubclassing.GetValue()
+            conf.allowExec = ('ask', 'yes', 'no')[dlg.radio_allowExec.GetSelection()]
             wx.LogMessage('Restart may be needed for some settings to take effect.')
         dlg.Destroy()
 
@@ -529,6 +529,13 @@ class PrefsDialog(wx.Dialog): #(wx.PropertySheetDialog): !!! not wrapper yed - w
 
         self.check_useSubclassing = xrc.XRCCTRL(self, 'check_useSubclassing')
         self.check_useSubclassing.SetValue(conf.useSubclassing)
+
+        self.radio_allowExec = xrc.XRCCTRL(self, 'radio_allowExec')
+        try:
+            index = {'ask': 0, 'yes':1, 'no': 2}[g.conf.allowExec]
+        except KeyError:
+            index = 0
+        self.radio_allowExec.SetSelection(index)
 
     def OnCheck(self, evt):
         self.checkControls[evt.GetId()][0].Enable(evt.IsChecked())

@@ -34,38 +34,30 @@ objects such as the Extension Register.
 """
 
 __author__ = "Cody Precord <cprecord@editra.org>"
-__svnid__ = "$Id: syntax.py 57226 2008-12-10 03:13:03Z CJP $"
-__revision__ = "$Revision: 57226 $"
+__svnid__ = "$Id: syntax.py 63846 2010-04-03 22:57:21Z CJP $"
+__revision__ = "$Revision: 63846 $"
 
 #-----------------------------------------------------------------------------#
 # Dependencies
 import wx
 import os
-import synglob
 
 #-----------------------------------------------------------------------------#
 # Data Objects / Constants
 
 # Used to index the tuple returned by getting data from EXT_REG
 LANG_ID    = 0
-LEXER_ID   = 1
-MODULE     = 2
-
-# Constants for getting values from SyntaxData's return dictionary
-KEYWORDS   = 0    # Keyword set(s)
-LEXER      = 1    # Lexer to use
-SYNSPEC    = 2    # Highligter specs
-PROPERTIES = 3    # Extra Properties
-LANGUAGE   = 4    # Language ID
-COMMENT    = 5    # Gets the comment characters pattern
-CLEXER     = 6    # Container Lexer Styler Method
-INDENTER   = 7    # Auto-indenter method
+MODULE     = 1
 
 _ = wx.GetTranslation
 #-----------------------------------------------------------------------------#
+# Imports
+import synglob
+import syndata
+import synxml
 
 # Needed by other modules that use this api
-from synextreg import ExtensionRegister, GetFileExtensions
+from synextreg import ExtensionRegister, GetFileExtensions, RegisterNewLangId
 
 #-----------------------------------------------------------------------------#
 
@@ -89,11 +81,12 @@ class SyntaxMgr(object):
             SyntaxMgr.first = False
             self._extreg = ExtensionRegister()
             self._config = config
-            if self._config:
-                self._extreg.LoadFromConfig(self._config)
-            else:
-                self._extreg.LoadDefault()
             self._loaded = dict()
+
+            # Syntax mode extensions
+            self._extensions = dict()   # loaded extensions "py" : PythonMode()
+
+            self.InitConfig()
 
     def __new__(cls, config=None):
         """Ensure only a single instance is shared amongst
@@ -116,7 +109,7 @@ class SyntaxMgr(object):
         lexdat = synglob.LANG_MAP.get(ftype)
         mod = None
         if lexdat:
-            mod = lexdat[2]
+            mod = lexdat[MODULE]
         return mod
 
     def GetLangId(self, ext):
@@ -126,7 +119,17 @@ class SyntaxMgr(object):
 
         """
         ftype = self._extreg.FileTypeFromExt(ext)
-        return synglob.LANG_MAP[ftype][0]
+        return synglob.LANG_MAP[ftype][LANG_ID]
+
+    def InitConfig(self):
+        """Initialize the SyntaxMgr's configuration state"""
+        if self._config:
+            self._extreg.LoadFromConfig(self._config)
+        else:
+            self._extreg.LoadDefault()
+
+        if self._config:
+            self.LoadExtensions(self._config)
 
     def IsModLoaded(self, modname):
         """Checks if a module has already been loaded
@@ -171,44 +174,127 @@ class SyntaxMgr(object):
             return False
         return True
 
-    def SyntaxData(self, ext):
-        """Fetches the language data based on a file extention string. The file
+    def GetSyntaxData(self, ext):
+        """Fetches the language data based on a file extension string. The file
         extension is used to look up the default lexer actions from the EXT_REG
         dictionary.
         @see: L{synglob}
         @param ext: a string representing the file extension
-        @return: Returns a Dictionary of Lexer Config Data
+        @return: SyntaxData object
 
         """
         # The Return Value
-        syn_data = dict()
-        lex_cfg = synglob.LANG_MAP[self._extreg.FileTypeFromExt(ext)]
+        lang = self._extreg.FileTypeFromExt(ext)
+        if lang in self._extensions:
+            syn_data = self._extensions[lang]
+            return syn_data
 
-        syn_data[LEXER] = lex_cfg[LEXER_ID]
-        if lex_cfg[LANG_ID] == synglob.ID_LANG_TXT:
-            syn_data[LANGUAGE] = lex_cfg[LANG_ID]
+        # Check for extensions that may have been removed
+        if lang not in synglob.LANG_MAP:
+            self._extreg.Remove(lang)
+
+        lex_cfg = synglob.LANG_MAP.get(lang, synglob.LANG_MAP[synglob.LANG_TXT])
 
         # Check if module is loaded and load if necessary
         if not self.LoadModule(lex_cfg[MODULE]):
-            # Bail out as nothing else can be done at this point
-            return syn_data
+            # Bail out and return a default plaintext config as
+            # nothing else can be done at this point
+            return syndata.SyntaxDataBase()
 
         # This little bit of code fetches the keyword/syntax 
         # spec set(s) from the specified module
-        mod = self._loaded[lex_cfg[MODULE]]  #HACK
-        syn_data[KEYWORDS] = mod.Keywords(lex_cfg[LANG_ID])
-        syn_data[SYNSPEC] = mod.SyntaxSpec(lex_cfg[LANG_ID])
-        syn_data[PROPERTIES] = mod.Properties(lex_cfg[LANG_ID])
-        syn_data[LANGUAGE] = lex_cfg[LANG_ID]
-        syn_data[COMMENT] = mod.CommentPattern(lex_cfg[LANG_ID])
-        if syn_data[LEXER] == wx.stc.STC_LEX_CONTAINER:
-            syn_data[CLEXER] = mod.StyleText
-        else:
-            syn_data[CLEXER] = None
-        syn_data[INDENTER] = getattr(mod, 'AutoIndenter', None)
-
+        mod = self._loaded[lex_cfg[MODULE]]
+        syn_data = mod.SyntaxData(lex_cfg[LANG_ID])
         return syn_data
 
+    def LoadExtensions(self, path):
+        """Load all extensions found at the extension path
+        @param path: path to look for extension on
+
+        """
+        for fname in os.listdir(path):
+            if fname.endswith(u".edxml"):
+                fpath = os.path.join(path, fname)
+                modeh = synxml.LoadHandler(fpath)
+
+                if modeh.IsOk():
+                    sdata = SynExtensionDelegate(modeh)
+                    self._extensions[sdata.GetXmlObject().GetLanguage()] = sdata
+                else:
+                    pass
+                    #TODO: report error
+
+    def SetConfigDir(self, path):
+        """Set the path to locate config information at. The SyntaxMgr will
+        look for file type associations in a file called synmap and will load
+        syntax extensions from .edxml files found at this path.
+        @param path: string
+
+        """
+        self._config = path
+
+#-----------------------------------------------------------------------------#
+
+class SynExtensionDelegate(syndata.SyntaxDataBase):
+    """Delegate SyntaxData class for SynXml Extension class instances"""
+    def __init__(self, xml_obj):
+        """Initialize the data class
+        @param xml_obj: SynXml
+
+        """
+        langId = _RegisterExtensionHandler(xml_obj)
+        syndata.SyntaxDataBase.__init__(self, langId)
+
+        # Attributes
+        self._xml = xml_obj
+
+        # Setup
+        self.SetLexer(self._xml.GetLexer())
+        #TODO: Load and register features specified by the xml object
+
+    #---- Syntax Data Implementation ----#
+
+    def GetCommentPattern(self):
+        """Get the comment pattern
+        @return: list of strings ['/*', '*/']
+
+        """
+        return self._xml.GetCommentPattern()
+
+    def GetKeywords(self):
+        """Get the Keyword List(s)
+        @return: list of tuples [(1, ['kw1', kw2']),]
+
+        """
+        keywords = self._xml.GetKeywords()
+        rwords = list()
+        for sid, words in keywords:
+            rwords.append((sid, u" ".join(words)))
+        return rwords
+
+    def GetProperties(self):
+        """Get the Properties List
+        @return: list of tuples [('fold', '1'),]
+
+        """
+        return self._xml.GetProperties()
+
+    def GetSyntaxSpec(self):
+        """Get the the syntax specification list
+        @return: list of tuples [(int, 'style_tag'),]
+
+        """
+        return self._xml.GetSyntaxSpec()
+
+    #---- End Syntax Data Implementation ----#
+
+    def GetXmlObject(self):
+        """Get the xml object
+        @return: EditraXml instance
+
+        """
+        return self._xml
+    
 #-----------------------------------------------------------------------------#
 
 def GenLexerMenu():
@@ -222,7 +308,7 @@ def GenLexerMenu():
     for key in synglob.LANG_MAP:
         f_types[key] = synglob.LANG_MAP[key][LANG_ID]
     f_order = list(f_types)
-    f_order.sort(NoCaseCmp)
+    f_order.sort(key=unicode.lower)
 
     for lang in f_order:
         lex_menu.Append(f_types[lang], lang, 
@@ -231,11 +317,11 @@ def GenLexerMenu():
 
 def GenFileFilters():
     """Generates a list of file filters
-    @return: list of all file filters based on exentsion associations
+    @return: list of all file filters based on extension associations
 
     """
     extreg = ExtensionRegister()
-    # Convert extension list into a formated string
+    # Convert extension list into a formatted string
     f_dict = dict()
     for key, val in extreg.iteritems():
         val.sort()
@@ -244,48 +330,58 @@ def GenFileFilters():
 
         f_dict[key] = u";*." + u";*.".join(val)
 
-    # Build the final list of properly formated strings
+    # Build the final list of properly formatted strings
     filters = list()
     for key in f_dict:
         tmp = u" (%s)|%s|" % (f_dict[key][1:], f_dict[key][1:])
         filters.append(key + tmp)
-    filters.sort(NoCaseCmp)
+    filters.sort(key=unicode.lower)
     filters.insert(0, u"All Files (*)|*|")
     filters[-1] = filters[-1][:-1] # IMPORTANT trim last '|' from item in list
     return filters
 
 def GetLexerList():
-    """Gets a list of unique file lexer configurations available
-    @return: list of all lexer identifiers
+    """Gets the list of all supported file types
+    @return: list of strings
 
     """ 
-    f_types = dict()
-    for key, val in synglob.LANG_MAP.iteritems():
-        f_types[key] = val[LANG_ID]
-    f_order = list(f_types)
-    f_order.sort()
-    return f_order
+    f_types = synglob.LANG_MAP.keys()
+    f_types.sort(key=unicode.lower)
+    return f_types
 
 #---- Syntax id set ----#
+SYNTAX_IDS = None
+
 def SyntaxIds():
     """Gets a list of all Syntax Ids and returns it
     @return: list of all syntax language ids
 
     """
-    s_glob = dir(synglob)
-    syn_ids = list()
-    for item in s_glob:
-        if item.startswith("ID_LANG"):
-            syn_ids.append(item)
-    
-    # Fetch actual values
-    ret_ids = list()
-    for syn_id in syn_ids:
-        ret_ids.append(getattr(synglob, syn_id))
+    # Use the cached list if its available
+    if SYNTAX_IDS is not None:
+        return SYNTAX_IDS
 
-    return ret_ids
+    syn_ids = list()
+    for item in dir(synglob):
+        if item.startswith("ID_LANG"):
+            syn_ids.append(getattr(synglob, item))
+
+    return syn_ids
 
 SYNTAX_IDS = SyntaxIds()
+
+def SyntaxNames():
+    """Gets a list of all Syntax Labels
+    @return: list of strings
+
+    """
+    syn_list = list()
+    for item in dir(synglob):
+        if item.startswith("LANG_"):
+            val = getattr(synglob, item)
+            if isinstance(val, basestring):
+                syn_list.append(val)
+    return syn_list
 
 #---- End Syntax ids ----#
 
@@ -298,21 +394,10 @@ def GetExtFromId(ext_id):
     """
     extreg = ExtensionRegister()
     ftype = synglob.GetDescriptionFromId(ext_id)
-    return extreg[ftype][0]
-
-def GetFtypeDisplayName(lang_id):
-    """Get the file type display string for the given lang_id
-    @param lang_id: ID_LANG_*
-    @todo: make file types translatable
-
-    """
-    for item in dir(synglob):
-        if item.startswith("ID_LANG"):
-            if getattr(synglob, item) == lang_id:
-                return getattr(synglob, item[3:], u"Plain Text")
-    else:
-        return u"Plain Text"
-
+    rval = u''
+    if len(extreg[ftype]):
+        rval = extreg[ftype][0]
+    return rval
 
 def GetIdFromExt(ext):
     """Get the language id from the given file extension
@@ -336,13 +421,24 @@ def GetTypeFromExt(ext):
     """
     return ExtensionRegister().FileTypeFromExt(ext)
 
-#-----------------------------------------------------------------------------#
-# Utility
-def NoCaseCmp(x, y):
-    """Case insensitive sort method"""
-    if x.lower() < y.lower():
-        return -1
-    elif x.lower() > y.lower():
-        return 1
-    else:
-        return 0
+def _RegisterExtensionHandler(xml_obj):
+    """Register an ExtensionHandler with this module.
+    @todo: this is a temporary hack till what to do with the language id's
+           is decided.
+
+    """
+    # Create an ID value for the lang id string
+    langId = xml_obj.GetLangId() 
+    rid = RegisterNewLangId(langId, xml_obj.GetLanguage())
+    setattr(synglob, langId, rid)
+    setattr(synglob, langId[3:], xml_obj.GetLanguage())
+
+    # Register file extensions with extension register
+    ExtensionRegister().Associate(xml_obj.GetLanguage(),
+                                  u" ".join(xml_obj.FileExtensions))
+
+    # Update static syntax id list
+    if rid not in SYNTAX_IDS:
+        SYNTAX_IDS.append(rid)
+
+    return rid

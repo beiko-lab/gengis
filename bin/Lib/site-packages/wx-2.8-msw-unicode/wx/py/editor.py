@@ -1,8 +1,8 @@
 """PyAlaCarte and PyAlaMode editors."""
 
 __author__ = "Patrick K. O'Brien <pobrien@orbtech.com>"
-__cvsid__ = "$Id: editor.py 41077 2006-09-08 20:09:27Z RD $"
-__revision__ = "$Revision: 41077 $"[11:-2]
+__cvsid__ = "$Id: editor.py 63478 2010-02-13 22:59:44Z RD $"
+__revision__ = "$Revision: 63478 $"[11:-2]
 
 import wx
 
@@ -714,21 +714,18 @@ class Editor:
             dispatcher.send(signal='Shell.calltip', sender=self, calltip=tip)
         if not self.window.autoCallTip:
             return
+        startpos = self.window.GetCurrentPos()
         if argspec:
-            startpos = self.window.GetCurrentPos()
             self.window.AddText(argspec + ')')
             endpos = self.window.GetCurrentPos()
-            self.window.SetSelection(endpos, startpos)
+            self.window.SetSelection(startpos, endpos)
         if tip:
-            curpos = self.window.GetCurrentPos()
-            size = len(name)
-            tippos = curpos - (size + 1)
-            fallback = curpos - self.window.GetColumn(curpos)
+            tippos = startpos - (len(name) + 1)
+            fallback = startpos - self.GetColumn(startpos)
             # In case there isn't enough room, only go back to the
             # fallback.
             tippos = max(tippos, fallback)
-            self.window.CallTipShow(tippos, tip)
-            self.window.CallTipSetHighlight(0, size)
+            self.CallTipShow(tippos, tip)
 
 
 class EditWindow(editwindow.EditWindow):

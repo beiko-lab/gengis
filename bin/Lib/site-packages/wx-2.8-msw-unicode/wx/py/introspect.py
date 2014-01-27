@@ -2,8 +2,8 @@
 things like call tips and command auto completion."""
 
 __author__ = "Patrick K. O'Brien <pobrien@orbtech.com>"
-__cvsid__ = "$Id: introspect.py 39896 2006-06-29 22:24:00Z RD $"
-__revision__ = "$Revision: 39896 $"[11:-2]
+__cvsid__ = "$Id: introspect.py 63479 2010-02-14 05:24:22Z RD $"
+__revision__ = "$Revision: 63479 $"[11:-2]
 
 import cStringIO
 import inspect
@@ -47,6 +47,15 @@ def getAttributeNames(object, includeMagic=1, includeSingle=1,
     if includeMagic:
         try: attributes += object._getAttributeNames()
         except: pass
+        # Special code to allow traits to be caught by autocomplete
+        if hasattr(object,'trait_get'):
+            try:
+                for i in object.trait_get().keys():
+                    if i not in attributes:
+                        if hasattr(object, i):
+                            attributes += i
+            except:
+                pass
     # Get all attribute names.
     str_type = str(type(object))
     if str_type == "<type 'array'>":

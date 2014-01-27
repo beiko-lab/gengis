@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 """PyCrust is a python shell and namespace browser application."""
 
 # The next two lines, and the other code below that makes use of
@@ -8,8 +9,8 @@ import __main__
 original = __main__.__dict__.keys()
 
 __author__ = "Patrick K. O'Brien <pobrien@orbtech.com>"
-__cvsid__ = "$Id: PyCrust.py 36607 2005-12-30 23:02:03Z RD $"
-__revision__ = "$Revision: 36607 $"[11:-2]
+__cvsid__ = "$Id: PyCrust.py 63479 2010-02-14 05:24:22Z RD $"
+__revision__ = "$Revision: 63479 $"[11:-2]
 
 import wx
 

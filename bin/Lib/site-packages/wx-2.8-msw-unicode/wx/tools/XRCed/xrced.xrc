@@ -22,7 +22,6 @@
         <option>1</option>
         <flag>wxEXPAND</flag>
       </object>
-      
       <object class="sizeritem">
         <object class="wxStdDialogButtonSizer">
           <object class="button">
@@ -826,6 +825,20 @@
             <object class="wxCheckBox" name="check_useSubclassing">
               <label>Use subclassing</label>
               <tooltip>Use subclassing when creating the test view</tooltip>
+            </object>
+            <flag>wxTOP|wxLEFT|wxRIGHT</flag>
+            <border>5</border>
+          </object>
+          <object class="sizeritem">
+            <object class="wxRadioBox" name="radio_allowExec">
+              <label>Allow executable comments</label>
+              <content>
+                <item>ask</item>
+                <item>yes</item>
+                <item>no</item>
+              </content>
+              <help>Control of execution &quot;%command&quot; comments</help>
+              <style>wxRA_SPECIFY_ROWS</style>
             </object>
             <flag>wxTOP|wxLEFT|wxRIGHT</flag>
             <border>5</border>

@@ -41,6 +41,12 @@
         function helloA(param) {
             echo "$param";
         }
+        function printEndTag() {
+            echo "?>"
+        }
+        function printStartTag() {
+            echo "<?php"
+        }
 
     }
 

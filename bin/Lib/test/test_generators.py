@@ -382,7 +382,7 @@ From the Iterators list, about the types of these things.
 >>> type(i)
 <type 'generator'>
 >>> [s for s in dir(i) if not s.startswith('_')]
-['close', 'gi_frame', 'gi_running', 'next', 'send', 'throw']
+['close', 'gi_code', 'gi_frame', 'gi_running', 'next', 'send', 'throw']
 >>> print i.next.__doc__
 x.next() -> the next value, or raise StopIteration
 >>> iter(i) is i
@@ -899,6 +899,45 @@ This one caused a crash (see SF bug 567538):
 >>> print g.next()
 Traceback (most recent call last):
 StopIteration
+
+
+Test the gi_code attribute
+
+>>> def f():
+...     yield 5
+...
+>>> g = f()
+>>> g.gi_code is f.func_code
+True
+>>> g.next()
+5
+>>> g.next()
+Traceback (most recent call last):
+StopIteration
+>>> g.gi_code is f.func_code
+True
+
+
+Test the __name__ attribute and the repr()
+
+>>> def f():
+...    yield 5
+...
+>>> g = f()
+>>> g.__name__
+'f'
+>>> repr(g)  # doctest: +ELLIPSIS
+'<generator object f at ...>'
+
+Lambdas shouldn't have their usual return behavior.
+
+>>> x = lambda: (yield 1)
+>>> list(x())
+[1]
+
+>>> x = lambda: ((yield 1), (yield 2))
+>>> list(x())
+[1, 2]
 """
 
 # conjoin is a simple backtracking generator, named in honor of Icon's
@@ -921,11 +960,11 @@ StopIteration
 # iterators have side-effects, so that which values *can* be generated at
 # each slot depend on the values iterated at previous slots.
 
-def conjoin(gs):
+def simple_conjoin(gs):
 
     values = [None] * len(gs)
 
-    def gen(i, values=values):
+    def gen(i):
         if i >= len(gs):
             yield values
         else:
@@ -950,7 +989,7 @@ def conjoin(gs):
     # Do one loop nest at time recursively, until the # of loop nests
     # remaining is divisible by 3.
 
-    def gen(i, values=values):
+    def gen(i):
         if i >= n:
             yield values
 
@@ -968,7 +1007,7 @@ def conjoin(gs):
     # remain.  Don't call directly:  this is an internal optimization for
     # gen's use.
 
-    def _gen3(i, values=values):
+    def _gen3(i):
         assert i < n and (n-i) % 3 == 0
         ip1, ip2, ip3 = i+1, i+2, i+3
         g, g1, g2 = gs[i : ip3]
@@ -1525,7 +1564,8 @@ Check some syntax errors for yield expressions:
 >>> f=lambda: (yield 1),(yield 2)
 Traceback (most recent call last):
   ...
-SyntaxError: 'yield' outside function (<doctest test.test_generators.__test__.coroutine[21]>, line 1)
+  File "<doctest test.test_generators.__test__.coroutine[21]>", line 1
+SyntaxError: 'yield' outside function
 
 >>> def f(): return lambda x=(yield): 1
 Traceback (most recent call last):
@@ -1535,17 +1575,20 @@ SyntaxError: 'return' with argument inside generator (<doctest test.test_generat
 >>> def f(): x = yield = y
 Traceback (most recent call last):
   ...
-SyntaxError: assignment to yield expression not possible (<doctest test.test_generators.__test__.coroutine[23]>, line 1)
+  File "<doctest test.test_generators.__test__.coroutine[23]>", line 1
+SyntaxError: assignment to yield expression not possible
 
 >>> def f(): (yield bar) = y
 Traceback (most recent call last):
   ...
-SyntaxError: can't assign to yield expression (<doctest test.test_generators.__test__.coroutine[24]>, line 1)
+  File "<doctest test.test_generators.__test__.coroutine[24]>", line 1
+SyntaxError: can't assign to yield expression
 
 >>> def f(): (yield bar) += y
 Traceback (most recent call last):
   ...
-SyntaxError: augmented assignment to yield expression not possible (<doctest test.test_generators.__test__.coroutine[25]>, line 1)
+  File "<doctest test.test_generators.__test__.coroutine[25]>", line 1
+SyntaxError: can't assign to yield expression
 
 
 Now check some throw() conditions:
@@ -1622,7 +1665,7 @@ ValueError: 7
 >>> f().throw("abc")     # throw on just-opened generator
 Traceback (most recent call last):
   ...
-abc
+TypeError: exceptions must be classes, or instances, not str
 
 Now let's try closing a generator:
 
@@ -1657,6 +1700,30 @@ And finalization:
 >>> del g
 exiting
 
+>>> class context(object):
+...    def __enter__(self): pass
+...    def __exit__(self, *args): print 'exiting'
+>>> def f():
+...     with context():
+...          yield
+>>> g = f()
+>>> g.next()
+>>> del g
+exiting
+
+
+GeneratorExit is not caught by except Exception:
+
+>>> def f():
+...     try: yield
+...     except Exception: print 'except'
+...     finally: print 'finally'
+
+>>> g = f()
+>>> g.next()
+>>> del g
+finally
+
 
 Now let's try some ill-behaved generators:
 
@@ -1681,7 +1748,7 @@ Our ill-behaved code should be invoked during GC:
 >>> g.next()
 >>> del g
 >>> sys.stderr.getvalue().startswith(
-...     "Exception exceptions.RuntimeError: 'generator ignored GeneratorExit' in "
+...     "Exception RuntimeError: 'generator ignored GeneratorExit' in "
 ... )
 True
 >>> sys.stderr = old
@@ -1798,7 +1865,7 @@ to test.
 ...     del l
 ...     err = sys.stderr.getvalue().strip()
 ...     err.startswith(
-...         "Exception exceptions.RuntimeError: RuntimeError() in <"
+...         "Exception RuntimeError: RuntimeError() in <"
 ...     )
 ...     err.endswith("> ignored")
 ...     len(err.splitlines())

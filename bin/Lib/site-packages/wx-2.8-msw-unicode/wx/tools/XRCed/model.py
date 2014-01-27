@@ -2,7 +2,7 @@
 # Purpose:      Model class and related
 # Author:       Roman Rolinsky <rolinsky@femagsoft.com>
 # Created:      07.06.2007
-# RCS-ID:       $Id: model.py 49207 2007-10-17 23:58:44Z ROL $
+# RCS-ID:       $Id: model.py 65578 2010-09-21 07:39:45Z ROL $
 
 import os,sys
 from xml.dom import minidom
@@ -26,6 +26,8 @@ class _Model:
         self.dom = None
 
     def init(self, dom=None):
+        self.external = []
+        self.allowExec = None
         if self.dom: self.dom.unlink()
         if not dom:
             self.dom = MyDocument()
@@ -56,7 +58,7 @@ class _Model:
     def saveXML(self, path):
         if self.dom.encoding:
             import codecs
-            f = codecs.open(path, 'wt', self.dom.encoding)
+            f = codecs.open(path, 'w', self.dom.encoding)
         else:
             f = open(path, 'wt')
         # Make temporary copy for formatting it
@@ -117,6 +119,10 @@ class _Model:
         node.setAttribute('ref', ref)
         return node
 
+    def createCommentNode(self):
+        node = self.dom.createComment('')
+        return node
+
     def createComponentNode(self, className):
         node = self.dom.createElement('component')
         node.setAttribute('class', className)
@@ -131,9 +137,18 @@ class _Model:
         self.testElem = elem
         oldTestElem.unlink()
 
+    def addExternal(self, path):
+        f = open(path)
+        self.external.append(minidom.parse(f))
+        f.close()
+
     def findResource(self, name, classname='', recursive=True):
         found = DoFindResource(self.mainNode, name, classname, recursive)
         if found: return found
+        # Try to look in external files
+        for dom in self.external:
+            found = DoFindResource(dom.documentElement, name, '', True)
+            if found: return found
         wx.LogError('XRC resource "%s" not found!' % name)
 
 Model = _Model()

@@ -171,6 +171,10 @@ class GUIMouse(GUIBase):
 
 
 class GUIMove(GUIBase):
+    """
+    Mode that moves the image (pans).
+    It doesn't change any coordinates, it only changes what the viewport is
+    """
     def __init__(self, canvas=None):
         GUIBase.__init__(self, canvas)
         self.Cursor = self.Cursors.HandCursor

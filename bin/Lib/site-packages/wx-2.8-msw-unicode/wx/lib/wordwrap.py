@@ -5,7 +5,7 @@
 # Author:      Robin Dunn
 #
 # Created:     15-Oct-2006
-# RCS-ID:      $Id: wordwrap.py 54718 2008-07-19 18:57:26Z RD $
+# RCS-ID:      $Id: wordwrap.py 64235 2010-05-06 18:20:36Z RD $
 # Copyright:   (c) 2006 by Total Control Software
 # Licence:     wxWindows license
 #----------------------------------------------------------------------
@@ -39,7 +39,7 @@ def wordwrap(text, width, dc, breakLongWords=True, margin=0):
             # have we reached the max width?
             if pte[idx] - start > wid and (spcIdx != -1 or breakLongWords):
                 if spcIdx != -1:
-                    idx = spcIdx + 1
+                    idx = min(spcIdx + 1, len(pte) - 1)
                 wrapped_lines.append(' '*margin + line[startIdx : idx] + ' '*margin)
                 start = pte[idx]
                 startIdx = idx

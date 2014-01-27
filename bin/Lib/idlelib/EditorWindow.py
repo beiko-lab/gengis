@@ -2,25 +2,36 @@ import sys
 import os
 import re
 import imp
-from itertools import count
 from Tkinter import *
 import tkSimpleDialog
 import tkMessageBox
-from MultiCall import MultiCallCreator
-
 import webbrowser
-import idlever
-import WindowList
-import SearchDialog
-import GrepDialog
-import ReplaceDialog
-import PyParse
-from configHandler import idleConf
-import aboutDialog, textView, configDialog
-import macosxSupport
+
+from idlelib.MultiCall import MultiCallCreator
+from idlelib import idlever
+from idlelib import WindowList
+from idlelib import SearchDialog
+from idlelib import GrepDialog
+from idlelib import ReplaceDialog
+from idlelib import PyParse
+from idlelib.configHandler import idleConf
+from idlelib import aboutDialog, textView, configDialog
+from idlelib import macosxSupport
 
 # The default tab setting for a Text widget, in average-width characters.
 TK_TABWIDTH_DEFAULT = 8
+
+def _sphinx_version():
+    "Format sys.version_info to produce the Sphinx version string used to install the chm docs"
+    major, minor, micro, level, serial = sys.version_info
+    release = '%s%s' % (major, minor)
+    if micro:
+        release += '%s' % (micro,)
+    if level == 'candidate':
+        release += 'rc%s' % (serial,)
+    elif level != 'final':
+        release += '%s%s' % (level[0], serial)
+    return release
 
 def _find_module(fullname, path=None):
     """Version of imp.find_module() that handles hierarchical module names"""
@@ -37,16 +48,75 @@ def _find_module(fullname, path=None):
             path = module.__path__
         except AttributeError:
             raise ImportError, 'No source for module ' + module.__name__
+    if descr[2] != imp.PY_SOURCE:
+        # If all of the above fails and didn't raise an exception,fallback
+        # to a straight import which can find __init__.py in a package.
+        m = __import__(fullname)
+        try:
+            filename = m.__file__
+        except AttributeError:
+            pass
+        else:
+            file = None
+            base, ext = os.path.splitext(filename)
+            if ext == '.pyc':
+                ext = '.py'
+            filename = base + ext
+            descr = filename, None, imp.PY_SOURCE
     return file, filename, descr
 
+
+class HelpDialog(object):
+
+    def __init__(self):
+        self.parent = None      # parent of help window
+        self.dlg = None         # the help window iteself
+
+    def display(self, parent, near=None):
+        """ Display the help dialog.
+
+            parent - parent widget for the help window
+
+            near - a Toplevel widget (e.g. EditorWindow or PyShell)
+                   to use as a reference for placing the help window
+        """
+        if self.dlg is None:
+            self.show_dialog(parent)
+        if near:
+            self.nearwindow(near)
+
+    def show_dialog(self, parent):
+        self.parent = parent
+        fn=os.path.join(os.path.abspath(os.path.dirname(__file__)),'help.txt')
+        self.dlg = dlg = textView.view_file(parent,'Help',fn, modal=False)
+        dlg.bind('<Destroy>', self.destroy, '+')
+
+    def nearwindow(self, near):
+        # Place the help dialog near the window specified by parent.
+        # Note - this may not reposition the window in Metacity
+        #  if "/apps/metacity/general/disable_workarounds" is enabled
+        dlg = self.dlg
+        geom = (near.winfo_rootx() + 10, near.winfo_rooty() + 10)
+        dlg.withdraw()
+        dlg.geometry("=+%d+%d" % geom)
+        dlg.deiconify()
+        dlg.lift()
+
+    def destroy(self, ev=None):
+        self.dlg = None
+        self.parent = None
+
+helpDialog = HelpDialog()  # singleton instance
+
+
 class EditorWindow(object):
-    from Percolator import Percolator
-    from ColorDelegator import ColorDelegator
-    from UndoDelegator import UndoDelegator
-    from IOBinding import IOBinding, filesystemencoding, encoding
-    import Bindings
+    from idlelib.Percolator import Percolator
+    from idlelib.ColorDelegator import ColorDelegator
+    from idlelib.UndoDelegator import UndoDelegator
+    from idlelib.IOBinding import IOBinding, filesystemencoding, encoding
+    from idlelib import Bindings
     from Tkinter import Toplevel
-    from MultiStatusBar import MultiStatusBar
+    from idlelib.MultiStatusBar import MultiStatusBar
 
     help_url = None
 
@@ -64,15 +134,13 @@ class EditorWindow(object):
                                            'Doc', 'index.html')
             elif sys.platform[:3] == 'win':
                 chmfile = os.path.join(sys.prefix, 'Doc',
-                                       'Python%d%d.chm' % sys.version_info[:2])
+                                       'Python%s.chm' % _sphinx_version())
                 if os.path.isfile(chmfile):
                     dochome = chmfile
-
             elif macosxSupport.runningAsOSXApp():
                 # documentation is stored inside the python framework
                 dochome = os.path.join(sys.prefix,
                         'Resources/English.lproj/Documentation/index.html')
-
             dochome = os.path.normpath(dochome)
             if os.path.isfile(dochome):
                 EditorWindow.help_url = dochome
@@ -80,7 +148,7 @@ class EditorWindow(object):
                     # Safari requires real file:-URLs
                     EditorWindow.help_url = 'file://' + EditorWindow.help_url
             else:
-                EditorWindow.help_url = "http://www.python.org/doc/current"
+                EditorWindow.help_url = "http://docs.python.org/%d.%d" % sys.version_info[:2]
         currentTheme=idleConf.CurrentTheme()
         self.flist = flist
         root = root or flist.root
@@ -93,8 +161,8 @@ class EditorWindow(object):
         self.top = top = WindowList.ListedToplevel(root, menu=self.menubar)
         if flist:
             self.tkinter_vars = flist.vars
-            #self.top.instance_dict makes flist.inversedict avalable to
-            #configDialog.py so it can access all EditorWindow instaces
+            #self.top.instance_dict makes flist.inversedict available to
+            #configDialog.py so it can access all EditorWindow instances
             self.top.instance_dict = flist.inversedict
         else:
             self.tkinter_vars = {}  # keys: Tkinter event names
@@ -102,23 +170,21 @@ class EditorWindow(object):
             self.top.instance_dict = {}
         self.recent_files_path = os.path.join(idleConf.GetUserCfgDir(),
                 'recent-files.lst')
-        self.vbar = vbar = Scrollbar(top, name='vbar')
         self.text_frame = text_frame = Frame(top)
+        self.vbar = vbar = Scrollbar(text_frame, name='vbar')
         self.width = idleConf.GetOption('main','EditorWindow','width')
-        self.text = text = MultiCallCreator(Text)(
-                text_frame, name='text', padx=5, wrap='none',
-                foreground=idleConf.GetHighlight(currentTheme,
-                        'normal',fgBg='fg'),
-                background=idleConf.GetHighlight(currentTheme,
-                        'normal',fgBg='bg'),
-                highlightcolor=idleConf.GetHighlight(currentTheme,
-                        'hilite',fgBg='fg'),
-                highlightbackground=idleConf.GetHighlight(currentTheme,
-                        'hilite',fgBg='bg'),
-                insertbackground=idleConf.GetHighlight(currentTheme,
-                        'cursor',fgBg='fg'),
-                width=self.width,
-                height=idleConf.GetOption('main','EditorWindow','height') )
+        text_options = {
+                'name': 'text',
+                'padx': 5,
+                'wrap': 'none',
+                'width': self.width,
+                'height': idleConf.GetOption('main', 'EditorWindow', 'height')}
+        if TkVersion >= 8.5:
+            # Starting with tk 8.5 we have to set the new tabstyle option
+            # to 'wordprocessor' to achieve the same display of tabs as in
+            # older tk versions.
+            text_options['tabstyle'] = 'wordprocessor'
+        self.text = text = MultiCallCreator(Text)(text_frame, **text_options)
         self.top.focused_widget = self.text
 
         self.createmenubar()
@@ -129,6 +195,14 @@ class EditorWindow(object):
         if macosxSupport.runningAsOSXApp():
             # Command-W on editorwindows doesn't work without this.
             text.bind('<<close-window>>', self.close_event)
+            # Some OS X systems have only one mouse button,
+            # so use control-click for pulldown menus there.
+            #  (Note, AquaTk defines <2> as the right button if
+            #   present and the Tk Text widget already binds <2>.)
+            text.bind("<Control-Button-1>",self.right_menu_event)
+        else:
+            # Elsewhere, use right-click for pulldown menus.
+            text.bind("<3>",self.right_menu_event)
         text.bind("<<cut>>", self.cut)
         text.bind("<<copy>>", self.copy)
         text.bind("<<paste>>", self.paste)
@@ -147,7 +221,6 @@ class EditorWindow(object):
         text.bind("<<find-selection>>", self.find_selection_event)
         text.bind("<<replace>>", self.replace_event)
         text.bind("<<goto-line>>", self.goto_line_event)
-        text.bind("<3>", self.right_menu_event)
         text.bind("<<smart-backspace>>",self.smart_backspace_event)
         text.bind("<<newline-and-indent>>",self.newline_and_indent_event)
         text.bind("<<smart-indent>>",self.smart_indent_event)
@@ -163,6 +236,7 @@ class EditorWindow(object):
         text.bind("<Right>", self.move_at_edge_if_selection(1))
         text.bind("<<del-word-left>>", self.del_word_left)
         text.bind("<<del-word-right>>", self.del_word_right)
+        text.bind("<<beginning-of-line>>", self.home_callback)
 
         if flist:
             flist.inversedict[self] = key
@@ -224,11 +298,6 @@ class EditorWindow(object):
         self.num_context_lines = 50, 500, 5000000
 
         self.per = per = self.Percolator(text)
-        if self.ispythonsource(filename):
-            self.color = color = self.ColorDelegator()
-            per.insertfilter(color)
-        else:
-            self.color = None
 
         self.undo = undo = self.UndoDelegator()
         per.insertfilter(undo)
@@ -247,11 +316,13 @@ class EditorWindow(object):
                                              menu=self.recent_files_menu)
         self.update_recent_files_list()
 
+        self.color = None # initialized below in self.ResetColorizer
         if filename:
             if os.path.exists(filename) and not os.path.isdir(filename):
                 io.loadfile(filename)
             else:
                 io.set_filename(filename)
+        self.ResetColorizer()
         self.saved_change_hook()
 
         self.set_indentation_params(self.ispythonsource(filename))
@@ -292,6 +363,47 @@ class EditorWindow(object):
     def new_callback(self, event):
         dirname, basename = self.io.defaultfilename()
         self.flist.new(dirname)
+        return "break"
+
+    def home_callback(self, event):
+        if (event.state & 4) != 0 and event.keysym == "Home":
+            # state&4==Control. If <Control-Home>, use the Tk binding.
+            return
+        if self.text.index("iomark") and \
+           self.text.compare("iomark", "<=", "insert lineend") and \
+           self.text.compare("insert linestart", "<=", "iomark"):
+            # In Shell on input line, go to just after prompt
+            insertpt = int(self.text.index("iomark").split(".")[1])
+        else:
+            line = self.text.get("insert linestart", "insert lineend")
+            for insertpt in xrange(len(line)):
+                if line[insertpt] not in (' ','\t'):
+                    break
+            else:
+                insertpt=len(line)
+        lineat = int(self.text.index("insert").split('.')[1])
+        if insertpt == lineat:
+            insertpt = 0
+        dest = "insert linestart+"+str(insertpt)+"c"
+        if (event.state&1) == 0:
+            # shift was not pressed
+            self.text.tag_remove("sel", "1.0", "end")
+        else:
+            if not self.text.index("sel.first"):
+                self.text.mark_set("my_anchor", "insert")  # there was no previous selection
+            else:
+                if self.text.compare(self.text.index("sel.first"), "<", self.text.index("insert")):
+                    self.text.mark_set("my_anchor", "sel.first") # extend back
+                else:
+                    self.text.mark_set("my_anchor", "sel.last") # extend forward
+            first = self.text.index(dest)
+            last = self.text.index("my_anchor")
+            if self.text.compare(first,">",last):
+                first,last = last,first
+            self.text.tag_remove("sel", "1.0", "end")
+            self.text.tag_add("sel", first, last)
+        self.text.mark_set("insert", dest)
+        self.text.see("insert")
         return "break"
 
     def set_status_bar(self):
@@ -336,7 +448,7 @@ class EditorWindow(object):
             menudict[name] = menu = Menu(mbar, name=name)
             mbar.add_cascade(label=label, menu=menu, underline=underline)
 
-        if sys.platform == 'darwin' and '.framework' in sys.executable:
+        if macosxSupport.isCarbonAquaTk(self.root):
             # Insert the application menu
             menudict['application'] = menu = Menu(mbar, name='apple')
             mbar.add_cascade(label='IDLE', menu=menu)
@@ -391,12 +503,19 @@ class EditorWindow(object):
         configDialog.ConfigDialog(self.top,'Settings')
 
     def help_dialog(self, event=None):
-        fn=os.path.join(os.path.abspath(os.path.dirname(__file__)),'help.txt')
-        textView.TextViewer(self.top,'Help',fn)
+        if self.root:
+            parent = self.root
+        else:
+            parent = self.top
+        helpDialog.display(parent, near=self.top)
 
     def python_docs(self, event=None):
         if sys.platform[:3] == 'win':
-            os.startfile(self.help_url)
+            try:
+                os.startfile(self.help_url)
+            except WindowsError as why:
+                tkMessageBox.showerror(title='Document Start Failure',
+                    message=str(why), parent=self.text)
         else:
             webbrowser.open(self.help_url)
         return "break"
@@ -414,6 +533,7 @@ class EditorWindow(object):
 
     def paste(self,event):
         self.text.event_generate("<<Paste>>")
+        self.text.see("insert")
         return "break"
 
     def select_all(self, event=None):
@@ -530,11 +650,11 @@ class EditorWindow(object):
             return None
         head, tail = os.path.split(filename)
         base, ext = os.path.splitext(tail)
-        import ClassBrowser
+        from idlelib import ClassBrowser
         ClassBrowser.ClassBrowser(self.flist, base, [head])
 
     def open_path_browser(self, event=None):
-        import PathBrowser
+        from idlelib import PathBrowser
         PathBrowser.PathBrowser(self.flist)
 
     def gotoline(self, lineno):
@@ -560,7 +680,8 @@ class EditorWindow(object):
 
     def close_hook(self):
         if self.flist:
-            self.flist.close_edit(self)
+            self.flist.unregister_maybe_terminate(self)
+            self.flist = None
 
     def set_close_hook(self, close_hook):
         self.close_hook = close_hook
@@ -570,36 +691,42 @@ class EditorWindow(object):
             self.flist.filename_changed_edit(self)
         self.saved_change_hook()
         self.top.update_windowlist_registry(self)
-        if self.ispythonsource(self.io.filename):
-            self.addcolorizer()
-        else:
-            self.rmcolorizer()
+        self.ResetColorizer()
 
-    def addcolorizer(self):
+    def _addcolorizer(self):
         if self.color:
             return
-        self.per.removefilter(self.undo)
-        self.color = self.ColorDelegator()
-        self.per.insertfilter(self.color)
-        self.per.insertfilter(self.undo)
+        if self.ispythonsource(self.io.filename):
+            self.color = self.ColorDelegator()
+        # can add more colorizers here...
+        if self.color:
+            self.per.removefilter(self.undo)
+            self.per.insertfilter(self.color)
+            self.per.insertfilter(self.undo)
 
-    def rmcolorizer(self):
+    def _rmcolorizer(self):
         if not self.color:
             return
         self.color.removecolors()
-        self.per.removefilter(self.undo)
         self.per.removefilter(self.color)
         self.color = None
-        self.per.insertfilter(self.undo)
 
     def ResetColorizer(self):
-        "Update the colour theme if it is changed"
-        # Called from configDialog.py
-        if self.color:
-            self.color = self.ColorDelegator()
-            self.per.insertfilter(self.color)
+        "Update the colour theme"
+        # Called from self.filename_change_hook and from configDialog.py
+        self._rmcolorizer()
+        self._addcolorizer()
         theme = idleConf.GetOption('main','Theme','name')
-        self.text.config(idleConf.GetHighlight(theme, "normal"))
+        normal_colors = idleConf.GetHighlight(theme, 'normal')
+        cursor_color = idleConf.GetHighlight(theme, 'cursor', fgBg='fg')
+        select_colors = idleConf.GetHighlight(theme, 'hilite')
+        self.text.config(
+            foreground=normal_colors['foreground'],
+            background=normal_colors['background'],
+            insertbackground=cursor_color,
+            selectforeground=select_colors['foreground'],
+            selectbackground=select_colors['background'],
+            )
 
     def ResetFont(self):
         "Update the text widgets' font if it is changed"
@@ -648,8 +775,8 @@ class EditorWindow(object):
                     if accel:
                         itemName = menu.entrycget(index, 'label')
                         event = ''
-                        if menuEventDict.has_key(menubarItem):
-                            if menuEventDict[menubarItem].has_key(itemName):
+                        if menubarItem in menuEventDict:
+                            if itemName in menuEventDict[menubarItem]:
                                 event = menuEventDict[menubarItem][itemName]
                         if event:
                             accel = get_accelerator(keydefs, event)
@@ -683,9 +810,13 @@ class EditorWindow(object):
         "Create a callback with the helpfile value frozen at definition time"
         def display_extra_help(helpfile=helpfile):
             if not helpfile.startswith(('www', 'http')):
-                url = os.path.normpath(helpfile)
+                helpfile = os.path.normpath(helpfile)
             if sys.platform[:3] == 'win':
-                os.startfile(helpfile)
+                try:
+                    os.startfile(helpfile)
+                except WindowsError as why:
+                    tkMessageBox.showerror(title='Document Start Failure',
+                        message=str(why), parent=self.text)
             else:
                 webbrowser.open(helpfile)
         return display_extra_help
@@ -712,17 +843,22 @@ class EditorWindow(object):
         rf_list = [path for path in rf_list if path not in bad_paths]
         ulchars = "1234567890ABCDEFGHIJK"
         rf_list = rf_list[0:len(ulchars)]
-        rf_file = open(self.recent_files_path, 'w')
         try:
-            rf_file.writelines(rf_list)
-        finally:
-            rf_file.close()
+            with open(self.recent_files_path, 'w') as rf_file:
+                rf_file.writelines(rf_list)
+        except IOError as err:
+            if not getattr(self.root, "recentfilelist_error_displayed", False):
+                self.root.recentfilelist_error_displayed = True
+                tkMessageBox.showerror(title='IDLE Error',
+                    message='Unable to update Recent Files list:\n%s'
+                        % str(err),
+                    parent=self.text)
         # for each edit window instance, construct the recent files menu
         for instance in self.top.instance_dict.keys():
             menu = instance.recent_files_menu
             menu.delete(1, END)  # clear, and rebuild:
-            for i, file in zip(count(), rf_list):
-                file_name = file[0:-1]  # zap \n
+            for i, file_name in enumerate(rf_list):
+                file_name = file_name.rstrip()  # zap \n
                 # make unicode string to display non-ASCII chars correctly
                 ufile_name = self._filename_to_unicode(file_name)
                 callback = instance.__recent_file_callback(file_name)
@@ -827,22 +963,21 @@ class EditorWindow(object):
         if self.io.filename:
             self.update_recent_files_list(new_file=self.io.filename)
         WindowList.unregister_callback(self.postwindowsmenu)
-        if self.close_hook:
-            self.close_hook()
-        self.flist = None
-        colorizing = 0
         self.unload_extensions()
-        self.io.close(); self.io = None
-        self.undo = None # XXX
+        self.io.close()
+        self.io = None
+        self.undo = None
         if self.color:
-            colorizing = self.color.colorizing
-            doh = colorizing and self.top
-            self.color.close(doh) # Cancel colorization
+            self.color.close(False)
+            self.color = None
         self.text = None
         self.tkinter_vars = None
-        self.per.close(); self.per = None
-        if not colorizing:
-            self.top.destroy()
+        self.per.close()
+        self.per = None
+        self.top.destroy()
+        if self.close_hook:
+            # unless override: unregister from flist, terminate if last window
+            self.close_hook()
 
     def load_extensions(self):
         self.extensions = {}
@@ -1047,7 +1182,10 @@ class EditorWindow(object):
         assert have > 0
         want = ((have - 1) // self.indentwidth) * self.indentwidth
         # Debug prompt is multilined....
-        last_line_of_prompt = sys.ps1.split('\n')[-1]
+        if self.context_use_ps1:
+            last_line_of_prompt = sys.ps1.split('\n')[-1]
+        else:
+            last_line_of_prompt = ''
         ncharsdeleted = 0
         while 1:
             if chars == last_line_of_prompt:
@@ -1138,7 +1276,7 @@ class EditorWindow(object):
             if not self.context_use_ps1:
                 for context in self.num_context_lines:
                     startat = max(lno - context, 1)
-                    startatindex = `startat` + ".0"
+                    startatindex = repr(startat) + ".0"
                     rawtext = text.get(startatindex, "insert")
                     y.set_str(rawtext)
                     bod = y.find_good_parse_start(
@@ -1470,7 +1608,12 @@ keynames = {
 
 def get_accelerator(keydefs, eventname):
     keylist = keydefs.get(eventname)
-    if not keylist:
+    # issue10940: temporary workaround to prevent hang with OS X Cocoa Tk 8.5
+    # if not keylist:
+    if (not keylist) or (macosxSupport.runningAsOSXApp() and eventname in {
+                            "<<open-module>>",
+                            "<<goto-line>>",
+                            "<<change-indentwidth>>"}):
         return ""
     s = keylist[0]
     s = re.sub(r"-[a-z]\b", lambda m: m.group().upper(), s)
@@ -1504,6 +1647,7 @@ def test():
         filename = None
     edit = EditorWindow(root=root, filename=filename)
     edit.set_close_hook(root.quit)
+    edit.text.bind("<<close-all-windows>>", edit.close_event)
     root.mainloop()
     root.destroy()
 

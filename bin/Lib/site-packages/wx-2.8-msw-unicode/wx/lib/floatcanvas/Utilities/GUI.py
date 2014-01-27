@@ -10,10 +10,9 @@ So far, they are:
 RubberBandBox: used to draw a RubberBand Box on the screen
 
 """
-#from __future__ import absolute_import ## may be needed for 2.4
 
 import wx
-from .. import FloatCanvas
+from wx.lib.floatcanvas import FloatCanvas
 
 class RubberBandBox:
     """

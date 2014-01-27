@@ -24,6 +24,10 @@ public class HelloWorldSwing {
         //Display the window.
         frame.pack();
         frame.setVisible(true);
+        
+        a = 1000;
+        // unclosed string
+        System.out.println("test);
     }
 
     public static void main(String[] args) {
