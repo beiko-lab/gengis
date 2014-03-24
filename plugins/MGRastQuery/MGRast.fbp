@@ -611,12 +611,12 @@
                                 </object>
                                 <object class="sizeritem" expanded="0">
                                     <property name="border">5</property>
-                                    <property name="flag">wxEXPAND|wxALL</property>
+                                    <property name="flag">wxEXPAND|wxRIGHT|wxLEFT</property>
                                     <property name="proportion">1</property>
                                     <object class="wxStaticBoxSizer" expanded="0">
                                         <property name="id">wxID_ANY</property>
                                         <property name="label">Progress</property>
-                                        <property name="minimum_size">-1,-1</property>
+                                        <property name="minimum_size">300,250</property>
                                         <property name="name">sbSizer8</property>
                                         <property name="orient">wxHORIZONTAL</property>
                                         <property name="permission">none</property>
@@ -636,7 +636,7 @@
                                                 <property name="id">wxID_ANY</property>
                                                 <property name="maximum_size"></property>
                                                 <property name="maxlength">0</property>
-                                                <property name="minimum_size">300,200</property>
+                                                <property name="minimum_size">300,100</property>
                                                 <property name="name">m_Progress</property>
                                                 <property name="permission">protected</property>
                                                 <property name="pos"></property>
