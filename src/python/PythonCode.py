@@ -7,8 +7,9 @@ class PythonInterpreter(wx.Panel):
   The wx.Panel is eventually added to GenGIS on the C++ wxWidgets side.
   """
   def __init__(self, parent):
-    wx.Panel.__init__(self, parent, -1, style=wx.SUNKEN_BORDER)            # Call parent's __init__ function
-    pyInterpreter = shell.Shell(self, -1)                                  # This is the actual interactive Python console.
-    sizer = wx.BoxSizer(wx.VERTICAL)
-    sizer.Add(pyInterpreter, 1, wx.EXPAND|wx.BOTTOM|wx.LEFT|wx.RIGHT, 10)  # Add the shell to the sizer.
-    self.SetSizer(sizer)
+	wx.Panel.__init__(self, parent, -1, style=wx.SUNKEN_BORDER)            # Call parent's __init__ function
+	pyInterpreter = shell.Shell(self, -1)                                  # This is the actual interactive Python console.
+	sizer = wx.BoxSizer(wx.VERTICAL)
+	sizer.Add(pyInterpreter, 1, wx.EXPAND|wx.BOTTOM|wx.LEFT|wx.RIGHT, 10)  # Add the shell to the sizer.
+	self.SetSizer(sizer)
+	wx.MessageBox('Hey look it executed')
