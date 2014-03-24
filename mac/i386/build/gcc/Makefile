@@ -17,11 +17,12 @@ export GENGISBUILDTYPE
 export GENGISDEBUGFLAG
 
 # Set the path to third-party libraries
-LIBRARY3RD_PATH = ../../../i386/library3rd
+LIBRARY3RD_PATH = ../../../i386/pythonUpdate/library3rd
 
 # Library versions
 BOOST_VERSION = boost_1_47
 WX_PYTHON_VERSION = 2.8
+WX_PYTHON_VERSION_EXT = 2.8.0
 
 # Paths to include directories
 BOOST_INCLUDE   =-I$(LIBRARY3RD_PATH)/$(BOOST_VERSION)/$(GENGISBUILDTYPE)/include/
@@ -110,7 +111,7 @@ default: release
 debug:
 	@if [ ! -d $(LIBRARY3RD_PATH)/$(BOOST_VERSION) ]; then tar -xzf $(LIBRARY3RD_PATH)/$(BOOST_VERSION).tar.gz -C $(LIBRARY3RD_PATH); fi;
 	@if [ ! -d $(LIBRARY3RD_PATH)/Frameworks ];       then \
-	then cat $(LIBRARY3RD_PATH)/Frameworks* > $(LIBRARY3RD_PATH)/Frameworks.tar.gz; \
+	cat $(LIBRARY3RD_PATH)/Frameworks* > $(LIBRARY3RD_PATH)/Frameworks.tar.gz; \
 	tar -xzf $(LIBRARY3RD_PATH)/Frameworks.tar.gz       -C $(LIBRARY3RD_PATH); \
 	fi;
 	@if [ ! -d $(LIBRARY3RD_PATH)/ftgl ];             then tar -xzf $(LIBRARY3RD_PATH)/ftgl.tar.gz             -C $(LIBRARY3RD_PATH); fi;
