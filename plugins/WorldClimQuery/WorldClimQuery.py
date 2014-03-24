@@ -157,8 +157,8 @@ class WorldClimQuery( WorldClimQueryLayout ):
 		wx.EndBusyCursor()
 	
 	def OnOK(self, event):
-		self.Close()
 		self.about.Close()
+		self.Close()
 	
 	def OnClose(self,event):
 		self.about.Close()
@@ -198,7 +198,6 @@ class WorldClimQuery( WorldClimQueryLayout ):
 							desc = file
 						name = file.split('.')
 						fileTrans[ desc ] = name[0]
-		print fileTrans
 		self.fileTranslations = fileTrans
 		
 		
