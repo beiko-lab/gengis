@@ -23,13 +23,15 @@ from WorldClimQueryLayout import WorldClimQueryLayout
 from WorldClimQueryLayout import DescriptionLayout
 import GenGIS
 import wx
+import os
 import pybioclim
+from pybioclim import DATA_PATHS
 
 class WorldClimQuery( WorldClimQueryLayout ):
 	NODATA = -9999
 	MAX = 0
 	MIN = 0
-	
+	'''
 	fileTranslations = {
 	"Annual Mean Temperature" : "BIO1",
 	"Mean Diurnal Range (Mean of monthly (max temp - min temp))" : "BIO2",
@@ -51,9 +53,13 @@ class WorldClimQuery( WorldClimQueryLayout ):
 	"Precipitation of Warmest Quarter" : "BIO18",
 	"Precipitation of Coldest Quarter" : "BIO19"
 	}
+	'''
+	fileTranslations = {}
 	
 	def __init__(self, parent=None):
 		WorldClimQueryLayout.__init__ ( self, parent )
+		
+		self.GetFileTranslations()
 		self.about = Description()
 		
 		self.SetIcon(wx.Icon(GenGIS.mainWindow.GetExeDir() + "images/CrazyEye.ico", wx.BITMAP_TYPE_ICO))
@@ -87,7 +93,6 @@ class WorldClimQuery( WorldClimQueryLayout ):
 		self.MAX = desc["maxvalue"]
 		self.MIN = desc["minvalue"]
 		self.UpdateDescription( file.lower(), desc )
-		
 		
 	
 	# needs to change all of the details in accordance to which measure was picked
@@ -152,8 +157,8 @@ class WorldClimQuery( WorldClimQueryLayout ):
 		wx.EndBusyCursor()
 	
 	def OnOK(self, event):
-		self.Close()
 		self.about.Close()
+		self.Close()
 	
 	def OnClose(self,event):
 		self.about.Close()
@@ -175,6 +180,26 @@ class WorldClimQuery( WorldClimQueryLayout ):
 	
 	def OnAbout(self, event):
 		self.about.Show()
+	
+	# This function gets all data sets available and populates fileTranslations
+	def GetFileTranslations(self):
+		fileTrans = {}
+		
+		names = []
+		for path in DATA_PATHS:
+			for root,dirs,files in os.walk(path):
+				for file in files:
+					if file.endswith('.bil'):
+						meta = {}
+						meta = pybioclim.metadata[file]
+						if 'variable' in meta.keys():
+							desc = meta['variable']
+						else:
+							desc = file
+						name = file.split('.')
+						fileTrans[ desc ] = name[0]
+		self.fileTranslations = fileTrans
+		
 		
 class Description( DescriptionLayout ):
 	def __init__(self):

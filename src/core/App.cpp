@@ -108,9 +108,9 @@ App::App():
 	m_bCurrentlySerializing( false ),
 	m_bSaveIsUpToDate( true ),
 	m_bIsEmptySession( true ),
-	//m_appVersion( wxT( "2.0.2" ) )
 	//m_appVersion( wxT( "2.1.1" ) )
-	m_appVersion( wxT( "2.2.0" ) )
+	//m_appVersion( wxT( "2.2.0" ) )
+	m_appVersion( wxT( "2.2.1" ) )
 {
 	m_colourMapManager.reset(new ColourMapManager());
 	std::wstring colourMapPath = (GetExeDir() + wxT("colourMaps")).c_str();
