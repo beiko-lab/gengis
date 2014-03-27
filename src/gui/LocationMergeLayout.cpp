@@ -25,17 +25,21 @@ LocationMergeLayout::LocationMergeLayout( wxWindow* parent, wxWindowID id, const
 	m_remove = new wxCheckBox( this, wxID_ANY, wxT("Remove layers after combination."), wxDefaultPosition, wxDefaultSize, 0 );
 	bSizer1->Add( m_remove, 0, wxALL, 5 );
 	
-	m_description = new wxStaticText( this, wxID_ANY, wxT("MyLabel"), wxDefaultPosition, wxDefaultSize, 0 );
-	m_description->Wrap( 260 );
-	bSizer1->Add( m_description, 0, wxALL, 5 );
-	
 	wxGridSizer* gSizer1;
-	gSizer1 = new wxGridSizer( 1, 2, 0, 0 );
+	gSizer1 = new wxGridSizer( 1, 3, 0, 0 );
 	
 	m_OK = new wxButton( this, wxID_ANY, wxT("OK"), wxDefaultPosition, wxDefaultSize, 0 );
 	gSizer1->Add( m_OK, 0, wxALL|wxALIGN_CENTER_HORIZONTAL, 5 );
 	
+	
+	gSizer1->Add( 0, 0, 1, wxEXPAND, 5 );
+	
+	m_About = new wxButton( this, wxID_ANY, wxT("About"), wxDefaultPosition, wxSize( -1,-1 ), 0 );
+	gSizer1->Add( m_About, 0, wxALL, 5 );
+	
 	m_Close = new wxButton( this, wxID_ANY, wxT("Close"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_Close->Hide();
+	
 	gSizer1->Add( m_Close, 0, wxALL|wxALIGN_CENTER_HORIZONTAL, 5 );
 	
 	bSizer1->Add( gSizer1, 1, wxEXPAND, 5 );
@@ -47,6 +51,7 @@ LocationMergeLayout::LocationMergeLayout( wxWindow* parent, wxWindowID id, const
 	
 	// Connect Events
 	m_OK->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( LocationMergeLayout::OnOK ), NULL, this );
+	m_About->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( LocationMergeLayout::OnAbout ), NULL, this );
 	m_Close->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( LocationMergeLayout::OnClose ), NULL, this );
 }
 
@@ -54,6 +59,7 @@ LocationMergeLayout::~LocationMergeLayout()
 {
 	// Disconnect Events
 	m_OK->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( LocationMergeLayout::OnOK ), NULL, this );
+	m_About->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( LocationMergeLayout::OnAbout ), NULL, this );
 	m_Close->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( LocationMergeLayout::OnClose ), NULL, this );
 	
 }

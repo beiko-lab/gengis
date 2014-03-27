@@ -623,7 +623,7 @@
                                         <event name="OnUpdateUI"></event>
                                         <object class="sizeritem" expanded="1">
                                             <property name="border">5</property>
-                                            <property name="flag">wxALL|wxEXPAND</property>
+                                            <property name="flag">wxEXPAND|wxALL</property>
                                             <property name="proportion">1</property>
                                             <object class="wxTextCtrl" expanded="1">
                                                 <property name="bg"></property>
@@ -636,7 +636,7 @@
                                                 <property name="id">wxID_ANY</property>
                                                 <property name="maximum_size"></property>
                                                 <property name="maxlength">0</property>
-                                                <property name="minimum_size">300,200</property>
+                                                <property name="minimum_size">300,100</property>
                                                 <property name="name">m_Progress</property>
                                                 <property name="permission">protected</property>
                                                 <property name="pos"></property>
