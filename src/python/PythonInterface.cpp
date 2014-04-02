@@ -1047,7 +1047,7 @@ PythonInterface::PythonInterface()
 	}
 
 	// Save the current Python thread state and release the Global Interpreter Lock.
-	// m_mainTState = wxPyBeginAllowThreads();         // ~mikep. This make everything crash. When I get the time, find out why and fix it......
+	//m_mainTState = wxPyBeginAllowThreads();         // ~mikep. This make everything crash. When I get the time, find out why and fix it......
 	m_mainTState = NULL;
 
 	// Add Python to GenGIS:
@@ -1125,15 +1125,13 @@ wxPanel* PythonInterface::GetPythonPanel() const
 	Py_DECREF(builtins);
 
 	// Make a method that makes the wxPython panel and return it.
-	char* pythonPanelCode = "import sys\nsys.path.insert(0,'./GenGIS.app/Contents/Resources') # Mac location \nsys.path.insert(0,'.') # Windows location \nfrom PythonCode import PythonInterpreter\n\ndef makePanel(parent):\n    pyPanel = PythonInterpreter(parent)\n    return pyPanel\n";
+	char* pythonPanelCode = "import sys\nsys.path.insert(0,'./GenGIS.app/Contents/Resources/') # Mac location \nsys.path.insert(0,'.') # Windows location \nfrom PythonCode import PythonInterpreter\n\ndef makePanel(parent):\n	pyPanel = PythonInterpreter(parent)\n	return pyPanel\n";
 	
-	result = PyRun_String(pythonPanelCode, Py_file_input, globals, globals);
-	
+	result = PyRun_String(pythonPanelCode, Py_file_input, globals, globals);	
 
 	// Check for an exception.
 	if(!result)
 	{
-		wxMessageBox(wxT("Got the first error"));
 		PythonErrors();
 		PyErr_Print();
 		wxPyEndBlockThreads(blocked);
@@ -1148,10 +1146,10 @@ wxPanel* PythonInterface::GetPythonPanel() const
 	// Call makePanel
 	PyObject* arg = wxPyMake_wxObject(parent, false);
 	wxASSERT(arg != NULL);
-
+	
 	PyObject* tuple = PyTuple_New(1);
 	PyTuple_SET_ITEM(tuple, 0, arg);
-
+	
 	result = PyEval_CallObject(func, tuple);
 	
 	// Check for an exception.
