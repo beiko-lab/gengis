@@ -235,7 +235,7 @@ class BetaDiversity( BetaDiversityLayout ):
 		
 		dlg = wx.FileDialog(self, "Save dissimilarity matrix", "", "", fileTypes, wx.SAVE)
 		if dlg.ShowModal() == wx.ID_OK:
-			filename = os.path.join( dlg.GetDirectory(), dlg.GetFileName() )
+			filename = os.path.join( dlg.GetDirectory(), dlg.GetFilename() )
 			
 			# generate full matrix
 			fullMatrix = self.GenerateFullMatrix(self.results)
@@ -260,7 +260,7 @@ class BetaDiversity( BetaDiversityLayout ):
 
 		dlg = wx.FileDialog(self, "Save tree file", "", "", fileTypes, wx.SAVE)
 		if dlg.ShowModal() == wx.ID_OK:
-			filename = dlg.GetDirectory() + '\\' + dlg.GetFilename()
+			filename = os.path.join(dlg.GetDirectory(), dlg.GetFilename())
 
 			fout = open(filename, 'w')
 			fout.write(self.newickStr)
