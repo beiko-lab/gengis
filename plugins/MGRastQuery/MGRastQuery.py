@@ -38,52 +38,55 @@ class Options(OptionsFrame):
 		self.SetIcon(wx.Icon(GenGIS.mainWindow.GetExeDir() + "images/CrazyEye.ico",wx.BITMAP_TYPE_ICO))
 	
 	def GetSearchType(self):
-		if self.m_searchTypeCheck.IsChecked():
-			return "%s" %self.m_searchType.GetString(self.m_searchType.GetSelection())
-		else:
-			return 'organism'
+	#	if self.m_searchTypeCheck.IsChecked():
+		return "%s" %self.m_searchType.GetString(self.m_searchType.GetSelection())
+	#	else:
+	#		return 'organism'
 	
 	def GetFilterLevel(self):
-		if self.m_filterLevelCheck.IsChecked():
-			return "&filter_level=%s" %self.m_filterLevel.GetString(self.m_filterLevel.GetSelection())
-		else:
-			return ""
+	#	if self.m_filterLevelCheck.IsChecked():
+		return "&filter_level=%s" %self.m_filterLevel.GetString(self.m_filterLevel.GetSelection())
+#		else:
+#			return ""
 	
 	def GetFilterSource(self):	
-		if self.m_filterSourceCheck.IsChecked():
-			return "&filer_source=%s" %self.m_filterSource.GetString(self.m_filterSource.GetCurrentSelection())
-		else:
-			return ""
+#		if self.m_filterSourceCheck.IsChecked():
+		return "&filer_source=%s" %self.m_filterSource.GetString(self.m_filterSource.GetCurrentSelection())
+#		else:
+#			return ""
 			
 	def GetGroupLevel(self):
-		if self.m_groupLevelCheck.IsChecked():
-			return "&group_level=%s" %self.m_groupLevel.GetString(self.m_groupLevel.GetCurrentSelection())
-		else:
-			return ""
+#		if self.m_groupLevelCheck.IsChecked():
+		return "&group_level=%s" %self.m_groupLevel.GetString(self.m_groupLevel.GetCurrentSelection())
+#		else:
+#			return ""
 			
 	def GetHitType(self):
-		if self.m_hitTypeCheck.IsChecked():
-			return "&hit_type=%s" %self.m_hitType.GetString(self.m_hitType.GetCurrentSelection())
-		else:
-			return ""
+#		if self.m_hitTypeCheck.IsChecked():
+		return "&hit_type=%s" %self.m_hitType.GetString(self.m_hitType.GetCurrentSelection())
+#		else:
+#			return ""
 			
 	def GetIdentity(self):		
-		if self.m_identityCheck.IsChecked():
-			return "&identity=%s" %self.m_identity.GetValue()
-		else:
-			return ""
+#		if self.m_identityCheck.IsChecked():
+		return "&identity=%s" %self.m_identity.GetValue()
+#		else:
+#			return ""
 			
 	def GetLength(self):		
-		if self.m_lengthCheck.IsChecked():
-			return "&length=%s" %self.m_length.GetValue()
-		else:
-			return ""
+	#	if self.m_lengthCheck.IsChecked():
+		return "&length=%s" %self.m_length.GetValue()
+	#	else:
+	#		return ""
 			
 	def GetSource(self):		
-		if self.m_sourceCheck.IsChecked():
-			return "&source=%s" %self.m_source.GetString(self.m_source.GetCurrentSelection())
-		else:
-			return ""
+	#	if self.m_sourceCheck.IsChecked():
+		return "&source=%s" %self.m_source.GetString(self.m_source.GetCurrentSelection())
+	#	else:
+	#		return ""
+	
+	def GetSequence(self):
+		return self.m_sequences.IsChecked()
 			
 	def OnOK(self,event):
 		self.Hide()
@@ -168,7 +171,7 @@ class MGRastQuery(MGRASTQueryLayout):
 				self.__selectedTaxon__.clear()
 			#	test data for multiple study search mgm4440037.3 mgm4440055.3 mgm4440064.3
 				for tax in taxon:
-					self.__selectedTaxon__.add((tax,"dummy value"))
+					self.__selectedTaxon__.add(("dummy value",tax))
 				self.OnCalculate(wx.EVT_BUTTON)
 			else:
 				matches=self.MGRastSpecific.GETTAXRESULT(taxon,searchType,minLatitude,maxLatitude,minLongitude,maxLongitude,self.m_Summary)				
@@ -183,8 +186,10 @@ class MGRastQuery(MGRASTQueryLayout):
 	#
 	######################
 	def OnCalculate(self,event):
+		self.MGRastSpecific.RESETSEQUENCE()
 		self.__obs__=[]
 		self.__metaVals__={}
+		sequence = {}
 		self.m_Summary.SetLabel("\n")
 		records,distLocations = 0,0
 		searchType = self.__options__.GetSearchType()
@@ -205,6 +210,8 @@ class MGRastQuery(MGRASTQueryLayout):
 				self.__TAXON__= taxonomy
 				if obs:	
 					self.__obs__.append(obs)
+				if sequence:
+					self.__sequences__.append(sequence)
 				# add all unique key/val pairs from json files
 				for key,value in metaVals.iteritems():
 					if key in self.__metaVals__:
@@ -216,15 +223,19 @@ class MGRastQuery(MGRASTQueryLayout):
 				index += 1
 				if (time.time() - startTime) < 1:
 					sleep.time(1)
+				# Now query again for the Sequence to that study
+				if self.__options__.GetSequence():
+					fileTypes = 'Sequence data files (*.fasta)|*.fasta'
+					dlg = wx.FileDialog(self, "Save plot", "", "", fileTypes, wx.SAVE)
+					if dlg.ShowModal()==wx.ID_OK:
+						filename =	dlg.GetFilename()
+						dir = dlg.GetDirectory()
+						file_split = filename.split(".",1)
+						outFile = ("%s/%s_sequenceData.fasta.gz" % (dir,file_split[0]))	
+					self.MGRastSpecific.GETSEQUENCES(tax[1],self.m_Progress,outFile)
 		else:
 			wx.MessageBox("Please select some Taxa.")
 		self.m_Progress.WriteText("Done\n")
-		
-	#	Present the number of locations a user is about to query
-	#	Used as a check by the user to know they aren't going to produce way too much data.
-	def OnPreCalculate(self,event):
-		#stufstufstu
-		return 0
 		
 	#	Redirects User to Wiki page for this plugin
 	def OnHelp(self, event):
@@ -279,6 +290,8 @@ class MGRastQuery(MGRASTQueryLayout):
 			#	print metKey
 				self.GBIFGeneric.WRITEEXPORT(OUTLfile,OUTLText,"Site ID,Latitude,Longitude,Cell ID,%s\n" %metKey)
 				self.GBIFGeneric.WRITEEXPORT(OUTSfile,OUTSText,"Sequence ID,Site ID,CellLat,CellLong,Richness,%s,Taxonomy\n" %taxonLevels)
+			#	if self.__options__.GetSequence():
+			#		self.MGRastSpecific.WRITESEQUENCES(dir,file_split[0],self.__sequences__)
 			dlg.Destroy()
 		else:
 			wx.MessageBox("Please make a successful MG-RAST Query first.")
@@ -340,5 +353,5 @@ class MGRastQuery(MGRASTQueryLayout):
 		event.GetClientData().SetInsertionPoint(len(str2))
 	
 	def OnOptions(self,event):
-		self.__options__.Show()
+		self.__options__.Show()		
 		
