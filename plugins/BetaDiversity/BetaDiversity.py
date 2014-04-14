@@ -24,6 +24,7 @@ import GenGIS
 from dataHelper import isNumber
 
 import wx
+import os
 
 from BetaDiversityMeasures import BetaDiversityMeasures
 
