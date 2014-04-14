@@ -23,6 +23,7 @@ import re
 import wx
 import sys
 import urllib2
+import gzip
 import time
 import simplejson as json
 import copy
@@ -33,6 +34,7 @@ class MGRastSpecific:
 #	def __init__(self):
 		#nothing to see here
 	#test =  Akkermansia	
+	sequenceFirst = True
 	
 	def GETTAXRESULT(self,taxon_name,searchType,minlatitude,maxlatitude,minlongitude,maxlongitude,Summary):
 	#	result=[]
@@ -135,6 +137,8 @@ class MGRastSpecific:
 		elif searchType =="study":
 			url="http://api.metagenomics.anl.gov/matrix/organism/?id=%s%s"%(taxon_name,options)
 			rowMeta = 'taxonomy'
+		print searchType
+		print taxon_name
 		try:	
 			html=urllib2.urlopen(url)
 			startTime = time.time()
@@ -292,3 +296,55 @@ class MGRastSpecific:
 			OUTSTEXT += ("%s\n" %(IDlist))
 		return(OUTLTEXT,OUTSTEXT)
 		
+	# Grabs sequences from MG-RAST and dumps them into a file specified by the user. 
+	# Sequences are on-the-fly morphed into FASTA format, compressed, and sent to file
+	def GETSEQUENCES(self,study,m_Progress,outFile):
+		m_Progress.WriteText("Grabbing Sequences.\n")
+		url="http://api.metagenomics.anl.gov/1/annotation/sequence/%s"%(study)
+		Report = 10000
+		
+		try:
+			html=urllib2.urlopen(url)
+		except urllib2.HTTPError as e:
+			wx.MessageBox("The server is temporarily unreachable.\nPlease try again later.")
+			m_Progress.WriteText("%s"%taxon_name)
+			return False
+
+		startTime = time.time()
+		count = 1
+		response = ""
+		responseChunk = ""
+		# if first tax, create or overwrite old file
+		# else append to that file
+		if self.sequenceFirst:
+			localFile = gzip.open(outFile,'wb')
+			self.sequenceFirst = False
+		else:
+			localFile = gzip.open(outFile,'ab')
+		
+		first = True
+		for line in html:
+			if first:
+				first = False
+				continue
+			if "Download Complete".lower() in line.lower():
+				continue
+			splitLine = line.split('\t')
+			seq = splitLine.pop( len(splitLine)-1 )
+			joinLine = "|".join(splitLine)
+			newLine = ">" + joinLine + "\n" + seq
+			localFile.write(newLine)
+			count +=1
+			if count % Report == 0:
+				m_Progress.WriteText("%s lines processed.\n" %count)
+		
+		m_Progress.WriteText("%s lines processed total.\n" %count)
+		m_Progress.WriteText("Download Complete.\n")
+			
+		html.close()
+		localFile.close()
+
+	# Resets if the next sequence is the first that has been seen
+	def RESETSEQUENCE(self):
+		self.sequenceFirst = True
+	

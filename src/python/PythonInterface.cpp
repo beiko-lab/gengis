@@ -1096,14 +1096,15 @@ void PythonInterface::UpdatePythonInterface()
 	initGenGIS();
 }
 
+// Prints embedded python errors to a wxMessage Box. Mostly for use in Mac where no debug tools are used
 void PythonInterface::PythonErrors() const
 {
 	PyObject *errtype, *errvalue, *traceback;
 	PyErr_Fetch(&errtype, &errvalue, &traceback);
 	if(errvalue != NULL) {
 		PyObject *s = PyObject_Str(errvalue);
-		char *blahblah1 = PyString_AS_STRING(s);
-		wxMessageBox(wxString::FromUTF8(blahblah1));
+		char *error = PyString_AS_STRING(s);
+		wxMessageBox(wxString::FromUTF8(error));
 		Py_DECREF(s);
 	}
 	Py_XDECREF(errvalue);

@@ -63,11 +63,11 @@ namespace GenGIS
 		*/
 		explicit TileModel(
 			std::wstring siteId,
-			std::pair<float,float> topLeft,
-			std::pair<float,float> bottomRight,
+			Point2D topLeft,
+			Point2D bottomRight,
 			std::map<std::wstring,std::wstring> data
 		)
-			: LocationModel(siteId, topLeft.first, topLeft.second, data),
+			: LocationModel(siteId, topLeft.x, topLeft.y, data),
 			m_topLeft(topLeft),
 			m_bottomRight(bottomRight),
 			numLocations(0),
@@ -82,7 +82,7 @@ namespace GenGIS
 		/**
 		* @brief Get top left coordinate.
 		*/
-		std::pair<float,float> GetTopLeft()
+		Point2D GetTopLeft()
 		{
 			return m_topLeft;
 		}
@@ -90,7 +90,7 @@ namespace GenGIS
 		/**
 		* @brief Set top left coordinate.
 		*/
-		void SetTopLeft(std::pair<float,float> top)
+		void SetTopLeft(Point2D top)
 		{
 			m_topLeft = top;
 		}
@@ -98,7 +98,7 @@ namespace GenGIS
 		/**
 		* @brief Get bottom right coordinate.
 		*/
-		std::pair<float,float> GetBottomRight()
+		Point2D GetBottomRight()
 		{
 			return m_bottomRight;
 		}
@@ -106,7 +106,7 @@ namespace GenGIS
 		/**
 		* @brief Set bottom right coordinate.
 		*/
-		void SetBottomRight(std::pair<float,float> bottom)
+		void SetBottomRight(Point2D bottom)
 		{
 			m_bottomRight = bottom;
 		}
@@ -225,10 +225,10 @@ namespace GenGIS
 		uint numLocations;
 
 		/** Latitude/Longitude pair for top left corner of the tile. */
-		std::pair<float,float> m_topLeft;
+		Point2D m_topLeft;
 
 		/** Latitude/Longitude pair for bottom right corner of the tile. */
-		std::pair<float,float> m_bottomRight;
+		Point2D m_bottomRight;
 		
 		/** Flag indicating if this sequence is currently in the active set. */
 		bool m_bActive;
@@ -264,10 +264,10 @@ namespace boost
 			std::wstring _id;
 			ar >> _id;
 
-			std::pair<float,float> _topLeft;
+			Point2D _topLeft;
 			ar >> _topLeft;
 
-			std::pair<float,float> _bottomRight;
+			Point2D _bottomRight;
 			ar >> _bottomRight;
 
 			std::map<std::wstring,std::wstring> _data;
