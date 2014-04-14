@@ -29,6 +29,7 @@ import urllib2
 import re
 import sys
 import time
+import os
 from MGRastSpecific import MGRastSpecific
 from GBIFGeneric import GBIFGeneric
 
@@ -282,8 +283,8 @@ class MGRastQuery(MGRASTQueryLayout):
 				dir = dlg.GetDirectory()
 				file_split = filename.split(".",1)
 				#creates the directories
-				OUTLfile = ("%s/%s_locs.csv" % (dir,file_split[0]))				
-				OUTSfile = ("%s/%s_seqs.csv" % (dir,file_split[0]))
+				OUTLfile = os.path.join(dir,file_split[0]+"_locs.csv")		
+				OUTSfile = os.path.join(dir,file_split[0]+"_seqs.csv")
 				OUTLText, OUTSText = self.MGRastSpecific.GETTEXT(self.__obs__,self.__metaVals__)
 			#	metKey = ','.join(str(x) for x in self.__metaKeys__)
 				metKey = ','.join(sorted(self.__metaVals__.keys()))

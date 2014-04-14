@@ -26,6 +26,7 @@ import wx
 import math
 #import pickle
 #import urllib2
+import os
 import re
 import sys
 from xml.dom import minidom
@@ -202,10 +203,11 @@ class GBIFQuery(GBIFQueryLayout):
 				filename =	dlg.GetFilename()
 				dir = dlg.GetDirectory()
 				file_split = filename.split(".",1)
-				#creates the directories
-				OUTLfile = ("%s/%s_locs.csv" % (dir,file_split[0]))				
-				OUTSfile = ("%s/%s_seqs.csv" % (dir,file_split[0]))
-				OUTDfile = ("%s/%s_source.txt" % (dir,file_split[0]))
+				#creates the directories				
+				OUTLfile = os.path.join(dir,file_split[0]+"_locs.csv")		
+				OUTSfile = os.path.join(dir,file_split[0]+"_seqs.csv")
+				OUTDfile = os.path.join(dir,file_split[0]+"_source.txt")
+				
 				OUTLText, OUTSText = self.GBIFGeneric.GETTEXT(self.__obs__)
 				# Removing some Gridding based artifacts, may become useful again in the future.
 			#	self.GBIFGeneric.WRITEEXPORT(OUTLfile,OUTLText,"Site ID,Latitude,Longitude,Richness,Cell ID,Taxon,Genus\n")
