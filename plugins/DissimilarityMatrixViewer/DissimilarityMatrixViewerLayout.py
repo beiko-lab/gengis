@@ -43,7 +43,7 @@ class DissimilarityMatrixViewerLayout ( wx.Frame ):
 		
 		bSizer12 = wx.BoxSizer( wx.HORIZONTAL )
 		
-		self.m_staticText7 = wx.StaticText( self, wx.ID_ANY, u"Entires >=", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_staticText7 = wx.StaticText( self, wx.ID_ANY, u"Entries >=", wx.DefaultPosition, wx.DefaultSize, 0 )
 		self.m_staticText7.Wrap( -1 )
 		bSizer12.Add( self.m_staticText7, 0, wx.ALIGN_CENTER_VERTICAL|wx.ALL, 5 )
 		

@@ -264,7 +264,7 @@ class Mantel( MantelLayout ):
 		if dlg.ShowModal()==wx.ID_OK:
 			filename =	dlg.GetFilename()
 			dir = dlg.GetDirectory()
-			self.txtOutput.SaveFile(dir + '\\' + filename)
+			self.txtOutput.SaveFile(os.path.join(dir,filename))
 			
 		dlg.Destroy()
 		
