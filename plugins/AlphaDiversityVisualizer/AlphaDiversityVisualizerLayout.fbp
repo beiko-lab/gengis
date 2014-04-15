@@ -37,7 +37,7 @@
             <property name="minimum_size">800,761</property>
             <property name="name">AlphaDiversityVisualizerLayout</property>
             <property name="pos"></property>
-            <property name="size">900,761</property>
+            <property name="size">900,800</property>
             <property name="style">wxDEFAULT_FRAME_STYLE</property>
             <property name="subclass"></property>
             <property name="title">Alpha-diversity Visualizer</property>
