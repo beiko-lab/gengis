@@ -12,7 +12,7 @@ def less(val1, val2):
 	
 def lessEqual(val1, val2):
 	return str(val1) <= str(val2)
-	
+
 def equal(val1, val2):
 	return str(val1) == str(val2)
 	
@@ -36,3 +36,27 @@ def greaterEqualDate(date1, date2):
 	
 def greaterDate(date1, date2):
 	return date1 > date2
+	
+def greaterFloat(val1, val2):
+	return float(val1) > float(val2)
+	
+def greaterEqualFloat(val1, val2):
+	if float(val1) > float(val2):
+		return True
+	else:
+		return abs( float(val1) - float(val2) ) <= 0.00000001
+
+def lessFloat(val1, val2):
+	return float(val1) < float(val2)
+	
+def lessEqualFloat(val1, val2):
+	if float(val1) < float(val2):
+		return True
+	else:
+		return abs( float(val1) - float(val2) )  <= 0.00000001
+	
+def equalFloat(val1, val2):
+	return abs( float(val1) - float(val2) )  <= 0.00000001
+	
+def notEqualFloat(val1, val2):
+	return abs( float(val1) - float(val2) )  > 0.00000001

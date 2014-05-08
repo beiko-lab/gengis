@@ -353,6 +353,7 @@ namespace GenGIS
 		void SetSelection( LayerPtr layer );
 
 		/** Update active state of all layers. */
+		void UpdatePythonState();
 		void UpdateActiveState();
 		void UpdateActiveState(wxTreeItemId subtreeId, wxTreeItemIdValue& cookie);
 

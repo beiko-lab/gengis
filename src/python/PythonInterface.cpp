@@ -471,6 +471,7 @@ BOOST_PYTHON_MODULE(GenGIS)
 			.def("GetSequenceLayers", &LayerTreeController::GetSequenceLayers, "Get all sequence layers.")
 			.def("GetNumTreeLayers", &LayerTreeController::GetNumTreeLayers, "Get number of tree layers.")
 			.def("GetTreeLayer", &LayerTreeController::GetTreeLayer, "Get specified tree layer.")
+			.def("UpdatePythonState", &LayerTreeController::UpdatePythonState, "Update active state of all layers.")
 			;
 
 		// <wiki-header>Viewport class</wiki-header>
@@ -850,6 +851,7 @@ BOOST_PYTHON_MODULE(GenGIS)
 			.def(init<const std::wstring&, const Colour&, float, VisualLabel::LABEL_RENDERING_STYLE>())
 			.def("GetText", &VisualLabel::GetText, "Get text of label.")
 			.def("GetColour", &VisualLabel::GetColour, "Get colour of label font.")
+			.def("GetId", &VisualLabel::GetId, "Get Id of label.")
 			.def("GetSize", &VisualLabel::GetSize, "Get size of label font.")
 			.def("GetVisibility", &VisualLabel::IsVisible, "Get visibility of label.")
 			.def("GetGridPosition", &VisualLabel::GetGridPosition, "Get grid coordinates of label.")

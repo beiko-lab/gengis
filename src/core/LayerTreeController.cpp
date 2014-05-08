@@ -1655,6 +1655,25 @@ void LayerTreeController::UpdateActiveState()
 	m_treeView->GetTreeCtrl()->Thaw();
 }
 
+void LayerTreeController::UpdatePythonState()
+{
+	m_treeView->GetTreeCtrl()->Freeze();
+
+	wxTreeItemId rootId = m_treeView->GetTreeCtrl()->GetRootItem();
+	wxTreeItemIdValue cookie;
+	wxTreeItemId studyId = m_treeView->GetTreeCtrl()->GetFirstChild(rootId, cookie);
+	UpdateActiveState(studyId, cookie);
+
+	m_treeView->GetTreeCtrl()->Thaw();
+	// project trees
+//	Does not work because of internal branches
+	if( m_trees.size() > 0 )
+		for(uint i = 0; i < m_trees.size(); i++)
+			m_trees[i]->GetGeoTreeView()->ProjectToActiveSet(m_locations);
+
+	App::Inst().GetViewport()->Refresh(false); 
+}
+
 void LayerTreeController::UpdateActiveState(wxTreeItemId subtreeId, wxTreeItemIdValue& cookie)
 {
 	if(!subtreeId.IsOk())

@@ -334,7 +334,14 @@ void GeoTreeView::ProjectToActiveSet(std::vector<LocationLayerPtr>& locationLaye
 	std::vector<std::wstring> leaves = m_tree->GetLeafNames();
 
 	RestoreTree();
-	if(std::find(allLoc.begin(), allLoc.end(), leaves.at(0)) != allLoc.end())
+	
+	// assume projecting to locations if there are no leaves
+	if(leaves.size() == 0)
+	{
+		// this is a tree with locations as leaf nodes
+		ProjectTree(visibleLoc);
+	}
+	else if(std::find(allLoc.begin(), allLoc.end(), leaves.at(0)) != allLoc.end())
 	{
 		// this is a tree with locations as leaf nodes
 		ProjectTree(visibleLoc);
