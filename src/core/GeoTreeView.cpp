@@ -1225,6 +1225,11 @@ void GeoTreeView::LayoutTrees2D()
 	// change unless you know what you are doing.
 	if(m_layoutLine || m_layoutEllipse)
 	{
+		std::vector<std::wstring> leaves = m_tree->GetLeafNames();
+		if(leaves.size() == 0)
+		{
+			return;
+		}
 		OptimizeLeafNodeOrdering();
 
 		if(m_layout == CLADOGRAM_2D)

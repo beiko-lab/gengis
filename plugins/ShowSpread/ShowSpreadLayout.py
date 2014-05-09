@@ -46,7 +46,7 @@ class ShowSpreadLayout ( wx.Frame ):
 		self.m_SortText.Wrap( -1 )
 		fgSizer1.Add( self.m_SortText, 0, wx.ALL|wx.ALIGN_RIGHT, 5 )
 		
-		m_SortChoiceChoices = []
+		m_SortChoiceChoices = [ u"Descending", u"Ascending" ]
 		self.m_SortChoice = wx.Choice( self, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, m_SortChoiceChoices, 0 )
 		self.m_SortChoice.SetSelection( 0 )
 		fgSizer1.Add( self.m_SortChoice, 0, wx.ALIGN_CENTER_HORIZONTAL|wx.EXPAND|wx.ALL, 5 )
@@ -124,6 +124,7 @@ class ShowSpreadLayout ( wx.Frame ):
 		
 		# Connect Events
 		self.m_DataChoice.Bind( wx.EVT_CHOICE, self.OnDataChange )
+		self.m_SortChoice.Bind( wx.EVT_CHOICE, self.OnSort )
 		self.m_StepsCtrl.Bind( wx.EVT_SPINCTRL, self.OnSteps )
 		self.m_StepsCtrl.Bind( wx.EVT_TEXT, self.OnSteps )
 		self.m_checkIntensity.Bind( wx.EVT_CHECKBOX, self.OnColourIntensity )
@@ -139,6 +140,9 @@ class ShowSpreadLayout ( wx.Frame ):
 	
 	# Virtual event handlers, overide them in your derived class
 	def OnDataChange( self, event ):
+		event.Skip()
+	
+	def OnSort( self, event ):
 		event.Skip()
 	
 	def OnSteps( self, event ):

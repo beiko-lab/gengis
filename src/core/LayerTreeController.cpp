@@ -1666,7 +1666,6 @@ void LayerTreeController::UpdatePythonState()
 
 	m_treeView->GetTreeCtrl()->Thaw();
 	// project trees
-//	Does not work because of internal branches
 	if( m_trees.size() > 0 )
 		for(uint i = 0; i < m_trees.size(); i++)
 			m_trees[i]->GetGeoTreeView()->ProjectToActiveSet(m_locations);

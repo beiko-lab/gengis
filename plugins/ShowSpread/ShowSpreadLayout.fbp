@@ -274,7 +274,7 @@
                             <property name="proportion">0</property>
                             <object class="wxChoice" expanded="1">
                                 <property name="bg"></property>
-                                <property name="choices"></property>
+                                <property name="choices">&quot;Descending&quot; &quot;Ascending&quot;</property>
                                 <property name="context_help"></property>
                                 <property name="context_menu">1</property>
                                 <property name="enabled">1</property>
@@ -299,7 +299,7 @@
                                 <property name="window_name"></property>
                                 <property name="window_style"></property>
                                 <event name="OnChar"></event>
-                                <event name="OnChoice"></event>
+                                <event name="OnChoice">OnSort</event>
                                 <event name="OnEnterWindow"></event>
                                 <event name="OnEraseBackground"></event>
                                 <event name="OnKeyDown"></event>
