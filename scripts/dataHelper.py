@@ -28,6 +28,14 @@ def filter(dataList, field, filterValue, filterFunc):
 			filteredList.append(item)
 			
 	return filteredList
+	
+def genericFilter(dataList, field, filterValue, filterFunc):
+	filteredList = []
+	for item in dataList:
+		if filterFunc(item, filterValue):
+			filteredList.append(item)
+			
+	return filteredList
 
 def isNumber(str):
 	try:
