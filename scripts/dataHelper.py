@@ -25,11 +25,10 @@ def filter(dataList, field, filterValue, filterFunc):
 	filteredList = []
 	for item in dataList:
 		if filterFunc(item.GetController().GetData()[field], filterValue):
-			filteredList.append(item)
-			
+			filteredList.append(item)			
 	return filteredList
 	
-def genericFilter(dataList, field, filterValue, filterFunc):
+def genericFilter(dataList, filterValue, filterFunc):
 	filteredList = []
 	for item in dataList:
 		if filterFunc(item, filterValue):

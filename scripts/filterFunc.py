@@ -1,5 +1,6 @@
 # Useful functions for filtering data.
 # Used within dataHelper.py
+import dateutil.parser
 
 def greater(val1, val2):
 	return str(val1) > str(val2)
@@ -20,21 +21,33 @@ def notEqual(val1, val2):
 	return str(val1) != str(val2)
 
 def lessDate(date1, date2):
+	date1 = dateutil.parser.parse(date1)
+	date2 = dateutil.parser.parse(date2)
 	return date1 < date2
 	
 def lessEqualDate(date1, date2):
+	date1 = dateutil.parser.parse(date1)
+	date2 = dateutil.parser.parse(date2)
 	return date1 <= date2
 	
 def equalDate(date1, date2):
+	date1 = dateutil.parser.parse(date1)
+	date2 = dateutil.parser.parse(date2)
 	return date1 == date2
 	
 def notEqualDate(date1, date2):
+	date1 = dateutil.parser.parse(date1)
+	date2 = dateutil.parser.parse(date2)
 	return date1 != date2
 	
 def greaterEqualDate(date1, date2):
+	date1 = dateutil.parser.parse(date1)
+	date2 = dateutil.parser.parse(date2)
 	return date1 >= date2
 	
 def greaterDate(date1, date2):
+	date1 = dateutil.parser.parse(date1)
+	date2 = dateutil.parser.parse(date2)
 	return date1 > date2
 	
 def greaterFloat(val1, val2):
