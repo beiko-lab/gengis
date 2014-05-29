@@ -82,7 +82,7 @@ class ShowSpread ( ShowSpreadLayout ):
 		
 		#Set the default number of steps to take through data
 		self.m_StepsCtrl.SetValue( 10 )
-		self.m_checkIntensity.SetValue(False)
+		self.m_CheckIntensity.SetValue(False)
 		
 	def OnClose( self, event ):
 		#Need to remove the label on close too
@@ -115,7 +115,7 @@ class ShowSpread ( ShowSpreadLayout ):
 		self.Steps = int( self.m_StepsCtrl.GetValue() )
 	
 	def OnColourIntensity( self, event ):
-		self.ColourIntensity = self.m_checkIntensity.IsChecked()
+		self.ColourIntensity = self.m_CheckIntensity.IsChecked()
 	
 	def OnHelp( self, event ):
 		wx.LaunchDefaultBrowser( 'http://kiwi.cs.dal.ca/GenGIS/index.php/Description_of_GenGIS_plugins#ShowSpread' )
@@ -151,217 +151,6 @@ class ShowSpread ( ShowSpreadLayout ):
 		else:
 			self.DisplayText( locData, field, startData, stopData )
 		
-	def DEFUNCTDisplayTemporal( self, locData, field, startData, stopData ):
-		timeCap = float( self.m_spinTime.GetValue() ) / 10.0
-		endData=stopData
-		# show spread of virus on a daily basis	
-		dayDelta = timedelta(days=1)
-		
-		# get cases from start date to current simulation date
-		curData = startData
-		minData = startData
-		while(curData <= endData):
-			#str(curData.day) + "/" + str(curData.month) + "/" + str(curData.year)
-			GenGIS.viewport.Refresh()
-			
-			startTime = time.time()
-			curDateStr = str(curData.month) + '/' + str(curData.day) + '/' + str(curData.year)
-			
-			#this should still work in newer versions of GenGIS
-			#filteredLoc( Data list, field to operate on, Value to filter by, filter fucntion )
-			# returns all locations with dates less than curDateStr
-			filteredLoc = dh.filter(locData, field , curDateStr, filterFunc.lessEqualDate)
-			
-			numCases = {}
-			lastReportedCase = {}
-			uniqueLoc = []
-			for loc in filteredLoc:
-				locDate = self.dateStrToDate(loc.GetController().GetData()[field])
-				loc.GetController().SetActive(False)
-				id = loc.GetController().GetId()
-				if locDate < minData:
-					continue
-				if id in numCases:
-					numCases[id] = numCases[id] + 1
-
-					if lastReportedCase[id] < locDate:
-						lastReportedCase[id] = locDate
-				else:
-					numCases[id] = 1
-					lastReportedCase[id] = locDate
-					uniqueLoc.append(loc)
-					
-			# set visual properties of location sites
-			for loc in uniqueLoc:
-				id= loc.GetController().GetId()
-				deltaDate = curData - lastReportedCase[id]
-				if self.ColourIntensity:
-					loc.GetController().SetColour(self.ColourSetter(deltaDate.days))
-				else:
-					loc.GetController().SetColour(loc.GetController().GetColour())
-					
-				#Don't really know what this does, but it screws with how locations are drawn
-		#		loc.GetController().SetRenderingOrder(deltaDate.days*10)
-		#		loc.GetController().SetSize(self.SizeSetter(numCases[id]))
-				loc.GetController().SetActive(True)
-
-			# set date of label
-			self.label.SetText(str(curData.month) + "/" + str(curData.day) + "/" + str(curData.year))
-			
-			GenGIS.SafeYield()
-			GenGIS.viewport.Refresh()
-			
-			
-			curData = curData + dayDelta
-			
-			elapsedTime = time.time() - startTime
-			if elapsedTime < timeCap:
-				time.sleep(timeCap - elapsedTime)
-	
-	def DeprecatedDisplayNumeric( self, locData, field, startData, stopData ):
-		# show spread of virus on a data basis	
-		timeCap = float( self.m_spinTime.GetValue() ) / 10.0
-		startData,stopData = float(startData),float(stopData)
-		Delta = (stopData - startData) / float(self.m_StepsCtrl.GetValue())
-
-		# get cases from start date to current simulation date
-		curData = startData
-		minData = startData
-		
-		#needs a slight rounding adjustment as floats are ugly
-		while curData <= (stopData + Delta/10) :
-			startTime = time.time()
-			curDataStr = str(curData)
-			
-			#this should still work in newer versions of GenGIS
-			filteredLoc = dh.filter(locData, field, curDataStr, filterFunc.lessEqualFloat)
-			filteredLoc = dh.filter(filteredLoc, field, minData, filterFunc.greaterEqualFloat)
-		
-			# determine number of cases and last reported case for all locations
-			numCases = {}
-			lastReportedCase = {}
-			uniqueLoc = []
-			for loc in filteredLoc:
-				#convert sequence to it's location if possible
-				if self.isSequence:
-					#get seq data
-					fieldData = float(loc.GetController().GetData()[field])
-					#switch seq out for loc
-					siteId = loc.GetController().GetSiteId()
-					loc = [x for x in GenGIS.layerTree.GetLocationLayers() if x.GetController().GetId() == siteId][0]
-					
-				else:
-					fieldData = float(loc.GetController().GetData()[field])
-				loc.GetController().SetActive(False)
-				id = loc.GetController().GetId()
-	
-				if id in numCases:
-					numCases[id] = numCases[id] + 1
-					if lastReportedCase[id] < fieldData:
-						lastReportedCase[id] = fieldData
-				else:
-					numCases[id] = 1
-					lastReportedCase[id] = fieldData
-					uniqueLoc.append(loc)
-					
-			# set visual properties of location sites
-			for loc in uniqueLoc:
-				id = loc.GetController().GetId()
-					
-				if float(lastReportedCase[id] < 0 ):
-					deltaDate = curData + float(lastReportedCase[id])
-				else:
-					deltaDate = curData - float(lastReportedCase[id])
-				
-				if self.ColourIntensity:
-					loc.GetController().SetColour(self.ColourSetter(deltaDate))
-				else:
-					loc.GetController().SetColour(loc.GetController().GetColour())
-					
-				#Don't really know what this does, but it screws with how locations are drawn
-			#	loc.GetController().SetRenderingOrder(deltaDate)
-			#	loc.GetController().SetSize(self.SizeSetter(numCases[id]))
-				loc.GetController().SetActive(True)
-	
-			# set text of label 
-			self.label.SetText("%.2f" %curData)
-			
-			GenGIS.layerTree.UpdatePythonState()
-			GenGIS.SafeYield()
-			GenGIS.viewport.Refresh()
-		
-			curData = float(curData) + Delta
-
-			elapsedTime = time.time() - startTime
-			if elapsedTime < timeCap:
-				time.sleep(timeCap - elapsedTime)
-				
-	def DeprecatedDisplayText( self, locData, field, startData, stopData ):
-		# show spread of virus on a data basis	
-		timeCap = float( self.m_spinTime.GetValue() ) / 10.0
-		startData,stopData = startData, stopData
-		curIndex = self.m_StartChoice.FindString(startData)
-		stopIndex = self.m_StartChoice.FindString(stopData)
-		Delta = math.ceil( self.m_StartChoice.GetCount() / float(self.m_StepsCtrl.GetValue()) )
-
-		# get cases from start date to current simulation date
-		curData = startData
-		minData = startData
-		
-		#needs a slight rounding adjustment as floats are ugly
-		while curIndex <= stopIndex :
-			startTime = time.time()
-			curDataStr = str(curData)
-			
-			#this should still work in newer versions of GenGIS
-			filteredLoc = dh.filter(locData, field, curDataStr, filterFunc.lessEqual)
-			filteredLoc = dh.filter(filteredLoc, field, minData, filterFunc.greaterEqual)
-		
-			# determine number of cases and last reported case for all locations
-			numCases = {}
-			lastReportedCase = {}
-			uniqueLoc = []
-			for loc in filteredLoc:
-				loc.GetController().SetActive(False)
-				id = loc.GetController().GetId()
-
-				if id in numCases:
-					numCases[id] = numCases[id] + 1
-					fieldData = float(loc.GetController().GetData()[field])
-					if lastReportedCase[id] < fieldData:
-						lastReportedCase[id] = curIndex
-				else:
-					numCases[id] = 1
-					lastReportedCase[id] = curIndex
-					uniqueLoc.append(loc)
-					
-			# set visual properties of location sites
-			for loc in uniqueLoc:
-				id= loc.GetController().GetId()
-				deltaDate = stopIndex - lastReportedCase[loc.GetController().GetId()]
-				if self.ColourIntensity:
-					loc.GetController().SetColour(self.ColourSetter(deltaDate))
-				else:
-					loc.GetController().SetColour(loc.GetController().GetColour())
-				#Don't really know what this does, but it screws with how locations are drawn
-		#		loc.GetController().SetRenderingOrder(deltaDate)
-		#		loc.GetController().SetSize(self.SizeSetter(numCases[id]))
-				loc.GetController().SetActive(True)
-			# set date of label 
-			self.label.SetText(curData)
-			
-			GenGIS.layerTree.UpdatePythonState()
-			GenGIS.SafeYield()
-			GenGIS.viewport.Refresh()
-		
-			curIndex = curIndex + Delta
-			curData = self.m_StartChoice.GetString(curIndex)
-
-			elapsedTime = time.time() - startTime
-			if elapsedTime < timeCap:
-				time.sleep(timeCap - elapsedTime)
-			
-		
 	def OnDataChange( self, event ):
 		# isSequence
 		self.m_StartChoice.Clear()
@@ -390,24 +179,6 @@ class ShowSpread ( ShowSpreadLayout ):
 		self.m_StartChoice.SetSelection(0)
 		self.m_StopChoice.SetSelection( len(values)-1 )
 
-	# DEPRECATED
-	def CreateLegend( self ):
-		sizes = [3, 5, 7, 9];
-		labels = ["1 case", "< 10 cases", "< 100 cases", ">= 100 cases"]
-		
-		index = 0
-		for size in sizes:	
-			marker = GenGIS.VisualMarker(GenGIS.Colour(1.0, 0, 0), size, GenGIS.MARKER_SHAPE.CIRCLE, GenGIS.Point3D(40, 285-25*index, 0))
-			marker.SetRenderingStyle(GenGIS.MARKER_RENDERING_STYLE.DECAL)
-			GenGIS.graphics.AddMarker(marker)
-			
-			label = GenGIS.VisualLabel(labels[index], GenGIS.Colour(1.0, 1.0, 1.0), 18, GenGIS.LABEL_RENDERING_STYLE.ORTHO )
-			label.SetScreenPosition(GenGIS.Point3D(52,285-25*index-6,1))
-			label.SetRenderingStyle(GenGIS.LABEL_RENDERING_STYLE.ORTHO)
-			GenGIS.graphics.AddLabel(label)
-			
-			index = index + 1
-			
 	def dateStrToDate( self, dateStr ):
 		"""
 		Convert date stored in a string as month, day, year (i.e. 12/1/2009) to a date object 
@@ -447,14 +218,14 @@ class ShowSpread ( ShowSpreadLayout ):
 			return 9
 
 			
-	def SortDates( self, dates ):
+	def SortDates( self, dates, ascend ):
 		dateList=[]
 		dateStringList=[]
 		dates = set(dates)
 		for date in dates:
 			date = dateutil.parser.parse(date)
 			dateList.append(date)
-		for date in sorted(dateList):
+		for date in sorted(dateList, reverse = ascend):
 			dateStringList.append( "%s/%s/%s/" %(date.month, date.day, date.year) )
 		return dateStringList
 	
@@ -499,14 +270,19 @@ class ShowSpread ( ShowSpreadLayout ):
 			else:
 				self.locData[layerNum] = [data]
 			values.append(data)
+		# a flag for whether or not sorting should be descending or ascending
+		if self.sort:
+			ascend = True
+		else:
+			ascend = False
 		# Since the fields are unicode values, this sorts them numericaly if applicable, or alphabetically
 		# This needs to be ripped out and replaced with SORTING options and algos
 		if re.search(r'(\d+/\d+/\d+)',data):
-			values = self.SortDates( values )
+			values = self.SortDates( values , ascend)
 		elif( dh.isNumber(data) ):
-			values = sorted( set(values), key = lambda val: float(val) )
+			values = sorted( set(values), key = lambda val: float(val), reverse= ascend )
 		else:
-			values = sorted( set(values) )
+			values = sorted( set(values), reverse = ascend )
 		# ################################################
 		return values
 	
@@ -515,6 +291,22 @@ class ShowSpread ( ShowSpreadLayout ):
 			self.sort = True
 		else:
 			self.sort = False
+		self.OnDataChange("fake")
+		
+	# Simple function to determine if the display function's conditional has been met.
+	def SortedPass( self, curData, stopData ):
+		if not self.sort:
+			if type(curData) is float:
+				return( curData <= stopData + 0.00001 )
+
+			return( curData <= stopData )
+		else:
+			if type(curData) is float:
+				return( curData >= stopData - 0.00001 )
+				
+			return( curData >= stopData )
+		
+		
 	
 	#maps location ID to its index in the location set
 	def CreateLocationMap( self ):
@@ -529,23 +321,20 @@ class ShowSpread ( ShowSpreadLayout ):
 				
 	def DisplayNumeric( self, locData, field, startData, stopData ):
 		# show spread of virus on a data basis	
-		timeCap = float( self.m_spinTime.GetValue() ) / 10.0
+		timeCap = float( self.m_SpinTime.GetValue() ) / 10.0
 		startData,stopData = float(startData),float(stopData)
 		Delta = (stopData - startData) / float(self.m_StepsCtrl.GetValue())
 
-		# get cases from start date to current simulation date
 		curData = startData
 		minData = startData
-		
 		for loc in GenGIS.layerTree.GetLocationLayers():
 				loc.GetController().SetActive(False)
 				
 		#needs a slight rounding adjustment as floats are ugly
-		while curData <= (stopData + Delta/10) :
+	#	while curData <= (stopData + Delta/10) :
+		while self.SortedPass( curData, stopData ):
 			startTime = time.time()
 			curDataStr = str(curData)
-		
-			
 				
 			# determine number of cases and last reported case for all locations
 			numCases = {}
@@ -553,8 +342,12 @@ class ShowSpread ( ShowSpreadLayout ):
 			uniqueLoc = []
 			for key in self.locData.keys():
 				data = self.locData[key]
-				filteredData = dh.genericFilter(data, curDataStr, filterFunc.lessEqualFloat)
-				filteredData = dh.genericFilter(filteredData, minData, filterFunc.greaterEqualFloat)
+				if not self.sort:
+					filteredData = dh.genericFilter(data, curDataStr, filterFunc.lessEqualFloat)
+					filteredData = dh.genericFilter(filteredData, minData, filterFunc.greaterEqualFloat)
+				else:
+					filteredData = dh.genericFilter(data, curDataStr, filterFunc.greaterEqualFloat)
+					filteredData = dh.genericFilter(filteredData, minData, filterFunc.lessEqualFloat)
 				#convert sequence to it's location if possible
 				for fieldData in filteredData:
 					#need to get int value of location layer
@@ -599,23 +392,27 @@ class ShowSpread ( ShowSpreadLayout ):
 			GenGIS.SafeYield()
 			GenGIS.viewport.Refresh()
 		
+			#curData = float(curData) + Delta
+		#	if curData + Delta > float(stopData) and curData != float(stopData):
+		#		curData = float(stopData)
+		#	else:
 			curData = float(curData) + Delta
-
+			
 			elapsedTime = time.time() - startTime
 			if elapsedTime < timeCap:
 				time.sleep(timeCap - elapsedTime)
 				
 	def DisplayText( self, locData, field, startData, stopData ):
 		# show spread of virus on a data basis	
-		timeCap = float( self.m_spinTime.GetValue() ) / 10.0
-		startData,stopData = startData, stopData
-		curIndex = self.m_StartChoice.FindString(startData)
-		stopIndex = self.m_StartChoice.FindString(stopData)
+		timeCap = float( self.m_SpinTime.GetValue() ) / 10.0
 		Delta = math.ceil( self.m_StartChoice.GetCount() / float(self.m_StepsCtrl.GetValue()) )
 		# get cases from start date to current simulation date
 		curData = startData
-		minData = startData
+		curIndex = self.m_StartChoice.FindString(startData)
+		stopIndex = self.m_StartChoice.FindString(stopData)
 
+		minData = startData
+		
 		for loc in GenGIS.layerTree.GetLocationLayers():
 			loc.GetController().SetActive(False)
 				
@@ -623,17 +420,17 @@ class ShowSpread ( ShowSpreadLayout ):
 		while curIndex <= stopIndex :
 			startTime = time.time()
 			curDataStr = str(curData)
-			
-
-			
 			numCases = {}
 			lastReportedCase = {}
 			uniqueLoc = []
 			for key in self.locData.keys():
-				
 				data = self.locData[key]
-				filteredData = dh.genericFilter(data, curDataStr, filterFunc.lessEqual)
-				filteredData = dh.genericFilter(filteredData, minData, filterFunc.greaterEqual)
+				if not self.sort:
+					filteredData = dh.genericFilter(data, curDataStr, filterFunc.lessEqual)
+					filteredData = dh.genericFilter(filteredData, minData, filterFunc.greaterEqual)
+				else:
+					filteredData = dh.genericFilter(data, curDataStr, filterFunc.greaterEqual)
+					filteredData = dh.genericFilter(filteredData, stopData, filterFunc.greaterEqual)
 				#convert sequence to it's location if possible
 				for fieldData in filteredData:
 					# determine number of cases and last reported case for all locations
@@ -643,7 +440,6 @@ class ShowSpread ( ShowSpreadLayout ):
 
 					if id in numCases:
 						numCases[id] = numCases[id] + 1
-					#	fieldData = float(loc.GetController().GetData()[field])
 						if lastReportedCase[id] < fieldData:
 							lastReportedCase[id] = curIndex
 					else:
@@ -673,7 +469,7 @@ class ShowSpread ( ShowSpreadLayout ):
 			GenGIS.layerTree.UpdatePythonState()
 			GenGIS.SafeYield()
 			GenGIS.viewport.Refresh()
-		
+			
 			curIndex = curIndex + Delta
 			curData = self.m_StartChoice.GetString(curIndex)
 
@@ -682,13 +478,18 @@ class ShowSpread ( ShowSpreadLayout ):
 				time.sleep(timeCap - elapsedTime)
 				
 	def DisplayTemporal( self, locData, field, startData, stopData ):
-		timeCap = float( self.m_spinTime.GetValue() ) / 10.0
+		timeCap = float( self.m_SpinTime.GetValue() ) / 10.0
 		endData=stopData
-
+		
 		# divide time interval into even sections
 		daySteps = self.m_StepsCtrl.GetValue()
-		dayDelta = ( stopData - startData )/daySteps
 		
+		if self.sort:
+			dayDelta = ( startData - stopData ) /daySteps
+		else:
+			dayDelta = ( stopData - startData ) / daySteps
+
+
 		# get cases from start date to current simulation date
 		curData = startData
 		minData = str(curData.month) + '/' + str(curData.day) + '/' + str(curData.year)
@@ -696,7 +497,7 @@ class ShowSpread ( ShowSpreadLayout ):
 		for loc in GenGIS.layerTree.GetLocationLayers():
 				loc.GetController().SetActive(False)
 				
-		while(curData <= endData):
+		while self.SortedPass( curData, endData ):
 			GenGIS.viewport.Refresh()
 			
 			startTime = time.time()
@@ -707,8 +508,13 @@ class ShowSpread ( ShowSpreadLayout ):
 			uniqueLoc = []
 			for key in self.locData.keys():
 				data = self.locData[key]
-				filteredData = dh.genericFilter(data, curDateStr, filterFunc.lessEqualDate)
-				filteredData = dh.genericFilter(filteredData, minData, filterFunc.greaterEqualDate)	
+				if not self.sort:
+					filteredData = dh.genericFilter(data, curDateStr, filterFunc.lessEqualDate)
+					filteredData = dh.genericFilter(filteredData, minData, filterFunc.greaterEqualDate)	
+				else:
+					filteredData = dh.genericFilter(data, curDateStr, filterFunc.greaterEqualDate)
+					filteredData = dh.genericFilter(filteredData, minData, filterFunc.lessEqualDate)
+					
 				for fieldData in filteredData:
 					loc = GenGIS.layerTree.GetLocationLayer(key)
 					
@@ -747,11 +553,20 @@ class ShowSpread ( ShowSpreadLayout ):
 			
 			# increment curData. Takes into account rounding errors when another loop needs to be run,
 			# but is shy of the final date
-			if curData + dayDelta > endData and curData != endData:
-				curData = endData
+			
+			if self.sort:
+				if curData - dayDelta < endData and curData != endData:
+					curData = endData
+				else:
+					curData = curData - dayDelta
 			else:
-				curData = curData + dayDelta
+				if curData + dayDelta > endData and curData != endData:
+					curData = endData
+				else:
+					curData = curData + dayDelta
 			
 			elapsedTime = time.time() - startTime
 			if elapsedTime < timeCap:
 				time.sleep(timeCap - elapsedTime)
+				
+			
