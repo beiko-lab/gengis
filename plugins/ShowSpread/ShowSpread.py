@@ -43,6 +43,8 @@ class ShowSpread ( ShowSpreadLayout ):
 	sortFloat = (filterFunc.lessEqualFloat, filterFunc.greaterEqualFloat)
 	locData = {}
 	locationMap = {}
+	# A list containning the colour and size of locations
+	DefaultAttrib = {}
 	
 	def __init__( self, parent=None ):
 		ShowSpreadLayout.__init__ ( self, parent )
@@ -83,6 +85,8 @@ class ShowSpread ( ShowSpreadLayout ):
 		#Set the default number of steps to take through data
 		self.m_StepsCtrl.SetValue( 10 )
 		self.m_CheckIntensity.SetValue(False)
+		self.OnBinning("fake")
+		self.SetStartAttrib()
 		
 	def OnClose( self, event ):
 		#Need to remove the label on close too
@@ -97,9 +101,9 @@ class ShowSpread ( ShowSpreadLayout ):
 		field = self.m_DataChoice.GetStringSelection()
 		stopData = self.m_StopChoice.GetStringSelection()
 		startData = self.m_StartChoice.GetStringSelection()
-		isDate=False
+		isDate=self.IsDate(startData,stopData)
 		#if backslashes in data, assume date
-		if re.search(r'(\d+/\d+/\d+)',startData) and re.search(r'(\d+/\d+/\d+)',stopData):
+		if isDate:
 			sD = dateutil.parser.parse(startData)
 			stD = dateutil.parser.parse(stopData)
 			isDate=True
@@ -110,6 +114,12 @@ class ShowSpread ( ShowSpreadLayout ):
 		else:
 			self.ShowSpread( startData, stopData, field, isDate )
 	
+	def IsDate( self, startData, stopData):
+		startData, stopData = str(startData), str(stopData)
+		if re.search(r'(\d+/\d+/\d+)',startData) and re.search(r'(\d+/\d+/\d+)',stopData):
+			return True
+		else:
+			return False
 	
 	def OnSteps( self, event ):
 		self.Steps = int( self.m_StepsCtrl.GetValue() )
@@ -132,8 +142,15 @@ class ShowSpread ( ShowSpreadLayout ):
 		# set initial visual properties of all location sites
 		for i in xrange(0, len(locData)):
 			if self.ColourIntensity:
-				locData[i].GetController().SetColour(GenGIS.Colour(1.0, 0.5, 0))
-				locData[i].GetController().SetSize(4.0)
+				if self.isSequence:
+					id = locData[i].GetController().GetSiteId()
+					index = self.locationMap[id]
+					loc = GenGIS.layerTree.GetLocationLayer(index)
+					loc.GetController().SetColour( GenGIS.Colour(1.0, 0.5, 0) )
+					loc.GetController().SetSize(4.0)
+				else:
+					locData[i].GetController().SetColour(GenGIS.Colour(1.0, 0.5, 0))
+					locData[i].GetController().SetSize(4.0)
 			locData[i].GetController().SetActive(False)
 			
 		GenGIS.viewport.Refresh()
@@ -141,8 +158,6 @@ class ShowSpread ( ShowSpreadLayout ):
 		self.label.SetScreenPosition(GenGIS.Point3D(40.0, 300.0, 1.0))
 		self.label.SetRenderingStyle(GenGIS.LABEL_RENDERING_STYLE.PERSPECTIVE)
 		GenGIS.graphics.AddLabel(self.label)
-		# create legend
-	#	self.CreateLegend()
 		
 		if isDate:
 			self.DisplayTemporal( locData, field, startData, stopData )
@@ -150,7 +165,25 @@ class ShowSpread ( ShowSpreadLayout ):
 			self.DisplayNumeric( locData, field, startData, stopData )
 		else:
 			self.DisplayText( locData, field, startData, stopData )
-		
+	
+	# Gets the size and colour of every location before ShowSpread is run
+	# This data is used by the restore function
+	def SetStartAttrib( self ):
+		for loc in GenGIS.layerTree.GetLocationLayers():
+			id = loc.GetName()
+			colour = loc.GetController().GetColour()
+			size = loc.GetController().GetSize()
+			self.DefaultAttrib[id] = [colour,size]
+	
+	def OnRestore( self, event ):
+		for key, value in self.DefaultAttrib.iteritems():
+			index = self.locationMap[key]
+			loc = GenGIS.layerTree.GetLocationLayer(index)
+			loc.GetController().SetColour( value[0] )
+			loc.GetController().SetSize( value[1] )
+			
+		GenGIS.viewport.Refresh()
+	
 	def OnDataChange( self, event ):
 		# isSequence
 		self.m_StartChoice.Clear()
@@ -178,6 +211,25 @@ class ShowSpread ( ShowSpreadLayout ):
 			self.m_StopChoice.Append(value)
 		self.m_StartChoice.SetSelection(0)
 		self.m_StopChoice.SetSelection( len(values)-1 )
+		
+		# Update the size of steps
+		startData = self.m_StartChoice.GetStringSelection()
+		stopData = self.m_StopChoice.GetStringSelection()
+		steps = self.m_StepsCtrl.GetValue()
+		
+		#Compute Deltas to display to the user. For use with Binning
+		if self.IsDate( startData,stopData ):
+			startData = dateutil.parser.parse(startData)
+			stopData = dateutil.parser.parse(stopData)
+			if self.sort:
+				Delta = ( startData - stopData ) /steps
+			else:
+				Delta = ( stopData - startData ) / steps
+		elif dh.isNumber(startData):
+			Delta = ( float(stopData) - float(startData) ) / float(steps)
+		else:
+			Delta = math.ceil( self.m_StartChoice.GetCount() / float(steps) )
+		self.m_StepSizeTextCtrl.SetValue( str(Delta) )
 
 	def dateStrToDate( self, dateStr ):
 		"""
@@ -276,23 +328,31 @@ class ShowSpread ( ShowSpreadLayout ):
 		else:
 			ascend = False
 		# Since the fields are unicode values, this sorts them numericaly if applicable, or alphabetically
-		# This needs to be ripped out and replaced with SORTING options and algos
 		if re.search(r'(\d+/\d+/\d+)',data):
 			values = self.SortDates( values , ascend)
 		elif( dh.isNumber(data) ):
 			values = sorted( set(values), key = lambda val: float(val), reverse= ascend )
 		else:
 			values = sorted( set(values), reverse = ascend )
-		# ################################################
 		return values
 	
-	def OnSort( self, event):
+	def OnSort( self, event ):
 		if self.m_SortChoice.GetStringSelection() == "Ascending":
 			self.sort = True
 		else:
 			self.sort = False
 		self.OnDataChange("fake")
+	
+	def OnBinning( self, event ):
+		check=self.m_CheckBin.IsChecked()
 		
+		self.m_StepSizeText.Enable(check)
+		self.m_StepSizeTextCtrl.Enable(check)
+		self.m_BinStartText.Enable(check)
+		self.m_BinStartCtrl.Enable(check)
+		self.m_BinEndText.Enable(check)
+		self.m_BinEndCtrl.Enable(check)
+	
 	# Simple function to determine if the display function's conditional has been met.
 	def SortedPass( self, curData, stopData ):
 		if not self.sort:
@@ -306,8 +366,6 @@ class ShowSpread ( ShowSpreadLayout ):
 				
 			return( curData >= stopData )
 		
-		
-	
 	#maps location ID to its index in the location set
 	def CreateLocationMap( self ):
 		for index in range(0, GenGIS.layerTree.GetNumLocationLayers()):
@@ -327,33 +385,45 @@ class ShowSpread ( ShowSpreadLayout ):
 
 		curData = startData
 		minData = startData
+		lastData = startData
+		
+		uniqueLoc = []
+		if self.m_CheckBin.IsChecked():
+			BinFloor = float( self.m_BinStartCtrl.GetValue() )
+			BinCeil = float( self.m_BinEndCtrl.GetValue() )
+		else:
+			BinFloor,BinCeil = 0,0
 		for loc in GenGIS.layerTree.GetLocationLayers():
 				loc.GetController().SetActive(False)
 				
-		#needs a slight rounding adjustment as floats are ugly
-	#	while curData <= (stopData + Delta/10) :
 		while self.SortedPass( curData, stopData ):
+			
+			if self.m_CheckBin.IsChecked():
+			#	minData = lastData
+				minData = curData
+				for loc in uniqueLoc:
+					loc.GetController().SetActive(False)
+					
 			startTime = time.time()
-			curDataStr = str(curData)
 				
 			# determine number of cases and last reported case for all locations
 			numCases = {}
 			lastReportedCase = {}
 			uniqueLoc = []
+	#		print "Cur = ",curData," Ceil = ",curData + BinCeil, " Floor = ", minData - BinFloor
 			for key in self.locData.keys():
 				data = self.locData[key]
 				if not self.sort:
-					filteredData = dh.genericFilter(data, curDataStr, filterFunc.lessEqualFloat)
-					filteredData = dh.genericFilter(filteredData, minData, filterFunc.greaterEqualFloat)
+					filteredData = dh.genericFilter(data, curData + BinCeil, filterFunc.lessEqualFloat)
+					filteredData = dh.genericFilter(filteredData, minData - BinFloor, filterFunc.greaterEqualFloat)
 				else:
-					filteredData = dh.genericFilter(data, curDataStr, filterFunc.greaterEqualFloat)
-					filteredData = dh.genericFilter(filteredData, minData, filterFunc.lessEqualFloat)
+					filteredData = dh.genericFilter(data, curData - BinFloor , filterFunc.greaterEqualFloat)
+					filteredData = dh.genericFilter(filteredData, minData + BinCeil , filterFunc.lessEqualFloat)
 				#convert sequence to it's location if possible
 				for fieldData in filteredData:
 					#need to get int value of location layer
 					
 					loc = GenGIS.layerTree.GetLocationLayer(key)
-				#	loc.GetController().SetActive(False)
 					id = loc.GetController().GetId()
 		
 					if id in numCases.keys():
@@ -396,6 +466,7 @@ class ShowSpread ( ShowSpreadLayout ):
 		#	if curData + Delta > float(stopData) and curData != float(stopData):
 		#		curData = float(stopData)
 		#	else:
+			lastData = curData
 			curData = float(curData) + Delta
 			
 			elapsedTime = time.time() - startTime
@@ -407,35 +478,61 @@ class ShowSpread ( ShowSpreadLayout ):
 		timeCap = float( self.m_SpinTime.GetValue() ) / 10.0
 		Delta = math.ceil( self.m_StartChoice.GetCount() / float(self.m_StepsCtrl.GetValue()) )
 		# get cases from start date to current simulation date
-		curData = startData
+	#	curData = startData
 		curIndex = self.m_StartChoice.FindString(startData)
 		stopIndex = self.m_StartChoice.FindString(stopData)
 
-		minData = startData
+		minDataStr = str(startData)
+		
+		uniqueLoc = []
+		if self.m_CheckBin.IsChecked():
+			BinFloor = float( self.m_BinStartCtrl.GetValue() )
+			BinCeil = float( self.m_BinEndCtrl.GetValue() )
+		else:
+			BinFloor,BinCeil = 0,0
 		
 		for loc in GenGIS.layerTree.GetLocationLayers():
 			loc.GetController().SetActive(False)
 				
 		#needs a slight rounding adjustment as floats are ugly
 		while curIndex <= stopIndex :
-			startTime = time.time()
+			#get current data
+			curData = self.m_StartChoice.GetString(curIndex)
+			if curIndex + BinCeil <= stopIndex:
+				binCeilDataStr = self.m_StartChoice.GetString(curIndex + BinCeil)
+			else:
+				binCeilDataStr = self.m_StartChoice.GetString(curIndex)
 			curDataStr = str(curData)
+			
+			# check if binning is used. If it is, update the indexes
+			if self.m_CheckBin.IsChecked():
+				if curIndex - BinFloor < 0:
+					lastData = self.m_StartChoice.GetString(0)
+				else:
+					lastData = self.m_StartChoice.GetString(curIndex - BinFloor)
+				minDataStr = str(lastData)
+				
+				for loc in uniqueLoc:
+					loc.GetController().SetActive(False)
+			
+			startTime = time.time()
+			
 			numCases = {}
 			lastReportedCase = {}
 			uniqueLoc = []
+			
 			for key in self.locData.keys():
 				data = self.locData[key]
 				if not self.sort:
-					filteredData = dh.genericFilter(data, curDataStr, filterFunc.lessEqual)
-					filteredData = dh.genericFilter(filteredData, minData, filterFunc.greaterEqual)
+					filteredData = dh.genericFilter(data, binCeilDataStr , filterFunc.lessEqual)
+					filteredData = dh.genericFilter(filteredData, minDataStr , filterFunc.greaterEqual)
 				else:
-					filteredData = dh.genericFilter(data, curDataStr, filterFunc.greaterEqual)
-					filteredData = dh.genericFilter(filteredData, stopData, filterFunc.greaterEqual)
+					filteredData = dh.genericFilter(data, binCeilDataStr , filterFunc.greaterEqual)
+					filteredData = dh.genericFilter(filteredData, minDataStr, filterFunc.lessEqual)
 				#convert sequence to it's location if possible
 				for fieldData in filteredData:
 					# determine number of cases and last reported case for all locations
 					loc = GenGIS.layerTree.GetLocationLayer(key)
-			#		loc.GetController().SetActive(False)
 					id = loc.GetController().GetId()
 
 					if id in numCases:
@@ -469,9 +566,8 @@ class ShowSpread ( ShowSpreadLayout ):
 			GenGIS.layerTree.UpdatePythonState()
 			GenGIS.SafeYield()
 			GenGIS.viewport.Refresh()
-			
+				
 			curIndex = curIndex + Delta
-			curData = self.m_StartChoice.GetString(curIndex)
 
 			elapsedTime = time.time() - startTime
 			if elapsedTime < timeCap:
@@ -489,31 +585,54 @@ class ShowSpread ( ShowSpreadLayout ):
 		else:
 			dayDelta = ( stopData - startData ) / daySteps
 
-
+		# IMPORTANT NOTE
+		# ALL DATES WILL BE BINNED BY DAYS
+		uniqueLoc = []
+		if self.m_CheckBin.IsChecked():
+			BinFloor = float( self.m_BinStartCtrl.GetValue() )
+			BinCeil = float( self.m_BinEndCtrl.GetValue() )
+		else:
+			BinFloor,BinCeil = 0,0
+		
 		# get cases from start date to current simulation date
 		curData = startData
-		minData = str(curData.month) + '/' + str(curData.day) + '/' + str(curData.year)
+	#	minData = str(curData.month) + '/' + str(curData.day) + '/' + str(curData.year)
+		minData = startData
+		lastData = minData
 		
 		for loc in GenGIS.layerTree.GetLocationLayers():
 				loc.GetController().SetActive(False)
 				
 		while self.SortedPass( curData, endData ):
-			GenGIS.viewport.Refresh()
+		#	GenGIS.viewport.Refresh()
+			if self.m_CheckBin.IsChecked():
+				minData = curData
+				for loc in uniqueLoc:
+					loc.GetController().SetActive(False)
 			
 			startTime = time.time()
-			curDateStr = str(curData.month) + '/' + str(curData.day) + '/' + str(curData.year)
+		#	curDateStr = str(curData.month) + '/' + str(curData.day) + '/' + str(curData.year)
 			
 			numCases = {}
 			lastReportedCase = {}
 			uniqueLoc = []
+			if not self.sort:
+				temCur = curData + BinCeil
+				temMin = minData - BinFloor
+			else:
+				temCur = curData - BinFloor
+				temMin = minDat + BinCeil
+			temCur = str(temCur.month) + '/' + str(temCur.day) + '/' + str(temCur.year)
+			temMin = str(temMin.month) + '/' + str(temMin.day) + '/' + str(temMin.year)
+			
 			for key in self.locData.keys():
 				data = self.locData[key]
 				if not self.sort:
-					filteredData = dh.genericFilter(data, curDateStr, filterFunc.lessEqualDate)
-					filteredData = dh.genericFilter(filteredData, minData, filterFunc.greaterEqualDate)	
+					filteredData = dh.genericFilter(data, temCur, filterFunc.lessEqualDate)
+					filteredData = dh.genericFilter(filteredData, temMin, filterFunc.greaterEqualDate)	
 				else:
-					filteredData = dh.genericFilter(data, curDateStr, filterFunc.greaterEqualDate)
-					filteredData = dh.genericFilter(filteredData, minData, filterFunc.lessEqualDate)
+					filteredData = dh.genericFilter(data, temCur, filterFunc.greaterEqualDate)
+					filteredData = dh.genericFilter(filteredData, temMin, filterFunc.lessEqualDate)
 					
 				for fieldData in filteredData:
 					loc = GenGIS.layerTree.GetLocationLayer(key)
@@ -554,6 +673,7 @@ class ShowSpread ( ShowSpreadLayout ):
 			# increment curData. Takes into account rounding errors when another loop needs to be run,
 			# but is shy of the final date
 			
+			lastData = curData
 			if self.sort:
 				if curData - dayDelta < endData and curData != endData:
 					curData = endData
