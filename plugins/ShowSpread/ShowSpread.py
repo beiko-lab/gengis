@@ -45,6 +45,8 @@ class ShowSpread ( ShowSpreadLayout ):
 	locationMap = {}
 	# A list containning the colour and size of locations
 	DefaultAttrib = {}
+	# Map of Key -> State (Active/Off)
+	StartingState = {}
 	
 	def __init__( self, parent=None ):
 		ShowSpreadLayout.__init__ ( self, parent )
@@ -86,6 +88,7 @@ class ShowSpread ( ShowSpreadLayout ):
 		self.m_StepsCtrl.SetValue( 10 )
 		self.m_CheckIntensity.SetValue(False)
 		self.OnBinning("fake")
+		# Get starting state of locations
 		self.SetStartAttrib()
 		
 	def OnClose( self, event ):
@@ -141,16 +144,24 @@ class ShowSpread ( ShowSpreadLayout ):
 		
 		# set initial visual properties of all location sites
 		for i in xrange(0, len(locData)):
-			if self.ColourIntensity:
-				if self.isSequence:
-					id = locData[i].GetController().GetSiteId()
-					index = self.locationMap[id]
-					loc = GenGIS.layerTree.GetLocationLayer(index)
+			if self.isSequence:
+				id = locData[i].GetController().GetSiteId()
+				index = self.locationMap[id]
+				loc = GenGIS.layerTree.GetLocationLayer(index)
+				if self.ColourIntensity:
 					loc.GetController().SetColour( GenGIS.Colour(1.0, 0.5, 0) )
 					loc.GetController().SetSize(4.0)
-				else:
+				
+				# Set initial state
+				self.StartingState[loc.GetName()] = loc.GetController().IsActive()
+			else:
+				if self.ColourIntensity:
 					locData[i].GetController().SetColour(GenGIS.Colour(1.0, 0.5, 0))
 					locData[i].GetController().SetSize(4.0)
+				
+				# Set Initial State
+		#		print "ID: ",locData[i].GetName()," State: ",locData[i].GetController().IsActive()
+				self.StartingState[locData[i].GetName()] = locData[i].GetController().IsActive()
 			locData[i].GetController().SetActive(False)
 			
 		GenGIS.viewport.Refresh()
@@ -166,7 +177,7 @@ class ShowSpread ( ShowSpreadLayout ):
 		else:
 			self.DisplayText( locData, field, startData, stopData )
 	
-	# Gets the size and colour of every location before ShowSpread is run
+	# Gets the size, Active and colour of every location before ShowSpread is run
 	# This data is used by the restore function
 	def SetStartAttrib( self ):
 		for loc in GenGIS.layerTree.GetLocationLayers():
@@ -303,7 +314,8 @@ class ShowSpread ( ShowSpreadLayout ):
 	# Resets all the layers to active in event of a crash
 	def CrashCleanup( self ):
 		for loc in GenGIS.layerTree.GetLocationLayers():
-			loc.GetController().SetActive(True)
+			if self.StartingState[loc.GetName()]:
+				loc.GetController().SetActive(True)
 	
 	# Performs specified sorting on data
 	# This will be where the current data map will be updated. Also the only place IsSequence should matter!
@@ -437,6 +449,8 @@ class ShowSpread ( ShowSpreadLayout ):
 					
 			# set visual properties of location sites
 			for loc in uniqueLoc:
+				if not self.StartingState[loc.GetName()]:
+					continue
 				id = loc.GetController().GetId()
 					
 				if float(lastReportedCase[id] < 0 ):
@@ -546,6 +560,8 @@ class ShowSpread ( ShowSpreadLayout ):
 						
 				# set visual properties of location sites
 			for loc in uniqueLoc:
+				if not self.StartingState[loc.GetName()]:
+					continue
 				id= loc.GetController().GetId()
 				deltaDate = stopIndex - lastReportedCase[loc.GetController().GetId()]
 				if self.ColourIntensity:
@@ -617,11 +633,11 @@ class ShowSpread ( ShowSpreadLayout ):
 			lastReportedCase = {}
 			uniqueLoc = []
 			if not self.sort:
-				temCur = curData + BinCeil
-				temMin = minData - BinFloor
+				temCur = curData + timedelta(days=BinCeil)
+				temMin = minData - timedelta(days=BinFloor)
 			else:
-				temCur = curData - BinFloor
-				temMin = minDat + BinCeil
+				temCur = curData - timedelta(days=BinFloor)
+				temMin = minData + timedelta(days=BinCeil)
 			temCur = str(temCur.month) + '/' + str(temCur.day) + '/' + str(temCur.year)
 			temMin = str(temMin.month) + '/' + str(temMin.day) + '/' + str(temMin.year)
 			
@@ -651,6 +667,8 @@ class ShowSpread ( ShowSpreadLayout ):
 						
 				# set visual properties of location sites
 			for loc in uniqueLoc:
+				if not self.StartingState[loc.GetName()]:
+					continue
 				id= loc.GetController().GetId()
 				deltaDate = curData - lastReportedCase[id]
 				if self.ColourIntensity:
