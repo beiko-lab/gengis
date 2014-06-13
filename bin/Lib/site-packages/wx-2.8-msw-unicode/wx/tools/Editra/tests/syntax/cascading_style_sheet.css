@@ -31,8 +31,22 @@ input[type="submit"] {
 	margin: 5px;
 }
 
+/*** uses some css 2 keywords ****/
+form input.objectA {
+    position: absolute;
+    text-align: left;
+    width: 550px;
+    z-index: 2;
+}
+
 /** Syntax Error/Non WC3 compliant css **/
 a:what { color: red; }
 
 /** Important **/
 .hide { display: none !important; }
+
+.hide p { color: blue; }
+
+.hide .hidedecendant { color: red; }
+
+.hide #someID { color: yellow; }

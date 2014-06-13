@@ -11,6 +11,7 @@ for manipulation of the pathname component of URLs.
 """
 
 import os
+import sys
 import stat
 import genericpath
 import warnings
@@ -139,7 +140,7 @@ def islink(path):
 def lexists(path):
     """Test whether a path exists.  Returns True for broken symbolic links"""
     try:
-        st = os.lstat(path)
+        os.lstat(path)
     except os.error:
         return False
     return True
@@ -178,6 +179,9 @@ def samestat(s1, s2):
 
 def ismount(path):
     """Test whether a path is a mount point"""
+    if islink(path):
+        # A symlink can never be a mount point
+        return False
     try:
         s1 = os.lstat(path)
         s2 = os.lstat(join(path, '..'))
@@ -216,7 +220,8 @@ def walk(top, func, arg):
     beyond that arg is always passed to func.  It can be used, e.g., to pass
     a filename pattern, or a mutable object designed to accumulate
     statistics.  Passing None for arg is common."""
-    warnings.warnpy3k("In 3.x, os.path.walk is removed in favor of os.walk.")
+    warnings.warnpy3k("In 3.x, os.path.walk is removed in favor of os.walk.",
+                      stacklevel=2)
     try:
         names = os.listdir(top)
     except os.error:
@@ -262,7 +267,7 @@ def expanduser(path):
         except KeyError:
             return path
         userhome = pwent.pw_dir
-    userhome = userhome.rstrip('/')
+    userhome = userhome.rstrip('/') or userhome
     return userhome + path[i:]
 
 
@@ -306,8 +311,10 @@ def expandvars(path):
 
 def normpath(path):
     """Normalize path, eliminating double slashes, etc."""
+    # Preserve unicode (if path is unicode)
+    slash, dot = (u'/', u'.') if isinstance(path, unicode) else ('/', '.')
     if path == '':
-        return '.'
+        return dot
     initial_slashes = path.startswith('/')
     # POSIX allows one or two initial slashes, but treats three or more
     # as single slash.
@@ -325,16 +332,20 @@ def normpath(path):
         elif new_comps:
             new_comps.pop()
     comps = new_comps
-    path = '/'.join(comps)
+    path = slash.join(comps)
     if initial_slashes:
-        path = '/'*initial_slashes + path
-    return path or '.'
+        path = slash*initial_slashes + path
+    return path or dot
 
 
 def abspath(path):
     """Return an absolute path."""
     if not isabs(path):
-        path = join(os.getcwd(), path)
+        if isinstance(path, unicode):
+            cwd = os.getcwdu()
+        else:
+            cwd = os.getcwd()
+        path = join(cwd, path)
     return normpath(path)
 
 
@@ -369,12 +380,12 @@ def _resolve_link(path):
     until we either arrive at something that isn't a symlink, or
     encounter a path we've seen before (meaning that there's a loop).
     """
-    paths_seen = []
+    paths_seen = set()
     while islink(path):
         if path in paths_seen:
             # Already seen this path, so we must have a symlink loop
             return None
-        paths_seen.append(path)
+        paths_seen.add(path)
         # Resolve where the link points to
         resolved = os.readlink(path)
         if not isabs(resolved):
@@ -384,7 +395,7 @@ def _resolve_link(path):
             path = normpath(resolved)
     return path
 
-supports_unicode_filenames = False
+supports_unicode_filenames = (sys.platform == 'darwin')
 
 def relpath(path, start=curdir):
     """Return a relative version of a path"""
@@ -392,8 +403,8 @@ def relpath(path, start=curdir):
     if not path:
         raise ValueError("no path specified")
 
-    start_list = abspath(start).split(sep)
-    path_list = abspath(path).split(sep)
+    start_list = [x for x in abspath(start).split(sep) if x]
+    path_list = [x for x in abspath(path).split(sep) if x]
 
     # Work out how much of the filepath is shared by start and path.
     i = len(commonprefix([start_list, path_list]))

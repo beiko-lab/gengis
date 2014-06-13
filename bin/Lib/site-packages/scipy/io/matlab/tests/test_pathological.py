@@ -2,6 +2,8 @@
 
 We try and read any file that matlab reads, these files included
 """
+from __future__ import division, print_function, absolute_import
+
 from os.path import dirname, join as pjoin
 import sys
 
@@ -9,8 +11,8 @@ if sys.version_info[0] >= 3:
     from io import BytesIO
     cStringIO = BytesIO
 else:
-    from cStringIO import StringIO as cStringIO
-    from StringIO import StringIO as BytesIO
+    from io import StringIO as cStringIO
+    from io import StringIO as BytesIO
 
 import numpy as np
 
@@ -23,6 +25,7 @@ from numpy.testing import assert_array_equal, assert_array_almost_equal, \
 from scipy.io.matlab.mio import loadmat
 
 TEST_DATA_PATH = pjoin(dirname(__file__), 'data')
+
 
 def test_multiple_fieldnames():
     # Example provided by Dharhas Pothina

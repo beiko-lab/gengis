@@ -1,11 +1,13 @@
 """
 Tests for line search routines
 """
+from __future__ import division, print_function, absolute_import
 
 from numpy.testing import assert_, assert_equal, \
      assert_array_almost_equal, assert_array_almost_equal_nulp
 import scipy.optimize.linesearch as ls
 import numpy as np
+
 
 def assert_wolfe(s, phi, derphi, c1=1e-4, c2=0.9, err_msg=""):
     """
@@ -18,8 +20,9 @@ def assert_wolfe(s, phi, derphi, c1=1e-4, c2=0.9, err_msg=""):
     msg = "s = %s; phi(0) = %s; phi(s) = %s; phi'(0) = %s; phi'(s) = %s; %s" % (
         s, phi0, phi1, derphi0, derphi1, err_msg)
 
-    assert_(phi1 <= phi0 + c1*s*derphi0, "Wolfe 1 failed: "+ msg)
-    assert_(abs(derphi1) <= abs(c2*derphi0), "Wolfe 2 failed: "+ msg)
+    assert_(phi1 <= phi0 + c1*s*derphi0, "Wolfe 1 failed: " + msg)
+    assert_(abs(derphi1) <= abs(c2*derphi0), "Wolfe 2 failed: " + msg)
+
 
 def assert_armijo(s, phi, c1=1e-4, err_msg=""):
     """
@@ -30,19 +33,23 @@ def assert_armijo(s, phi, c1=1e-4, err_msg=""):
     msg = "s = %s; phi(0) = %s; phi(s) = %s; %s" % (s, phi0, phi1, err_msg)
     assert_(phi1 <= (1 - c1*s)*phi0, msg)
 
+
 def assert_line_wolfe(x, p, s, f, fprime, **kw):
     assert_wolfe(s, phi=lambda sp: f(x + p*sp),
                  derphi=lambda sp: np.dot(fprime(x + p*sp), p), **kw)
 
+
 def assert_line_armijo(x, p, s, f, **kw):
     assert_armijo(s, phi=lambda sp: f(x + p*sp), **kw)
+
 
 def assert_fp_equal(x, y, err_msg="", nulp=50):
     """Assert two arrays are equal, up to some floating-point rounding error"""
     try:
         assert_array_almost_equal_nulp(x, y, nulp)
-    except AssertionError, e:
+    except AssertionError as e:
         raise AssertionError("%s\n%s" % (e, err_msg))
+
 
 class TestLineSearch(object):
     # -- scalar functions; must have dphi(0.) < 0
@@ -134,7 +141,7 @@ class TestLineSearch(object):
             assert_fp_equal(phi1, phi(s), name)
             assert_wolfe(s, phi, derphi, err_msg=name)
 
-        assert_(c > 3) # check that the iterator really works...
+        assert_(c > 3)  # check that the iterator really works...
 
     def test_scalar_search_wolfe2(self):
         for name, phi, derphi, old_phi0 in self.scalar_iter():
@@ -174,7 +181,7 @@ class TestLineSearch(object):
                 c += 1
                 assert_line_wolfe(x, p, s, f, fprime, err_msg=name)
 
-        assert_(c > 3) # check that the iterator really works...
+        assert_(c > 3)  # check that the iterator really works...
 
     def test_line_search_wolfe2(self):
         c = 0
@@ -194,7 +201,7 @@ class TestLineSearch(object):
             if s < smax:
                 c += 1
                 assert_line_wolfe(x, p, s, f, fprime, err_msg=name)
-        assert_(c > 3) # check that the iterator really works...
+        assert_(c > 3)  # check that the iterator really works...
 
     def test_line_search_armijo(self):
         c = 0
@@ -215,6 +222,7 @@ class TestLineSearch(object):
         # Armijo should evaluate the function only once if the trial step
         # is already suitable
         count = [0]
+
         def phi(s):
             count[0] += 1
             return -s + 0.01*s**2

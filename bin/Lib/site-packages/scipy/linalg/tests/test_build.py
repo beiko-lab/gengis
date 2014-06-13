@@ -1,3 +1,5 @@
+from __future__ import division, print_function, absolute_import
+
 from subprocess import call, PIPE, Popen
 import sys
 import re
@@ -5,10 +7,12 @@ import re
 from numpy.testing import TestCase, dec
 from numpy.compat import asbytes
 
-from scipy.linalg import flapack
+from scipy.linalg import _flapack as flapack
 
 # XXX: this is copied from numpy trunk. Can be removed when we will depend on
 # numpy 1.3
+
+
 class FindDependenciesLdd:
     def __init__(self):
         self.cmd = ['ldd']
@@ -37,6 +41,7 @@ class FindDependenciesLdd:
                     founds.append(k)
 
         return founds
+
 
 class TestF77Mismatch(TestCase):
     @dec.skipif(not(sys.platform[:5] == 'linux'),

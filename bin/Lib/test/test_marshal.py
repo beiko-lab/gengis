@@ -129,7 +129,9 @@ class StringTestCase(unittest.TestCase):
 
     def test_buffer(self):
         for s in ["", "Andrè Previn", "abc", " "*10000]:
-            b = buffer(s)
+            with test_support.check_py3k_warnings(("buffer.. not supported",
+                                                     DeprecationWarning)):
+                b = buffer(s)
             new = marshal.loads(marshal.dumps(b))
             self.assertEqual(s, new)
             marshal.dump(b, file(test_support.TESTFN, "wb"))
@@ -189,7 +191,7 @@ class ContainerTestCase(unittest.TestCase):
             t = constructor(self.d.keys())
             new = marshal.loads(marshal.dumps(t))
             self.assertEqual(t, new)
-            self.assert_(isinstance(new, constructor))
+            self.assertTrue(isinstance(new, constructor))
             self.assertNotEqual(id(t), id(new))
             marshal.dump(t, file(test_support.TESTFN, "wb"))
             new = marshal.load(file(test_support.TESTFN, "rb"))
@@ -208,8 +210,8 @@ class BugsTestCase(unittest.TestCase):
 
     def test_version_argument(self):
         # Python 2.4.0 crashes for any call to marshal.dumps(x, y)
-        self.assertEquals(marshal.loads(marshal.dumps(5, 0)), 5)
-        self.assertEquals(marshal.loads(marshal.dumps(5, 1)), 5)
+        self.assertEqual(marshal.loads(marshal.dumps(5, 0)), 5)
+        self.assertEqual(marshal.loads(marshal.dumps(5, 1)), 5)
 
     def test_fuzz(self):
         # simple test that it's at least not *totally* trivial to
@@ -243,6 +245,30 @@ class BugsTestCase(unittest.TestCase):
 
         last.append([0])
         self.assertRaises(ValueError, marshal.dumps, head)
+
+    def test_exact_type_match(self):
+        # Former bug:
+        #   >>> class Int(int): pass
+        #   >>> type(loads(dumps(Int())))
+        #   <type 'int'>
+        for typ in (int, long, float, complex, tuple, list, dict, set, frozenset):
+            # Note: str and unicode subclasses are not tested because they get handled
+            # by marshal's routines for objects supporting the buffer API.
+            subtyp = type('subtyp', (typ,), {})
+            self.assertRaises(ValueError, marshal.dumps, subtyp())
+
+    # Issue #1792 introduced a change in how marshal increases the size of its
+    # internal buffer; this test ensures that the new code is exercised.
+    def test_large_marshal(self):
+        size = int(1e6)
+        testString = 'abc' * size
+        marshal.dumps(testString)
+
+    def test_invalid_longs(self):
+        # Issue #7019: marshal.loads shouldn't produce unnormalized PyLongs
+        invalid_string = 'l\x02\x00\x00\x00\x00\x00\x00\x00'
+        self.assertRaises(ValueError, marshal.loads, invalid_string)
+
 
 def test_main():
     test_support.run_unittest(IntTestCase,

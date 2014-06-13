@@ -1,4 +1,3 @@
-#!/usr/bin/dmd -run
 // Syntax Highlighting test file for D programming language
 // A single line comment
 /* A multi-line comment about this file.

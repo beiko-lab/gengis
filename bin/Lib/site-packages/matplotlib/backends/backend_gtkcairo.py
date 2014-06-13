@@ -2,6 +2,8 @@
 GTK+ Matplotlib interface using cairo (not GDK) drawing operations.
 Author: Steve Chaplin
 """
+from __future__ import print_function
+
 import gtk
 if gtk.pygtk_version < (2,7,0):
     import cairo.gtk
@@ -21,10 +23,17 @@ def new_figure_manager(num, *args, **kwargs):
     """
     Create a new figure manager instance
     """
-    if _debug: print 'backend_gtkcairo.%s()' % fn_name()
+    if _debug: print('backend_gtkcairo.%s()' % fn_name())
     FigureClass = kwargs.pop('FigureClass', Figure)
     thisFig = FigureClass(*args, **kwargs)
-    canvas = FigureCanvasGTKCairo(thisFig)
+    return new_figure_manager_given_figure(num, thisFig)
+
+
+def new_figure_manager_given_figure(num, figure):
+    """
+    Create a new figure manager instance for the given figure.
+    """
+    canvas = FigureCanvasGTKCairo(figure)
     return FigureManagerGTK(canvas, num)
 
 
@@ -43,7 +52,7 @@ class FigureCanvasGTKCairo(backend_cairo.FigureCanvasCairo, FigureCanvasGTK):
 
     def _renderer_init(self):
         """Override to use cairo (rather than GDK) renderer"""
-        if _debug: print '%s.%s()' % (self.__class__.__name__, _fn_name())
+        if _debug: print('%s.%s()' % (self.__class__.__name__, _fn_name()))
         self._renderer = RendererGTKCairo (self.figure.dpi)
 
 

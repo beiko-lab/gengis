@@ -1,0 +1,17 @@
+Metadata-Version: 1.1
+Name: rpy2
+Version: 2.3.8
+Summary: Python interface to the R language (embedded R)
+Home-page: http://rpy.sourceforge.net
+Author: Laurent Gautier
+Author-email: lgautier@gmail.com
+License: AGPLv3.0 (except rpy2.rinterface: LGPL)
+Description: UNKNOWN
+Platform: UNKNOWN
+Classifier: Programming Language :: Python
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: GNU Library or Lesser General Public License (LGPL)
+Classifier: License :: OSI Approved :: GNU Affero General Public License v3
+Classifier: Intended Audience :: Developers
+Classifier: Intended Audience :: Science/Research
+Classifier: Development Status :: 5 - Production/Stable

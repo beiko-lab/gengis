@@ -92,7 +92,7 @@ Verify that parenthesis are required when used as a keyword argument value
 Verify that parenthesis are required when used as a keyword argument value
 
     >>> dict(a = (i for i in xrange(10))) #doctest: +ELLIPSIS
-    {'a': <generator object at ...>}
+    {'a': <generator object <genexpr> at ...>}
 
 Verify early binding for the outermost for-expression
 
@@ -137,12 +137,14 @@ Verify that syntax error's are raised for genexps used as lvalues
     >>> (y for y in (1,2)) = 10
     Traceback (most recent call last):
        ...
-    SyntaxError: can't assign to generator expression (<doctest test.test_genexps.__test__.doctests[40]>, line 1)
+      File "<doctest test.test_genexps.__test__.doctests[40]>", line 1
+    SyntaxError: can't assign to generator expression
 
     >>> (y for y in (1,2)) += 10
     Traceback (most recent call last):
        ...
-    SyntaxError: augmented assignment to generator expression not possible (<doctest test.test_genexps.__test__.doctests[41]>, line 1)
+      File "<doctest test.test_genexps.__test__.doctests[41]>", line 1
+    SyntaxError: can't assign to generator expression
 
 
 ########### Tests borrowed from or inspired by test_generators.py ############

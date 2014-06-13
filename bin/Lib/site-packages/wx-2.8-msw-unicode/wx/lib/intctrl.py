@@ -3,7 +3,7 @@
 # Author:       Will Sadkin
 # Created:      01/16/2003
 # Copyright:   (c) 2003 by Will Sadkin
-# RCS-ID:      $Id: intctrl.py 41077 2006-09-08 20:09:27Z RD $
+# RCS-ID:      $Id: intctrl.py 61387 2009-07-10 22:24:42Z RD $
 # License:     wxWindows license
 #----------------------------------------------------------------------------
 # NOTE:
@@ -112,6 +112,11 @@ class IntValidator( wx.PyValidator ):
         key = event.GetKeyCode()
         ctrl = event.GetEventObject()
 
+        if 'wxMac' in wx.PlatformInfo:
+            if event.CmdDown() and key == ord('c'):
+                key = WXK_CTRL_C
+            elif event.CmdDown() and key == ord('v'):
+                key = WXK_CTRL_V
 
         value = ctrl.GetValue()
         textval = wx.TextCtrl.GetValue(ctrl)

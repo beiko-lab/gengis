@@ -1,12 +1,14 @@
+from __future__ import absolute_import, print_function
+
 import os
 import time
 
 from numpy import float32, float64, complex64, complex128, \
      zeros, random, array, sum, abs, allclose
 
-from numpy.testing import TestCase, dec, assert_equal, assert_
+from numpy.testing import TestCase, dec, assert_equal, assert_, assert_allclose
 
-from scipy.weave import blitz_tools
+from scipy.weave import blitz_tools, blitz
 from scipy.weave.ast_tools import harvest_variables
 from weave_test_utils import empty_temp_dir, cleanup_temp_dir, remove_whitespace
 
@@ -54,6 +56,7 @@ class TestAstToBlitzExpr(TestCase):
                   '-hy(_all,blitz::Range(1,_end),blitz::Range(_beg,Nhy(2)-1-1)));'
         self.generic_check(expr,desired)
 
+
 class TestBlitz(TestCase):
     """* These are long running tests...
 
@@ -62,7 +65,7 @@ class TestBlitz(TestCase):
     def generic_check(self,expr,arg_dict,type,size,mod_location):
         clean_result = array(arg_dict['result'],copy=1)
         t1 = time.time()
-        exec expr in globals(),arg_dict
+        exec(expr, globals(),arg_dict)
         t2 = time.time()
         standard = t2 - t1
         desired = arg_dict['result']
@@ -70,8 +73,8 @@ class TestBlitz(TestCase):
         t1 = time.time()
         old_env = os.environ.get('PYTHONCOMPILED','')
         os.environ['PYTHONCOMPILED'] = mod_location
-        blitz_tools.blitz(expr,arg_dict,{},verbose=0) #,
-                          #extra_compile_args = ['-O3','-malign-double','-funroll-loops'])
+        blitz_tools.blitz(expr,arg_dict,{},verbose=0)  # ,
+                          # extra_compile_args = ['-O3','-malign-double','-funroll-loops'])
         os.environ['PYTHONCOMPILED'] = old_env
         t2 = time.time()
         compiled = t2 - t1
@@ -83,11 +86,11 @@ class TestBlitz(TestCase):
             assert_(allclose(abs(actual.ravel()),abs(desired.ravel()),1e-4,1e-6))
         except:
             diff = actual-desired
-            print diff[:4,:4]
-            print diff[:4,-4:]
-            print diff[-4:,:4]
-            print diff[-4:,-4:]
-            print sum(abs(diff.ravel()),axis=0)
+            print(diff[:4,:4])
+            print(diff[:4,-4:])
+            print(diff[-4:,:4])
+            print(diff[-4:,-4:])
+            print(sum(abs(diff.ravel()),axis=0))
             raise AssertionError
         return standard,compiled
 
@@ -98,37 +101,39 @@ class TestBlitz(TestCase):
         import parser
         ast = parser.suite(expr)
         arg_list = harvest_variables(ast.tolist())
-        #print arg_list
+        # print arg_list
         all_sizes = [(10,10), (50,50), (100,100), (500,500), (1000,1000)]
-        print '\nExpression:', expr
+        print('\nExpression:', expr)
         for size in all_sizes:
             result = zeros(size,typ)
             arg_dict = {}
             for arg in arg_list:
                 arg_dict[arg] = random.normal(0,1,size).astype(typ)
                 # set imag part of complex values to non-zero value
-                try:     arg_dict[arg].imag = arg_dict[arg].real
-                except:  pass
-            print 'Run:', size,typ
+                try:
+                    arg_dict[arg].imag = arg_dict[arg].real
+                except:
+                    pass
+            print('Run:', size,typ)
             standard,compiled = self.generic_check(expr,arg_dict,type,size,
                                                   mod_location)
             try:
                 speed_up = standard/compiled
             except:
                 speed_up = -1.
-            print "1st run(numpy.numerix,compiled,speed up):  %3.4f, %3.4f, " \
-                  "%3.4f" % (standard,compiled,speed_up)
+            print("1st run(numpy.numerix,compiled,speed up):  %3.4f, %3.4f, "
+                  "%3.4f" % (standard,compiled,speed_up))
             standard,compiled = self.generic_check(expr,arg_dict,type,size,
                                                   mod_location)
             try:
                 speed_up = standard/compiled
             except:
                 speed_up = -1.
-            print "2nd run(numpy.numerix,compiled,speed up):  %3.4f, %3.4f, " \
-                  "%3.4f" % (standard,compiled,speed_up)
+            print("2nd run(numpy.numerix,compiled,speed up):  %3.4f, %3.4f, "
+                  "%3.4f" % (standard,compiled,speed_up))
         cleanup_temp_dir(mod_location)
 
-    #def test_simple_2d(self):
+    # def test_simple_2d(self):
     #    """ result = a + b"""
     #    expr = "result = a + b"
     #    self.generic_2d(expr)
@@ -179,6 +184,23 @@ class TestBlitz(TestCase):
                                   "+ b[1:-1,2:] + b[1:-1,:-2]) / 5."
         self.generic_2d(expr,complex128)
 
+
+@dec.slow
+def test_blitz_bug():
+    """Assignment to arr[i:] used to fail inside blitz expressions."""
+    N = 4
+    expr_buggy = 'arr_blitz_buggy[{0}:] = arr[{0}:]'
+    expr_not_buggy = 'arr_blitz_not_buggy[{0}:{1}] = arr[{0}:]'
+    random.seed(7)
+    arr = random.randn(N)
+    sh = arr.shape[0]
+    for lim in [0, 1, 2]:
+        arr_blitz_buggy, arr_blitz_not_buggy, arr_np = zeros(N), zeros(N), zeros(N)
+        blitz(expr_buggy.format(lim))
+        blitz(expr_not_buggy.format(lim, 'sh'))
+        arr_np[lim:] = arr[lim:]
+        assert_allclose(arr_blitz_buggy, arr_np)
+        assert_allclose(arr_blitz_not_buggy, arr_np)
 
 if __name__ == "__main__":
     import nose

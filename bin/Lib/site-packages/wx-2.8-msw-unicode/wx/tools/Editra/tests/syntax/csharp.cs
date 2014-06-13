@@ -10,7 +10,6 @@ using System;
 #region Foo
 class Foo
 {
-    
     void Create() {}
 }
 #endregion Foo

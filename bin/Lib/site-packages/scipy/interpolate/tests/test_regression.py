@@ -1,6 +1,9 @@
+from __future__ import division, print_function, absolute_import
+
 import numpy as np
 import scipy.interpolate as interp
 from numpy.testing import assert_almost_equal, TestCase
+
 
 class TestRegression(TestCase):
     def test_spalde_scalar_input(self):
@@ -9,5 +12,5 @@ class TestRegression(TestCase):
         y = x**3
         tck = interp.splrep(x, y, k=3, t=[5])
         res = interp.spalde(np.float64(1), tck)
-        des = np.array([ 1.,  3.,  6.,  6.])
+        des = np.array([1., 3., 6., 6.])
         assert_almost_equal(res, des)

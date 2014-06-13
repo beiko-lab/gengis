@@ -13,13 +13,18 @@ int main(void)
 
     // One line comment
     int a = 0;
-    
+
     exit(a);
 }
 
 int add(int x, int y)
 {
     return x + y;
+}
+
+void TestClass::Foo(int &nVal)
+{
+    nVal++;
 }
 
 // EOF

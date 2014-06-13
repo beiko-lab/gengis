@@ -1,7 +1,10 @@
+from __future__ import absolute_import, print_function
+
 from numpy import arange
 from numpy.testing import TestCase, assert_
 
 from scipy.weave import standard_array_spec
+
 
 def remove_whitespace(in_str):
     out = in_str.replace(" ","")
@@ -14,7 +17,7 @@ class TestArrayConverter(TestCase):
 
     def test_type_match_string(self):
         s = standard_array_spec.array_converter()
-        assert_( not s.type_match('string') )
+        assert_(not s.type_match('string'))
 
     def test_type_match_int(self):
         s = standard_array_spec.array_converter()

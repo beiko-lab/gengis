@@ -1,4 +1,3 @@
-#!/usr/bin/perl
 # Syntax Highlighting test file for Perl
 # Some comments about this file
 

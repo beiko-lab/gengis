@@ -2,7 +2,7 @@
 # Purpose:      dynamic pulldown menu for XMLTree
 # Author:       Roman Rolinsky <rolinsky@femagsoft.com>
 # Created:      31.05.2007
-# RCS-ID:       $Id: XMLTreeMenu.py 49166 2007-10-15 23:23:02Z ROL $
+# RCS-ID:       $Id: XMLTreeMenu.py 64107 2010-04-22 14:05:36Z ROL $
 
 import wx
 from globals import ID
@@ -80,7 +80,7 @@ class XMLTreeMenu(wx.Menu):
                 m.Append(component.id + idShift, label, help)
         m.AppendSeparator()
         m.Append(ID.REF, 'reference...', 'Create object_ref node')
-#        m.Append(ID.COMMENT, 'comment', 'Create comment node')        
+        m.Append(ID.COMMENT, 'comment', 'Create comment node')        
         return m
 
     def CreateSubMenus(self, comp, idShift=0):
@@ -103,5 +103,5 @@ class XMLTreeMenu(wx.Menu):
             else:
                 m.Destroy()
         menu.Append(ID.REF, 'reference...', 'Create object_ref node')
-#        menu.Append(ID.COMMENT, 'comment', 'Create comment node')
+        menu.Append(ID.COMMENT, 'comment', 'Create comment node')
         return menu

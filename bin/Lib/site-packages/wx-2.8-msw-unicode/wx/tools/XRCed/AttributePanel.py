@@ -2,7 +2,7 @@
 # Purpose:      View components for editing attributes
 # Author:       Roman Rolinsky <rolinsky@mema.ucl.ac.be>
 # Created:      17.06.2007
-# RCS-ID:       $Id: AttributePanel.py 52316 2008-03-04 13:05:02Z ROL $
+# RCS-ID:       $Id: AttributePanel.py 65408 2010-08-25 22:52:11Z RD $
 
 import string
 import wx
@@ -39,6 +39,27 @@ class ScrolledPage(wx.ScrolledWindow):
         self.topSizer.Layout()
         self.SendSizeEvent()
 
+# No highlighting please
+class ToggleButton(buttons.GenBitmapToggleButton):
+    def GetBackgroundBrush(self, dc):
+        colBg = self.GetBackgroundColour()
+        brush = wx.Brush(colBg, wx.SOLID)
+        if self.style & wx.BORDER_NONE:
+            myAttr = self.GetDefaultAttributes()
+            parAttr = self.GetParent().GetDefaultAttributes()
+            myDef = colBg == myAttr.colBg
+            parDef = self.GetParent().GetBackgroundColour() == parAttr.colBg
+            if myDef and parDef:
+                if wx.Platform == "__WXMAC__":
+                    brush.MacSetTheme(1) # 1 == kThemeBrushDialogBackgroundActive
+                elif wx.Platform == "__WXMSW__":
+                    if self.DoEraseBackground(dc):
+                        brush = None
+            elif myDef and not parDef:
+                colBg = self.GetParent().GetBackgroundColour()
+                brush = wx.Brush(colBg, wx.SOLID)
+        return brush
+
 class Panel(wx.Panel):
     '''Attribute panel main class.'''
     def __init__(self, *args, **kw):
@@ -49,7 +70,7 @@ class Panel(wx.Panel):
 
         topSizer = wx.BoxSizer(wx.VERTICAL)
         pinSizer = wx.BoxSizer(wx.HORIZONTAL)
-        sizer = wx.FlexGridSizer(2, 2, 1, 5)
+        sizer = wx.FlexGridSizer(cols=2, vgap=1, hgap=5)
         self.labelRef = wx.StaticText(self, -1, 'ref:')
         self.textRef = params.ParamText(self, 'ref', textWidth=200)
         sizer.AddMany([ (self.labelRef, 0, wx.ALIGN_CENTER_VERTICAL),
@@ -64,14 +85,11 @@ class Panel(wx.Panel):
                         (self.textName, 0, wx.LEFT, 5) ])
         pinSizer.Add(sizer, 0, wx.ALL, 5)
         pinSizer.Add((0, 0), 1)
-        self.pinButton = buttons.GenBitmapToggleButton(
-            self, bitmap=images.ToolPin.GetBitmap(),
-            style=wx.BORDER_NONE)
+        self.pinButton = ToggleButton(self, bitmap=images.ToolPin.GetBitmap(),
+                                      style=wx.BORDER_NONE)
         self.pinButton.SetBitmapSelected(images.ToolPinDown.GetBitmap())
         self.pinButton.SetToggle(g.conf.panelPinState)
         self.pinButton.SetToolTipString('Sticky page selection')
-        # No highlighting please
-        self.pinButton.GetBackgroundBrush = lambda dc: None
         pinSizer.Add(self.pinButton)
         topSizer.Add(pinSizer, 0, wx.EXPAND)
         self.sizer = sizer
@@ -122,26 +140,35 @@ class Panel(wx.Panel):
         self.refNode = node
         panels = []
         # Class and name
-        if node.tagName == 'object_ref':
+        if node.nodeType == node.COMMENT_NODE:
+            self.labelRef.Hide()
+            self.textRef.Hide()
+            self.labelClass.Hide()
+            self.textClass.Hide()            
+        elif node.tagName == 'object_ref':
             self.labelRef.Show()
             self.textRef.Show()
             self.textRef.SetValue(node.getAttribute('ref'))
+            self.labelClass.Hide()
+            self.textClass.Hide()
+            # 'class' can be present for ref?
+            self.textClass.SetValue(node.getAttribute('class'))
         else:
             self.labelRef.Hide()
             self.textRef.Hide()
-        if comp.klass != 'root':
-            self.labelClass.Show()
-            self.textClass.Show()
-            subclass = node.getAttribute('subclass')
-            if not subclass:
-                self.textClass.SetValue(node.getAttribute('class'))
-            else:
-                self.textClass.SetValue(subclass + '(%s)' % node.getAttribute('class'))
-        else:                   # root node
-            self.labelClass.Hide()
-            self.textClass.Hide()
-            self.labelRef.Hide()
-            self.textRef.Hide()
+            if comp.klass != 'root':
+                self.labelClass.Show()
+                self.textClass.Show()
+                subclass = node.getAttribute('subclass')
+                if not subclass:
+                    self.textClass.SetValue(node.getAttribute('class'))
+                else:
+                    self.textClass.SetValue(subclass + '(%s)' % node.getAttribute('class'))
+            else:                   # root node
+                self.labelClass.Hide()
+                self.textClass.Hide()
+                self.labelRef.Hide()
+                self.textRef.Hide()
         self.labelName.Show(comp.hasName)
         self.textName.Show(comp.hasName)
         if comp.hasName:
@@ -191,13 +218,14 @@ class Panel(wx.Panel):
             self.nb.AddPage(self.pageIA, container.implicitPageName)
             self.SetValues(panel, node.parentNode)
 
-        # Create code page
-        panel = CodePanel(self.pageCode, comp.events)
-        panel.node = node
-        panels.append(panel)
-        self.pageCode.SetPanel(panel)
-        self.nb.AddPage(self.pageCode, 'Code')
-        self.SetCodeValues(panel, comp.getAttribute(node, 'XRCED'))
+        if comp.hasCode:
+            # Create code page
+            panel = CodePanel(self.pageCode, comp.events)
+            panel.node = node
+            panels.append(panel)
+            self.pageCode.SetPanel(panel)
+            self.nb.AddPage(self.pageCode, 'Code')
+            self.SetCodeValues(panel, comp.getAttribute(node, 'XRCED'))
 
         # Select old page if possible and pin is down
         if g.conf.panelPinState:
@@ -315,7 +343,7 @@ class CodePanel(wx.Panel):
         topSizer = wx.BoxSizer(wx.HORIZONTAL)
         # Events on the left
         leftSizer = wx.BoxSizer(wx.VERTICAL)
-        sizer = wx.GridSizer(len(events), 1, 0, 5)
+        sizer = wx.GridSizer(cols=1, vgap=0, hgap=5)
         label = wx.StaticText(self, label='Events')
         label.SetFont(g.labelFont())
         sizer.Add(label, 0, wx.LEFT, 20)
@@ -326,7 +354,7 @@ class CodePanel(wx.Panel):
         leftSizer.Add(sizer)
         # Additional comboboxes
         self.extra = []
-        self.eventSizer = wx.FlexGridSizer(1, 2, 0, 0)
+        self.eventSizer = wx.FlexGridSizer(cols=2)
         leftSizer.Add(self.eventSizer)
         topSizer.Add(leftSizer)
         # Right sizer

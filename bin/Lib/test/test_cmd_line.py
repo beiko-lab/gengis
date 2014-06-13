@@ -1,25 +1,19 @@
+# Tests invocation of the interpreter with various command line arguments
+# All tests are executed with environment variables ignored
+# See test_cmd_line_script.py for testing of script execution
 
 import test.test_support, unittest
 import sys
-import popen2
-import subprocess
+from test.script_helper import spawn_python, kill_python, python_exit_code
+
 
 class CmdLineTest(unittest.TestCase):
-    def start_python(self, cmd_line):
-        outfp, infp = popen2.popen4('"%s" %s' % (sys.executable, cmd_line))
-        infp.close()
-        data = outfp.read()
-        outfp.close()
-        # try to cleanup the child so we don't appear to leak when running
-        # with regrtest -R.  This should be a no-op on Windows.
-        popen2._cleanup()
-        return data
+    def start_python(self, *args):
+        p = spawn_python(*args)
+        return kill_python(p)
 
     def exit_code(self, *args):
-        cmd_line = [sys.executable]
-        cmd_line.extend(args)
-        return subprocess.call(cmd_line, stdout=subprocess.PIPE,
-                                         stderr=subprocess.PIPE)
+        return python_exit_code(*args)
 
     def test_directories(self):
         self.assertNotEqual(self.exit_code('.'), 0)
@@ -28,10 +22,7 @@ class CmdLineTest(unittest.TestCase):
     def verify_valid_flag(self, cmd_line):
         data = self.start_python(cmd_line)
         self.assertTrue(data == '' or data.endswith('\n'))
-        self.assertTrue('Traceback' not in data)
-
-    def test_environment(self):
-        self.verify_valid_flag('-E')
+        self.assertNotIn('Traceback', data)
 
     def test_optimize(self):
         self.verify_valid_flag('-O')
@@ -47,7 +38,7 @@ class CmdLineTest(unittest.TestCase):
         self.verify_valid_flag('-S')
 
     def test_usage(self):
-        self.assertTrue('usage' in self.start_python('-h'))
+        self.assertIn('usage', self.start_python('-h'))
 
     def test_version(self):
         version = 'Python %d.%d' % sys.version_info[:2]
@@ -71,6 +62,17 @@ class CmdLineTest(unittest.TestCase):
             self.exit_code('-m', 'timeit', '-n', '1'),
             0)
 
+    def test_run_module_bug1764407(self):
+        # -m and -i need to play well together
+        # Runs the timeit module and checks the __main__
+        # namespace has been populated appropriately
+        p = spawn_python('-i', '-m', 'timeit', '-n', '1')
+        p.stdin.write('Timer\n')
+        p.stdin.write('exit()\n')
+        data = kill_python(p)
+        self.assertTrue(data.startswith('1 loop'))
+        self.assertIn('__main__.Timer', data)
+
     def test_run_code(self):
         # Test expected operation of the '-c' switch
         # Switch needs an argument
@@ -84,6 +86,20 @@ class CmdLineTest(unittest.TestCase):
             self.exit_code('-c', 'pass'),
             0)
 
+    def test_hash_randomization(self):
+        # Verify that -R enables hash randomization:
+        self.verify_valid_flag('-R')
+        hashes = []
+        for i in range(2):
+            code = 'print(hash("spam"))'
+            data = self.start_python('-R', '-c', code)
+            hashes.append(data)
+        self.assertNotEqual(hashes[0], hashes[1])
+
+        # Verify that sys.flags contains hash_randomization
+        code = 'import sys; print sys.flags'
+        data = self.start_python('-R', '-c', code)
+        self.assertTrue('hash_randomization=1' in data)
 
 def test_main():
     test.test_support.run_unittest(CmdLineTest)

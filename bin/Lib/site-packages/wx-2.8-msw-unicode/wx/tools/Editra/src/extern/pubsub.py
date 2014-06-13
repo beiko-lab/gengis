@@ -24,7 +24,7 @@ access the instance via the Publisher object available from the module::
 
 :Author:      Oliver Schoenborn
 :Since:       Apr 2004
-:Version:     $Id: pubsub.py 51098 2008-01-08 08:29:23Z CJP $
+:Version:     $Id: pubsub.py 60742 2009-05-25 16:14:13Z CJP $
 :Copyright:   \(c) 2004 Oliver Schoenborn
 :License:     wxWidgets
 """
@@ -779,7 +779,9 @@ class PublisherClass:
         """
         return self.__topicTree.getTopics(listener)
     
-    def sendMessage(self, topic=ALL_TOPICS, data=None, onTopicNeverCreated=None):
+    def sendMessage(self, topic=ALL_TOPICS,
+                    data=None, onTopicNeverCreated=None,
+                    context=None):
         """Send a message for given topic, with optional data, to
         subscribed listeners. If topic is not specified, only the
         listeners that are interested in all topics will receive message. 
@@ -788,7 +790,7 @@ class PublisherClass:
         one of its subtopics, was never subscribed to by any listener). 
         It will be called as onTopicNeverCreated(topic)."""
         aTopic  = _tupleize(topic)
-        message = Message(aTopic, data)
+        message = Message(aTopic, data, context=context)
         self.__messageCount += 1
         
         # send to those who listen to all topics
@@ -829,12 +831,17 @@ class Message:
     listener when called by Publisher().sendMessage(topic) (if your
     listener callback was registered for that topic).
     """
-    def __init__(self, topic, data):
+    def __init__(self, topic, data, context=None):
         self.topic = topic
         self.data  = data
+        self.context = context
 
     def __str__(self):
         return '[Topic: '+`self.topic`+',  Data: '+`self.data`+']'
+
+    def GetContext(self):
+        """Get the context that this message was sent in"""
+        return self.context
 
     def GetData(self):
         """Return the messages data/value"""

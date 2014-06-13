@@ -1,4 +1,3 @@
-#!/usr/bin/ruby
 # Syntax Highlighting Test File for Ruby
 # Some Comments about this file
 # Hello World in ruby

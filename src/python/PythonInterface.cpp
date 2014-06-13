@@ -1049,7 +1049,7 @@ PythonInterface::PythonInterface()
 	}
 
 	// Save the current Python thread state and release the Global Interpreter Lock.
-	// m_mainTState = wxPyBeginAllowThreads();         // ~mikep. This make everything crash. When I get the time, find out why and fix it......
+	//m_mainTState = wxPyBeginAllowThreads();         // ~mikep. This make everything crash. When I get the time, find out why and fix it......
 	m_mainTState = NULL;
 
 	// Add Python to GenGIS:
@@ -1098,6 +1098,22 @@ void PythonInterface::UpdatePythonInterface()
 	initGenGIS();
 }
 
+// Prints embedded python errors to a wxMessage Box. Mostly for use in Mac where no debug tools are used
+void PythonInterface::PythonErrors() const
+{
+	PyObject *errtype, *errvalue, *traceback;
+	PyErr_Fetch(&errtype, &errvalue, &traceback);
+	if(errvalue != NULL) {
+		PyObject *s = PyObject_Str(errvalue);
+		char *error = PyString_AS_STRING(s);
+		wxMessageBox(wxString::FromUTF8(error));
+		Py_DECREF(s);
+	}
+	Py_XDECREF(errvalue);
+	Py_XDECREF(errtype);
+	Py_XDECREF(traceback);
+}
+
 // Adapted from the samples in wxPython
 wxPanel* PythonInterface::GetPythonPanel() const
 {
@@ -1112,12 +1128,14 @@ wxPanel* PythonInterface::GetPythonPanel() const
 	Py_DECREF(builtins);
 
 	// Make a method that makes the wxPython panel and return it.
-	char* pythonPanelCode = "import sys\nsys.path.insert(0,'./GenGIS.app/Contents/Resources') # Mac location \nsys.path.insert(0,'.') # Windows location \nfrom PythonCode import PythonInterpreter\n\ndef makePanel(parent):\n  pyPanel = PythonInterpreter(parent)\n  return pyPanel\n";
-	result = PyRun_String(pythonPanelCode, Py_file_input, globals, globals);
+	char* pythonPanelCode = "import sys\nsys.path.insert(0,'./GenGIS.app/Contents/Resources/') # Mac location \nsys.path.insert(0,'.') # Windows location \nfrom PythonCode import PythonInterpreter\n\ndef makePanel(parent):\n	pyPanel = PythonInterpreter(parent)\n	return pyPanel\n";
+	
+	result = PyRun_String(pythonPanelCode, Py_file_input, globals, globals);	
 
 	// Check for an exception.
 	if(!result)
 	{
+		PythonErrors();
 		PyErr_Print();
 		wxPyEndBlockThreads(blocked);
 		return NULL;
@@ -1127,17 +1145,23 @@ wxPanel* PythonInterface::GetPythonPanel() const
 	// Get the 'makePanel' method
 	PyObject* func = PyDict_GetItemString(globals, "makePanel");
 	wxASSERT(PyCallable_Check(func));
-
+	
 	// Call makePanel
 	PyObject* arg = wxPyMake_wxObject(parent, false);
 	wxASSERT(arg != NULL);
+	
 	PyObject* tuple = PyTuple_New(1);
 	PyTuple_SET_ITEM(tuple, 0, arg);
+	
 	result = PyEval_CallObject(func, tuple);
-
+	
 	// Check for an exception.
 	if(!result)
 	{
+		if(PyErr_Occurred())
+		{
+			PythonErrors();
+		}
 		PyErr_Print();
 	}
 	else
