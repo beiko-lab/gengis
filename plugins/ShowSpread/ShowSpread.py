@@ -241,6 +241,8 @@ class ShowSpread ( ShowSpreadLayout ):
 		else:
 			Delta = math.ceil( self.m_StartChoice.GetCount() / float(steps) )
 		self.m_StepSizeTextCtrl.SetValue( str(Delta) )
+		self.m_BinStartCtrl.SetValue( str(Delta/2) )
+		self.m_BinEndCtrl.SetValue( str(Delta/2) )
 
 	def dateStrToDate( self, dateStr ):
 		"""
