@@ -31,8 +31,11 @@
 #include "../core/DropLines.hpp"
 #include "../core/SequenceController.hpp"
 #include "../core/VisualLabel.hpp"
+#include "../core/LayerTreeController.hpp"
+#include "../core/LayerTreeView.hpp"
 #include "../core/LocationLayer.hpp"
 #include "../core/LocationSetLayer.hpp"
+#include "../core/LocationPolygons.hpp"
 #include "../core/SequenceLayer.hpp"
 #include "../core/Viewport.hpp"
 #include "../core/LayerTreeController.hpp"
@@ -117,6 +120,8 @@ void LocationPropertiesDlg::InitSymbology()
 	ReplaceColourPicker( m_colourLabel, colour );
 
 	m_chkLabelVisible->SetValue(label->IsVisible());
+
+	m_chkLocationVisible->SetValue(locationView->IsVisible());
 }
 
 void LocationPropertiesDlg::InitMetadata()
@@ -192,6 +197,26 @@ void LocationPropertiesDlg::ApplySymbology()
 	{
 		locationView->SetShape(shape);
 		locationView->SetShapeModified(true);
+	}
+
+	if(locationView->IsVisible() != m_chkLocationVisible->GetValue())
+	{
+		//Set Visibility
+		locationView->SetVisibility(m_chkLocationVisible->GetValue());
+
+		//Get tree item to set checkbox in the layer tree
+		uint locationLayerId = locationView->GetLocationLayerId();
+		LocationLayerPtr locationLayer = App::Inst().GetLayerTreeController()->GetLocationLayerById(locationLayerId);
+		wxTreeItemId treeItem = locationLayer->GetWXTreeItemId();
+		
+		//Set the checkbox in the layer tree
+		LayerTreeViewPtr treeView = App::Inst().GetLayerTreeController()->GetTreeView();
+		treeView->SetChecked(treeItem, m_chkLocationVisible->GetValue());
+
+		//Redraw polygons
+		std::vector<LocationSetLayerPtr> locationSets = App::Inst().GetLayerTreeController()->GetLocationSetLayers();
+		for(uint i = 0; i < locationSets.size(); i++)
+			locationSets[i]->GetLocationPolygons()->SetPolygonsChanged(true);
 	}
 
 	// set label properties

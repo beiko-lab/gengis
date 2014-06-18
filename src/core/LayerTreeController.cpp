@@ -31,6 +31,7 @@
 #include "../core/LayerTreeModel.hpp"
 #include "../core/MapLayer.hpp"
 #include "../core/LocationSetLayer.hpp"
+#include "../core/LocationPolygons.hpp"
 #include "../core/LocationLayer.hpp"
 #include "../core/SequenceLayer.hpp"
 #include "../core/TreeLayer.hpp"
@@ -665,6 +666,10 @@ void LayerTreeController::OnClick( wxMouseEvent& event )
 		LayerTreeItem* treeItem = (LayerTreeItem*)m_treeView->GetTreeCtrl()->GetItemData(hitId);
 		treeItem->GetLayer()->ToggleActive();
 		m_treeView->SetChecked(hitId, treeItem->GetLayer()->IsActive());
+
+		//redraw polygons
+		for(uint i = 0; i < m_locationSets.size(); i++)
+			m_locationSets[i]->GetLocationPolygons()->SetPolygonsChanged(true);
 
 		// project trees
 		for(uint i = 0; i < m_trees.size(); ++i)
