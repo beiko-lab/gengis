@@ -290,6 +290,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\..\src\core\LocationPolygons.cpp"
+					>
+				</File>
+				<File
 					RelativePath="..\..\..\src\core\LocationSetController.cpp"
 					>
 				</File>
@@ -738,6 +742,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\..\src\utils\Polygon.cpp"
+					>
+				</File>
+				<File
 					RelativePath="..\..\..\src\utils\ShapeMap.cpp"
 					>
 				</File>
@@ -917,6 +925,10 @@
 				</File>
 				<File
 					RelativePath="..\..\..\src\core\LocationModel.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\LocationPolygons.hpp"
 					>
 				</File>
 				<File
@@ -1425,6 +1437,10 @@
 				</File>
 				<File
 					RelativePath="..\..\..\src\utils\Point3D.hpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\src\utils\Polygon.hpp"
 					>
 				</File>
 				<File

@@ -22,9 +22,9 @@
 #include <wx/icon.h>
 #include <wx/combobox.h>
 #include <wx/clrpicker.h>
+#include <wx/checkbox.h>
 #include <wx/statbox.h>
 #include <wx/spinctrl.h>
-#include <wx/checkbox.h>
 #include <wx/richtext/richtextctrl.h>
 #include <wx/notebook.h>
 #include <wx/button.h>
@@ -79,6 +79,8 @@ namespace GenGIS
 			wxTextCtrl* m_txtSymbolSize;
 			wxStaticText* m_lblSymbolColour;
 			wxColourPickerCtrl* m_colourSymbol;
+			
+			wxCheckBox* m_chkLocationVisible;
 			wxStaticText* m_lblFontSize;
 			wxSpinCtrl* m_spinLabelSize;
 			wxStaticText* m_lblFontPosition;

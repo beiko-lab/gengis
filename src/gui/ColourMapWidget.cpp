@@ -22,6 +22,8 @@
 #include "../core/Precompiled.hpp"
 
 #include "../core/App.hpp"
+#include "../core/LocationLayer.hpp"
+#include "../core/LayerTreeView.hpp"
 
 #include "../utils/ColourMapDiscrete.hpp"
 #include "../utils/ColourMapManager.hpp"
@@ -177,6 +179,175 @@ void ColourMapWidget::SetFieldValues(wxScrolledWindow* scrolledWindow, const std
 	}
 
 	ConnectColourPickerEvents();
+
+	scrolledWindow->Thaw();
+	scrolledWindow->SetSizer( sizerScrollWindow );	
+	scrolledWindow->FitInside();
+	scrolledWindow->Layout();	
+}
+
+void ColourMapWidget::ConnectCheckboxEvents()
+{
+	for(unsigned int i = 0; i < m_visibilityBoxes.size(); ++i)
+	{
+		CheckboxTracker* checkboxTracker = new CheckboxTracker(i);
+		m_visibilityBoxes.at(i)->Connect(wxEVT_COMMAND_CHECKBOX_CLICKED, 
+										 wxCommandEventHandler(ColourMapWidget::OnChecked), 
+										 checkboxTracker, this);
+		m_checkboxTrackers.push_back(checkboxTracker);
+
+	}
+}
+
+void ColourMapWidget::DisconnectCheckboxEvents()
+{
+	for(unsigned int i = 0; i < m_visibilityBoxes.size(); ++i)
+	{
+		m_visibilityBoxes.at(i)->Disconnect(wxEVT_COMMAND_CHECKBOX_CLICKED, 
+										 wxCommandEventHandler(ColourMapWidget::OnChecked), 
+										 m_checkboxTrackers.at(i), this);
+	}
+}
+
+void ColourMapWidget::OnChecked( wxCommandEvent& event ){
+
+	CheckboxTracker* tracker = (CheckboxTracker*)event.m_callbackUserData;
+	int index = tracker->GetIndex();
+
+	bool isChecked = event.IsChecked();
+
+	m_fieldValues.at(index)->Enable(isChecked);
+
+	for (uint i = 0; i < m_locations.size(); i++) {
+		std::map<std::wstring,std::wstring> data = m_locations.at(i)->GetLocationController()->GetData();
+		std::map<std::wstring,std::wstring>::const_iterator currentField = data.find(m_colourField);
+
+		if ( currentField->second == m_fieldValues.at(index)->GetLabel().c_str() ) {
+			
+			m_locations.at(i)->SetActive(isChecked);
+			wxTreeItemId treeItem = m_locations.at(i)->GetWXTreeItemId();
+			LayerTreeViewPtr treeView = App::Inst().GetLayerTreeController()->GetTreeView();
+			treeView->SetChecked(treeItem, isChecked);
+
+		}	
+	}
+}
+
+void ColourMapWidget::ActivateLocations() {
+
+	for (uint i = 0; i < m_locations.size(); i++) {
+
+		m_locations.at(i)->SetActive(true);
+		wxTreeItemId treeItem = m_locations.at(i)->GetWXTreeItemId();
+		LayerTreeViewPtr treeView = App::Inst().GetLayerTreeController()->GetTreeView();
+		treeView->SetChecked(treeItem, true);
+
+	}
+
+}
+
+/** Overloaded to handle adding visibility checkboxes to the colour window */
+void ColourMapWidget::SetFieldValues(wxScrolledWindow* scrolledWindow, const std::vector<std::wstring>& fieldValues, 
+									 std::wstring colourField, std::vector<LocationLayerPtr>& locations)
+{
+	// clear any previous items
+	wxSizer* prevSizer = scrolledWindow->GetSizer();
+	if(prevSizer != NULL)
+	{
+		prevSizer->Clear(true);
+		m_colourPickers.clear();
+		m_customColourButtons.clear();
+		m_fieldValues.clear();
+		m_visibilityBoxes.clear();
+//		m_colourMap->ClearNames();
+		DisconnectColourPickerEvents();
+		DisconnectCheckboxEvents();
+	}
+
+	// populate scroll window with checkboxes, colour pickers and labels for each possible field value
+	std::vector<std::wstring>::const_iterator setIt;	
+	wxBoxSizer* sizerScrollWindow = new wxBoxSizer( wxVERTICAL );
+	scrolledWindow->Freeze();
+
+	//Activates all locations if the colour field has changed
+	if (m_colourField != colourField)
+		ActivateLocations();
+
+	uint index = 0;
+	for(setIt = fieldValues.begin(); setIt != fieldValues.end(); ++setIt)
+	{
+		wxBoxSizer* boxSizer = new wxBoxSizer( wxHORIZONTAL );
+
+		wxCheckBox* chkVisibility = new wxCheckBox( scrolledWindow, wxID_ANY, wxT(""), wxDefaultPosition, wxDefaultSize, 0 );
+
+		bool checkboxTrue = true;
+		if (m_colourField == colourField) {
+
+			//The checkbox is only set to false when all locations in the field value are hidden
+			checkboxTrue = false;
+			for (uint i = 0; i < locations.size(); i++) {
+
+				std::map<std::wstring,std::wstring> data = locations.at(i)->GetLocationController()->GetData();
+				std::map<std::wstring,std::wstring>::const_iterator currentField = data.find(colourField);
+
+				if ( currentField->second == wxString((*setIt).c_str()) && locations.at(i)->IsActive() )
+					checkboxTrue = true;
+
+			}
+				
+		}
+	
+		chkVisibility->SetValue(checkboxTrue);
+
+
+		boxSizer->Add( chkVisibility, 0, wxALL|wxALIGN_CENTER_VERTICAL, 2 );
+		m_visibilityBoxes.push_back(chkVisibility);
+
+
+		// get colour from colour map unless field values have already been associated with colours
+		Colour colour;
+		if(!m_colourMap->GetColour(*setIt, colour))
+		{
+			if(m_colourMap->GetType() == ColourMap::DISCRETE || m_colourMap->GetType() == ColourMap::DISCRETIZED_CONTINUOUS)
+				colour = m_colourMap->GetColour(index++);
+			else if(m_colourMap->GetType() == ColourMap::CONTINUOUS)
+				colour = m_colourMap->GetInterpolatedColour(index++, 0, fieldValues.size()-1);
+		}
+
+		wxColour wxcolour(colour.GetRedInt(), colour.GetGreenInt(), colour.GetBlueInt(), colour.GetAlphaInt());
+
+		uint currentIteratorPos = std::distance( fieldValues.begin(), setIt );
+		wxColourPickerCtrl* colourPicker = new wxColourPickerCtrl(scrolledWindow, currentIteratorPos, wxcolour, 
+			wxDefaultPosition, wxDefaultSize, wxCLRP_DEFAULT_STYLE );
+		boxSizer->Add( colourPicker, 0, wxALL, 2 );
+		m_colourPickers.push_back(colourPicker);
+
+		#ifndef WIN32
+		colourPicker->Hide();
+		CustomColourButton* customColourPicker = new CustomColourButton( scrolledWindow, colourPicker, wxcolour );
+		boxSizer->Add( customColourPicker, 0, wxALL, 2 );
+		m_customColourButtons.push_back( customColourPicker );
+		#endif
+
+		wxStaticText* label = new wxStaticText( scrolledWindow, wxID_ANY, wxString((*setIt).c_str()), wxDefaultPosition, wxDefaultSize, 0 );
+		label->Wrap( -1 );
+		label->Enable(checkboxTrue);
+		boxSizer->Add( label, 0, wxALIGN_CENTER_VERTICAL|wxALL, 2 );
+		m_fieldValues.push_back(label);
+
+		m_colourMap->SetColour((*setIt), colour);
+
+		sizerScrollWindow->Add( boxSizer, 0, wxEXPAND, 5 );
+
+		wxStaticLine* staticLine = new wxStaticLine( scrolledWindow, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL );
+		sizerScrollWindow->Add( staticLine, 0, wxEXPAND | wxALL, 0 );	
+	}
+
+	m_colourField = colourField;
+	m_locations = locations;
+
+	ConnectColourPickerEvents();
+	ConnectCheckboxEvents();
 
 	scrolledWindow->Thaw();
 	scrolledWindow->SetSizer( sizerScrollWindow );	

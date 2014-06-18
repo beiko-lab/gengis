@@ -208,6 +208,9 @@ namespace GenGIS
 		/** Get location layers. */
 		std::vector<LocationLayerPtr> GetLocationLayers() const { return m_locations; }
 
+		/** Get location set layers. */
+		std::vector<LocationSetLayerPtr> GetLocationSetLayers() const { return m_locationSets; }
+
 		/** Get location controller with the given id. */
 		LocationControllerPtr GetLocationController(const std::wstring& id) const;
 

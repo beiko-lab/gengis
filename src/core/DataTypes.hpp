@@ -125,6 +125,9 @@ namespace GenGIS
 	class   LocationSetLayer;
 	typedef boost::shared_ptr<LocationSetLayer> LocationSetLayerPtr;
 
+	class	LocationPolygons;
+	typedef boost::shared_ptr<LocationPolygons> LocationPolygonsPtr;
+
 	class   LocationSetController;
 	typedef boost::shared_ptr<LocationSetController> LocationSetControllerPtr;
 
