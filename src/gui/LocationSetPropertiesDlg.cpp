@@ -405,7 +405,8 @@ void LocationSetPropertiesDlg::InitChart()
 	ChartViewPtr chartView = m_locationSetLayer->GetLocationLayer(0)->GetLocationController()->GetChartView();
 	
 	// populate field combo box with all possible fields
-	if(App::Inst().GetLayerTreeController()->GetNumSequenceLayers() > 0)
+	if(App::Inst().GetLayerTreeController()->GetNumSequenceLayers() > 0 && 
+	   m_locationSetController->GetSequenceMetadata().size() > 2)
 	{
 		// populate combo box with all fields associated with a sequence
 		std::map<std::wstring,std::wstring> data = m_locationSetController->GetSequenceMetadata();
@@ -1450,8 +1451,9 @@ void LocationSetPropertiesDlg::ApplyChart()
 			else if(m_cboChartDropLineStyle->GetValue() == _T("Hidden"))
 				chartView->GetDropLines()->SetStyle(VisualLine::HIDDEN);
 		}
-
-		m_locationSetLayer->GetChartSetView()->UpdateCharts(m_cboChartField->GetValue().c_str());
+		
+		if (m_locationSetController->GetSequenceMetadata().size() > 2)
+			m_locationSetLayer->GetChartSetView()->UpdateCharts(m_cboChartField->GetValue().c_str());
 	}
 }
 

@@ -20,7 +20,7 @@ LocationPolygons::LocationPolygons() :
 	m_autoAdjustElevation ( false ),
 	m_increasingElevation ( false ),
 	m_smoothPolygons ( true ),
-	m_elevationOffset ( 0.01f ),
+	m_elevationOffset ( 0.02f ),
 	m_inputElevation ( 0.001f ),
 	m_fillOpacity ( 0.6f ),
 	m_polygonInflation ( 0.00f ),
@@ -103,6 +103,9 @@ void LocationPolygons::InitPolygons()
 			   m_currentLocationSet.end(), 
 			   LocationPolygons::SortByColour);
 
+	const std::wstring lat ( L"Latitude" );
+	const std::wstring lon ( L"Longitude" );
+
 	//Goes through each location in the given set
 	for (uint i = 0; i < m_currentLocationSet.size(); i++) {
 
@@ -112,9 +115,6 @@ void LocationPolygons::InitPolygons()
 			//Sets the current properties of the location
 			currentColour = m_currentLocationSet[i]->GetLocationController()->GetColour();
 			currentColour.SetAlpha(m_fillOpacity);
-
-			const std::wstring lat ( L"Latitude" );
-			const std::wstring lon ( L"Longitude" );
 
 			currentCoord.easting = 
 				wxAtof ( m_currentLocationSet[i]->GetLocationController()->GetLocationModel()->GetData(lon).c_str() );
@@ -159,15 +159,18 @@ void LocationPolygons::InitPolygons()
 		}
 	}
 
-	//Sorts the polygons according to the given algorithm
-	if (m_sortBy == CONVEX_HULL) {
+	//Sorts the polygons according to the given algorithm then initializes them
+	for (uint i = 0; i < m_polygons.size(); i++) {
 
-		for (uint i = 0; i < m_polygons.size(); i++) {
-			
+		if (m_sortBy == CONVEX_HULL) {
+
 			ConvexHull(m_polygons[i]);
 
-		}
-	} else if (m_sortBy == BLANK) {}
+		} else if (m_sortBy == BLANK) {}
+
+		m_polygons[i].InitPolygon(m_polygonInflation, m_smoothPolygons);
+
+	}
 
 }
 
@@ -184,6 +187,7 @@ void LocationPolygons::Render() {
 	//Adjust openGL settings
 	glDisable( GL_LIGHTING );
 	glDisable( GL_DEPTH_TEST );
+	glDisable( GL_LINE_STIPPLE );
 	glEnable ( GL_BLEND );
 	glBlendFunc ( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 
@@ -191,13 +195,13 @@ void LocationPolygons::Render() {
 			
 		//Render Polygons
 		m_polygons[i].polygonColour.SetAlpha(m_fillOpacity);
-		m_polygons[i].RenderConvex(m_smoothPolygons, m_polygonInflation, m_polygonScaling);
+		m_polygons[i].RenderVertices(GL_TRIANGLE_FAN, m_smoothPolygons, m_polygonScaling);
 
 		//Render Borders
 		if (m_showBorders) {
 
 			m_polygons[i].polygonColour.SetAlpha(m_borderOpacity);
-			m_polygons[i].RenderBorder(m_borderThickness, m_smoothPolygons, m_polygonInflation, m_polygonScaling);
+			m_polygons[i].RenderBorder(m_borderThickness, m_smoothPolygons, m_polygonScaling);
 
 		}
 

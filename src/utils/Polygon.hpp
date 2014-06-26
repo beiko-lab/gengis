@@ -18,31 +18,42 @@ namespace GenGIS
 		//Destructor
 		~Polygon(){}
 
-		/* Any polygon with less than 2 points isn't rendered, 2 points are rendered as a line 
-		and more than 2 points are rendered as a triangle fan */
-		void RenderConvex(bool smooth, float inflation, float scale);
+		//Initializes polygons by putting the correct vertices in ModifiedVertices then applies the inflation
+		void InitPolygon(float inflation, bool smooth);
 
 		//Renders the border
-		void RenderBorder(float thicknessOfBorder, bool smooth, float inflation, float scale);
+		void RenderBorder(float thicknessOfBorder, bool smooth, float scale);
 
-		//Scales, inflates and draws the vertices
-		void RenderVertices(GLenum mode, bool smooth, float inflation, float scale);
+		//Scales and draws the vertices
+		void RenderVertices(GLenum mode, bool smooth, float scale);
 
 		//Draws polygon with straight lines between the vertices
-		void DrawVertices(GLenum mode, int lastPoint);
+		void DrawVertices(GLenum mode);
 
 		//Draws polygon with curved lines between the vertices
-		void DrawSmoothVertices(GLenum mode, int lastPoint, std::vector<Point3D> controlPoints);
+		void DrawSmoothVertices(GLenum mode);
 
 		//Offsets the points in modifiedVertices by the specified offset
 		void OffsetPolygon(float offset, int lastPoint, bool smooth);
+
+		//If smooth, calculates control points for polygons with only 2 points, 
+		//if not smooth, then calculates points to add to the polygon
+		std::vector<Point3D> CalculateHexPoints(bool smooth);
+
+		/* Method for drawing circle from:
+			http://slabode.exofire.net/circle_draw.shtml */
+		void InitCircle(Point3D center, float radius, int num_segments);
 
 		//Offsets a point the given offset along the given slope
 		void OffsetAlongSlope(Point3D &point, float slope, float offset);
 
 		/* Method for computing control points for bezier curves from: 
 		   http://www.antigrain.com/research/bezier_interpolation/index.html?utm_source=twitterfeed&utm_medium=twitter */
-		std::vector<Point3D> CalculateControls(int lastPoint, bool smooth);
+		std::vector<Point3D> CalculateControls(bool smooth);
+
+		//Gets a point for each vertex that is a weighted distance between the adjacent vertices
+		//Note: these are points Bi in link above CalculateControls(bool smooth);
+		std::vector<Point3D> GetInnerPoints();
 
 		/* Calculates the control points then removes points on the polygon where 
 			both sets of adjacent control points make counter-clockwise turns */
@@ -52,7 +63,7 @@ namespace GenGIS
 		double CCW(Point3D p1, Point3D p2, Point3D p3);
 
 		//Calulates an average point of the polygon vertices up to the specified point
-		Point3D AveragePoint(int lastPoint, bool smooth);
+		Point3D AveragePoint();
 
 		//Calculates the point between p1 and p2 that is the given percentage from p1
 		Point3D Midpoint(Point3D p1, Point3D p2, float percentage);
@@ -73,7 +84,8 @@ namespace GenGIS
 	public:
 		bool					bVisible;
 		std::vector<Point3D>	originalVertices;
-		std::vector<Point3D>	modifiedVertices; 
+		std::vector<Point3D>	modifiedVertices;
+		std::vector<Point3D>	controlPoints;
 		Colour					polygonColour;
 		int						lastVertexIndex;
 
