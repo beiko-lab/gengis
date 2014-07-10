@@ -130,7 +130,6 @@ void Polygon::DrawVertices(GLenum mode) {
 
 void Polygon::DrawSmoothVertices(GLenum mode) {
 
-	
 	glColor4f(polygonColour.GetRed(), polygonColour.GetGreen(), polygonColour.GetBlue(), polygonColour.GetAlpha());
 
 	//Draws the curved outside parts
@@ -215,16 +214,23 @@ std::vector<Point3D> Polygon::CalculateHexPoints(bool smooth) {
 	if (smooth)
 		offsetAmount = 0.02f;
 
-	while (Distance(modifiedVertices[0], modifiedVertices[1]) < offsetAmount) 
+	while (Distance(modifiedVertices[0], modifiedVertices[1]) < offsetAmount/2) 
 		offsetAmount /= 2;			
 
-	//Calculate perpendicular slope
+	//Calculate slope perpendicular to the 2 points
 	slope = -1.0f / slope;
 
 	Point3D control1, control2, control3, control4;
 
-	control1 = control4 = Midpoint( modifiedVertices[0], modifiedVertices[1], 0.25f );
-	control2 = control3 = Midpoint( modifiedVertices[0], modifiedVertices[1], 0.75f );
+	//Not smooth polygons have the points offset from 1/4 and 3/4 between the 2 points
+	if (!smooth) {
+		control1 = control4 = Midpoint( modifiedVertices[0], modifiedVertices[1], 0.25f );
+		control2 = control3 = Midpoint( modifiedVertices[0], modifiedVertices[1], 0.75f );
+	//Smooth polygons have the points offset directly from the 2 points
+	} else {
+		control1 = control4 = modifiedVertices[0];
+		control2 = control3 = modifiedVertices[1];
+	}
 
 	OffsetAlongSlope( control1, slope, offsetAmount );
 	OffsetAlongSlope( control2, slope, offsetAmount );
@@ -271,6 +277,59 @@ std::vector<Point3D> Polygon::CalculateControls(bool smooth) {
 	}
 
 	return controls;
+
+}
+
+std::vector<Point3D> Polygon::CalculateClockwiseControlPoints(int &lastPoint, bool smooth) {
+
+	if (lastPoint < 3)
+		return CalculateControls(smooth);
+
+	//Initializes control points
+	std::vector<Point3D> controlPoints = CalculateControls(smooth);
+	int j = 0;
+	bool reset = false;
+
+	//Removes points for which both sets of adjacent control points make a counter clockwise turn
+	for (std::vector<Point3D>::iterator it = modifiedVertices.begin(); it != modifiedVertices.end(); ++it) {
+
+		int previous = (j-1)%lastPoint; if (previous < 0) previous += lastPoint; //modulus operator
+
+		//If a point was removed in the last iteration, the iterator starts from the beginning
+		if (reset) {
+			it = modifiedVertices.begin();
+			reset = false;
+		}
+
+		//Points on the right side of the polygon are missed using the same cutoff point as the left side
+		Point3D averagePoint = AveragePoint();
+		double cutOff;
+
+		if (it->x < averagePoint.x || it->z > averagePoint.z) {
+			cutOff = 0;
+		} else {
+			cutOff = -EPSILON*25; //chosen experimentally
+		}
+
+		//Removes points for which both sets of adjacent control points are counter-clockwise,
+		// with less precision for lower cutOff values
+		if ( CCW(controlPoints[previous*2], controlPoints[previous*2+1], *it) <= cutOff 
+		  && CCW(*it, controlPoints[j*2], controlPoints[j*2+1]) <= cutOff ) {
+		
+			if (lastPoint > 1) {
+				modifiedVertices.erase(it);
+				lastPoint--;
+				controlPoints = CalculateControls(smooth);
+				it = modifiedVertices.begin();
+				reset = true;
+				j = -1;
+			}
+		
+		}
+		j = (j+1)%lastPoint;
+	}
+
+	return controlPoints;
 
 }
 
@@ -373,59 +432,6 @@ Point3D Polygon::AveragePoint() {
 
 	average = average / modifiedVertices.size();
 	return average;
-
-}
-
-std::vector<Point3D> Polygon::CalculateClockwiseControlPoints(int &lastPoint, bool smooth) {
-
-	if (lastPoint < 3)
-		return CalculateControls(smooth);
-
-	//Initializes control points
-	std::vector<Point3D> controlPoints = CalculateControls(smooth);
-	int j = 0;
-	bool reset = false;
-
-	//Removes points for which both sets of adjacent control points make a counter clockwise turn
-	for (std::vector<Point3D>::iterator it = modifiedVertices.begin(); it != modifiedVertices.end(); ++it) {
-
-		int previous = (j-1)%lastPoint; if (previous < 0) previous += lastPoint; //modulus operator
-
-		//If a point was removed in the last iteration, the iterator starts from the beginning
-		if (reset) {
-			it = modifiedVertices.begin();
-			reset = false;
-		}
-
-		//Points on the right side of the polygon are missed using the same cutoff point as the left side
-		Point3D averagePoint = AveragePoint();
-		double cutOff;
-
-		if (it->x < averagePoint.x || it->z > averagePoint.z) {
-			cutOff = 0;
-		} else {
-			cutOff = -EPSILON*25; //chosen experimentally
-		}
-
-		//Removes points for which both sets of adjacent control points are counter-clockwise,
-		// with less precision for lower cutOff values
-		if ( CCW(controlPoints[previous*2], controlPoints[previous*2+1], *it) <= cutOff 
-		  && CCW(*it, controlPoints[j*2], controlPoints[j*2+1]) <= cutOff ) {
-		
-			if (lastPoint > 1) {
-				modifiedVertices.erase(it);
-				lastPoint--;
-				controlPoints = CalculateControls(smooth);
-				it = modifiedVertices.begin();
-				reset = true;
-				j = -1;
-			}
-		
-		}
-		j = (j+1)%lastPoint;
-	}
-
-	return controlPoints;
 
 }
 
