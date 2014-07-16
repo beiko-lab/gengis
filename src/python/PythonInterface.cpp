@@ -30,6 +30,7 @@
 #include "../core/Camera.hpp"
 #include "../core/LocationLayer.hpp"
 #include "../core/LocationSetLayer.hpp"
+#include "../core/LocationGrid.hpp"
 #include "../core/MapLayer.hpp"
 #include "../core/VectorMapLayer.hpp"
 #include "../core/SequenceLayer.hpp"
@@ -463,6 +464,7 @@ BOOST_PYTHON_MODULE(GenGIS)
 			.def("GetVectorMapLayer", &LayerTreeController::GetVectorMapLayer, "Get specified vector map layer.")
 			.def("GetNumLocationSetLayers", &LayerTreeController::GetNumLocationSetLayers, "Get number of location set layers.")
 			.def("GetLocationSetLayer", &LayerTreeController::GetLocationSetLayer, "Get specified location set layer.")
+			.def("GetLocationSetLayers", &LayerTreeController::GetLocationSetLayers, "Get all location set layers.")
 			.def("GetNumLocationLayers", &LayerTreeController::GetNumLocationLayers, "Get number of location layers.")
 			.def("GetLocationLayer", &LayerTreeController::GetLocationLayer, "Get specified location layer.")
 			.def("GetLocationLayers", &LayerTreeController::GetLocationLayers, "Get all location layers.")
@@ -683,6 +685,13 @@ BOOST_PYTHON_MODULE(GenGIS)
 			.def("IsSequencesData", &LocationSetLayer::IsSequencesData, "Check if there is sequence data associated with at least one location.")
 			.def("GetController", &LocationSetLayer::GetLocationSetController, "Get location set controller.")
 			.def("GetChartSet", &LocationSetLayer::GetChartSetView, "Get set of charts associated with this location set.")
+			.def("GetLocationGrid", &LocationSetLayer::GetLocationGrid, "Get location grid associated with this location set.")
+			.def("UpdateGridAndPolygons", &LocationSetLayer::UpdateGridAndPolygons, "Update the grid and polygons associated with this location set.")
+			;
+
+		// <wiki-header>Location Grid class</wiki-header>
+		class_<LocationGrid, boost::noncopyable, LocationGridPtr >("LocationGrid", "Gridding for a location set.", no_init)
+			.def("InitTileMinMax", &LocationGrid::InitTileMinMax, "Initialize min and max values a tile can have.")
 			;
 
 		// <wiki-header>Location Set Controller class</wiki-header>

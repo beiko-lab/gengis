@@ -16,7 +16,7 @@ import wx
 class ShowSpreadLayout ( wx.Frame ):
 	
 	def __init__( self, parent ):
-		wx.Frame.__init__ ( self, parent, id = wx.ID_ANY, title = u"Show Spread", pos = wx.DefaultPosition, size = wx.Size( 276,310 ), style = wx.DEFAULT_FRAME_STYLE|wx.TAB_TRAVERSAL )
+		wx.Frame.__init__ ( self, parent, id = wx.ID_ANY, title = u"Show Spread", pos = wx.DefaultPosition, size = wx.Size( 276,353 ), style = wx.DEFAULT_FRAME_STYLE|wx.TAB_TRAVERSAL )
 		
 		self.SetSizeHintsSz( wx.Size( 276,310 ), wx.DefaultSize )
 		self.SetBackgroundColour( wx.SystemSettings.GetColour( wx.SYS_COLOUR_BTNFACE ) )
@@ -159,6 +159,16 @@ class ShowSpreadLayout ( wx.Frame ):
 		self.m_Page2.Layout()
 		fgSizer3.Fit( self.m_Page2 )
 		self.m_DisplayNotebook.AddPage( self.m_Page2, u"Advanced", False )
+		self.m_Page3 = wx.Panel( self.m_DisplayNotebook, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
+		bSizer4 = wx.BoxSizer( wx.VERTICAL )
+		
+		self.m_textCtrl5 = wx.TextCtrl( self.m_Page3, wx.ID_ANY, u"Notes:\n\n-When using Show Spread with a grid that uses a numeric field, custom colours will be disregarded.\n\n-When using a grid with a qualitative field, colours will only be given to initial data clusters. The default colour will be used if the cluster is missing any fields.\n\n-When colouring data by intensity while using polygons, a single polygon will be drawn around all data points instead of each field.", wx.DefaultPosition, wx.DefaultSize, wx.TE_MULTILINE|wx.TE_READONLY )
+		bSizer4.Add( self.m_textCtrl5, 1, wx.ALL|wx.EXPAND, 5 )
+		
+		self.m_Page3.SetSizer( bSizer4 )
+		self.m_Page3.Layout()
+		bSizer4.Fit( self.m_Page3 )
+		self.m_DisplayNotebook.AddPage( self.m_Page3, u"Notes", False )
 		
 		bSizer1.Add( self.m_DisplayNotebook, 1, wx.EXPAND |wx.ALL, 5 )
 		
