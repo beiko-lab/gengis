@@ -137,6 +137,7 @@ GeoTreeView::GeoTreeView(Tree<NodeGeoTree>::Ptr tree, boost::shared_ptr<Layer> m
 
 	m_correlationLines.SetThickness(3.0f);
 	m_locationLines.SetThickness(3.0f);
+	m_suppressMessage = false;
 }
 
 template<class Archive>
@@ -339,17 +340,26 @@ void GeoTreeView::ProjectToActiveSet(std::vector<LocationLayerPtr>& locationLaye
 	if(leaves.size() == 0)
 	{
 		// this is a tree with locations as leaf nodes
-		ProjectTree(visibleLoc);
+		if( m_lastProjection == LOCATION )
+		{
+			ProjectTree(visibleLoc);
+		}
+		else
+		{
+			ProjectTree(visibleSeqs);
+		}
 	}
 	else if(std::find(allLoc.begin(), allLoc.end(), leaves.at(0)) != allLoc.end())
 	{
 		// this is a tree with locations as leaf nodes
 		ProjectTree(visibleLoc);
+		m_lastProjection = LOCATION;
 	}
 	else
 	{
 		// this is a tree with sequence as leaf nodes
 		ProjectTree(visibleSeqs);
+		m_lastProjection = SEQUENCE;
 	}
 }
 
@@ -1466,8 +1476,11 @@ void GeoTreeView::OptimizeLeafNodeOrdering()
 		uint numChildren = leaf->GetNumberOfChildren();
 		if(leaf->GetNumberOfChildren() > MAX_DEGREE_FOR_OPTIMIZING_TREE)
 		{
-			wxString msg = wxT("Optimal leaf node orderings are not calculated for trees which contain nodes with a degree > 9");
-			wxMessageBox(msg, wxT("Optimal leaf node orderings not calculated."), wxOK | wxICON_INFORMATION);
+			if( !m_suppressMessage ){
+				m_suppressMessage = true;
+				wxString msg = wxT("Optimal leaf node orderings are not calculated for trees which contain nodes with a degree > 9");
+				wxMessageBox(msg, wxT("Optimal leaf node orderings not calculated."), wxOK | wxICON_INFORMATION);
+			}
 			m_bOptimizeTopology = false;
 			break;
 		}

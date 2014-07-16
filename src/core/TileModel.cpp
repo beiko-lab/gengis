@@ -140,14 +140,23 @@ void TileModel::CombineData()
 			}
 			resultConverted = StringTools::ToStringW(result,2);
 		}
+		// Deal with String values here
 		else
 		{
-			std::vector<std::wstring>::iterator it;
-			it = std::unique( seperatedValue.begin(),seperatedValue.end() );
+			// If sum then take the count of all species present
+			if(m_combinationMethod == SUM){
+				int sum = seperatedValue.size();
+				resultConverted = StringTools::ToStringW(sum);
+			}
+			// Otherwise take the amalgamation of all names
+			else
+			{
+				std::vector<std::wstring>::iterator it;
+				it = std::unique( seperatedValue.begin(),seperatedValue.end() );
 
-			seperatedValue.resize(std::distance(seperatedValue.begin(),it) );
-			resultConverted = boost::algorithm::join( seperatedValue, "|" );
-
+				seperatedValue.resize(std::distance(seperatedValue.begin(),it) );
+				resultConverted = boost::algorithm::join( seperatedValue, "|" );
+			}
 			//	resultConverted = value;
 		}
 		// GINI index can handle String fields
@@ -189,6 +198,7 @@ void TileModel::CombineSequenceData()
 		&& ( StringTools::ToLower((*it).first).compare(_T("sequenceid")) != 0 )
 		&& ( StringTools::ToLower((*it).first).compare(_T("site id")) != 0 )
 		&& ( StringTools::ToLower((*it).first).compare(_T("siteid")) != 0 )
+		&& ( StringTools::ToLower((*it).first).compare(_T("allrecords")) != 0)
 		&& ( m_combinationMethod != GINI ) )
 		{
 			for( uint i = 0; i < (*it).second.size(); i++)
@@ -218,7 +228,16 @@ void TileModel::CombineSequenceData()
 		}
 		else
 		{
-			resultConverted = boost::algorithm::join( (*it).second, " " );
+			// If sum then take the count of all species present
+			if(m_combinationMethod == SUM){
+				int sum = (*it).second.size();
+				resultConverted = StringTools::ToStringW(sum);
+			}
+			// Otherwise take the amalgamation of all names
+			else
+			{
+				resultConverted = boost::algorithm::join( (*it).second, " " );
+			}
 		}
 
 		if(m_combinationMethod == GINI )

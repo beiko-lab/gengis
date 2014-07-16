@@ -23,16 +23,7 @@ void Polygon::RenderConvex(bool smooth, float inflation, float scale) {
 	if (!bVisible || originalVertices.size() < 2)
 		return;	
 
-	if (originalVertices.size() == 2 || lastVertexIndex == 2) {
-
-		glLineWidth(15.0f);
-		RenderVertices(GL_LINES, smooth, inflation, scale);
-
-	} else {
-
-		RenderVertices(GL_TRIANGLE_FAN, smooth, inflation, scale);
-
-	}
+	RenderVertices(GL_TRIANGLE_FAN, smooth, inflation, scale);
 
 }
 
@@ -41,16 +32,11 @@ void Polygon::RenderBorder(float thicknessOfBorder, bool smooth, float inflation
 	if (!bVisible || originalVertices.size() < 2)
 		return;
 	
-	if (originalVertices.size() == 2 || lastVertexIndex == 2) {
-		glLineWidth(15.0f);
-		RenderVertices(GL_LINES, smooth, inflation, scale);
-	} else {
-		glLineWidth(thicknessOfBorder);
-		if (smooth)
-			RenderVertices(GL_LINE_STRIP, smooth, inflation, scale);
-		else 
-			RenderVertices(GL_LINE_LOOP, smooth, inflation, scale);
-	}
+	glLineWidth(thicknessOfBorder);
+	if (smooth)
+		RenderVertices(GL_LINE_STRIP, smooth, inflation, scale);
+	else 
+		RenderVertices(GL_LINE_LOOP, smooth, inflation, scale);
 
 }
 
@@ -80,9 +66,10 @@ void Polygon::RenderVertices(GLenum mode, bool smooth, float inflation, float sc
 	glTranslatef(-averagePoint.x, -averagePoint.y, -averagePoint.z);
 
 	OffsetPolygon(inflation, lastPoint, smooth);
+	std::vector<Point3D> controlPoints;
 
-	if (smooth && modifiedVertices.size() > 2) {
-		std::vector<Point3D> controlPoints = CalculateClockwiseControlPoints(lastPoint);
+	if (smooth) {
+		controlPoints = CalculateClockwiseControlPoints(lastPoint, smooth);
 		DrawSmoothVertices(mode, lastPoint, controlPoints);
 	} else {
 		DrawVertices(mode, lastPoint);
@@ -94,6 +81,20 @@ void Polygon::RenderVertices(GLenum mode, bool smooth, float inflation, float sc
 }
 
 void Polygon::DrawVertices(GLenum mode, int lastPoint) {
+
+	//Special case when drawing only 2 points
+	if (lastPoint == 2) {
+
+		std::vector<Point3D> controlPoints = CalculateControls(lastPoint, false);
+
+		modifiedVertices.insert(modifiedVertices.begin() + 1, controlPoints[1]);
+		modifiedVertices.insert(modifiedVertices.begin() + 1, controlPoints[0]);
+		modifiedVertices.push_back(controlPoints[2]);
+		modifiedVertices.push_back(controlPoints[3]);
+
+		lastPoint = 6;
+
+	}
 
 
 	/* Draws the polygon */
@@ -143,7 +144,7 @@ void Polygon::DrawSmoothVertices(GLenum mode, int lastPoint, std::vector<Point3D
 	//glBegin(GL_LINES);
 	//	
 	//uint x = controlPoints.size();
-	//for (uint i = 1; i < x+1; i++) {
+	//for (uint i = 0; i < x; i++) {
 
 	//	glColor3f(0,1,0);
 	//	glVertex3f(controlPoints[i%x].x, controlPoints[i%x].y, controlPoints[i%x].z);
@@ -156,7 +157,7 @@ void Polygon::DrawSmoothVertices(GLenum mode, int lastPoint, std::vector<Point3D
 
 void Polygon::OffsetPolygon(float offset, int lastPoint, bool smooth) {
 
-	if (lastPoint < 3)
+	if (lastPoint < 2)
 		return;
 
 	std::vector<Point3D> midpoints;
@@ -190,82 +191,114 @@ void Polygon::OffsetPolygon(float offset, int lastPoint, bool smooth) {
 
 	//Calculate the offset points
 	uint size = modifiedVertices.size();
+
 	for (uint i = 1; i < size+1; i++){
 
-		Point3D vertex = modifiedVertices.at(i%size);
+		Point3D *vertex = &modifiedVertices.at(i%size);
 	
 		Point3D outer = midpoints.at(i-1);
 
-		float slope = (outer.z - vertex.z) / (outer.x - vertex.x);
+		float slope = (outer.z - vertex->z) / (outer.x - vertex->x);
 
-		float dx = 1.0f / sqrt(1+slope*slope);
-		float dy = slope / sqrt(1+slope*slope);
 
-		Point3D offsetPoint;
-
-		if (midpoints.at(i-1).x < vertex.x) {
-			offsetPoint.x = vertex.x + offset * dx;
-			offsetPoint.y = vertex.y;
-			offsetPoint.z = vertex.z + offset * dy;
+		if (midpoints.at(i-1).x < vertex->x) {
+			OffsetAlongSlope(*vertex, slope, offset);
 		} else {
-			offsetPoint.x = vertex.x - offset * dx;
-			offsetPoint.y = vertex.y;
-			offsetPoint.z = vertex.z - offset * dy;
+			OffsetAlongSlope(*vertex, slope, -offset);
 		}
-
-		offsetVertices.push_back(offsetPoint);
 		
 	}
 
-	modifiedVertices = offsetVertices;
-
 }
 
-std::vector<Point3D> Polygon::CalculateControls(int lastPoint) {
+std::vector<Point3D> Polygon::CalculateControls(int lastPoint, bool smooth) {
 
 	std::vector<Point3D> controlPoints;
-	controlPoints.push_back( Point3D(0,0,0) );
 
-	for (int i = 0; i < lastPoint; i++) {
+	//Special case with only 2 points
+	if (lastPoint == 2) {
 
-		Point3D mid1 = Midpoint(modifiedVertices[i],
-								modifiedVertices[(i+1)%lastPoint], 
-								0.5f);
+		float slope = ( (modifiedVertices[0].z - modifiedVertices[1].z) /
+					    (modifiedVertices[0].x - modifiedVertices[1].x) );
 
-		Point3D mid2 = Midpoint(modifiedVertices[(i+1)%lastPoint], 
-								modifiedVertices[(i+2)%lastPoint], 
-								0.5f);
+		float distance = Distance( modifiedVertices[0], modifiedVertices[1] );
 
-		double len1 = Distance(modifiedVertices[i], 
-							   modifiedVertices[(i+1)%lastPoint]);
+		int scalingFactor = 5;
+		if (smooth)
+			scalingFactor = 3;
+			
 
-		double len2 = Distance(modifiedVertices[(i+1)%lastPoint], 
-							   modifiedVertices[(i+2)%lastPoint]);
+		//calculate perpendicular slope
+		slope = -1.0f / slope;
 
-		float percentage = ( ((float)len1/(len1+len2)) );
+		Point3D control1 = Midpoint( modifiedVertices[0], modifiedVertices[1], 0.25f );
+		Point3D control2 = Midpoint( modifiedVertices[0], modifiedVertices[1], 0.75f );
+		Point3D control3 = control2;
+		Point3D control4 = control1;
 
-		Point3D betweenMids = Midpoint(mid1, mid2, percentage);
+		OffsetAlongSlope( control1, slope, distance/scalingFactor );
+		OffsetAlongSlope( control2, slope, distance/scalingFactor );
+		OffsetAlongSlope( control3, slope, -distance/scalingFactor );
+		OffsetAlongSlope( control4, slope, -distance/scalingFactor );
 
-		Point3D control1 ( modifiedVertices[(i+1)%lastPoint].x + (mid1.x - betweenMids.x),
-						   modifiedVertices[(i+1)%lastPoint].y,
-						   modifiedVertices[(i+1)%lastPoint].z + (mid1.z - betweenMids.z) );
+		controlPoints.push_back(control1);
+		controlPoints.push_back(control2);
+		controlPoints.push_back(control3);
+		controlPoints.push_back(control4);
 
-		Point3D control2 ( modifiedVertices[(i+1)%lastPoint].x + (mid2.x - betweenMids.x),
-						   modifiedVertices[(i+1)%lastPoint].y,
-						   modifiedVertices[(i+1)%lastPoint].z + (mid2.z - betweenMids.z) );
+	} else {
+		controlPoints.push_back( Point3D(0,0,0) );
 
-		if (i != lastPoint-1) {
-			controlPoints.push_back(control1);
-			controlPoints.push_back(control2);
-		} else {
-			controlPoints.push_back(control1);
-			controlPoints[0] = control2;
+		for (int i = 0; i < lastPoint; i++) {
+
+			Point3D mid1 = Midpoint(modifiedVertices[i],
+									modifiedVertices[(i+1)%lastPoint], 
+									0.5f);
+
+			Point3D mid2 = Midpoint(modifiedVertices[(i+1)%lastPoint], 
+									modifiedVertices[(i+2)%lastPoint], 
+									0.5f);
+
+			double len1 = Distance(modifiedVertices[i], 
+								   modifiedVertices[(i+1)%lastPoint]);
+
+			double len2 = Distance(modifiedVertices[(i+1)%lastPoint], 
+								   modifiedVertices[(i+2)%lastPoint]);
+
+			float percentage = ( ((float)len1/(len1+len2)) );
+
+			Point3D betweenMids = Midpoint(mid1, mid2, percentage);
+
+			Point3D control1 ( modifiedVertices[(i+1)%lastPoint].x + (mid1.x - betweenMids.x),
+							   modifiedVertices[(i+1)%lastPoint].y,
+							   modifiedVertices[(i+1)%lastPoint].z + (mid1.z - betweenMids.z) );
+
+			Point3D control2 ( modifiedVertices[(i+1)%lastPoint].x + (mid2.x - betweenMids.x),
+							   modifiedVertices[(i+1)%lastPoint].y,
+							   modifiedVertices[(i+1)%lastPoint].z + (mid2.z - betweenMids.z) );
+
+			if (i != lastPoint-1) {
+				controlPoints.push_back(control1);
+				controlPoints.push_back(control2);
+			} else {
+				controlPoints.push_back(control1);
+				controlPoints[0] = control2;
+			}
 		}
-
-
 	}
 
 	return controlPoints;
+
+}
+
+void Polygon::OffsetAlongSlope(Point3D &point, float slope, float offset) {
+
+	float dx = 1.0f / sqrt(1+slope*slope);
+	float dy = slope / sqrt(1+slope*slope);
+
+	point.x = point.x + offset * dx;
+	point.y = point.y;
+	point.z = point.z + offset * dy;
 
 }
 
@@ -305,10 +338,13 @@ Point3D Polygon::AveragePoint(int lastPoint, bool smooth) {
 	return average;
 }
 
-std::vector<Point3D> Polygon::CalculateClockwiseControlPoints(int &lastPoint) {
+std::vector<Point3D> Polygon::CalculateClockwiseControlPoints(int &lastPoint, bool smooth) {
+
+	if (lastPoint < 3)
+		return CalculateControls(lastPoint, smooth);
 
 	//Initializes control points
-	std::vector<Point3D> controlPoints = CalculateControls(lastPoint);
+	std::vector<Point3D> controlPoints = CalculateControls(lastPoint, smooth);
 	int j = 0;
 	bool reset = false;
 
@@ -328,7 +364,7 @@ std::vector<Point3D> Polygon::CalculateClockwiseControlPoints(int &lastPoint) {
 			if (lastPoint > 1) {
 				modifiedVertices.erase(it);
 				lastPoint--;
-				controlPoints = CalculateControls(lastPoint);
+				controlPoints = CalculateControls(lastPoint, smooth);
 				it = modifiedVertices.begin();
 				reset = true;
 				j = -1;

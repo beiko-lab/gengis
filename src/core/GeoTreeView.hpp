@@ -72,6 +72,7 @@ namespace GenGIS
 		enum ORIENTATION { HORIZONTAL, VERTICAL };	
 		enum ACTIVE_VIEW { NO_ACTIVE_VIEW, LAYOUT_LINE, LAYOUT_ELLIPSE, GEOGRAPHIC_AXIS, GEO_POINT, GEO_LINE, TREE };
 		enum TREE_COLOUR_STYLE { COLOUR_SINGLE, COLOUR_DISCRETE, COLOUR_CONTINUOUS };
+		enum FIRST_PROJECT { SEQUENCE, LOCATION};
 
 	public:
 		/** 
@@ -773,6 +774,9 @@ namespace GenGIS
 		/** Indicates visual properties of leaf 3D drop lines. */
 		VisualLine m_3dLeafDropLine;
 
+		/** Boolean flag to indicate if Optimal node crossing message should be surpressed. */
+		bool m_suppressMessage;
+
 		float m_leafNodeBorderSize;
 		Colour m_leafNodeBorderColour;
 
@@ -797,6 +801,8 @@ namespace GenGIS
 		std::vector<LinearResults> m_linearAxesResults;
 
 		wxArrayString m_nonlinearPermutationStrs;
+
+		FIRST_PROJECT m_lastProjection;
 	};
 
 }

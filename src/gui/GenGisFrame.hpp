@@ -365,6 +365,12 @@ namespace GenGIS
 		/** Handle the location set properties popup menu event. */
 		void OnLocationSetProperties(wxCommandEvent& event);
 
+		/** Handle the location set display menu event. */
+		void OnLocationSetShowAll(wxCommandEvent& event);
+
+		/** Handle the location set hide menu event . */
+		void OnLocationSetHideAll(wxCommandEvent& event);
+
 		/** Handle the location properties popup menu event. */
 		void OnLocationProperties(wxCommandEvent& event);
 

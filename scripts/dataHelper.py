@@ -36,10 +36,38 @@ def genericFilter(dataList, filterValue, filterFunc):
 			
 	return filteredList
 
+	
+def GetNonNullLocations( field ):
+	locData = ggAPI.layerTree.GetLocationLayers()
+	nonNullLoc = []
+	for loc in locData:
+		# get vector of all metadata
+		data = loc.GetController().GetData()[field]
+		# If fields are any of the special values for NULL
+		if ( data != "None" and data != "Null" and data != "NA" ):
+			nonNullLoc.append(loc)
+	print nonNullLoc
+	return nonNullLoc
+		
+		
+def GetNonNullSequences( field ):
+	locData = ggAPI.layerTree.SequenceLayers()
+	nonNullLoc = []
+	for loc in locData:
+		# get vector of all metadata
+		data = loc.GetController().GetData()[field]
+		# If fields are any of the special values for NULL
+		if ( data != "None" and data != "Null" and data != "NA" ):
+			nonNullLoc.append(loc)
+	print nonNullLoc
+	return nonNullLoc
+	
 def isNumber(str):
 	try:
 		float(str)
 		return True
 	except ValueError:
 		return False
+		
+
 		

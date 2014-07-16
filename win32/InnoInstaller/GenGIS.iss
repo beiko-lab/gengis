@@ -5,16 +5,16 @@
 ; NOTE: The value of AppId uniquely identifies this application.
 ; Do not use the same AppId value in installers for other applications.
 ; (To generate a new GUID, click Tools | Generate GUID inside the IDE.)
-AppId={{38900573-8B31-4B8D-BA3C-44887F2E20FD}
+AppId={{C60B20D5-0D00-4EAE-BE4D-BAAB735829E8}
 AppName=GenGIS
-AppVerName=GenGIS v2.2.2
+AppVerName=GenGIS v2.3.0Pre1
 ; Remember to update the APP_VERSION::CURRENT enum in 'App.hpp' to match the AppVerName number
 AppPublisher=Beiko Lab
 AppPublisherURL=http://kiwi.cs.dal.ca/GenGIS
 AppSupportURL=http://kiwi.cs.dal.ca/GenGIS
 AppUpdatesURL=http://kiwi.cs.dal.ca/GenGIS
-DefaultDirName={pf}\GenGIS2.2.2
-DefaultGroupName=GenGIS2.2.2
+DefaultDirName={pf}\GenGIS2.3.0Pre1
+DefaultGroupName=GenGIS2.3.0Pre1
 AllowNoIcons=yes
 LicenseFile=..\..\bin\license.txt
 OutputDir=..\..\win32\InnoInstaller\Setup

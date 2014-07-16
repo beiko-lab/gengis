@@ -679,6 +679,7 @@ void LayerTreeController::OnClick( wxMouseEvent& event )
 	}
 }
 
+
 void LayerTreeController::OnLeftDClick( wxMouseEvent& event )
 {
 	// cause the tree item under the cursor to become selected
@@ -1050,6 +1051,7 @@ void LayerTreeController::OnHideAll( wxCommandEvent& event )
 {
 	wxTreeItemIdValue cookie;
 	wxTreeItemId rootId = m_treeView->GetTreeCtrl()->GetFirstChild(m_treeView->GetTreeCtrl()->GetRootItem(), cookie);
+
 	SetVisibilityAllChildren(rootId, cookie, false);
 
 	App::Inst().GetViewport()->Refresh(false);

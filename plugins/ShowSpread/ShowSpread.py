@@ -37,8 +37,8 @@ class ShowSpread ( ShowSpreadLayout ):
 	ColourIntensity = False
 	label = GenGIS.VisualLabel("", GenGIS.Colour(0.0, 0.0, 0.0), 20, GenGIS.LABEL_RENDERING_STYLE.PERSPECTIVE )
 	dateFormat = False
-	# sort boolean. False = Descending, True = Ascending
-	sort = False
+	# sort boolean. False = Descending, True = Descending
+	sort = True
 	sortString = (filterFunc.lessEqual,filterFunc.greaterEqual)
 	sortFloat = (filterFunc.lessEqualFloat, filterFunc.greaterEqualFloat)
 	locData = {}
@@ -84,20 +84,18 @@ class ShowSpread ( ShowSpreadLayout ):
 			#Set Start and Stop
 			self.OnDataChange("fake")
 		
-		#Set the default number of steps to take through data
-		self.m_StepsCtrl.SetValue( 10 )
 		self.m_CheckIntensity.SetValue(False)
 		self.OnBinning("fake")
 		# Get starting state of locations
 		self.SetStartAttrib()
 		
-	def OnClose( self, event ):
+	def OnOK( self, event ):
 		#Need to remove the label on close too
 		GenGIS.graphics.RemoveLabel(self.label.GetId())
 		GenGIS.viewport.Refresh()
 		self.Close()
 	
-	def OnOK( self, event ):
+	def OnRun( self, event ):
 		#clear the old label out if its there
 		GenGIS.graphics.RemoveLabel(self.label.GetId())
 		
@@ -136,9 +134,11 @@ class ShowSpread ( ShowSpreadLayout ):
 	def ShowSpread( self, startData, stopData, field, isDate ):
 		#returns all the location in a location set
 		if( self.isSequence ):
-			locData = GenGIS.layerTree.GetSequenceLayers()
+		#	locData = GenGIS.layerTree.GetSequenceLayers()
+			locData = dh.GetNonNullSequences( field )
 		else:
-			locData = GenGIS.layerTree.GetLocationLayers()
+		#	locData = GenGIS.layerTree.GetLocationLayers()
+			locData = dh.GetNonNullLocations( field )
 			
 		GenGIS.viewport.Refresh()
 		
@@ -173,9 +173,9 @@ class ShowSpread ( ShowSpreadLayout ):
 		if isDate:
 			self.DisplayTemporal( locData, field, startData, stopData )
 		elif dh.isNumber(startData):
-			self.DisplayNumeric( locData, field, startData, stopData )
+			self.DisplayNumeric( locData, startData, stopData )
 		else:
-			self.DisplayText( locData, field, startData, stopData )
+			self.DisplayText( locData, startData, stopData )
 	
 	# Gets the size, Active and colour of every location before ShowSpread is run
 	# This data is used by the restore function
@@ -184,7 +184,8 @@ class ShowSpread ( ShowSpreadLayout ):
 			id = loc.GetName()
 			colour = loc.GetController().GetColour()
 			size = loc.GetController().GetSize()
-			self.DefaultAttrib[id] = [colour,size]
+			state = loc.GetController().IsActive()
+			self.DefaultAttrib[id] = [colour,size,state]
 	
 	def OnRestore( self, event ):
 		for key, value in self.DefaultAttrib.iteritems():
@@ -192,6 +193,9 @@ class ShowSpread ( ShowSpreadLayout ):
 			loc = GenGIS.layerTree.GetLocationLayer(index)
 			loc.GetController().SetColour( value[0] )
 			loc.GetController().SetSize( value[1] )
+			loc.GetController().SetActive( value[2] )
+		self.OnDataChange( "fake" )
+		# NEEDS TO ALSO RESET START,STOP	
 			
 		GenGIS.viewport.Refresh()
 	
@@ -200,20 +204,22 @@ class ShowSpread ( ShowSpreadLayout ):
 		self.m_StartChoice.Clear()
 		self.m_StopChoice.Clear()
 		field = self.m_DataChoice.GetStringSelection()
-		min, max = 0,0
 		
 		#if there are sequence layers
 		if GenGIS.layerTree.GetNumSequenceLayers() > 0:
 			#if field is in sequences or locations
 			if field in GenGIS.layerTree.GetSequenceLayer(0).GetController().GetData().keys():
 				self.isSequence = True
-				layers = GenGIS.layerTree.GetSequenceLayers()
+			#	layers = GenGIS.layerTree.GetSequenceLayers()
+				layers = dh.GetNonNullSequences( field )
 			else:
 				self.isSequence = False
-				layers = GenGIS.layerTree.GetLocationLayers()
+			#	layers = GenGIS.layerTree.GetLocationLayers()
+				layers = dh.GetNonNullLocations( field )
 		else:
 			self.isSequence = False
-			layers = GenGIS.layerTree.GetLocationLayers()
+		#	layers = GenGIS.layerTree.GetLocationLayers()
+			layers = dh.GetNonNullLocations( field )
 		
 		values = self.SortFields( layers, field )
 		
@@ -241,8 +247,9 @@ class ShowSpread ( ShowSpreadLayout ):
 		else:
 			Delta = math.ceil( self.m_StartChoice.GetCount() / float(steps) )
 		self.m_StepSizeTextCtrl.SetValue( str(Delta) )
-		self.m_BinStartCtrl.SetValue( str(Delta/2) )
-		self.m_BinEndCtrl.SetValue( str(Delta/2) )
+		self.m_BinStartCtrl.SetValue( str( abs(Delta/2) ) )
+		self.m_BinEndCtrl.SetValue( str( abs(Delta/2) ) )
+		self.m_StepsCtrl.SetValue( min( 10, self.m_StartChoice.GetCount() ) )
 
 	def dateStrToDate( self, dateStr ):
 		"""
@@ -325,6 +332,8 @@ class ShowSpread ( ShowSpreadLayout ):
 		values = []
 		self.locData = {}
 		for layer in layers:
+			if not layer.GetController().IsActive():
+				continue
 			data = layer.GetController().GetData()[field]
 			if self.isSequence:
 				id = layer.GetController().GetSiteId()
@@ -352,9 +361,9 @@ class ShowSpread ( ShowSpreadLayout ):
 	
 	def OnSort( self, event ):
 		if self.m_SortChoice.GetStringSelection() == "Ascending":
-			self.sort = True
-		else:
 			self.sort = False
+		else:
+			self.sort = True
 		self.OnDataChange("fake")
 	
 	def OnBinning( self, event ):
@@ -391,7 +400,7 @@ class ShowSpread ( ShowSpreadLayout ):
 			for seq in loc.GetAllSequenceLayers():
 				seq.GetController().SetActive(True)
 				
-	def DisplayNumeric( self, locData, field, startData, stopData ):
+	def DisplayNumeric( self, locData, startData, stopData ):
 		# show spread of virus on a data basis	
 		timeCap = float( self.m_SpinTime.GetValue() ) / 10.0
 		startData,stopData = float(startData),float(stopData)
@@ -427,10 +436,14 @@ class ShowSpread ( ShowSpreadLayout ):
 	#		print "Cur = ",curData," Ceil = ",curData + BinCeil, " Floor = ", minData - BinFloor
 			for key in self.locData.keys():
 				data = self.locData[key]
+				# ascending
 				if not self.sort:
+					print "mango"
 					filteredData = dh.genericFilter(data, curData + BinCeil, filterFunc.lessEqualFloat)
 					filteredData = dh.genericFilter(filteredData, minData - BinFloor, filterFunc.greaterEqualFloat)
+				#descending
 				else:
+					print curData," ",BinFloor," ",BinCeil," ",minData
 					filteredData = dh.genericFilter(data, curData - BinFloor , filterFunc.greaterEqualFloat)
 					filteredData = dh.genericFilter(filteredData, minData + BinCeil , filterFunc.lessEqualFloat)
 				#convert sequence to it's location if possible
@@ -489,10 +502,12 @@ class ShowSpread ( ShowSpreadLayout ):
 			if elapsedTime < timeCap:
 				time.sleep(timeCap - elapsedTime)
 				
-	def DisplayText( self, locData, field, startData, stopData ):
+	def DisplayText( self, locData, startData, stopData ):
 		# show spread of virus on a data basis	
 		timeCap = float( self.m_SpinTime.GetValue() ) / 10.0
+		# Need to add a fudge of -1 so that a Delta of 2 will include 0,1 then 2,3 etc
 		Delta = math.ceil( self.m_StartChoice.GetCount() / float(self.m_StepsCtrl.GetValue()) )
+		print Delta
 		# get cases from start date to current simulation date
 	#	curData = startData
 		curIndex = self.m_StartChoice.FindString(startData)
@@ -509,15 +524,16 @@ class ShowSpread ( ShowSpreadLayout ):
 		
 		for loc in GenGIS.layerTree.GetLocationLayers():
 			loc.GetController().SetActive(False)
-				
+		
+		curIndex = curIndex + Delta - 1
 		#needs a slight rounding adjustment as floats are ugly
 		while curIndex <= stopIndex :
 			#get current data
 			curData = self.m_StartChoice.GetString(curIndex)
-			if curIndex + BinCeil <= stopIndex:
-				binCeilDataStr = self.m_StartChoice.GetString(curIndex + BinCeil)
-			else:
-				binCeilDataStr = self.m_StartChoice.GetString(curIndex)
+		#	if curIndex + BinCeil <= stopIndex:
+		#		binCeilDataStr = self.m_StartChoice.GetString(curIndex + BinCeil)
+		#	else:
+			binCeilDataStr = self.m_StartChoice.GetString(curIndex)
 			curDataStr = str(curData)
 			
 			# check if binning is used. If it is, update the indexes

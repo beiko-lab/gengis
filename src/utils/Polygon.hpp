@@ -37,13 +37,16 @@ namespace GenGIS
 		//Offsets the points in modifiedVertices by the specified offset
 		void OffsetPolygon(float offset, int lastPoint, bool smooth);
 
+		//Offsets a point the given offset along the given slope
+		void OffsetAlongSlope(Point3D &point, float slope, float offset);
+
 		/* Method for computing control points for bezier curves from: 
 		   http://www.antigrain.com/research/bezier_interpolation/index.html?utm_source=twitterfeed&utm_medium=twitter */
-		std::vector<Point3D> CalculateControls(int lastPoint);
+		std::vector<Point3D> CalculateControls(int lastPoint, bool smooth);
 
 		/* Calculates the control points then removes points on the polygon where 
 			both sets of adjacent control points make counter-clockwise turns */
-		std::vector<Point3D> CalculateClockwiseControlPoints(int &lastPoint);
+		std::vector<Point3D> CalculateClockwiseControlPoints(int &lastPoint, bool smooth);
 
 		//Used to determine if 3 points are clockwise, counter-clockwise, or colinear
 		double CCW(Point3D p1, Point3D p2, Point3D p3);

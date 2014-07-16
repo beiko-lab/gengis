@@ -11,4 +11,5 @@ mac/i386/library3rd/boost_1_47/
 mac/i386/library3rd/ftgl/
 mac/i386/library3rd/lib/
 mac/i386/library3rd/site-packages/
-mac/i386/library3rd/wxPython/
+mac/i386/library3rd/wxPython/win32/InnoInstaller/
+Setup

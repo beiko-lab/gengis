@@ -22,7 +22,7 @@ LocationPolygons::LocationPolygons() :
 	m_smoothPolygons ( true ),
 	m_elevationOffset ( 0.01f ),
 	m_inputElevation ( 0.001f ),
-	m_fillOpacity ( 0.7f ),
+	m_fillOpacity ( 0.6f ),
 	m_polygonInflation ( 0.00f ),
 	m_polygonScaling ( 1.1f ),
 	m_sortBy ( CONVEX_HULL ),
@@ -113,8 +113,13 @@ void LocationPolygons::InitPolygons()
 			currentColour = m_currentLocationSet[i]->GetLocationController()->GetColour();
 			currentColour.SetAlpha(m_fillOpacity);
 
-			currentCoord.easting = m_currentLocationSet[i]->GetLocationController()->GetLocationModel()->GetEasting();
-			currentCoord.northing = m_currentLocationSet[i]->GetLocationController()->GetLocationModel()->GetNorthing();
+			const std::wstring lat ( L"Latitude" );
+			const std::wstring lon ( L"Longitude" );
+
+			currentCoord.easting = 
+				wxAtof ( m_currentLocationSet[i]->GetLocationController()->GetLocationModel()->GetData(lon).c_str() );
+			currentCoord.northing = 
+				wxAtof ( m_currentLocationSet[i]->GetLocationController()->GetLocationModel()->GetData(lat).c_str() );
 
 			//Converts from lat/long point to a point on the map
 			App::Inst().GetMapController()->GetMapModel()->LatLongToGrid(currentCoord, mapPoint);
@@ -159,10 +164,11 @@ void LocationPolygons::InitPolygons()
 
 		for (uint i = 0; i < m_polygons.size(); i++) {
 			
-			LocationPolygons::ConvexHull(m_polygons[i]);
+			ConvexHull(m_polygons[i]);
 
 		}
 	} else if (m_sortBy == BLANK) {}
+
 }
 
 void LocationPolygons::Render() {
@@ -171,7 +177,7 @@ void LocationPolygons::Render() {
 		return;
 
 	if (m_polygonsChanged) {
-		LocationPolygons::InitPolygons();
+		InitPolygons();
 		m_polygonsChanged = false;
 	}
 

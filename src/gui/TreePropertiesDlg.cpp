@@ -47,6 +47,21 @@ TreePropertiesDlg::TreePropertiesDlg(wxWindow* parent, TreeLayerPtr treeLayer)
 	Fit();
 }
 
+TreePropertiesDlg::TreePropertiesDlg(wxWindow* parent, TreeLayerPtr treeLayer, LayoutLinePtr layoutLine)
+: TreePropertiesLayout(parent), m_treeLayer(treeLayer)
+{
+	SetIcon(wxIcon(App::Inst().GetExeDir() + wxT("images/CrazyEye.ico"), wxBITMAP_TYPE_ICO));
+
+	// Limit the properties dialog to a single instance
+	m_treeLayer->SetPropertiesDialog( this );
+	
+	GeoTreeViewPtr geoTreeView = m_treeLayer->GetGeoTreeView();
+	geoTreeView->SetLayoutLine(layoutLine);
+
+	Init();
+	Fit();
+}
+
 TreePropertiesDlg::~TreePropertiesDlg()
 {
 	// Tell the layer that the properties dialog is being closed

@@ -262,17 +262,22 @@ void LocationGrid::GenerateTileCoordinates()
 	}
 
 	// Add the remainder if currentX is smaller than map width
-	if ( currentX < m_mapOpenGLBoundaries.dx )
+	if ( m_divideTilesAlong == LATITUDE || m_divideTilesBy == BOX )
 	{
-		currentX += m_mapOpenGLBoundaries.dx - currentX;
-		m_xCoordinates.push_back( currentX );
+		if ( currentX < m_mapOpenGLBoundaries.dx )
+		{
+			currentX += m_mapOpenGLBoundaries.dx - currentX;
+			m_xCoordinates.push_back( currentX );
+		}
 	}
-
-	// Add the remainder if currentY is smaller than map height
-	if ( currentY < m_mapOpenGLBoundaries.dy )
+	if ( m_divideTilesAlong == LONGITUDE || m_divideTilesBy == BOX )
 	{
-		currentY += m_mapOpenGLBoundaries.dy - currentY;
-		m_yCoordinates.push_back( currentY );
+		// Add the remainder if currentY is smaller than map height
+		if ( currentY < m_mapOpenGLBoundaries.dy )
+		{
+			currentY += m_mapOpenGLBoundaries.dy - currentY;
+			m_yCoordinates.push_back( currentY );
+		}
 	}
 
 	if ( m_gridChanged )
@@ -524,14 +529,17 @@ TileModelPtr LocationGrid::FindLocationTile(Point2D loc)
 
 	int whichColumn = 0;
 	int whichRow = 0;
+
+	// if division = lat/lon just divide into m_divisions
+	// otherwise if lat -> divisions = height / degrees
+	//				lon -> divisions = widght / degrees
+	Point2D tile_divisions = Point2D( m_xCoordinates.size() -1, m_yCoordinates.size() -1);
 	// Determine appropriate tile size according to whether the user
 	// wishes to divide the latitude or longitude 'n' number of times
-	double tileSize;
-	if ( m_divideTilesAlong == LATITUDE )
-		tileSize = m_mapOpenGLBoundaries.Height() / m_divisions;
-	else if ( m_divideTilesAlong == LONGITUDE )
-		tileSize = m_mapOpenGLBoundaries.Width() / m_divisions;
-
+//	double tileSize;
+	Point2D tileSize( m_mapOpenGLBoundaries.Width() / tile_divisions.x 
+						,  m_mapOpenGLBoundaries.Height() / tile_divisions.y );
+	
 	// calculate tile row
 	if( (loc.x + m_mapOpenGLBoundaries.dx) < m_mapOffset.x )
 	{
@@ -540,9 +548,12 @@ TileModelPtr LocationGrid::FindLocationTile(Point2D loc)
 	else
 	{
 		double x = loc.x - m_mapOffset.x; 
-		float divisions = m_mapOpenGLBoundaries.Height() / tileSize ; 
-		float tileRatio =  m_mapOpenGLBoundaries.Height() / divisions;
-		whichColumn = x / tileRatio;;
+		float x_divisions = m_mapOpenGLBoundaries.Height() / tileSize.x; 
+	//	float tileRatio =  m_mapOpenGLBoundaries.Height() / x_divisions;
+		float tileRatio =  m_mapOpenGLBoundaries.Height() / (tile_divisions.y);
+	//	whichColumn = x / tileRatio;
+	//	whichColumn = x / tileSize.y;
+		whichColumn = x / tileSize.x;
 	}
 	// calculate tile column
 	if( (loc.y + m_mapOpenGLBoundaries.dy) < m_mapOffset.y )
@@ -552,21 +563,16 @@ TileModelPtr LocationGrid::FindLocationTile(Point2D loc)
 	else
 	{
 		double y = ( loc.y - m_mapOffset.y );
-		float divisions = m_mapOpenGLBoundaries.Width() / tileSize ; 
-		float tileRatio = m_mapOpenGLBoundaries.Width() / divisions;
-		whichRow = y / tileRatio ;
+		float y_divisions = m_mapOpenGLBoundaries.Width() / tileSize.y; 
+	//	float tileRatio = m_mapOpenGLBoundaries.Width() / y_divisions;
+		float tileRatio = m_mapOpenGLBoundaries.Width() / (tile_divisions.x);
+	//	whichRow = y / tileRatio ;
+	//	whichRow = y / tileSize.x ;
+		whichRow = y / tileSize.y ;
 	}
 	uint divisionIndex = 0;
-	if ( m_divideTilesAlong == LATITUDE )
-	{
-		float divisions = floor( m_mapOpenGLBoundaries.Width() / tileSize ); 
-		divisionIndex = whichRow * (divisions) + whichRow + whichColumn;
-	}
-	else if ( m_divideTilesAlong == LONGITUDE )
-	{
-		float divisions = floor( m_mapOpenGLBoundaries.Width() / tileSize ); 
-		divisionIndex = whichRow * divisions + whichColumn;
-	}
+
+	divisionIndex = whichRow * (tile_divisions.x) + whichColumn;
 
 	TileModelPtr tile = m_tileModels[divisionIndex];
 

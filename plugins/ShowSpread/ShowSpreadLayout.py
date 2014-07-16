@@ -80,7 +80,7 @@ class ShowSpreadLayout ( wx.Frame ):
 		self.m_StepsCtrl = wx.SpinCtrl( self.m_Page1, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, wx.SP_ARROW_KEYS, 0, 10000, 10 )
 		fgSizer1.Add( self.m_StepsCtrl, 0, wx.ALL|wx.ALIGN_CENTER_VERTICAL, 5 )
 		
-		self.m_staticTime = wx.StaticText( self.m_Page1, wx.ID_ANY, u"Time per Step (deci)", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_staticTime = wx.StaticText( self.m_Page1, wx.ID_ANY, u"Time per Step (/10)", wx.DefaultPosition, wx.DefaultSize, 0 )
 		self.m_staticTime.Wrap( -1 )
 		fgSizer1.Add( self.m_staticTime, 0, wx.ALL|wx.ALIGN_CENTER_VERTICAL, 5 )
 		
@@ -170,11 +170,11 @@ class ShowSpreadLayout ( wx.Frame ):
 		
 		bSizer2.AddSpacer( ( 0, 0), 1, wx.EXPAND, 5 )
 		
+		self.m_Run = wx.Button( self, wx.ID_ANY, u"Run", wx.DefaultPosition, wx.DefaultSize, 0 )
+		bSizer2.Add( self.m_Run, 0, wx.ALL, 5 )
+		
 		self.m_OK = wx.Button( self, wx.ID_ANY, u"OK", wx.DefaultPosition, wx.DefaultSize, 0 )
 		bSizer2.Add( self.m_OK, 0, wx.ALL, 5 )
-		
-		self.m_Close = wx.Button( self, wx.ID_ANY, u"Close", wx.DefaultPosition, wx.DefaultSize, 0 )
-		bSizer2.Add( self.m_Close, 0, wx.ALL, 5 )
 		
 		bSizer1.Add( bSizer2, 0, wx.EXPAND, 5 )
 		
@@ -194,8 +194,8 @@ class ShowSpreadLayout ( wx.Frame ):
 		self.m_RadioMonthFirst.Bind( wx.EVT_RADIOBUTTON, self.OnDateRadio )
 		self.m_Default.Bind( wx.EVT_BUTTON, self.OnRestore )
 		self.m_Help.Bind( wx.EVT_BUTTON, self.OnHelp )
+		self.m_Run.Bind( wx.EVT_BUTTON, self.OnRun )
 		self.m_OK.Bind( wx.EVT_BUTTON, self.OnOK )
-		self.m_Close.Bind( wx.EVT_BUTTON, self.OnClose )
 	
 	def __del__( self ):
 		pass
@@ -228,10 +228,10 @@ class ShowSpreadLayout ( wx.Frame ):
 	def OnHelp( self, event ):
 		event.Skip()
 	
-	def OnOK( self, event ):
+	def OnRun( self, event ):
 		event.Skip()
 	
-	def OnClose( self, event ):
+	def OnOK( self, event ):
 		event.Skip()
 	
 
