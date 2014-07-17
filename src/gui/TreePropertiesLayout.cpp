@@ -128,6 +128,8 @@ TreePropertiesLayout::TreePropertiesLayout( wxWindow* parent, wxWindowID id, con
 	
 	m_chkOptimizeLeafNodes = new wxCheckBox( m_panelTreeProp, wxID_ANY, wxT("Optimize leaf node order"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_chkOptimizeLeafNodes->SetValue(true); 
+	m_chkOptimizeLeafNodes->Hide();
+	
 	m_sizerLayoutProperties->Add( m_chkOptimizeLeafNodes, 0, wxALL, 5 );
 	
 	m_sizerTreeProp->Add( m_sizerLayoutProperties, 0, wxALL|wxEXPAND, 5 );
