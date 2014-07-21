@@ -92,16 +92,17 @@ LocationPolygons::~LocationPolygons()
 
 void LocationPolygons::InitPolygons()
 {
+	if (m_currentLocationSet.empty())
+		return;
+
 	//Clears existing polygons
 	m_polygons.clear();
 
 	Colour currentColour;
 	GeoCoord currentCoord;
 	Point3D mapPoint;
-	std::wstring currentField;
-
-	PolygonModelPtr emptyPoly;
-	m_polygons.push_back(emptyPoly);
+	PolygonModelPtr emptyPoly( new PolygonModel() );
+	m_polygons.push_back( emptyPoly );
 	int currentPolygonIndex = 0;
 
 	//Get elevation to be used
@@ -132,6 +133,8 @@ void LocationPolygons::InitPolygons()
 
 		//If the current location is active
 		if (m_currentLocationSet[i]->GetLocationController()->GetLocationModel()->IsActive()) {
+
+			PolygonModelPtr emptyPoly( new PolygonModel() );
 
 			//Sets the current properties of the location
 			currentColour = m_currentLocationSet[i]->GetLocationController()->GetColour();
@@ -187,7 +190,7 @@ void LocationPolygons::InitPolygons()
 
 			ConvexHull(m_polygons[i]);
 
-		} else if (m_sortBy == BLANK) {}
+		}
 
 		m_polygons[i]->InitPolygon(m_polygonInflation, m_smoothPolygons);
 
