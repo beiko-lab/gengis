@@ -79,6 +79,20 @@ namespace GenGIS
 		/** Fill tiles with location values. */
 		void FillTiles();
 
+		/** Updates the colour map of the grid for qualitative data */
+		void UpdateQualitativeColourMap();
+
+		/** Updates the colour map of the grid for numeric data - 
+		*** interpolates colour between the min and max values */
+		void UpdateNumericColourMap(float min, float max);
+
+		/** Initializes m_minFieldValue and m_maxField value
+		*** to the absolute min/max value that a tile in the grid can have */
+		void InitTileMinMax();
+
+		/** Updates the colour of the grid tiles */
+		void UpdateGridColours();
+
 		/** Render location grid. */
 		void Render();
 
@@ -87,13 +101,15 @@ namespace GenGIS
 		// Functions for accessing 'general' variables
 		DIVISION_AXIS GetTileDivisionAxis()           { return m_divideTilesAlong; }
 		DIVISION_TYPE GetTileDivisionType()			  { return m_divideTilesBy; }
-		DIVISION_BOX GetTileDivisionBox()			  { return m_divideTilesInto;}
+		DIVISION_BOX  GetTileDivisionBox()			  { return m_divideTilesInto;}
 		ALIGNMENT     GetGridAlignmentStyle()         { return m_gridAlignmentStyle; }
 		uint          GetNumberOfDivisions()          { return m_divisions; }
 		uint		  GetNumberOfAxisDivisions()	  { return m_axisDivisions; }
 		uint		  GetNumberOfBoxDivisions()		  { return m_boxDivisions; }
 		bool          GetAutoAdjustElevationStatus () { return m_autoAdjustElevation; }
 		double        GetElevation()                  { return m_elevation; }
+		float		  GetMinFieldValue()			  { return m_minFieldValue; }
+		float		  GetMaxFieldValue()			  { return m_maxFieldValue; }
 
 		void SetTileDivisionAxis( DIVISION_AXIS divideAlong )            { m_divideTilesAlong = divideAlong; }
 		void SetTileDivisionType( DIVISION_TYPE divideType )			 { m_divideTilesBy = divideType; }
@@ -104,6 +120,8 @@ namespace GenGIS
 		void SetBoxDivisions( uint divisions);
 		void SetAutoAdjustElevationStatus ( bool status )                { m_autoAdjustElevation = status; }
 		void SetElevation( double elevation )                            { m_elevation = elevation; }
+		void SetMinFieldValue ( float minValue )						 { m_minFieldValue = minValue; }
+		void SetMaxFieldValue ( float maxValue )						 { m_maxFieldValue = maxValue; }
 		void SetLocationSetLayer( LocationSetLayerPtr locationSetLayer ) { m_locationSetLayer = locationSetLayer; } 
 		void SetSelectedFieldValues(std::vector<wxStaticText*> field);
 		void SetField( std::wstring field )								 { m_field = field; }
@@ -178,6 +196,8 @@ namespace GenGIS
 		bool          m_autoAdjustElevation;
 		float         m_elevation;
 		float         m_elevationUsed;
+		float		  m_minFieldValue;
+		float		  m_maxFieldValue;
 		std::list<double> m_xCoordinates;
 		std::list<double> m_yCoordinates;
 		LocationSetLayerPtr m_locationSetLayer;

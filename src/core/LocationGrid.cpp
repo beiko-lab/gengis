@@ -506,6 +506,224 @@ void LocationGrid::SetLocationColours()
 	}
 }
 
+void LocationGrid::UpdateGridColours() {
+
+	//Calculates and prints max/min, used to test
+	//InitTileMinMax();
+	//Log::Inst().Error("Max: " + StringTools::ToString(m_maxFieldValue));
+	//Log::Inst().Error("Min: " + StringTools::ToString(m_minFieldValue));
+
+	InitTiles();
+	FillTiles();
+
+	std::vector<LocationLayerPtr> locationLayers = m_locationSetLayer->GetAllActiveLocationLayers();
+	if ( StringTools::IsDecimalNumber(locationLayers[0]->GetLocationController()->GetData()[m_field])
+		|| m_combination == TileModel::GINI ) {
+		UpdateNumericColourMap( m_minFieldValue, m_maxFieldValue );
+	} else {
+		UpdateQualitativeColourMap();
+	}
+
+	SetLocationColours();
+
+}
+
+void LocationGrid::InitTileMinMax() {
+
+	std::vector<LocationLayerPtr> locationLayers = m_locationSetLayer->GetAllActiveLocationLayers();
+
+	if ( StringTools::IsDecimalNumber(locationLayers[0]->GetLocationController()->GetData()[m_field]) 
+		&& m_combination != TileModel::GINI ) {
+
+		InitTiles();
+
+		for( uint i = 0; i < locationLayers.size() ; i++)
+		{
+			std::map<std::wstring,std::wstring> data = locationLayers[i]->GetLocationController()->GetData();
+			float easting = StringTools::ToDouble(data[StringTools::ToStringW("Longitude")]);
+			float northing = StringTools::ToDouble(data[StringTools::ToStringW("Latitude")]);
+			
+			
+			// check if long and lat values exist. if they don't use easting and westing
+			if( easting != easting || 
+				northing != northing ||
+				!(easting<=DBL_MAX && easting >= -DBL_MAX) ||
+				!(northing<=DBL_MAX && northing >= -DBL_MAX)||
+				(!App::Inst().GetStudyController()->IsUsingProjection() &&
+				!App::Inst().GetStudyController()->IsUsingGeographic() ) )
+			{
+				easting = locationLayers[i]->GetLocationController()->GetEasting();
+				northing = locationLayers[i]->GetLocationController()->GetNorthing();
+			}
+
+			Point3D locationCoord;
+			GeoCoord locationGeo( easting,northing );
+			App::Inst().GetMapController()->GetMapModel()->LatLongToGrid(locationGeo,locationCoord);
+			Point2D locPoint(locationCoord.x,locationCoord.z);
+			TileModelPtr tile = FindLocationTile(locPoint);
+			tile->AddLocationLayer(locationLayers[i]);
+		}
+
+		m_minFieldValue = FLT_MAX;
+		m_maxFieldValue = -FLT_MAX;
+
+		if (m_combination == TileModel::SUM || m_combination == TileModel::AVERAGE || m_combination == TileModel::STDEV) {
+
+			for (uint i = 0; i < m_tileModels.size(); i++) {
+
+				std::map<std::wstring, std::wstring> data = m_tileModels[i]->GetData();
+				std::map<std::wstring, std::wstring>::const_iterator it = data.find(m_field);
+
+				if (it != data.end()) {
+
+					std::wstring field = it->first;
+					std::wstring value = it->second;
+
+					std::vector<std::wstring> seperatedValue;
+					float sumOfPositiveValues = 0;
+					float sumOfNegativeValues = 0;
+					float minValue;
+					float maxValue;
+					boost::split(seperatedValue,value,boost::is_any_of("|"),boost::token_compress_on);
+
+					// combination Methods that only handle numbers
+					//		FIND A WAY TO EXCLUDE SEQUENCE ID!!!!!!!!!!
+					if( ( StringTools::IsDecimalNumber( seperatedValue[0] ) )
+						&& ( StringTools::ToLower(field).compare(_T("cell id")) != 0 )
+						&& ( StringTools::ToLower(field).compare(_T("cellid")) != 0 ) )
+					{
+						// convert string values to double values. Non numeric already parsed out
+						for( uint i = 0; i < seperatedValue.size(); i++)
+						{	
+							double doubValue = StringTools::ToDouble(seperatedValue[i]);
+
+							if (i == 0) {
+								minValue = doubValue;
+								maxValue = doubValue;
+							} else if (doubValue < minValue) {
+								minValue = doubValue;
+							} else if (doubValue > maxValue) {
+								maxValue = doubValue;
+							}
+
+							if (m_combination == TileModel::SUM) {
+								if (doubValue < 0) {
+									sumOfNegativeValues += doubValue;
+								} else {
+									sumOfPositiveValues += doubValue;
+								}
+							}
+
+						}
+					}
+					
+					float tileMin = 0;
+					float tileMax = 0;
+
+					if (m_combination == TileModel::SUM) {
+
+						//If there aren't any positive values then the maximum sum is the maximum value
+						//otherwise, it's the accumulated positive values
+						if (sumOfPositiveValues == 0) {
+							tileMax = maxValue;
+						} else {
+							tileMax = sumOfPositiveValues;
+						}
+
+						//If there aren't any negative values then the minimum sum is the minimum value 
+						//(default colour used when no points in tile) otherwise, it's the accumulated negative values
+						if (sumOfNegativeValues == 0) {
+							tileMin = minValue;
+						} else {
+							tileMin = sumOfNegativeValues;
+						}
+
+					} else if (m_combination == TileModel::AVERAGE) {
+
+						//The average is between the min and max values
+						tileMin = minValue;
+						tileMax = maxValue;
+
+					} else if (m_combination == TileModel::STDEV) {
+
+						//Find max standard deviation by calculating stdev between min / max
+						float mean = ( minValue + maxValue ) / 2;
+						float sq_sum = minValue * minValue + maxValue * maxValue;
+						tileMax = sqrt( sq_sum / 2 - mean * mean );
+
+						//Tiles with one value are given a stdev of 0, so the min stdev is always 0
+						tileMin = 0;
+
+					}
+
+					if (tileMin < m_minFieldValue) {
+						m_minFieldValue = tileMin;
+					}
+
+					if (tileMax > m_maxFieldValue) {
+						m_maxFieldValue = tileMax;
+					}
+				}
+			}
+		}
+	} else if (m_combination == TileModel::GINI) {
+
+		m_minFieldValue = 0;
+		m_maxFieldValue = 1;
+
+	}
+}
+
+void LocationGrid::UpdateNumericColourMap(float min, float max) {
+
+	ColourMapPtr selectedColourMap = m_gridColourMap;
+
+	std::vector<std::wstring> data = GetSelectedValues(m_field);
+	StringTools::SortFieldValues(data);
+
+	std::vector<std::wstring>::const_iterator setIt;
+	for (setIt = data.begin(); setIt != data.end(); ++setIt) {
+
+		double numberValue = StringTools::ToDouble( *setIt );
+
+		Colour colour;
+		if (numberValue < min && numberValue >= floor(min))
+			min = numberValue;
+		if (numberValue > max && numberValue <= ceil(max))
+			max = numberValue;
+
+		colour = selectedColourMap->GetInterpolatedColour( numberValue, min, max );
+		m_gridColourMap->SetColour(*setIt, colour);
+
+	}
+}
+
+void LocationGrid::UpdateQualitativeColourMap() {
+
+	
+	ColourMapPtr selectedColourMap = m_gridColourMap;
+
+	std::vector<std::wstring> data = GetSelectedValues(m_field);
+	StringTools::SortFieldValues(data);
+
+	std::vector<std::wstring>::const_iterator setIt;
+	uint index = 0;
+
+	for (setIt = data.begin(); setIt != data.end(); ++setIt) {
+
+		Colour colour;
+
+		if (selectedColourMap->GetType() == ColourMap::CONTINUOUS || selectedColourMap->GetSize() < 4)
+			colour = selectedColourMap->GetInterpolatedColour(index++, 0, data.size()-1);
+		else if (selectedColourMap->GetType() == ColourMap::DISCRETE || selectedColourMap->GetType() == ColourMap::DISCRETIZED_CONTINUOUS)
+			colour = selectedColourMap->GetColour(index++);
+
+		m_gridColourMap->SetColour(*setIt, colour);
+
+	}
+
+}
+
 // SOMETHING WRONG HERE, NEED TO HUNT IT DOWN
 // find a tile based on OpenGL coordinates
 TileModelPtr LocationGrid::FindLocationTile(Point2D loc)
