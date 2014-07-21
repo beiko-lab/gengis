@@ -91,6 +91,7 @@ namespace GenGIS
 				ID_LBL_LABEL_COLOUR,
 				ID_COLOUR_PICKER_LABEL_COLOUR,
 				ID_PNL_CHART,
+				ID_CHECK_SHOW_CHART,
 				ID_NOTEBOOK_CHART,
 				ID_LBL_LABEL_CHART_FIELD,
 				ID_CBO_CHART_FIELD,
@@ -110,7 +111,6 @@ namespace GenGIS
 				ID_LBL_DROPLINE_THICKNESS,
 				ID_SPIN_DROPLINE_THICKNESS,
 				ID_COLOUR_PICKER_DROPLINE,
-				ID_CHECK_SHOW_CHART,
 				wxID_RADIO_TILE_COLOUR_NO_FILL,
 				wxID_RADIO_TILE_COLOUR_UNIFORM_FILL,
 				wxID_RADIO_TILE_COLOUR_MAP_FILL,
@@ -187,6 +187,8 @@ namespace GenGIS
 			wxColourPickerCtrl* m_colourLabel;
 			
 			wxPanel* m_pnlChart;
+			wxCheckBox* m_chkShowCharts;
+			wxStaticLine* m_staticline141;
 			wxNotebook* m_notebookChart;
 			wxPanel* m_pnlChartColourMap;
 			wxStaticText* m_lblChartField;
@@ -232,9 +234,9 @@ namespace GenGIS
 			wxStaticText* m_lblChartDroplineThickness;
 			wxSpinCtrl* m_spinChartDropLineThickness;
 			wxColourPickerCtrl* m_colourChartDropLine;
-			
-			wxCheckBox* m_chkShowCharts;
 			wxPanel* m_pnlGrid;
+			wxCheckBox* m_chkShowGrid;
+			wxStaticLine* m_staticline131;
 			wxNotebook* m_notebook6;
 			wxPanel* m_panel13;
 			wxRadioButton* m_radioGridNoFill;
@@ -299,7 +301,6 @@ namespace GenGIS
 			wxTextCtrl* m_textCtrlGridElevation;
 			wxStaticText* m_txtTileFieldChoice;
 			wxComboBox* m_tileFieldChoice;
-			wxCheckBox* m_chkShowGrid;
 			wxPanel* m_pnlPolygons;
 			wxPanel* m_pnlOptions;
 			wxCheckBox* m_chkDrawPolygons;

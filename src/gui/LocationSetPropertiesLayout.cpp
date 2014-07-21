@@ -370,10 +370,21 @@ LocationSetPropertiesLayout::LocationSetPropertiesLayout( wxWindow* parent, wxWi
 	m_pnlLocations->SetSizer( m_sizerLocations );
 	m_pnlLocations->Layout();
 	m_sizerLocations->Fit( m_pnlLocations );
-	m_notebook->AddPage( m_pnlLocations, wxT("Location Set"), false );
+	m_notebook->AddPage( m_pnlLocations, wxT("Location Set"), true );
 	m_pnlChart = new wxPanel( m_notebook, ID_PNL_CHART, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL, wxT("Charts") );
 	wxBoxSizer* m_sizerLabels1;
 	m_sizerLabels1 = new wxBoxSizer( wxVERTICAL );
+	
+	wxBoxSizer* m_sizerShowCharts;
+	m_sizerShowCharts = new wxBoxSizer( wxVERTICAL );
+	
+	m_chkShowCharts = new wxCheckBox( m_pnlChart, ID_CHECK_SHOW_CHART, wxT("Show charts"), wxDefaultPosition, wxDefaultSize, wxCHK_3STATE );
+	m_sizerShowCharts->Add( m_chkShowCharts, 0, wxALL, 5 );
+	
+	m_staticline141 = new wxStaticLine( m_pnlChart, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL );
+	m_sizerShowCharts->Add( m_staticline141, 0, wxEXPAND | wxALL, 5 );
+	
+	m_sizerLabels1->Add( m_sizerShowCharts, 0, wxALL|wxEXPAND, 5 );
 	
 	m_notebookChart = new wxNotebook( m_pnlChart, ID_NOTEBOOK_CHART, wxDefaultPosition, wxDefaultSize, 0 );
 	m_pnlChartColourMap = new wxPanel( m_notebookChart, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL, wxT("Colour_Map") );
@@ -636,17 +647,6 @@ LocationSetPropertiesLayout::LocationSetPropertiesLayout( wxWindow* parent, wxWi
 	
 	m_sizerLabels1->Add( m_notebookChart, 1, wxEXPAND | wxALL, 5 );
 	
-	wxBoxSizer* m_sizerShowCharts;
-	m_sizerShowCharts = new wxBoxSizer( wxHORIZONTAL );
-	
-	
-	m_sizerShowCharts->Add( 0, 0, 1, wxEXPAND, 5 );
-	
-	m_chkShowCharts = new wxCheckBox( m_pnlChart, ID_CHECK_SHOW_CHART, wxT("Show charts"), wxDefaultPosition, wxDefaultSize, wxCHK_3STATE );
-	m_sizerShowCharts->Add( m_chkShowCharts, 0, wxALL, 5 );
-	
-	m_sizerLabels1->Add( m_sizerShowCharts, 0, wxEXPAND, 5 );
-	
 	m_pnlChart->SetSizer( m_sizerLabels1 );
 	m_pnlChart->Layout();
 	m_sizerLabels1->Fit( m_pnlChart );
@@ -654,6 +654,17 @@ LocationSetPropertiesLayout::LocationSetPropertiesLayout( wxWindow* parent, wxWi
 	m_pnlGrid = new wxPanel( m_notebook, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL, wxT("Grid") );
 	wxBoxSizer* m_sizerGrid;
 	m_sizerGrid = new wxBoxSizer( wxVERTICAL );
+	
+	wxBoxSizer* m_sizerLayerSource1;
+	m_sizerLayerSource1 = new wxBoxSizer( wxVERTICAL );
+	
+	m_chkShowGrid = new wxCheckBox( m_pnlGrid, wxID_ANY, wxT("Show Grid"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_sizerLayerSource1->Add( m_chkShowGrid, 0, wxALL, 5 );
+	
+	m_staticline131 = new wxStaticLine( m_pnlGrid, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL );
+	m_sizerLayerSource1->Add( m_staticline131, 0, wxEXPAND | wxALL, 5 );
+	
+	m_sizerGrid->Add( m_sizerLayerSource1, 0, wxALL|wxEXPAND, 5 );
 	
 	m_notebook6 = new wxNotebook( m_pnlGrid, wxID_ANY, wxDefaultPosition, wxDefaultSize, 0 );
 	m_panel13 = new wxPanel( m_notebook6, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
@@ -1002,14 +1013,6 @@ LocationSetPropertiesLayout::LocationSetPropertiesLayout( wxWindow* parent, wxWi
 	
 	m_sizerGrid->Add( m_notebook6, 1, wxEXPAND | wxALL, 5 );
 	
-	wxBoxSizer* m_sizerLayerSource1;
-	m_sizerLayerSource1 = new wxBoxSizer( wxVERTICAL );
-	
-	m_chkShowGrid = new wxCheckBox( m_pnlGrid, wxID_ANY, wxT("Show Grid"), wxDefaultPosition, wxDefaultSize, 0 );
-	m_sizerLayerSource1->Add( m_chkShowGrid, 0, wxALL|wxALIGN_RIGHT, 5 );
-	
-	m_sizerGrid->Add( m_sizerLayerSource1, 0, wxEXPAND, 5 );
-	
 	m_pnlGrid->SetSizer( m_sizerGrid );
 	m_pnlGrid->Layout();
 	m_sizerGrid->Fit( m_pnlGrid );
@@ -1254,7 +1257,7 @@ LocationSetPropertiesLayout::LocationSetPropertiesLayout( wxWindow* parent, wxWi
 	m_pnlPolygons->SetSizer( m_sizerPolygons );
 	m_pnlPolygons->Layout();
 	m_sizerPolygons->Fit( m_pnlPolygons );
-	m_notebook->AddPage( m_pnlPolygons, wxT("Polygons"), true );
+	m_notebook->AddPage( m_pnlPolygons, wxT("Polygons"), false );
 	m_pnlMetadata = new wxPanel( m_notebook, ID_PNL_METADATA, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL, wxT("Metadata") );
 	wxBoxSizer* m_sizerMetadata;
 	m_sizerMetadata = new wxBoxSizer( wxVERTICAL );
