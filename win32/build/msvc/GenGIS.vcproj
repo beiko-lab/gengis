@@ -343,6 +343,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\..\src\core\PolygonModel.cpp"
+					>
+				</File>
+				<File
 					RelativePath="..\..\..\src\core\Precompiled.cpp"
 					>
 					<FileConfiguration
@@ -743,10 +747,6 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\src\utils\Polygon.cpp"
-					>
-				</File>
-				<File
 					RelativePath="..\..\..\src\utils\ShapeMap.cpp"
 					>
 				</File>
@@ -929,7 +929,7 @@
 					>
 				</File>
 				<File
-					RelativePath=".\LocationPolygons.hpp"
+					RelativePath="..\..\..\src\core\LocationPolygons.hpp"
 					>
 				</File>
 				<File
@@ -982,6 +982,10 @@
 				</File>
 				<File
 					RelativePath="..\..\..\src\core\PluginManager.hpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\src\core\PolygonModel.hpp"
 					>
 				</File>
 				<File
@@ -1438,10 +1442,6 @@
 				</File>
 				<File
 					RelativePath="..\..\..\src\utils\Point3D.hpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\..\src\utils\Polygon.hpp"
 					>
 				</File>
 				<File

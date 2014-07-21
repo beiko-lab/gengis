@@ -1,10 +1,31 @@
+//=======================================================================
+// Author: Justin Trainor
+//
+// Copyright 2014 Justin Trainor
+//
+// This file is part of GenGIS.
+//
+// GenGIS is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// GenGIS is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with GenGIS.  If not, see <http://www.gnu.org/licenses/>.
+//=======================================================================
+
 #ifndef _GENGIS_LOCATION_POLYGONS_
 #define _GENGIS_LOCATION_POLYGONS_
 
 #include "../core/Precompiled.hpp"
 
 #include "../utils/Colour.hpp"
-#include "../utils/Polygon.hpp"
+#include "../core/PolygonModel.hpp"
 
 
 namespace GenGIS
@@ -35,7 +56,7 @@ namespace GenGIS
 
 		/*Sorts the given polygon so that its convex hull is given by the first points up to the member variable lastVertexIndex 
 		  source for algorithm: http://en.wikipedia.org/wiki/Graham_scan */
-		void ConvexHull(Polygon &poly);	
+		void ConvexHull(PolygonModelPtr poly);	
 
 		//Function used for std::sort to ensure the same colours are grouped together
 		static bool SortByColour(LocationLayerPtr p1, LocationLayerPtr p2);
@@ -47,29 +68,29 @@ namespace GenGIS
 		void SwapIndices(std::vector<Point3D> &v, int a, int b);
 
 		//Functions for accessing 'general' variables
-		bool IsVisible()										{ return m_bVisible; }
-		bool GetPolygonsChanged()								{ return m_polygonsChanged; }
-		bool GetAutoAdjustElevationStatus()						{ return m_autoAdjustElevation; }
-		bool GetIncreasingElevationStatus()						{ return m_increasingElevation; }
-		bool GetSmoothPolygonStatus()							{ return m_smoothPolygons; }
-		float GetElevationOffset()								{ return m_elevationOffset; }
-		float GetElevation()									{ return m_inputElevation; }
-		float GetFillOpacity()									{ return m_fillOpacity; }
-		ALGORITHM GetAlgorithm()								{ return m_sortBy; }
-		std::vector<Polygon> GetPolygons()						{ return m_polygons; }
-		std::vector<LocationLayerPtr> GetCurrentLocationSet()	{ return m_currentLocationSet; }
+		bool IsVisible()												{ return m_bVisible; }
+		bool GetPolygonsChanged()										{ return m_polygonsChanged; }
+		bool GetAutoAdjustElevationStatus()								{ return m_autoAdjustElevation; }
+		bool GetIncreasingElevationStatus()								{ return m_increasingElevation; }
+		bool GetSmoothPolygonStatus()									{ return m_smoothPolygons; }
+		float GetElevationOffset()										{ return m_elevationOffset; }
+		float GetElevation()											{ return m_inputElevation; }
+		float GetFillOpacity()											{ return m_fillOpacity; }
+		ALGORITHM GetAlgorithm()										{ return m_sortBy; }
+		std::vector<PolygonModelPtr> GetPolygons()						{ return m_polygons; }
+		std::vector<LocationLayerPtr> GetCurrentLocationSet()			{ return m_currentLocationSet; }
 
-		void SetVisibility (bool visible)										{ m_bVisible = visible; }
-		void SetPolygonsChanged (bool changed)									{ m_polygonsChanged = changed; }
-		void SetAutoAdjustElevationStatus (bool status)							{ m_autoAdjustElevation = status; }
-		void SetIncreasingElevationStatus (bool status)							{ m_increasingElevation = status; }
-		void SetSmoothPolygonStatus (bool status)								{ m_smoothPolygons = status; }
-		void SetElevationOffset (float offset)									{ m_elevationOffset = offset; }
-		void SetElevation (float elevation)										{ m_inputElevation = elevation; }
-		void SetFillOpacity (float alpha)										{ m_fillOpacity = alpha; }
-		void SetAlgorithm (ALGORITHM sortingAlgorithm)							{ m_sortBy = sortingAlgorithm; }
-		void SetPolygons (std::vector<Polygon> newPolygons)						{ m_polygons = newPolygons; }
-		void SetCurrentLocationSet (std::vector<LocationLayerPtr> locations)	{ m_currentLocationSet = locations; }
+		void SetVisibility (bool visible)												{ m_bVisible = visible; }
+		void SetPolygonsChanged (bool changed)											{ m_polygonsChanged = changed; }
+		void SetAutoAdjustElevationStatus (bool status)									{ m_autoAdjustElevation = status; }
+		void SetIncreasingElevationStatus (bool status)									{ m_increasingElevation = status; }
+		void SetSmoothPolygonStatus (bool status)										{ m_smoothPolygons = status; }
+		void SetElevationOffset (float offset)											{ m_elevationOffset = offset; }
+		void SetElevation (float elevation)												{ m_inputElevation = elevation; }
+		void SetFillOpacity (float alpha)												{ m_fillOpacity = alpha; }
+		void SetAlgorithm (ALGORITHM sortingAlgorithm)									{ m_sortBy = sortingAlgorithm; }
+		void SetPolygons (std::vector<PolygonModelPtr> newPolygons)						{ m_polygons = newPolygons; }
+		void SetCurrentLocationSet (std::vector<LocationLayerPtr> locations)			{ m_currentLocationSet = locations; }
 
 		//Functions for accessing 'sizing' variables
 		float GetPolygonInflation()		{ return m_polygonInflation; }
@@ -84,7 +105,7 @@ namespace GenGIS
 		float GetBorderOpacity()		{ return m_borderOpacity; }
 
 		void SetBorderVisibility (bool borderVisibility)	{ m_showBorders = borderVisibility; }
-		void SetBorderThickness (uint borderThickness)	{ m_borderThickness = borderThickness; }
+		void SetBorderThickness (uint borderThickness)		{ m_borderThickness = borderThickness; }
 		void SetBorderOpacity (float borderOpacity)			{ m_borderOpacity = borderOpacity; }
 
 	private:
@@ -110,7 +131,7 @@ namespace GenGIS
 		float								m_polygonScaling;
 		ALGORITHM							m_sortBy;
 		std::vector<LocationLayerPtr>		m_currentLocationSet;
-		std::vector<Polygon>				m_polygons;
+		std::vector<PolygonModelPtr>				m_polygons;
 
 		//Border variables
 		bool	m_showBorders;

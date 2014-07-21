@@ -1,11 +1,32 @@
+//=======================================================================
+// Author: Justin Trainor
+//
+// Copyright 2014 Justin Trainor
+//
+// This file is part of GenGIS.
+//
+// GenGIS is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// GenGIS is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with GenGIS.  If not, see <http://www.gnu.org/licenses/>.
+//=======================================================================
+
 #include "../core/Precompiled.hpp"
 
-#include "../utils/Polygon.hpp"
+#include "../core/PolygonModel.hpp"
 
 using namespace GenGIS;
 
 template<class Archive>
-void Polygon::serialize(Archive & ar, const unsigned int file_version)
+void PolygonModel::serialize(Archive & ar, const unsigned int file_version)
 {
 	//General
 	ar & originalVertices;	//std::vector<Point3D>
@@ -15,10 +36,10 @@ void Polygon::serialize(Archive & ar, const unsigned int file_version)
 	ar & lastVertexIndex;	//int
 	ar & bVisible;			//bool
 }
-template void Polygon::serialize<boost::archive::text_woarchive>(boost::archive::text_woarchive& ar, const unsigned int version); 
-template void Polygon::serialize<boost::archive::text_wiarchive>(boost::archive::text_wiarchive& ar, const unsigned int version);
+template void PolygonModel::serialize<boost::archive::text_woarchive>(boost::archive::text_woarchive& ar, const unsigned int version); 
+template void PolygonModel::serialize<boost::archive::text_wiarchive>(boost::archive::text_wiarchive& ar, const unsigned int version);
 
-void Polygon::InitPolygon(float inflation, bool smooth) {
+void PolygonModel::InitPolygon(float inflation, bool smooth) {
 
 	/* Calculate stopping point */
 	int lastPoint = lastVertexIndex;
@@ -74,7 +95,7 @@ void Polygon::InitPolygon(float inflation, bool smooth) {
 
 }
 
-void Polygon::RenderBorder(float thicknessOfBorder, bool smooth, float scale) {
+void PolygonModel::RenderBorder(float thicknessOfBorder, bool smooth, float scale) {
 
 	if (!bVisible)
 		return;
@@ -87,7 +108,7 @@ void Polygon::RenderBorder(float thicknessOfBorder, bool smooth, float scale) {
 
 }
 
-void Polygon::RenderVertices(GLenum mode, bool smooth, float scale) {
+void PolygonModel::RenderVertices(GLenum mode, bool smooth, float scale) {
 
 	/* Calculate stopping point */
 	int lastPoint = lastVertexIndex;
@@ -113,7 +134,7 @@ void Polygon::RenderVertices(GLenum mode, bool smooth, float scale) {
 
 }
 
-void Polygon::DrawVertices(GLenum mode) {
+void PolygonModel::DrawVertices(GLenum mode) {
 
 	glColor4f(polygonColour.GetRed(), polygonColour.GetGreen(), polygonColour.GetBlue(), polygonColour.GetAlpha());
 
@@ -128,7 +149,7 @@ void Polygon::DrawVertices(GLenum mode) {
 
 }
 
-void Polygon::DrawSmoothVertices(GLenum mode) {
+void PolygonModel::DrawSmoothVertices(GLenum mode) {
 
 	glColor4f(polygonColour.GetRed(), polygonColour.GetGreen(), polygonColour.GetBlue(), polygonColour.GetAlpha());
 
@@ -172,7 +193,7 @@ void Polygon::DrawSmoothVertices(GLenum mode) {
 
 }
 
-void Polygon::OffsetPolygon(float offset, int lastPoint, bool smooth) {
+void PolygonModel::OffsetPolygon(float offset, int lastPoint, bool smooth) {
 
 	if (lastPoint < 2)
 		return;
@@ -202,7 +223,7 @@ void Polygon::OffsetPolygon(float offset, int lastPoint, bool smooth) {
 
 }
 
-std::vector<Point3D> Polygon::CalculateHexPoints(bool smooth) {
+std::vector<Point3D> PolygonModel::CalculateHexPoints(bool smooth) {
 
 	std::vector<Point3D> hexPoints;
 
@@ -246,7 +267,7 @@ std::vector<Point3D> Polygon::CalculateHexPoints(bool smooth) {
 
 }
 
-std::vector<Point3D> Polygon::CalculateControls(bool smooth) {
+std::vector<Point3D> PolygonModel::CalculateControls(bool smooth) {
 
 	int lastPoint = modifiedVertices.size();
 	std::vector<Point3D> innerPoints = GetInnerPoints();
@@ -280,7 +301,7 @@ std::vector<Point3D> Polygon::CalculateControls(bool smooth) {
 
 }
 
-std::vector<Point3D> Polygon::CalculateClockwiseControlPoints(int &lastPoint, bool smooth) {
+std::vector<Point3D> PolygonModel::CalculateClockwiseControlPoints(int &lastPoint, bool smooth) {
 
 	if (lastPoint < 3)
 		return CalculateControls(smooth);
@@ -333,7 +354,7 @@ std::vector<Point3D> Polygon::CalculateClockwiseControlPoints(int &lastPoint, bo
 
 }
 
-std::vector<Point3D> Polygon::GetInnerPoints() {
+std::vector<Point3D> PolygonModel::GetInnerPoints() {
 
 	std::vector<Point3D> innerPoints;
 	int lastPoint = modifiedVertices.size();
@@ -367,7 +388,7 @@ std::vector<Point3D> Polygon::GetInnerPoints() {
 
 }
 
-void Polygon::InitCircle(Point3D center, float radius, int num_segments) {
+void PolygonModel::InitCircle(Point3D center, float radius, int num_segments) {
 
 	//Angle of rotation
 	float theta = PI2 / num_segments;
@@ -394,7 +415,7 @@ void Polygon::InitCircle(Point3D center, float radius, int num_segments) {
 
 }
 
-void Polygon::OffsetAlongSlope(Point3D &point, float slope, float offset) {
+void PolygonModel::OffsetAlongSlope(Point3D &point, float slope, float offset) {
 
 	float dx = 1.0f / sqrt(1+slope*slope);
 	float dy = slope / sqrt(1+slope*slope);
@@ -405,25 +426,25 @@ void Polygon::OffsetAlongSlope(Point3D &point, float slope, float offset) {
 
 }
 
-double Polygon::CCW(Point3D p1, Point3D p2, Point3D p3) {
+double PolygonModel::CCW(Point3D p1, Point3D p2, Point3D p3) {
 
 	return (p2.x-p1.x) * (p3.z-p1.z) - (p2.z-p1.z) * (p3.x-p1.x);
 
 }
 
-Point3D Polygon::Midpoint(Point3D p1, Point3D p2, float percentage) {
+Point3D PolygonModel::Midpoint(Point3D p1, Point3D p2, float percentage) {
 
 	return ((1-percentage) * p1 + percentage * p2);
 
 }
 
-double Polygon::Distance(Point3D p1, Point3D p2) {
+double PolygonModel::Distance(Point3D p1, Point3D p2) {
 
 	return sqrt((p1.x-p2.x)*(p1.x-p2.x) + (p1.z-p2.z)*(p1.z-p2.z));
 
 }
 
-Point3D Polygon::AveragePoint() {
+Point3D PolygonModel::AveragePoint() {
 
 	Point3D average (0,0,0);
 
@@ -435,7 +456,7 @@ Point3D Polygon::AveragePoint() {
 
 }
 
-void Polygon::DrawBezier(Point3D p1, Point3D p2, Point3D p3, Point3D p4, GLenum mode) {
+void PolygonModel::DrawBezier(Point3D p1, Point3D p2, Point3D p3, Point3D p4, GLenum mode) {
 
 	GLfloat controlPoints[4][3] = { {p1.x, p1.y, p1.z},
 									{p2.x, p2.y, p2.z},

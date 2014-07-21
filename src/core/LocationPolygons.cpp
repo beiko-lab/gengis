@@ -1,3 +1,24 @@
+//=======================================================================
+// Author: Justin Trainor
+//
+// Copyright 2014 Justin Trainor
+//
+// This file is part of GenGIS.
+//
+// GenGIS is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// GenGIS is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with GenGIS.  If not, see <http://www.gnu.org/licenses/>.
+//=======================================================================
+
 #include "../core/Precompiled.hpp"
 
 #include "../core/App.hpp"
@@ -79,7 +100,7 @@ void LocationPolygons::InitPolygons()
 	Point3D mapPoint;
 	std::wstring currentField;
 
-	Polygon emptyPoly;
+	PolygonModelPtr emptyPoly;
 	m_polygons.push_back(emptyPoly);
 	int currentPolygonIndex = 0;
 
@@ -125,10 +146,10 @@ void LocationPolygons::InitPolygons()
 			App::Inst().GetMapController()->GetMapModel()->LatLongToGrid(currentCoord, mapPoint);
 
 			//If there's a new colour, a new polygon is created
-			if (currentColour != m_polygons[currentPolygonIndex].polygonColour) {
+			if (currentColour != m_polygons[currentPolygonIndex]->polygonColour) {
 				m_polygons.push_back(emptyPoly);
 				currentPolygonIndex++;
-				m_polygons[currentPolygonIndex].polygonColour = currentColour;
+				m_polygons[currentPolygonIndex]->polygonColour = currentColour;
 			}
 
 			//Sets elevation
@@ -141,10 +162,10 @@ void LocationPolygons::InitPolygons()
 			//**If the same points are added, then the convex hull algorithm doesn't work**
 			bool shouldAdd = true;
 
-			for (uint j = 0; j < m_polygons[currentPolygonIndex].originalVertices.size(); j++) {
+			for (uint j = 0; j < m_polygons[currentPolygonIndex]->originalVertices.size(); j++) {
 				
-				double deltaX = abs( m_polygons[currentPolygonIndex].originalVertices[j].x - mapPoint.x );
-				double deltaY = abs( m_polygons[currentPolygonIndex].originalVertices[j].z - mapPoint.z );
+				double deltaX = abs( m_polygons[currentPolygonIndex]->originalVertices[j].x - mapPoint.x );
+				double deltaY = abs( m_polygons[currentPolygonIndex]->originalVertices[j].z - mapPoint.z );
 
 				if (deltaX <= EPSILON && deltaY <= EPSILON)
 					shouldAdd = false;
@@ -153,7 +174,7 @@ void LocationPolygons::InitPolygons()
 
 			if (shouldAdd) {
 
-				m_polygons[currentPolygonIndex].originalVertices.push_back(mapPoint);
+				m_polygons[currentPolygonIndex]->originalVertices.push_back(mapPoint);
 									
 			}
 		}
@@ -168,7 +189,7 @@ void LocationPolygons::InitPolygons()
 
 		} else if (m_sortBy == BLANK) {}
 
-		m_polygons[i].InitPolygon(m_polygonInflation, m_smoothPolygons);
+		m_polygons[i]->InitPolygon(m_polygonInflation, m_smoothPolygons);
 
 	}
 
@@ -194,14 +215,14 @@ void LocationPolygons::Render() {
 	for (uint i = 0; i < m_polygons.size(); i++) {
 			
 		//Render Polygons
-		m_polygons[i].polygonColour.SetAlpha(m_fillOpacity);
-		m_polygons[i].RenderVertices(GL_TRIANGLE_FAN, m_smoothPolygons, m_polygonScaling);
+		m_polygons[i]->polygonColour.SetAlpha(m_fillOpacity);
+		m_polygons[i]->RenderVertices(GL_TRIANGLE_FAN, m_smoothPolygons, m_polygonScaling);
 
 		//Render Borders
 		if (m_showBorders) {
 
-			m_polygons[i].polygonColour.SetAlpha(m_borderOpacity);
-			m_polygons[i].RenderBorder(m_borderThickness, m_smoothPolygons, m_polygonScaling);
+			m_polygons[i]->polygonColour.SetAlpha(m_borderOpacity);
+			m_polygons[i]->RenderBorder(m_borderThickness, m_smoothPolygons, m_polygonScaling);
 
 		}
 
@@ -248,27 +269,27 @@ private:
 	Point3D lowestN;
 };
 
-void LocationPolygons::ConvexHull(GenGIS::Polygon &poly) {
+void LocationPolygons::ConvexHull(PolygonModelPtr poly) {
 
-	if (poly.originalVertices.size() < 3)
+	if (poly->originalVertices.size() < 3)
 		return;
 
 	//Finds point with lowest northing coordinate
-	Point3D lowestNorthing = poly.originalVertices[0];
-	for (uint i = 1; i < poly.originalVertices.size(); i++) {
+	Point3D lowestNorthing = poly->originalVertices[0];
+	for (uint i = 1; i < poly->originalVertices.size(); i++) {
 
-		if (poly.originalVertices[i].z < lowestNorthing.z) {
-			lowestNorthing = poly.originalVertices[i];
-		} else if (poly.originalVertices[i].z == lowestNorthing.z) {
-			if (poly.originalVertices[i].x < lowestNorthing.x)
-				lowestNorthing = poly.originalVertices[i];
+		if (poly->originalVertices[i].z < lowestNorthing.z) {
+			lowestNorthing = poly->originalVertices[i];
+		} else if (poly->originalVertices[i].z == lowestNorthing.z) {
+			if (poly->originalVertices[i].x < lowestNorthing.x)
+				lowestNorthing = poly->originalVertices[i];
 		}
 	
 	}
 
 	//Sorts by angle with lowest northing point
 	sortByAngle sortByAngle(lowestNorthing);
-	std::sort (poly.originalVertices.begin(), poly.originalVertices.end(), sortByAngle);
+	std::sort (poly->originalVertices.begin(), poly->originalVertices.end(), sortByAngle);
 
 
 	//Orders the polygon so that its first entries are the convex hull
@@ -276,13 +297,13 @@ void LocationPolygons::ConvexHull(GenGIS::Polygon &poly) {
 	
 	int M = 1;	//M represents the number of points on the convex hull
 
-	for (uint i = 2; i < poly.originalVertices.size(); i++) {
+	for (uint i = 2; i < poly->originalVertices.size(); i++) {
 
-		while (CCW(poly.originalVertices[M-1], poly.originalVertices[M], poly.originalVertices[i]) <= 0) {	
+		while (CCW(poly->originalVertices[M-1], poly->originalVertices[M], poly->originalVertices[i]) <= 0) {	
 
 			if (M > 1) {						
 				M -= 1;						
-			} else if (i == poly.originalVertices.size()) {				
+			} else if (i == poly->originalVertices.size()) {				
 				break;							
 			} else {							
 				i++;							
@@ -291,12 +312,12 @@ void LocationPolygons::ConvexHull(GenGIS::Polygon &poly) {
 		}
 
 		M++;
-		if (i < poly.originalVertices.size())
-			SwapIndices(poly.originalVertices,M,i);
+		if (i < poly->originalVertices.size())
+			SwapIndices(poly->originalVertices,M,i);
 	}
 
 	//Sets the index of the last point to draw
-	poly.lastVertexIndex = M+1;
+	poly->lastVertexIndex = M+1;
 }
 
 bool LocationPolygons::SortByColour(LocationLayerPtr p1, LocationLayerPtr p2) {
