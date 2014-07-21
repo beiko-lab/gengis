@@ -192,6 +192,9 @@ namespace GenGIS
 	class   StudyModel;
 	typedef boost::shared_ptr<StudyModel> StudyModelPtr;
 
+	class PolygonModel;
+	typedef boost::shared_ptr<PolygonModel> PolygonModelPtr;
+
 	typedef boost::shared_ptr<OGRCoordinateTransformation> ProjectionToolPtr;
 
 	class   MapController;
