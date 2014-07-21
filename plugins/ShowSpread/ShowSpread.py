@@ -142,11 +142,7 @@ class ShowSpread ( ShowSpreadLayout ):
 		else:
 		#	locData = GenGIS.layerTree.GetLocationLayers()
 			locData = dh.GetNonNullLocations( field )
-<<<<<<< HEAD
-			
-=======
 
->>>>>>> 7fac76c... ShowSpread with grid/polygons
 		GenGIS.viewport.Refresh()
 		
 		# set initial visual properties of all location sites
