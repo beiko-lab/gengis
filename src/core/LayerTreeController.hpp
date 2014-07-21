@@ -265,7 +265,7 @@ namespace GenGIS
 		void OnClick( wxMouseEvent& event );
 
 		/** Handle the layer tree left float click event. */
-		void OnLeftDClick( wxMouseEvent& event );
+		void OnLeftDClick( wxMouseEvent& event, LayoutLinePtr m_layoutLine );
 
 		/** Remove layer from layer tree. */
 		void OnLayerRemove( wxCommandEvent& event );

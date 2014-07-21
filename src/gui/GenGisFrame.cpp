@@ -3047,7 +3047,8 @@ void GenGisFrame::OnLayerTreeClick( wxMouseEvent& event )
 
 void GenGisFrame::OnLayerTreeLeftDClick( wxMouseEvent& event )
 {  
-	App::Inst().GetLayerTreeController()->OnLeftDClick(event); 
+	// needs to pass the layout line so that 2D figures can be connected
+	App::Inst().GetLayerTreeController()->OnLeftDClick(event, m_layoutLine);
 }
 
 void GenGisFrame::OnModeStandard( wxCommandEvent& event ) 
