@@ -141,6 +141,7 @@ namespace GenGIS
 
 
 		TileModelPtr FindLocationTile(Point2D loc);
+		TileModelPtr BinarySort(Point2D loc);
 		void SetOriginOffset( std::wstring selectedName );
 		void SetOriginOffset( Point2D coord );
 
