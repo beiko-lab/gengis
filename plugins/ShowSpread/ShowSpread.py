@@ -438,12 +438,10 @@ class ShowSpread ( ShowSpreadLayout ):
 				data = self.locData[key]
 				# ascending
 				if not self.sort:
-					print "mango"
 					filteredData = dh.genericFilter(data, curData + BinCeil, filterFunc.lessEqualFloat)
 					filteredData = dh.genericFilter(filteredData, minData - BinFloor, filterFunc.greaterEqualFloat)
 				#descending
 				else:
-					print curData," ",BinFloor," ",BinCeil," ",minData
 					filteredData = dh.genericFilter(data, curData - BinFloor , filterFunc.greaterEqualFloat)
 					filteredData = dh.genericFilter(filteredData, minData + BinCeil , filterFunc.lessEqualFloat)
 				#convert sequence to it's location if possible
@@ -507,7 +505,6 @@ class ShowSpread ( ShowSpreadLayout ):
 		timeCap = float( self.m_SpinTime.GetValue() ) / 10.0
 		# Need to add a fudge of -1 so that a Delta of 2 will include 0,1 then 2,3 etc
 		Delta = math.ceil( self.m_StartChoice.GetCount() / float(self.m_StepsCtrl.GetValue()) )
-		print Delta
 		# get cases from start date to current simulation date
 	#	curData = startData
 		curIndex = self.m_StartChoice.FindString(startData)
