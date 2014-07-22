@@ -296,6 +296,8 @@ bool LocationView::MouseRightDown(const Point2D& mousePt, wxMenu& popupMenu)
 		if(popupMenu.GetMenuItems().size() == 0)
 		{
 			popupMenu.Append(ID_POPUP_MNU_PROPERTIES, wxT("Properties"));
+			popupMenu.AppendSeparator();
+			popupMenu.Append(ID_POPUP_MNU_HIDE_LOCATION, wxT("Hide location"));
 		}
 
 		return true;
