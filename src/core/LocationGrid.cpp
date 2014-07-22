@@ -499,7 +499,14 @@ void LocationGrid::SetLocationColours()
 			}
 
 			// set alpha of colour
-			colour.SetAlpha( GetTileAlpha() );
+			if (colour == m_defaultColourOfTiles)
+			{
+				colour.SetAlpha( GetDefaultTileAlpha() );
+			}
+			else 
+			{
+				colour.SetAlpha( GetTileAlpha() );
+			}
 		}
 
 		m_tileModels.at(i)->SetColour(colour);
@@ -517,9 +524,12 @@ void LocationGrid::UpdateGridColours() {
 	FillTiles();
 
 	std::vector<LocationLayerPtr> locationLayers = m_locationSetLayer->GetAllActiveLocationLayers();
-	if ( StringTools::IsDecimalNumber(locationLayers[0]->GetLocationController()->GetData()[m_field])
-		|| m_combination == TileModel::GINI ) {
+	if ( !locationLayers.empty()
+		&& StringTools::IsDecimalNumber(locationLayers[0]->GetLocationController()->GetData()[m_field])
+	    || m_combination == TileModel::GINI ) {
+
 		UpdateNumericColourMap( m_minFieldValue, m_maxFieldValue );
+
 	} else {
 		UpdateQualitativeColourMap();
 	}
@@ -530,9 +540,13 @@ void LocationGrid::UpdateGridColours() {
 
 void LocationGrid::InitTileMinMax() {
 
+	if (!m_bVisible || m_tileFillMode == UNIFORM)
+		return;
+
 	std::vector<LocationLayerPtr> locationLayers = m_locationSetLayer->GetAllActiveLocationLayers();
 
-	if ( StringTools::IsDecimalNumber(locationLayers[0]->GetLocationController()->GetData()[m_field]) 
+	if ( !locationLayers.empty()
+		&& StringTools::IsDecimalNumber(locationLayers[0]->GetLocationController()->GetData()[m_field]) 
 		&& m_combination != TileModel::GINI ) {
 
 		InitTiles();
@@ -542,7 +556,6 @@ void LocationGrid::InitTileMinMax() {
 			std::map<std::wstring,std::wstring> data = locationLayers[i]->GetLocationController()->GetData();
 			float easting = StringTools::ToDouble(data[StringTools::ToStringW("Longitude")]);
 			float northing = StringTools::ToDouble(data[StringTools::ToStringW("Latitude")]);
-			
 			
 			// check if long and lat values exist. if they don't use easting and westing
 			if( easting != easting || 
@@ -622,7 +635,7 @@ void LocationGrid::InitTileMinMax() {
 
 					if (m_combination == TileModel::SUM) {
 
-						//If there aren't any positive values then the maximum sum is the maximum value
+						//If there aren't any positive values then the maximum sum is the maximum negative value
 						//otherwise, it's the accumulated positive values
 						if (sumOfPositiveValues == 0) {
 							tileMax = maxValue;
@@ -630,7 +643,7 @@ void LocationGrid::InitTileMinMax() {
 							tileMax = sumOfPositiveValues;
 						}
 
-						//If there aren't any negative values then the minimum sum is the minimum value 
+						//If there aren't any negative values then the minimum sum is the minimum positive value 
 						//(default colour used when no points in tile) otherwise, it's the accumulated negative values
 						if (sumOfNegativeValues == 0) {
 							tileMin = minValue;
@@ -713,10 +726,8 @@ void LocationGrid::UpdateQualitativeColourMap() {
 
 		Colour colour;
 
-		if (selectedColourMap->GetType() == ColourMap::CONTINUOUS || selectedColourMap->GetSize() < 4)
-			colour = selectedColourMap->GetInterpolatedColour(index++, 0, data.size()-1);
-		else if (selectedColourMap->GetType() == ColourMap::DISCRETE || selectedColourMap->GetType() == ColourMap::DISCRETIZED_CONTINUOUS)
-			colour = selectedColourMap->GetColour(index++);
+		if (!m_gridColourMap->GetColour(*setIt, colour))
+			colour = m_defaultColourOfTiles;
 
 		m_gridColourMap->SetColour(*setIt, colour);
 

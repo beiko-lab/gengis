@@ -51,7 +51,7 @@ def GetNonNullLocations( field ):
 		
 		
 def GetNonNullSequences( field ):
-	locData = ggAPI.layerTree.SequenceLayers()
+	locData = ggAPI.layerTree.GetSequenceLayers()
 	nonNullLoc = []
 	for loc in locData:
 		# get vector of all metadata

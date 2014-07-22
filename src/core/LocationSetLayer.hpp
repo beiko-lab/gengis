@@ -152,6 +152,8 @@ namespace GenGIS
 			return m_locationPolygons;
 		}
 
+		void UpdateGridAndPolygons();
+
 		/** 
 		* @brief Set active state of layer.
 		* @param state Active state of layer.

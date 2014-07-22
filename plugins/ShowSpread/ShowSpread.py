@@ -98,6 +98,9 @@ class ShowSpread ( ShowSpreadLayout ):
 	def OnRun( self, event ):
 		#clear the old label out if its there
 		GenGIS.graphics.RemoveLabel(self.label.GetId())
+
+		#init min and max field values for grid
+		GenGIS.layerTree.GetLocationSetLayer(0).GetLocationGrid().InitTileMinMax()
 		
 		field = self.m_DataChoice.GetStringSelection()
 		stopData = self.m_StopChoice.GetStringSelection()
@@ -139,7 +142,7 @@ class ShowSpread ( ShowSpreadLayout ):
 		else:
 		#	locData = GenGIS.layerTree.GetLocationLayers()
 			locData = dh.GetNonNullLocations( field )
-			
+
 		GenGIS.viewport.Refresh()
 		
 		# set initial visual properties of all location sites
@@ -197,6 +200,7 @@ class ShowSpread ( ShowSpreadLayout ):
 		self.OnDataChange( "fake" )
 		# NEEDS TO ALSO RESET START,STOP	
 			
+		GenGIS.layerTree.GetLocationSetLayer(0).UpdateGridAndPolygons()
 		GenGIS.viewport.Refresh()
 	
 	def OnDataChange( self, event ):
@@ -438,12 +442,10 @@ class ShowSpread ( ShowSpreadLayout ):
 				data = self.locData[key]
 				# ascending
 				if not self.sort:
-					print "mango"
 					filteredData = dh.genericFilter(data, curData + BinCeil, filterFunc.lessEqualFloat)
 					filteredData = dh.genericFilter(filteredData, minData - BinFloor, filterFunc.greaterEqualFloat)
 				#descending
 				else:
-					print curData," ",BinFloor," ",BinCeil," ",minData
 					filteredData = dh.genericFilter(data, curData - BinFloor , filterFunc.greaterEqualFloat)
 					filteredData = dh.genericFilter(filteredData, minData + BinCeil , filterFunc.lessEqualFloat)
 				#convert sequence to it's location if possible
@@ -486,6 +488,9 @@ class ShowSpread ( ShowSpreadLayout ):
 	
 			# set text of label 
 			self.label.SetText("%.2f" %curData)
+
+			# update grid and polygons
+			GenGIS.layerTree.GetLocationSetLayer(0).UpdateGridAndPolygons()
 			
 			GenGIS.layerTree.UpdatePythonState()
 			GenGIS.SafeYield()
@@ -507,7 +512,6 @@ class ShowSpread ( ShowSpreadLayout ):
 		timeCap = float( self.m_SpinTime.GetValue() ) / 10.0
 		# Need to add a fudge of -1 so that a Delta of 2 will include 0,1 then 2,3 etc
 		Delta = math.ceil( self.m_StartChoice.GetCount() / float(self.m_StepsCtrl.GetValue()) )
-		print Delta
 		# get cases from start date to current simulation date
 	#	curData = startData
 		curIndex = self.m_StartChoice.FindString(startData)
@@ -596,6 +600,9 @@ class ShowSpread ( ShowSpreadLayout ):
 				
 			# set date of label 
 			self.label.SetText(curData)
+
+			# update grid and polygons
+			GenGIS.layerTree.GetLocationSetLayer(0).UpdateGridAndPolygons()
 			
 			GenGIS.layerTree.UpdatePythonState()
 			GenGIS.SafeYield()
@@ -701,6 +708,9 @@ class ShowSpread ( ShowSpreadLayout ):
 					
 			# set date of label
 			self.label.SetText(str(curData.month) + "/" + str(curData.day) + "/" + str(curData.year))
+
+			# update grid and polygons
+			GenGIS.layerTree.GetLocationSetLayer(0).UpdateGridAndPolygons()
 			
 			GenGIS.layerTree.UpdatePythonState()
 			GenGIS.SafeYield()
