@@ -218,3 +218,12 @@ void LocationSetLayer::ToggleActive()
 { 
 	m_locationSetController->ToggleActive(); 
 }
+
+void LocationSetLayer::UpdateGridAndPolygons() {
+
+	if (m_locationGrid->IsVisible() && m_locationGrid->GetTileFillMode() != LocationGrid::UNIFORM)
+		m_locationGrid->UpdateGridColours();
+	if (m_locationPolygons->IsVisible())
+		m_locationPolygons->SetPolygonsChanged(true);
+
+}

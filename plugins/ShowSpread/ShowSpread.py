@@ -98,6 +98,9 @@ class ShowSpread ( ShowSpreadLayout ):
 	def OnRun( self, event ):
 		#clear the old label out if its there
 		GenGIS.graphics.RemoveLabel(self.label.GetId())
+
+		#init min and max field values for grid
+		GenGIS.layerTree.GetLocationSetLayer(0).GetLocationGrid().InitTileMinMax()
 		
 		field = self.m_DataChoice.GetStringSelection()
 		stopData = self.m_StopChoice.GetStringSelection()
@@ -139,7 +142,7 @@ class ShowSpread ( ShowSpreadLayout ):
 		else:
 		#	locData = GenGIS.layerTree.GetLocationLayers()
 			locData = dh.GetNonNullLocations( field )
-			
+
 		GenGIS.viewport.Refresh()
 		
 		# set initial visual properties of all location sites
@@ -197,6 +200,7 @@ class ShowSpread ( ShowSpreadLayout ):
 		self.OnDataChange( "fake" )
 		# NEEDS TO ALSO RESET START,STOP	
 			
+		GenGIS.layerTree.GetLocationSetLayer(0).UpdateGridAndPolygons()
 		GenGIS.viewport.Refresh()
 	
 	def OnDataChange( self, event ):
@@ -484,6 +488,9 @@ class ShowSpread ( ShowSpreadLayout ):
 	
 			# set text of label 
 			self.label.SetText("%.2f" %curData)
+
+			# update grid and polygons
+			GenGIS.layerTree.GetLocationSetLayer(0).UpdateGridAndPolygons()
 			
 			GenGIS.layerTree.UpdatePythonState()
 			GenGIS.SafeYield()
@@ -593,6 +600,9 @@ class ShowSpread ( ShowSpreadLayout ):
 				
 			# set date of label 
 			self.label.SetText(curData)
+
+			# update grid and polygons
+			GenGIS.layerTree.GetLocationSetLayer(0).UpdateGridAndPolygons()
 			
 			GenGIS.layerTree.UpdatePythonState()
 			GenGIS.SafeYield()
@@ -698,6 +708,9 @@ class ShowSpread ( ShowSpreadLayout ):
 					
 			# set date of label
 			self.label.SetText(str(curData.month) + "/" + str(curData.day) + "/" + str(curData.year))
+
+			# update grid and polygons
+			GenGIS.layerTree.GetLocationSetLayer(0).UpdateGridAndPolygons()
 			
 			GenGIS.layerTree.UpdatePythonState()
 			GenGIS.SafeYield()
