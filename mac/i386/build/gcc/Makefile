@@ -17,7 +17,7 @@ export GENGISBUILDTYPE
 export GENGISDEBUGFLAG
 
 # Set the path to third-party libraries
-LIBRARY3RD_PATH = ../../../i386/pythonUpdate/library3rd
+LIBRARY3RD_PATH = ../../../i386/library3rd
 
 # Library versions
 BOOST_VERSION = boost_1_47
