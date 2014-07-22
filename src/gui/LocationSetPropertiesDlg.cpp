@@ -1025,9 +1025,8 @@ void LocationSetPropertiesDlg::OnColourFieldChange( wxCommandEvent& event )
 { 
 	std::vector<std::wstring> fieldValues;
 	GetSortedFieldValues(m_cboColourField->GetValue().c_str(), fieldValues);
-
-	m_colourMapWidget->SetFieldValues(m_scrolledWindowColour, fieldValues, 
-									  m_cboColourField->GetValue().c_str(), m_locationSetLayer->GetAllLocationLayers());
+	std::wstring curColField = m_cboColourField->GetValue().c_str();
+	m_colourMapWidget->SetFieldValues(m_scrolledWindowColour, fieldValues, curColField, m_locationSetLayer->GetAllLocationLayers());
 
 }
 

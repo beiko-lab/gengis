@@ -248,7 +248,7 @@ void ColourMapWidget::ActivateLocations() {
 
 /** Overloaded to handle adding visibility checkboxes to the colour window */
 void ColourMapWidget::SetFieldValues(wxScrolledWindow* scrolledWindow, const std::vector<std::wstring>& fieldValues, 
-									 std::wstring colourField, std::vector<LocationLayerPtr>& locations)
+									 const std::wstring& colourField, const std::vector<LocationLayerPtr>& locations)
 {
 	// clear any previous items
 	wxSizer* prevSizer = scrolledWindow->GetSizer();
@@ -290,7 +290,7 @@ void ColourMapWidget::SetFieldValues(wxScrolledWindow* scrolledWindow, const std
 				std::map<std::wstring,std::wstring> data = locations.at(i)->GetLocationController()->GetData();
 				std::map<std::wstring,std::wstring>::const_iterator currentField = data.find(colourField);
 
-				if ( currentField->second == wxString((*setIt).c_str()) && locations.at(i)->IsActive() )
+				if ( currentField->second == (*setIt).c_str() && locations.at(i)->IsActive() )
 					checkboxTrue = true;
 
 			}
