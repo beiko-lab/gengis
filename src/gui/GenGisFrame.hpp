@@ -346,6 +346,9 @@ namespace GenGIS
 		/** Remove selected view from viewport popup menu event. */
 		void OnSelectedViewRemove(wxCommandEvent& event);
 
+		/** Hide location in OpenGL viewport. */
+		void OnHideLocation ( wxCommandEvent& event );
+
 		/** Handle the erase event for the main form which is generated
 		whenever a window's background needs to be repainted. */
 		void OnEraseBackground( wxEraseEvent& event ){ /* prevent flicker */ }

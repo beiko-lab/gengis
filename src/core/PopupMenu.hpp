@@ -27,6 +27,7 @@ namespace GenGIS
 	const int ID_POPUP_MNU_HIDE                      = 7000;
 	const int ID_POPUP_MNU_PROPERTIES                = 7001;
 	const int ID_POPUP_MNU_REMOVE                    = 7002;
+	const int ID_POPUP_MNU_HIDE_LOCATION			 = 7003;
 
 	const int ID_POPUP_MNU_SUBTREE_SIGNIFICANCE_TEST = 7100;
 	const int ID_POPUP_MNU_EXTEND_POLYLINE           = 7101;

@@ -33,6 +33,7 @@
 #include "../core/VisualLabel.hpp"
 #include "../core/LayerTreeController.hpp"
 #include "../core/LayerTreeView.hpp"
+#include "../core/TreeLayer.hpp"
 #include "../core/LocationLayer.hpp"
 #include "../core/LocationSetLayer.hpp"
 #include "../core/LocationPolygons.hpp"
@@ -204,12 +205,8 @@ void LocationPropertiesDlg::ApplySymbology()
 		//Set Visibility
 		locationView->SetVisibility(m_chkLocationVisible->GetValue());
 
-		//Get tree item to set checkbox in the layer tree
-		uint locationLayerId = locationView->GetLocationLayerId();
-		LocationLayerPtr locationLayer = App::Inst().GetLayerTreeController()->GetLocationLayerById(locationLayerId);
-		wxTreeItemId treeItem = locationLayer->GetWXTreeItemId();
-		
 		//Set the checkbox in the layer tree
+		wxTreeItemId treeItem = m_locationLayer->GetWXTreeItemId();
 		LayerTreeViewPtr treeView = App::Inst().GetLayerTreeController()->GetTreeView();
 		treeView->SetChecked(treeItem, m_chkLocationVisible->GetValue());
 
@@ -217,6 +214,11 @@ void LocationPropertiesDlg::ApplySymbology()
 		std::vector<LocationSetLayerPtr> locationSets = App::Inst().GetLayerTreeController()->GetLocationSetLayers();
 		for(uint i = 0; i < locationSets.size(); i++)
 			locationSets[i]->GetLocationPolygons()->SetPolygonsChanged(true);
+
+		//Update tree
+		LayerTreeControllerPtr layerTreeController = App::Inst().GetLayerTreeController();
+		for (uint i = 0; i < layerTreeController->GetNumTreeLayers(); i++)
+			layerTreeController->GetTreeLayer(i)->GetGeoTreeView()->ProjectToActiveSet(layerTreeController->GetLocationLayers());
 	}
 
 	// set label properties

@@ -198,7 +198,10 @@ class ShowSpread ( ShowSpreadLayout ):
 			loc.GetController().SetSize( value[1] )
 			loc.GetController().SetActive( value[2] )
 		self.OnDataChange( "fake" )
-		# NEEDS TO ALSO RESET START,STOP	
+		# NEEDS TO ALSO RESET START,STOP
+
+		for i in xrange(0, GenGIS.layerTree.GetNumTreeLayers()):
+                        GenGIS.layerTree.GetTreeLayer(i).GetGeoTreeView().RestoreTree()
 			
 		GenGIS.layerTree.GetLocationSetLayer(0).UpdateGridAndPolygons()
 		GenGIS.viewport.Refresh()
