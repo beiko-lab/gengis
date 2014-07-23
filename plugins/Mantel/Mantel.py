@@ -306,7 +306,7 @@ class Mantel( MantelLayout ):
 		self.txtOutput.AppendText('Running Mantel Test...')
 		self.txtOutput.AppendText('\n')
 		mantelresult = r["mantel.rtest"](self.dependentdistance, self.independentdistance, nrepet = 1000)
-		robjects.globalEnv['mr'] = mantelresult
+		robjects.globalenv['mr'] = mantelresult
 		pvalue = r('mr$p')[0]
 		
 		self.txtOutput.AppendText('\n')

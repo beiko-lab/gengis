@@ -253,7 +253,8 @@ class ShowSpread ( ShowSpreadLayout ):
 		self.m_StepSizeTextCtrl.SetValue( str(Delta) )
 		self.m_BinStartCtrl.SetValue( str( abs(Delta/2) ) )
 		self.m_BinEndCtrl.SetValue( str( abs(Delta/2) ) )
-		self.m_StepsCtrl.SetValue( min( 10, self.m_StartChoice.GetCount() ) )
+#		self.m_StepsCtrl.SetValue( min( 10, self.m_StartChoice.GetCount() ) )
+#		self.m_StepsCtrl.SetValue( self.m_StartChoice.GetCount()  )
 
 	def dateStrToDate( self, dateStr ):
 		"""
