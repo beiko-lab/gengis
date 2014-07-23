@@ -3195,6 +3195,23 @@ void GenGisFrame::OnLocationSetShowAll(wxCommandEvent& event)
 		LayerTreeViewPtr treeView = App::Inst().GetLayerTreeController()->GetTreeView();
 		treeView->SetChecked(treeItem, locationLayer->IsActive());
 	}
+
+	//Redraw polygons
+	std::vector<LocationSetLayerPtr> locationSets = App::Inst().GetLayerTreeController()->GetLocationSetLayers();
+	for(uint i = 0; i < locationSets.size(); i++)
+		locationSets[i]->GetLocationPolygons()->SetPolygonsChanged(true);
+
+	//Update tree
+	LayerTreeControllerPtr layerTreeController = App::Inst().GetLayerTreeController();
+	for (uint i = 0; i < layerTreeController->GetNumTreeLayers(); i++) {
+		layerTreeController->GetTreeLayer(i)->GetGeoTreeView()->SetVisibility(true);
+		layerTreeController->GetTreeLayer(i)->GetGeoTreeView()->RestoreTree();
+
+		wxTreeItemId treeItem = layerTreeController->GetTreeLayer(i)->GetWXTreeItemId();
+		LayerTreeViewPtr treeView = App::Inst().GetLayerTreeController()->GetTreeView();
+		treeView->SetChecked(treeItem, true);		
+	}
+
 	App::Inst().GetViewport()->Refresh( true );
 }
 
@@ -3209,6 +3226,22 @@ void GenGisFrame::OnLocationSetHideAll(wxCommandEvent& event)
 		LayerTreeViewPtr treeView = App::Inst().GetLayerTreeController()->GetTreeView();
 		treeView->SetChecked(treeItem, locationLayer->IsActive());
 	}
+
+	//Redraw polygons
+	std::vector<LocationSetLayerPtr> locationSets = App::Inst().GetLayerTreeController()->GetLocationSetLayers();
+	for(uint i = 0; i < locationSets.size(); i++)
+		locationSets[i]->GetLocationPolygons()->SetPolygonsChanged(true);
+
+	//Update tree
+	LayerTreeControllerPtr layerTreeController = App::Inst().GetLayerTreeController();
+	for (uint i = 0; i < layerTreeController->GetNumTreeLayers(); i++) {
+		layerTreeController->GetTreeLayer(i)->GetGeoTreeView()->SetVisibility(false);
+
+		wxTreeItemId treeItem = layerTreeController->GetTreeLayer(i)->GetWXTreeItemId();
+		LayerTreeViewPtr treeView = App::Inst().GetLayerTreeController()->GetTreeView();
+		treeView->SetChecked(treeItem, false);		
+	}
+
 	App::Inst().GetViewport()->Refresh( true );
 }
 
