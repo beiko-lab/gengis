@@ -46,7 +46,6 @@ def GetNonNullLocations( field ):
 		# If fields are any of the special values for NULL
 		if ( data != "None" and data != "Null" and data != "NA" ):
 			nonNullLoc.append(loc)
-	print nonNullLoc
 	return nonNullLoc
 		
 		
@@ -59,7 +58,6 @@ def GetNonNullSequences( field ):
 		# If fields are any of the special values for NULL
 		if ( data != "None" and data != "Null" and data != "NA" ):
 			nonNullLoc.append(loc)
-	print nonNullLoc
 	return nonNullLoc
 	
 def isNumber(str):
