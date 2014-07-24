@@ -3021,8 +3021,9 @@ void GenGisFrame::OnHideLocation ( wxCommandEvent& event )
 		LayerTreeControllerPtr layerTreeController = App::Inst().GetLayerTreeController();
 		for (uint i = 0; i < layerTreeController->GetNumTreeLayers(); i++)
 		{
+			GeoTreeViewPtr geoTree = layerTreeController->GetTreeLayer(i)->GetGeoTreeView();
 			std::vector<GenGIS::LocationLayerPtr, std::allocator<GenGIS::LocationLayerPtr> > temp = App::Inst().GetLayerTreeController()->GetLocationLayers();
-			layerTreeController->GetTreeLayer(i)->GetGeoTreeView()->ProjectToActiveSet(temp);
+			geoTree->ProjectToActiveSet(temp);
 		}
 
 		//Refresh viewport
