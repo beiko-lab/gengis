@@ -3209,8 +3209,9 @@ void GenGisFrame::OnLocationSetShowAll(wxCommandEvent& event)
 	//Update tree
 	LayerTreeControllerPtr layerTreeController = App::Inst().GetLayerTreeController();
 	for (uint i = 0; i < layerTreeController->GetNumTreeLayers(); i++) {
-		layerTreeController->GetTreeLayer(i)->GetGeoTreeView()->SetVisibility(true);
-		layerTreeController->GetTreeLayer(i)->GetGeoTreeView()->RestoreTree();
+		GeoTreeViewPtr geoTree = layerTreeController->GetTreeLayer(i)->GetGeoTreeView();
+		geoTree->RestoreTree();
+		geoTree->SetVisibility(true);
 
 		wxTreeItemId treeItem = layerTreeController->GetTreeLayer(i)->GetWXTreeItemId();
 		LayerTreeViewPtr treeView = App::Inst().GetLayerTreeController()->GetTreeView();
@@ -3240,7 +3241,8 @@ void GenGisFrame::OnLocationSetHideAll(wxCommandEvent& event)
 	//Update tree
 	LayerTreeControllerPtr layerTreeController = App::Inst().GetLayerTreeController();
 	for (uint i = 0; i < layerTreeController->GetNumTreeLayers(); i++) {
-		layerTreeController->GetTreeLayer(i)->GetGeoTreeView()->SetVisibility(false);
+		GeoTreeViewPtr geoTree = layerTreeController->GetTreeLayer(i)->GetGeoTreeView();
+		geoTree->SetVisibility(false);
 
 		wxTreeItemId treeItem = layerTreeController->GetTreeLayer(i)->GetWXTreeItemId();
 		LayerTreeViewPtr treeView = App::Inst().GetLayerTreeController()->GetTreeView();
