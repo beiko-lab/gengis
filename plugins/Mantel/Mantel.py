@@ -28,6 +28,7 @@ from dataHelper import isNumber
 import wx
 import math
 import os
+import dataHelper as dh
 
 from scipy.stats import linregress
 from rpy2 import robjects
@@ -337,7 +338,8 @@ class Mantel( MantelLayout ):
 		robjects.r('library(ade4)')
 		r = robjects.r
 		locationSetController = GenGIS.layerTree.GetLocationSetLayer(0).GetController()
-		
+		switchedLocs = dh.LocationSetWeeder(  )
+		print switchedLocs
 		# Get distances for Independent Variable:
 		if self.radioFileIndependent.GetValue():
 			self.independent = str(self.lblFileIndependent.GetLabel())
@@ -486,7 +488,8 @@ class Mantel( MantelLayout ):
 
 		# get colour map
 		self.colourMap = GenGIS.colourMapManager.GetColourMap(self.cboColourMap.GetStringSelection())
-
+		dh.LocationSetRestore( switchedLocs )
+		
 	def ViewportPlot(self):
 		terrainController = GenGIS.layerTree.GetMapLayer(0).GetController()
 		

@@ -60,6 +60,21 @@ def GetNonNullSequences( field ):
 			nonNullLoc.append(loc)
 	return nonNullLoc
 	
+def LocationSetWeeder(  ):
+	locs = ggAPI.layerTree.GetLocationSetLayer(0).GetAllActiveLocationLayers()
+	switchedLocs = []
+	for loc in locs:
+		for field in loc.GetController().GetData().keys():
+		#	print field," ",loc.GetController().GetData()[field]
+			if loc.GetController().GetData()[field] == "None":
+				switchedLocs.append(loc)
+				loc.GetController().SetActive(False)
+	return switchedLocs
+	
+def LocationSetRestore( locations ):
+	for loc in locations:
+		loc.GetController().SetActive(True)
+	
 def isNumber(str):
 	try:
 		float(str)

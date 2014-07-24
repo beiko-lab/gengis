@@ -24,6 +24,7 @@ from CanonicalCorrelationAnalysisLayout import CanonicalCorrelationAnalysisLayou
 import GenGIS
 import wx
 import rpy2.robjects as robjects
+import dataHelper as dh
 
 class CanonicalCorrelationAnalysis( CanonicalCorrelationAnalysisLayout ):
 	def __init__(self, parent = None):
@@ -47,10 +48,10 @@ class CanonicalCorrelationAnalysis( CanonicalCorrelationAnalysisLayout ):
 				self.lstNotIncluded.Append(numDataField)
 			else:
 				self.lstIncluded.Append(numDataField)
-		
 		self.matrix = None
 	
 	def RunCCA(self, enviroVarsToUse, countField, categoryField):
+		switchedLocations = dh.LocationSetWeeder()
 		'''
 		Runs the CCA R plugin. Either does (1) a Grid Search (2) a Grid Search plus CCA (3) Matrix Correlation, depending on what was selected under "Operation to Perform"
 		'''
@@ -89,10 +90,11 @@ class CanonicalCorrelationAnalysis( CanonicalCorrelationAnalysisLayout ):
 		for seq in sequences:
 			seqData = seq.GetController().GetData()
 			siteId = seq.GetController().GetSiteId()
-			if countField == "N/A":
-					sequenceMatrix[str(siteId)][seqData[categoryField]] += 1
-			else:
-					sequenceMatrix[str(siteId)][seqData[categoryField]] += float(seqData[countField])
+			if str(siteId) in sequenceMatrix.keys():
+				if countField == "N/A":
+						sequenceMatrix[str(siteId)][seqData[categoryField]] += 1
+				else:
+						sequenceMatrix[str(siteId)][seqData[categoryField]] += float(seqData[countField])
 		# print sequenceMatrix
 		
 		numLocs = len(locations)
@@ -160,6 +162,7 @@ class CanonicalCorrelationAnalysis( CanonicalCorrelationAnalysisLayout ):
 		# PEN
 		if self.operationPEN.GetValue():
 			self.PEN()
+		dh.LocationSetRestore(switchedLocations)
 	
 	# Build correlation matrix for visualisation
 	def BuildCorrelationMatrix( self ):
