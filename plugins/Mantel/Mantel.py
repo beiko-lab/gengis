@@ -32,6 +32,11 @@ import dataHelper as dh
 
 from scipy.stats import linregress
 from rpy2 import robjects
+if os.name == "posix":
+        from rpy2.robjects import globalEnv as globalenv
+else:
+        from rpy2.robjects import globalenv as globalenv
+
 
 class Mantel( MantelLayout ):
 
@@ -307,7 +312,7 @@ class Mantel( MantelLayout ):
 		self.txtOutput.AppendText('Running Mantel Test...')
 		self.txtOutput.AppendText('\n')
 		mantelresult = r["mantel.rtest"](self.dependentdistance, self.independentdistance, nrepet = 1000)
-		robjects.globalenv['mr'] = mantelresult
+		globalenv['mr'] = mantelresult
 		pvalue = r('mr$p')[0]
 		
 		self.txtOutput.AppendText('\n')

@@ -24,6 +24,11 @@ from CanonicalCorrelationAnalysisLayout import CanonicalCorrelationAnalysisLayou
 import GenGIS
 import wx
 import rpy2.robjects as robjects
+import os
+if os.name == "posix":
+        from rpy2.robjects import globalEnv as globalenv
+else:
+        from rpy2.robjects import globalenv as globalenv
 import dataHelper as dh
 
 class CanonicalCorrelationAnalysis( CanonicalCorrelationAnalysisLayout ):
@@ -116,8 +121,8 @@ class CanonicalCorrelationAnalysis( CanonicalCorrelationAnalysisLayout ):
 		rLocationMatrix = r.matrix(rLocMat, nrow = numLocs, byrow = True)
 		rSequenceMatrix = r.matrix(rSeqMat, nrow = numLocs, byrow = True)
 		
-		robjects.globalenv["rLocationMatrix"] = rLocationMatrix
-		robjects.globalenv["rSequenceMatrix"] = rSequenceMatrix
+		globalenv["rLocationMatrix"] = rLocationMatrix
+		globalenv["rSequenceMatrix"] = rSequenceMatrix
 		
 		# Matrix Correlation
 		if self.operationMatrixCorrelation.GetValue():
@@ -127,16 +132,16 @@ class CanonicalCorrelationAnalysis( CanonicalCorrelationAnalysisLayout ):
 		# Grid Search (Used for Regularised CCA)
 		if self.operationGridSearch.GetValue():
 			try:
-				robjects.globalenv["minLoc"]  = float(self.txtMinLoc.GetValue())
-				robjects.globalenv["maxLoc"]  = float(self.txtMaxLoc.GetValue())
-				robjects.globalenv["cutsLoc"] = float(self.txtCutsLoc.GetValue())
-				robjects.globalenv["minSeq"]  = float(self.txtMinSeq.GetValue())
-				robjects.globalenv["maxSeq"]  = float(self.txtMaxSeq.GetValue())
-				robjects.globalenv["cutsSeq"] = float(self.txtCutsSeq.GetValue())
+				globalenv["minLoc"]  = float(self.txtMinLoc.GetValue())
+				globalenv["maxLoc"]  = float(self.txtMaxLoc.GetValue())
+				globalenv["cutsLoc"] = float(self.txtCutsLoc.GetValue())
+				globalenv["minSeq"]  = float(self.txtMinSeq.GetValue())
+				globalenv["maxSeq"]  = float(self.txtMaxSeq.GetValue())
+				globalenv["cutsSeq"] = float(self.txtCutsSeq.GetValue())
 			except:
 				wx.MessageBox("Text field values must be a number")
 				return
-			robjects.globalenv["gridSearch"] = r("estim.regul(rLocationMatrix, rSequenceMatrix, grid1 = seq(minLoc, maxLoc, l=cutsLoc), grid2 = seq(minSeq, maxSeq, l=cutsSeq))")
+			globalenv["gridSearch"] = r("estim.regul(rLocationMatrix, rSequenceMatrix, grid1 = seq(minLoc, maxLoc, l=cutsLoc), grid2 = seq(minSeq, maxSeq, l=cutsSeq))")
 			lambdaOne = r("gridSearch$lambda1")
 			lambdaTwo = r("gridSearch$lambda2")
 		
@@ -150,9 +155,9 @@ class CanonicalCorrelationAnalysis( CanonicalCorrelationAnalysisLayout ):
 				wx.MessageBox("Text field values must be a number")
 				return
 			ccaResult = r["rcc"](rLocationMatrix, rSequenceMatrix, lambdaOne, lambdaTwo)
-			robjects.globalenv["enviroVarsToUse"] = self.enviroVarsToUse
-			robjects.globalenv["catsToUse"] = self.setCategoryToUse
-			robjects.globalenv["ccaResult"] = ccaResult
+			globalenv["enviroVarsToUse"] = self.enviroVarsToUse
+			globalenv["catsToUse"] = self.setCategoryToUse
+			globalenv["ccaResult"] = ccaResult
 			r("plt.cc(ccaResult, d1=1, d2=2, var.label = TRUE, Xnames = enviroVarsToUse, Ynames = catsToUse)")
 			# Build the matrix of dot-producted CCA results
 			self.xScores = r("ccaResult$scores$corr.X.xscores")

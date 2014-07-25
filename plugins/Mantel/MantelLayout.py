@@ -16,7 +16,7 @@ import wx
 class MantelLayout ( wx.Frame ):
 	
 	def __init__( self, parent ):
-		wx.Frame.__init__ ( self, parent, id = wx.ID_ANY, title = u"Mantel Test", pos = wx.DefaultPosition, size = wx.Size( 800,731 ), style = wx.DEFAULT_FRAME_STYLE|wx.TAB_TRAVERSAL )
+		wx.Frame.__init__ ( self, parent, id = wx.ID_ANY, title = u"Mantel Test", pos = wx.DefaultPosition, size = wx.Size( 800,731 ), style = wx.DEFAULT_FRAME_STYLE|wx.TAB_TRAVERSAL|wx.VSCROLL )
 		
 		self.SetSizeHintsSz( wx.DefaultSize, wx.DefaultSize )
 		self.SetBackgroundColour( wx.SystemSettings.GetColour( wx.SYS_COLOUR_BTNFACE ) )
