@@ -681,8 +681,7 @@ class ShowSpread ( ShowSpreadLayout ):
 					
 				for fieldData in filteredData:
 					loc = GenGIS.layerTree.GetLocationLayer(key)
-					
-					locDate = self.dateStrToDate(loc.GetController().GetData()[field])
+					locDate = self.dateStrToDate(fieldData)
 					id = loc.GetController().GetId()
 					if id in numCases:
 						numCases[id] = numCases[id] + 1
