@@ -2,8 +2,8 @@
 the local namespace or any object."""
 
 __author__ = "Patrick K. O'Brien <pobrien@orbtech.com>"
-__cvsid__ = "$Id: filling.py 37633 2006-02-18 21:40:57Z RD $"
-__revision__ = "$Revision: 37633 $"[11:-2]
+__cvsid__ = "$Id: filling.py 63479 2010-02-14 05:24:22Z RD $"
+__revision__ = "$Revision: 63479 $"[11:-2]
 
 import wx
 
@@ -305,7 +305,8 @@ class Filling(wx.SplitterWindow):
         self.Bind(wx.EVT_SPLITTER_SASH_POS_CHANGED, self.OnChanged)
 
     def OnChanged(self, event):
-        #this is important: do not evaluate this event=> otherwise, splitterwindow behaves strange
+        #this is important: do not evaluate this event=> otherwise,
+        # splitterwindow behaves strangely
         #event.Skip()
         pass
 

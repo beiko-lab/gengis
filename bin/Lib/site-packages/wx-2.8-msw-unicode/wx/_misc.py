@@ -102,6 +102,7 @@ SYS_COLOUR_GRADIENTINACTIVECAPTION = _misc_.SYS_COLOUR_GRADIENTINACTIVECAPTION
 SYS_COLOUR_MENUHILIGHT = _misc_.SYS_COLOUR_MENUHILIGHT
 SYS_COLOUR_MENUBAR = _misc_.SYS_COLOUR_MENUBAR
 SYS_COLOUR_LISTBOXTEXT = _misc_.SYS_COLOUR_LISTBOXTEXT
+SYS_COLOUR_LISTBOXHIGHLIGHTTEXT = _misc_.SYS_COLOUR_LISTBOXHIGHLIGHTTEXT
 SYS_COLOUR_MAX = _misc_.SYS_COLOUR_MAX
 SYS_MOUSE_BUTTONS = _misc_.SYS_MOUSE_BUTTONS
 SYS_BORDER_X = _misc_.SYS_BORDER_X
@@ -907,6 +908,11 @@ class BusyCursor(object):
         _misc_.BusyCursor_swiginit(self,_misc_.new_BusyCursor(*args, **kwargs))
     __swig_destroy__ = _misc_.delete_BusyCursor
     __del__ = lambda self : None;
+    def __enter__(self):
+        return self
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        return False
+
 _misc_.BusyCursor_swigregister(BusyCursor)
 
 class WindowDisabler(object):
@@ -918,6 +924,11 @@ class WindowDisabler(object):
         _misc_.WindowDisabler_swiginit(self,_misc_.new_WindowDisabler(*args, **kwargs))
     __swig_destroy__ = _misc_.delete_WindowDisabler
     __del__ = lambda self : None;
+    def __enter__(self):
+        return self
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        return False
+
 _misc_.WindowDisabler_swigregister(WindowDisabler)
 
 class BusyInfo(_core.Object):
@@ -930,6 +941,11 @@ class BusyInfo(_core.Object):
     __swig_destroy__ = _misc_.delete_BusyInfo
     __del__ = lambda self : None;
     def Destroy(self): pass 
+    def __enter__(self):
+        return self
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        return False
+
 _misc_.BusyInfo_swigregister(BusyInfo)
 
 class StopWatch(object):
@@ -1812,6 +1828,11 @@ class LogNull(object):
         _misc_.LogNull_swiginit(self,_misc_.new_LogNull(*args, **kwargs))
     __swig_destroy__ = _misc_.delete_LogNull
     __del__ = lambda self : None;
+    def __enter__(self):
+        return self
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        return False
+
 _misc_.LogNull_swigregister(LogNull)
 
 def LogTrace(*args):
@@ -5695,6 +5716,11 @@ class Clipboard(_core.Object):
         return _misc_.Clipboard_Get(*args, **kwargs)
 
     Get = staticmethod(Get)
+    def __enter__(self):
+        return self
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        self.Close()
+
 _misc_.Clipboard_swigregister(Clipboard)
 
 def Clipboard_Get(*args):

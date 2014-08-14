@@ -31,6 +31,7 @@
 #include "../core/SequenceLayer.hpp"
 #include "../core/SequenceController.hpp"
 #include "../core/LocationSetController.hpp"
+#include "../core/LocationPolygons.hpp"
 
 #include "../utils/ColourMapManager.hpp"
 #include "../utils/ColourMap.hpp"
@@ -43,9 +44,10 @@ using namespace GenGIS;
 
 LocationSetLayer::LocationSetLayer(uint id, LayerPtr parent, ChartSetViewPtr chartSetView) :
 	Layer(id, Layer::LOCATION_SET, parent), m_chartSetView(chartSetView), m_locationGrid(new LocationGrid()),
-		m_locationSetController(new LocationSetController())
+		m_locationSetController(new LocationSetController()),
+		m_locationPolygons (new LocationPolygons())
 {
-
+	
 }
 
 template<class Archive>
@@ -55,6 +57,7 @@ void LocationSetLayer::serialize(Archive & ar, const unsigned int version)
 	ar & m_locationGrid;          // LocationGridPtr
 	ar & m_locationLayers;        // std::vector<LocationLayerPtr>
 	ar & m_locationSetController; // LocationSetControllerPtr
+	ar & m_locationPolygons;	  // LocationPolygonsPtr
 }
 template void LocationSetLayer::serialize<boost::archive::text_woarchive>(boost::archive::text_woarchive& ar, const unsigned int version);
 template void LocationSetLayer::serialize<boost::archive::text_wiarchive>(boost::archive::text_wiarchive& ar, const unsigned int version);
@@ -172,6 +175,9 @@ void LocationSetLayer::Render()
 	{
 		locationLayer->Render();
 	}
+
+	m_locationPolygons->Render();
+
 }
 
 bool LocationSetLayer::IsSequencesData()
@@ -211,4 +217,13 @@ bool LocationSetLayer::IsActive() const
 void LocationSetLayer::ToggleActive() 
 { 
 	m_locationSetController->ToggleActive(); 
+}
+
+void LocationSetLayer::UpdateGridAndPolygons() {
+
+	if (m_locationGrid->IsVisible() && m_locationGrid->GetTileFillMode() != LocationGrid::UNIFORM)
+		m_locationGrid->UpdateGridColours();
+	if (m_locationPolygons->IsVisible())
+		m_locationPolygons->SetPolygonsChanged(true);
+
 }

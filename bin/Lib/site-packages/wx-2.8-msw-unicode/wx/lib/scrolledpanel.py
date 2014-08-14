@@ -3,7 +3,7 @@
 # Author:       Will Sadkin
 # Created:      03/21/2003
 # Copyright:    (c) 2003 by Will Sadkin
-# RCS-ID:       $Id: scrolledpanel.py 54288 2008-06-20 01:56:08Z RD $
+# RCS-ID:       $Id: scrolledpanel.py 67479 2011-04-13 18:26:41Z RD $
 # License:      wxWindows license
 #----------------------------------------------------------------------------
 # 12/11/2003 - Jeff Grimmett (grimmtooth@softhome.net)
@@ -15,8 +15,8 @@
 # o wxScrolledPanel -> ScrolledPanel
 #
 
-import  wx
-
+import wx
+import math
 
 class ScrolledPanel( wx.PyScrolledWindow ):
 
@@ -38,12 +38,13 @@ class ScrolledPanel( wx.PyScrolledWindow ):
         wx.PyScrolledWindow.__init__(self, parent, id,
                                      pos=pos, size=size,
                                      style=style, name=name)
+        self.scrollIntoView = True
         self.SetInitialSize(size)
         self.Bind(wx.EVT_CHILD_FOCUS, self.OnChildFocus)
 
 
     def SetupScrolling(self, scroll_x=True, scroll_y=True, rate_x=20, rate_y=20, 
-                       scrollToTop=True):
+                       scrollToTop=True, scrollIntoView=True):
         """
         This function sets up the event handling necessary to handle
         scrolling properly. It should be called within the __init__
@@ -52,8 +53,9 @@ class ScrolledPanel( wx.PyScrolledWindow ):
         thus the size of the scrolling area can be determined.
 
         """
-        # The following is all that is needed to integrate the sizer and the
-        # scrolled window.
+        self.scrollIntoView = scrollIntoView
+
+        # The following is all that is needed to integrate the sizer and the scrolled window
         if not scroll_x: rate_x = 0
         if not scroll_y: rate_y = 0
 
@@ -77,17 +79,23 @@ class ScrolledPanel( wx.PyScrolledWindow ):
 
 
     def OnChildFocus(self, evt):
-        # If the child window that gets the focus is not visible,
-        # this handler will try to scroll enough to see it.
-        evt.Skip()
+        """
+        If the child window that gets the focus is not fully visible,
+        this handler will try to scroll enough to see it.
+        """
         child = evt.GetWindow()
-        self.ScrollChildIntoView(child)
+        if self.scrollIntoView:
+            self.ScrollChildIntoView(child)
+            evt.Skip()
         
 
     def ScrollChildIntoView(self, child):
         """
-        Scrolls the panel such that the specified child window is in view.
-        """        
+        Scroll the panel so that the specified child window is in
+        view.  NOTE. This method looks redundant if evt.Skip() is
+        called as well - the base wx.ScrolledWindow widget now seems
+        to be doing the same thing anyway
+        """ 
         sppu_x, sppu_y = self.GetScrollPixelsPerUnit()
         vs_x, vs_y   = self.GetViewStart()
         cr = child.GetRect()
@@ -108,17 +116,17 @@ class ScrolledPanel( wx.PyScrolledWindow ):
 
         # is it past the right edge ?
         if cr.right > clntsz.width and sppu_x > 0:
-            diff = (cr.right - clntsz.width) / sppu_x
+            diff = math.ceil(1.0 * (cr.right - clntsz.width + 1) / sppu_x)
             if cr.x - diff * sppu_x > 0:
-                new_vs_x = vs_x + diff + 1
+                new_vs_x = vs_x + diff
             else:
                 new_vs_x = vs_x + (cr.x / sppu_x)
                 
         # is it below the bottom ?
         if cr.bottom > clntsz.height and sppu_y > 0:
-            diff = (cr.bottom - clntsz.height) / sppu_y
+            diff = math.ceil(1.0 * (cr.bottom - clntsz.height + 1) / sppu_y)
             if cr.y - diff * sppu_y > 0:
-                new_vs_y = vs_y + diff + 1
+                new_vs_y = vs_y + diff
             else:
                 new_vs_y = vs_y + (cr.y / sppu_y)
 

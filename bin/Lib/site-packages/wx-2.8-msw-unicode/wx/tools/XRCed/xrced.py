@@ -2,7 +2,7 @@
 # Purpose:      XRC editor, main module
 # Author:       Roman Rolinsky <rolinsky@mema.ucl.ac.be>
 # Created:      20.08.2001
-# RCS-ID:       $Id: xrced.py 53700 2008-05-22 15:59:07Z ROL $
+# RCS-ID:       $Id: xrced.py 64107 2010-04-22 14:05:36Z ROL $
 
 """
 
@@ -175,12 +175,12 @@ Please upgrade wxWidgets to %d.%d.%d or higher.''' % MinWxVersion)
         conf.expandOnOpen = conf.ReadBool('Prefs/expandOnOpen', True)
         conf.fitTestWin = conf.ReadBool('Prefs/fitTestWin', True)
         conf.useSubclassing = conf.ReadBool('Prefs/useSubclassing', False)
+        conf.allowExec = conf.Read('Prefs/allowExec', 'ask')
         # Toolbar configuration
         conf.TB_file = conf.ReadBool('Prefs/TB_file', True)
         conf.TB_undo = conf.ReadBool('Prefs/TB_undo', True)
         conf.TB_copy = conf.ReadBool('Prefs/TB_copy', True)
         conf.TB_move = conf.ReadBool('Prefs/TB_move', True)
-#        conf.allowExec = conf.Read('Prefs/allowExec', 'ask')
         p = 'Prefs/Defaults/Container'
         if conf.HasEntry(p):
             conf.defaultsContainer = ReadDictFromString(conf.Read(p))
@@ -234,11 +234,11 @@ Please upgrade wxWidgets to %d.%d.%d or higher.''' % MinWxVersion)
         conf.WriteInt('Prefs/TB_copy', conf.TB_copy)
         conf.WriteInt('Prefs/TB_move', conf.TB_move)
         conf.WriteInt('Prefs/useSubclassing', conf.useSubclassing)
-#        conf.Write('Prefs/allowExec', conf.allowExec)
+        conf.Write('Prefs/allowExec', conf.allowExec)
         v = conf.defaultsContainer
         if v: conf.Write('Prefs/Defaults/Container', DictToString(v))
         v = conf.defaultsControl
-        if v: conf.Write('Prefs/Defaults/Conteol', DictToString(v))
+        if v: conf.Write('Prefs/Defaults/Control', DictToString(v))
         
         conf.Flush()
 

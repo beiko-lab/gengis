@@ -1,14 +1,12 @@
-Syntax Plugin Specifications
+Syntax Plugin Specifications:
 
 Included in this document are the specifications of what is needed to write a 
-plugin to extend the syntax highlighting functionality of the editor. TO add a
-new syntax file grab the syntax_mod template from the templates directory and fill
-it out to match the specs of the language you want to provide highlighting for.
+a new module to extend the syntax highlighting support in Editra.
 
 0: Before you begin
     - Editra uses Scintilla for its text control. Since documentation is not
-      readily available, I suggest you grab the Scintilla sources and see what
-      settings are available for each language.
+      readily available, its suggested that you grab the Scintilla sources and 
+      see what settings are available for each language.
 
 1: File Specifications
     - The plugin file is a python module that provides the editor with the 
@@ -16,16 +14,14 @@ it out to match the specs of the language you want to provide highlighting for.
 
 2: What the plugin needs to provide
 
+    CLASS: SyntaxData a subclass instance of syndata.SyntaxDataBase
+
     METHODS:
-      - FUNCTION: Keywords(lang_id=0)
+      - FUNCTION: GetKeywords(self)
         DESC: Provides a set of language keywords and their level to set in
               the editor.
-        PARAM: integer "lang_id" is an optional parameter for requesting a
-               particular subset of keywords or for specifying a certain dialect
-               of a language. This allows for modules to handle multiple related
-               but different syntax sets. The passed values are the ones defined
-               in synglob.py.
-        RETURN: An ordered/unorder list of tuples.
+        PARAM: None
+        RETURN: A list of tuples.
         SPECIFICATIONS:
             The tuples in the list each contain two items.
                 -The first item is an integer value specifying the Scintilla
@@ -33,22 +29,22 @@ it out to match the specs of the language you want to provide highlighting for.
                 -The second is a string of space separated keywords.
         EXAMPLE RETURN: [(0, "spam ni"), (1, "monty python")]
 
-      - FUNCTION: SyntaxSpec(lang_id=0)
+      - FUNCTION: GetSyntaxSpec(self)
         DESC: This function is called to get the mapping of the stc style attributes
               to the Editra Style Sheet tags.
-        PARAM: lang_id, just as in Keywords
+        PARAM: None
         RETURN: List of tuple string pairs, that pair the STC value to the wanted
                 style tag.
         SPECIFICATIONS:
             The values in tuples of the return list must be ordered as follows
                 - (STC_* value, Editra Style Tag)
         EXAMPLE RETURN: [('STC_C_DEFAULT', 'default_style'), 
-                         (STC_C_COMMENT, 'comment_style')] 
+                         ('STC_C_COMMENT', 'comment_style')] 
 
-      - FUNCTION: Properties(lang_id=0)
+      - FUNCTION: GetProperties(self)
         DESC: This function is called to get any extra lexer properties that the
               editor should set for the given language.
-        PARAM: lang_id, just as in Keywords
+        PARAM: None
         RETURN: List of tuples
         SPECIFICATIONS:
             The values in the tuples of the return list must be as follows
@@ -57,10 +53,10 @@ it out to match the specs of the language you want to provide highlighting for.
             return an empty list.
         EXAMPLE RETURN: [("fold", "1"), ("fold.comment", "1")]
 
-    - FUNCTION: CommentPattern(lang_id=0)
+    - FUNCTION: GetCommentPattern(self)
         DESC: Get the patern of comment meta characters to use for commenting
               out code in the given language.
-        PARAM: integer "lang_id", used for same purpose as in Keywords()
+        PARAM: None
         RETURN: Ordered List of strings
         SPECIFICATIONS:
             The returned list of strings must be in the order that the characters
@@ -70,14 +66,14 @@ it out to match the specs of the language you want to provide highlighting for.
             - Bash: [ "#" ]
             - C:    ["/*", "*/]
 
-    - FUNCTION: KeywordString(option=0)
-        DESC: Provided primarly for other syntax modules that may wish to request
-              resources from this module.
-        PARAM: integer "option", is an optional argument for requesting a subset
-               or particular keyword string.
-        RETURN: A string of keywords
-        SPECIFICATIONS:
-        EXAMPLE RETURN: "int double short"
+
+OPTIONAL EXTENSIONS:
+
+Optional Features that language extensions can provide. These methods can be
+added to a syntax module by using the syndata.SyntaxDataBase.RegisterFeature
+method.
+
+Currently Supported Features:
 
     - FUNCTION: StyleText(stc, start, end)
         DESC: Used for styling the text in a buffer that is using a container
@@ -85,7 +81,7 @@ it out to match the specs of the language you want to provide highlighting for.
         PARAM: stc The EditraStyledText control instance to do the styling in
         PARAM: start The start position of the styling
         PARAM: end The end position to style to
-        SPECIFICATIONS:
+        SPECIFICATIONS: Register with the synglob.FEATURE_STYLETEXT id
         EXAMPLE:
 
     - FUNCTION: AutoIndenter(stc, current_pos, indent_char)
@@ -94,11 +90,10 @@ it out to match the specs of the language you want to provide highlighting for.
         PARAM: current_pos The current position of the caret in the buffer
         PARAM: indent_char Prefered character to use for indentation 
                ("\t" or " " * tabwidth)
-        RETURN: Text to insert at current_pos
         SPECIFICATIONS: Called when the Return key is hit. Note that the new
                         line character is not sent to the buffer so it needs
-                        to be handled by this method. For any new line lines
-                        that need to be inserted use a '\n' character. The
-                        buffer will handle any necessary conversions on
-                        platforms that use other characters or for preferences
-                        set at the user level.
+                        to be handled by this method. This method must also
+                        call AddText to add the new whitespace to the buffer.
+
+                        Register with the synglob.FEATURE_AUTOINDENT id
+

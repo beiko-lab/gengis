@@ -1,0 +1,3045 @@
+# Romanian translation for editra
+# Copyright (c) 2008 Rosetta Contributors and Canonical Ltd 2008
+# This file is distributed under the same license as the editra package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2008.
+# Lucian Adrian Grijincu <lucian.grijincu@gmail.com>, 2009.
+msgid ""
+msgstr ""
+"Project-Id-Version: editra\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2010-12-05 17:02-0600\n"
+"PO-Revision-Date: 2009-12-01 23:54+0000\n"
+"Last-Translator: Lucian Adrian Grijincu <lucian.grijincu@gmail.com>\n"
+"Language-Team: Romanian GNOME Team <gnomero-list@lists.sourceforge.net>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2011-02-26 20:32+0000\n"
+"X-Generator: Launchpad (build 12460)\n"
+"Language: ro\n"
+
+#: ../../src/ed_search.py:429
+#, python-format
+msgid "\"%s\" was not found"
+msgstr "„%s” nu a fost găsit"
+
+#: ../../src/ed_search.py:638
+#, python-format
+msgid "%d matches were replaced."
+msgstr "%d termeni au fost înlocuiți."
+
+#: ../../src/util.py:369
+#, python-format
+msgid "%s Source File"
+msgstr "Fișier sursă %s"
+
+#: ../../src/ed_main.py:609
+#, python-format
+msgid ""
+"%s could not be found.\n"
+"Perhaps it's been moved or deleted."
+msgstr ""
+"%s nu a putut fi găsit.\n"
+"E posibil să fi fost mutat sau șters."
+
+#: ../../src/ed_stc.py:1794
+#, python-format
+msgid "%s does not exist"
+msgstr "%s nu există"
+
+#: ../../src/ed_editv.py:442
+#, python-format
+msgid ""
+"%s has been deleted since its last save point.\n"
+"\n"
+"Would you like to save it again?"
+msgstr ""
+"%s a fost șters între timp.\n"
+"Doriți să îl salvați din nou?"
+
+#: ../../src/ed_editv.py:462
+#, python-format
+msgid ""
+"%s has been modified by another application.\n"
+"\n"
+"Would you like to reload it?"
+msgstr ""
+"%s a fost modificat de o altă aplicație.\n"
+"\n"
+"Doriți să îl reîncărcați?"
+
+#: ../../src/ed_menu.py:829
+msgid "&About..."
+msgstr "&Despre..."
+
+#: ../../src/ed_menu.py:521
+msgid "&Close Tab"
+msgstr "În&chide tabul"
+
+#: ../../src/ed_menu.py:581
+msgid "&Copy"
+msgstr "&Copiază"
+
+#: ../../src/ed_menu.py:645
+msgid "&Edit"
+msgstr "&Editare"
+
+#: ../../src/ed_menu.py:567
+msgid "&File"
+msgstr "&Fișier"
+
+#: ../../src/ed_menu.py:629
+msgid "&Find"
+msgstr "&Caută"
+
+#: ../../src/ed_menu.py:719
+msgid "&Font"
+msgstr "&Font"
+
+#: ../../src/ed_menu.py:689
+msgid "&Goto Line"
+msgstr "&Treci la linia"
+
+#: ../../src/ed_main.py:150 ../../src/ed_menu.py:843
+msgid "&Help"
+msgstr "&Ajutor"
+
+#: ../../src/ed_menu.py:511
+msgid "&New Tab"
+msgstr "Filă &nouă"
+
+#: ../../src/ed_menu.py:516
+msgid "&Open"
+msgstr "&Deschide"
+
+#: ../../src/ed_menu.py:583
+msgid "&Paste"
+msgstr "Li&pește"
+
+#: ../../src/ed_menu.py:562
+msgid "&Print"
+msgstr "Ti&părește"
+
+#: ../../src/ed_menu.py:632
+msgid "&Quick Find"
+msgstr "Că&utare rapidă"
+
+#: ../../src/ed_menu.py:528
+msgid "&Save"
+msgstr "&Salvează"
+
+#: ../../src/ed_menu.py:793
+msgid "&Settings"
+msgstr "&Configurări"
+
+#: ../../src/ed_menu.py:706
+msgid "&Toolbar"
+msgstr "Bara de unel&te"
+
+#: ../../src/ed_menu.py:820
+msgid "&Tools"
+msgstr "Unel&te"
+
+#: ../../src/ed_menu.py:576
+msgid "&Undo"
+msgstr "An&ulează"
+
+#: ../../src/ed_menu.py:710
+msgid "&View"
+msgstr "&Vizualizare"
+
+#: ../../plugins/Launch/launch/cfgdlg.py:306
+msgid "**Alias**"
+msgstr "**Alias**"
+
+#: ../../plugins/Launch/launch/cfgdlg.py:306
+msgid "**New Value**"
+msgstr "**Valoare nouă**"
+
+#: ../../src/eclib/filterdlg.py:76
+msgid "<< Remove"
+msgstr ""
+
+#: ../../src/eclib/errdlg.py:322 ../../plugins/Launch/launch/launch.py:596
+msgid "Abort"
+msgstr "Abandonează"
+
+#: ../../src/ed_menu.py:830
+msgid "About"
+msgstr "Despre"
+
+#: ../../src/ed_cmdbar.py:761
+#, python-format
+msgid "Access Denied: %s"
+msgstr "Acces interzis: %s"
+
+#: ../../src/eclib/filterdlg.py:75
+msgid "Add >>"
+msgstr ""
+
+#: ../../plugins/Launch/launch/cfgdlg.py:242
+msgid "Add a new executable"
+msgstr "Adaugă un nou executabil"
+
+#: ../../src/ed_menu.py:597
+msgid "Add a new line after the current line"
+msgstr "Adaugă o linie nouă după linia curentă"
+
+#: ../../src/ed_menu.py:599
+msgid "Add a new line before the current line"
+msgstr "Adaugă o linie nouă înaintea liniei curente"
+
+#: ../../src/ed_menu.py:627
+msgid "Add and remove bookmarks"
+msgstr "Adaugă și șterge semnele de carte"
+
+#: ../../src/prefdlg.py:777
+msgid "Adds extra scrolling room after last line"
+msgstr ""
+
+#: ../../src/prefdlg.py:197
+msgid "Advanced"
+msgstr "Avansat"
+
+#: ../../plugins/Launch/launch/cfgdlg.py:527
+msgid "Alias"
+msgstr "Alias"
+
+#: ../../src/ed_log.py:170 ../../src/ed_log.py:245
+msgid "All"
+msgstr "Toate"
+
+#: ../../plugins/codebrowser/codebrowser/cbconfig.py:42
+msgid "Alphabetically"
+msgstr ""
+
+#: ../../src/Editra.py:601
+#, python-format
+msgid ""
+"An updated version of Editra is available\n"
+"Would you like to download Editra %s now?"
+msgstr ""
+"O versiune mai nouă este disponibilă.\n"
+"Doriți să descărcați Editra %s acum?"
+
+#: ../../src/prefdlg.py:763
+msgid "AntiAliasing"
+msgstr "AntiAlias (minimizarea distorsiunilor)"
+
+#: ../../src/prefdlg.py:191
+msgid "Appearance"
+msgstr "Aspect"
+
+#: ../../src/prefdlg.py:1768
+msgid "Apply"
+msgstr "Aplică"
+
+#: ../../src/eclib/filemgrdlg.py:167
+#, python-format
+msgid "Are you sure want to delete %s?"
+msgstr ""
+
+#: ../../src/plugdlg.py:1060
+#, python-format
+msgid ""
+"Are you sure you want to uninstall %s?\n"
+"This cannot be undone."
+msgstr ""
+"Sigur doriți să dezinstalați %s?\n"
+"Această acțiune nu poate fi anulată."
+
+#: ../../plugins/Launch/launch/launch.py:192
+#, fuzzy
+msgid "Arguments"
+msgstr "Argumente script"
+
+#: ../../src/style_editor.py:607
+msgid "Attributes"
+msgstr "Atribute"
+
+#: ../../plugins/Launch/launch/cfgdlg.py:416
+msgid "Audible feedback when errors are detected"
+msgstr "Feedback auditiv la detectarea erorilor"
+
+#: ../../src/ed_main.py:1251
+msgid "Aui Pane Navigator"
+msgstr "Tab-uri AUI"
+
+#: ../../src/plugdlg.py:948 ../../src/plugdlg.py:1129
+#, python-format
+msgid "Author: %s"
+msgstr "Autor: %s"
+
+#: ../../src/ed_menu.py:778 ../../src/prefdlg.py:944
+msgid "Auto-Completion"
+msgstr "Completare automată"
+
+#: ../../src/ed_menu.py:780 ../../src/prefdlg.py:954
+msgid "Auto-Indent"
+msgstr "Auto-indentare"
+
+#: ../../src/perspective.py:73
+msgid "Automatic"
+msgstr ""
+
+#: ../../src/prefdlg.py:500
+msgid "Automatically Backup Files"
+msgstr "Creează automat copii de siguranță fișierelor"
+
+#: ../../plugins/Launch/launch/cfgdlg.py:413
+msgid "Automatically clear buffer between runs"
+msgstr "Golește automat memoria tampon între rulări"
+
+#: ../../src/prefdlg.py:532
+msgid "Automatically reload files when changes are detected on disk"
+msgstr "Reîncarcă automat fișierele dacă sunt detectate modificări externe"
+
+#: ../../src/perspective.py:74
+msgid "Automatically save/use window state from last session"
+msgstr "Salvează/utilizează automat atributele ferestrei din sesiunea trecută"
+
+#: ../../src/prefdlg.py:740
+msgid "Automatically trim whitespace on save"
+msgstr "Șterge automat spațiile goale la salvare"
+
+#: ../../src/style_editor.py:596 ../../plugins/Launch/launch/cfgdlg.py:436
+msgid "Background"
+msgstr "Fundal"
+
+#: ../../src/prefdlg.py:746
+msgid "Backspace Unindents"
+msgstr "Tasta backspace de-indentează"
+
+#: ../../src/prefdlg.py:506
+msgid "Backup Path:"
+msgstr ""
+
+#: ../../src/prefdlg.py:503
+msgid "Backup buffer to file periodically"
+msgstr "Copiază periodic memoria tampon în fișier"
+
+#: ../../src/style_editor.py:171
+msgid "Base new theme on existing one"
+msgstr "Construiește noua temă pe baza uneia existente"
+
+#: ../../src/prefdlg.py:1742
+msgid "Binding"
+msgstr "Asociere"
+
+#: ../../src/prefdlg.py:2156
+msgid "Black/White"
+msgstr "Negru/Alb"
+
+#: ../../plugins/filebrowser/filebrowser/browser.py:417
+msgid "Bookmark Selected Path(s)"
+msgstr "Pune un semn de carte căii/căilor selectate"
+
+#: ../../src/ed_menu.py:626
+msgid "Bookmarks"
+msgstr "Semne de carte"
+
+#: ../../src/ed_menu.py:783 ../../src/prefdlg.py:924
+msgid "Bracket Highlighting"
+msgstr "Subliniază paranteze pereche"
+
+#: ../../plugins/Launch/launch/cfgdlg.py:546
+msgid "Browse"
+msgstr "Răsfoiește"
+
+#: ../../src/ed_menu.py:838
+msgid "Bug Tracker..."
+msgstr ""
+
+#: ../../src/ed_cmdbar.py:559
+#, python-format
+msgid "Can't change directory to: %s"
+msgstr "Nu se poate schimba dosarul la: %s"
+
+#: ../../src/ed_search.py:1248 ../../src/style_editor.py:131
+#: ../../src/updater.py:568
+msgid "Cancel"
+msgstr "Anulează"
+
+#: ../../src/updater.py:645
+msgid "Canceled"
+msgstr "Anulat"
+
+#: ../../src/ed_statbar.py:186
+msgid "Change Encoding"
+msgstr ""
+
+#: ../../src/ed_menu.py:720
+msgid "Change Font Settings"
+msgstr "Schimbă configurările fontului"
+
+#: ../../src/ed_statbar.py:60 ../../src/ed_statbar.py:63
+#: ../../src/ed_statbar.py:66
+#, python-format
+msgid "Change line endings to %s"
+msgstr "Schimbă terminatorii de linie la %s"
+
+#: ../../src/ed_statbar.py:185
+msgid "Change the encoding of the current document."
+msgstr ""
+
+#: ../../src/perspective.py:130
+#, python-format
+msgid "Change view to \"%s\""
+msgstr "Schimbă aspectul la „%s”"
+
+#: ../../src/prefdlg.py:282
+msgid "Changes made in this dialog are saved in your current profile. Some Items such as Language require the program to be restarted before taking effect."
+msgstr "Modificările făcute în această fereastră sunt salvate în configurația dvs. Unele elemente necesită repornirea programului pentru a fi aplicate."
+
+#: ../../src/plugdlg.py:232
+msgid "Changes will take affect once the program has been restarted"
+msgstr "Schimbările vor avea efect doar după repornirea programului"
+
+#: ../../src/prefdlg.py:1534
+msgid "Check"
+msgstr "Verifică"
+
+#: ../../src/prefdlg.py:412
+msgid "Check for updates on startup"
+msgstr "La pornire, verifică existența unor versiuni mai noi"
+
+#: ../../src/prefdlg.py:527
+msgid "Check if on disk file has been modified by others"
+msgstr "Verifică dacă fișierul a fost modificat de altcineva"
+
+#: ../../src/prefdlg.py:561
+msgid "Check spelling while typing"
+msgstr "Verifică ortografia în timpul scrierii"
+
+#: ../../src/eclib/finddlg.py:790
+msgid "Choose Folder"
+msgstr "Alegeți dosarul"
+
+#: ../../src/eclib/finddlg.py:1118
+msgid "Choose Search Folder"
+msgstr "Alegeți dosarul în care se caută"
+
+#: ../../src/ed_main.py:698
+msgid "Choose a Save Location"
+msgstr "Alegeți locația de salvare"
+
+#: ../../src/ed_pages.py:175
+msgid "Choose an Encoding"
+msgstr "Alegeți tipul de codare a textului"
+
+#: ../../plugins/Launch/launch/cfgdlg.py:555
+msgid "Choose and executable"
+msgstr "Alegeți programul"
+
+#: ../../plugins/codebrowser/codebrowser/cbrowser.py:50
+msgid "Class Definitions"
+msgstr "Definiri clase"
+
+#: ../../src/ed_log.py:140 ../../src/ed_search.py:1257
+#: ../../plugins/Launch/launch/launch.py:210
+#: ../../plugins/PyShell/PyShell/__init__.py:114
+msgid "Clear"
+msgstr "Curăță"
+
+#: ../../plugins/Launch/launch/cfgdlg.py:524
+msgid "Click on an item to edit"
+msgstr "Clic pe un element pentru a-l edita"
+
+#: ../../src/ed_editv.py:230
+#, python-format
+msgid "Close \"%s\""
+msgstr "Închide „%s”"
+
+#: ../../src/ed_editv.py:232
+msgid "Close All"
+msgstr "Închide toate"
+
+#: ../../src/ed_menu.py:525
+msgid "Close All Tabs"
+msgstr "Închide toate taburile"
+
+#: ../../src/ed_menu.py:522
+msgid "Close Current Tab"
+msgstr "Închide tabul curent"
+
+#: ../../src/ed_editv.py:231
+msgid "Close Other Tabs"
+msgstr ""
+
+#: ../../src/ed_menu.py:524
+msgid "Close Window"
+msgstr "Închide fereastra"
+
+#: ../../src/ed_menu.py:526
+msgid "Close all open tabs"
+msgstr "Închide toate taburile deschise"
+
+#: ../../src/ed_menu.py:524
+msgid "Close the current window"
+msgstr "Închide fereastra curentă"
+
+#: ../../src/prefdlg.py:676
+msgid "Code"
+msgstr "Cod"
+
+#: ../../plugins/codebrowser/codebrowser/cbrowser.py:90
+msgid "Code Browser"
+msgstr "Explorați codul"
+
+#: ../../src/ed_menu.py:680 ../../src/ed_menu.py:785 ../../src/prefdlg.py:926
+msgid "Code Folding"
+msgstr "Pliere cod"
+
+#: ../../src/ed_menu.py:681
+msgid "Code folding toggle actions"
+msgstr "Acțiune comutare pliere cod"
+
+#: ../../plugins/codebrowser/codebrowser/__init__.py:48
+#: ../../plugins/codebrowser/codebrowser/__init__.py:95
+msgid "CodeBrowser"
+msgstr "Navigator cod"
+
+#: ../../src/style_editor.py:579
+msgid "Color"
+msgstr "Culoare"
+
+#: ../../src/ed_menu.py:788
+msgid "Color Highlight Code Syntax"
+msgstr "Evidențiere sintaxă"
+
+#: ../../src/prefdlg.py:1100 ../../plugins/PyShell/PyShell/__init__.py:109
+msgid "Color Scheme"
+msgstr "Schema de culori"
+
+#: ../../src/prefdlg.py:2158
+msgid "Colour/Default"
+msgstr "Culoare/Implicit"
+
+#: ../../src/prefdlg.py:2157
+msgid "Colour/White"
+msgstr "Culoare/Alb"
+
+#: ../../src/ed_menu.py:592
+msgid "Column Mode"
+msgstr "Mod coloană"
+
+#: ../../src/ed_cmdbar.py:407
+msgid "Command"
+msgstr "Comandă"
+
+#: ../../src/ed_menu.py:620
+msgid "Commands that affect an entire line"
+msgstr "Comenzi ce afectează o linie întreagă"
+
+#: ../../src/prefdlg.py:1344
+msgid "Configuration"
+msgstr "Configurație"
+
+#: ../../src/plugdlg.py:192
+msgid "Configuration Changes Made"
+msgstr "Au fost efectuate modificările configurației"
+
+#: ../../src/plugdlg.py:119 ../../src/plugdlg.py:956
+msgid "Configure"
+msgstr "Configurează"
+
+#: ../../src/ed_menu.py:559
+msgid "Configure Printer"
+msgstr "Configurează imprimanta"
+
+#: ../../src/ed_menu.py:734
+msgid "Convert selected text to all lowercase letters"
+msgstr "Convertește textul selectat în litere mici"
+
+#: ../../src/ed_menu.py:732
+msgid "Convert selected text to all uppercase letters"
+msgstr "Convertește textul selectat în litere mari"
+
+#: ../../src/ed_menu.py:746
+msgid "Convert spaces to tabs in selected/all text"
+msgstr "Convertește spațiile în tab-uri"
+
+#: ../../src/ed_menu.py:748
+msgid "Convert tabs to spaces in selected/all text"
+msgstr "Convertește tab-urile în spații"
+
+#: ../../src/ed_editv.py:363 ../../src/ed_toolbar.py:85
+msgid "Copy"
+msgstr "Copiază"
+
+#: ../../src/ed_menu.py:606
+msgid "Copy Current Line"
+msgstr "Copiază linia curentă"
+
+#: ../../src/ed_editv.py:234
+msgid "Copy Full Path"
+msgstr "Copiază calea"
+
+#: ../../src/ed_menu.py:605
+msgid "Copy Line"
+msgstr "Copiază linia"
+
+#: ../../src/ed_menu.py:582 ../../src/ed_toolbar.py:86
+msgid "Copy Selected Text to Clipboard"
+msgstr "Copiază selecția în clipboard"
+
+#: ../../src/ed_main.py:1562
+msgid "Copyright"
+msgstr "Drepturi de autor"
+
+#: ../../src/eclib/finddlg.py:845
+msgid "Count"
+msgstr "Contor"
+
+#: ../../plugins/filebrowser/filebrowser/browser.py:429
+#: ../../plugins/filebrowser/filebrowser/browser.py:548
+#, python-format
+msgid "Create Archive of \"%s\""
+msgstr "Crează o arhivă a „%s”"
+
+#: ../../src/eclib/infodlg.py:193
+msgid "Created"
+msgstr "Creat"
+
+#: ../../src/ed_menu.py:579
+msgid "Cu&t"
+msgstr "&Taie"
+
+#: ../../src/eclib/finddlg.py:713
+#, fuzzy
+msgid "Current Directory"
+msgstr "Deschideți dosarul?"
+
+#: ../../src/eclib/finddlg.py:712
+msgid "Current Document"
+msgstr "Documentul curent"
+
+#: ../../src/ed_cmdbar.py:116
+msgid "Customize"
+msgstr "Personalizează"
+
+#: ../../src/ed_main.py:1450
+msgid "Customize Menu"
+msgstr ""
+
+#: ../../src/ed_menu.py:471
+msgid "Customize the items shown in this menu."
+msgstr ""
+
+#: ../../src/ed_menu.py:470
+msgid "Customize..."
+msgstr ""
+
+#: ../../src/ed_editv.py:362 ../../src/ed_toolbar.py:83
+msgid "Cut"
+msgstr "Taie"
+
+#: ../../src/ed_menu.py:602
+msgid "Cut Current Line"
+msgstr "Taie linia curentă"
+
+#: ../../src/ed_menu.py:601
+msgid "Cut Line"
+msgstr "Taie linia"
+
+#: ../../src/ed_menu.py:580 ../../src/ed_toolbar.py:84
+msgid "Cut Selected Text from File"
+msgstr "Taie textul selectat din fișier"
+
+#: ../../src/ed_menu.py:587
+msgid "Cycle Clipboard"
+msgstr "Ciclează clipboardul"
+
+#: ../../src/ed_menu.py:588
+msgid "Cycle through recent clipboard text"
+msgstr "Ciclează prin textul recent din clipboard"
+
+#: ../../src/ed_search.py:62 ../../src/ed_search.py:66
+msgid "DECODING ERROR"
+msgstr "Eroare de decodare"
+
+#: ../../plugins/Launch/launch/cfgdlg.py:228
+msgid "Default"
+msgstr "Implicit"
+
+#: ../../src/prefdlg.py:758
+msgid "Default EOL Mode"
+msgstr "Mod EOL (sfârșit de linie) implicit"
+
+#: ../../src/prefdlg.py:917
+msgid "Default Lexer"
+msgstr "Analiză lexicală implicită"
+
+#: ../../src/prefdlg.py:1202
+msgid "Default Perspective"
+msgstr "Perspectivă implicită"
+
+#: ../../src/prefdlg.py:915
+msgid "Default highlighing for new documents"
+msgstr "Evidențiere implicită pentru documente noi"
+
+#: ../../plugins/codebrowser/codebrowser/cbrowser.py:50
+msgid "Defines"
+msgstr "Constante"
+
+#: ../../src/prefdlg.py:1711
+msgid "Delete"
+msgstr "Șterge"
+
+#: ../../src/eclib/filemgrdlg.py:175
+msgid "Delete Error"
+msgstr ""
+
+#: ../../src/eclib/filemgrdlg.py:168
+msgid "Delete File?"
+msgstr ""
+
+#: ../../src/ed_menu.py:603
+msgid "Delete Line"
+msgstr "Șterge linia"
+
+#: ../../src/perspective.py:271
+msgid "Delete Perspective"
+msgstr "Șterge perspectiva"
+
+#: ../../src/perspective.py:71
+msgid "Delete Saved View"
+msgstr "Șterge vizualizarea salvată"
+
+#: ../../src/ed_menu.py:604
+msgid "Delete the selected line(s)"
+msgstr "Șterge liniile selectate"
+
+#: ../../plugins/filebrowser/filebrowser/browser.py:488
+#: ../../plugins/filebrowser/filebrowser/browser.py:657
+msgid "Desktop"
+msgstr "Desktop"
+
+#: ../../src/prefdlg.py:568
+msgid "Dictionary"
+msgstr "Dicționar"
+
+#: ../../src/eclib/finddlg.py:802
+msgid "Direction"
+msgstr "Direcție"
+
+#: ../../src/prefdlg.py:399
+msgid "Disable Error Reporter"
+msgstr "Dezactivează raportul erorilor"
+
+#: ../../src/prefdlg.py:1244
+msgid "Display Font"
+msgstr "Font afișare"
+
+#: ../../src/plugdlg.py:179
+msgid "Do you wish to exit?"
+msgstr "Doriți să închideți?"
+
+#: ../../src/ed_pages.py:988
+#, python-format
+msgid ""
+"Do you wish to open all %d files in this directory?\n"
+"\n"
+"Warning: opening many files at once may cause the editor to temporarily  freeze."
+msgstr ""
+
+#: ../../src/prefdlg.py:193
+msgid "Document"
+msgstr "Document"
+
+#: ../../src/eclib/finddlg.py:806
+msgid "Down"
+msgstr "Jos"
+
+#: ../../src/plugdlg.py:120 ../../src/plugdlg.py:460 ../../src/plugdlg.py:1108
+#: ../../src/prefdlg.py:1529
+msgid "Download"
+msgstr "Descarcă"
+
+#: ../../src/plugdlg.py:483
+msgid "Downloaded"
+msgstr "Descărcat"
+
+#: ../../src/plugdlg.py:595 ../../src/updater.py:604
+msgid "Downloading"
+msgstr "Se descarcă"
+
+#: ../../src/updater.py:567
+#, python-format
+msgid "Downloading To: %s"
+msgstr "Se descarcă în: %s"
+
+#: ../../src/Editra.py:607 ../../src/prefdlg.py:1570
+msgid "Downloading Update"
+msgstr "Se descarcă o versiune nouă"
+
+#: ../../src/updater.py:565
+#, python-format
+msgid "Downloading: %s"
+msgstr "Se descarcă: %s"
+
+#: ../../src/plugdlg.py:178
+msgid "Downloads are incomplete"
+msgstr "Descărcările nu sunt complete"
+
+#: ../../plugins/filebrowser/filebrowser/browser.py:428
+msgid "Duplicate"
+msgstr "Duplicat"
+
+#: ../../src/ed_menu.py:607
+msgid "Duplicate Line"
+msgstr "Duplică linia"
+
+#: ../../src/ed_menu.py:608
+msgid "Duplicate the current line"
+msgstr "Duplică linia curentă"
+
+#: ../../src/ed_menu.py:564
+msgid "E&xit"
+msgstr "&Ieșire"
+
+#: ../../src/ed_menu.py:765
+msgid "EOL Mode"
+msgstr "Mod EOL (sfârșit de linie)"
+
+#: ../../src/ed_main.py:674
+#, python-format
+msgid "ERROR: %s"
+msgstr "Eroare: %s"
+
+#: ../../src/ed_main.py:714
+#, python-format
+msgid "ERROR: Failed to save %s"
+msgstr "Eroare: Eșec la salvarea %s"
+
+#: ../../src/prefdlg.py:928
+msgid "Edge Guide"
+msgstr "Ghid margine"
+
+#: ../../plugins/filebrowser/filebrowser/browser.py:413
+msgid "Edit"
+msgstr "Editare"
+
+#: ../../src/ed_menu.py:642
+msgid "Edit Preferences / Settings"
+msgstr "Editați Preferințe / Configurări"
+
+#: ../../src/ed_menu.py:809
+msgid "Edit the way syntax is highlighted"
+msgstr "Configurați evidențierea sintaxei"
+
+#: ../../src/ed_menu.py:673
+msgid "Editor"
+msgstr "Editor"
+
+#: ../../src/ed_menu.py:804
+msgid "Editor Command"
+msgstr "Comandă editor"
+
+#: ../../src/prefdlg.py:383
+msgid "Editor Mode"
+msgstr "Mod editare"
+
+#: ../../src/ed_log.py:79
+msgid "Editra Log"
+msgstr "Jurnal Editra"
+
+#: ../../src/ed_mdlg.py:85
+#, python-format
+msgid ""
+"Editra could not open %(filename)s\n"
+"\n"
+"Error:\n"
+"%(errormsg)s"
+msgstr ""
+"Editra nu poate deschide %(filename)s\n"
+"Eroare:\n"
+"%(errormsg)s"
+
+#: ../../src/ed_main.py:1552
+msgid "Editra is a programmers text editor."
+msgstr "Editra este un editor de text destinat programatorilor."
+
+#: ../../src/ed_menu.py:837
+msgid "Editra translations project"
+msgstr "Proiectul de traduceri Editra"
+
+#: ../../src/ed_main.py:439
+msgid "Editra: Open"
+msgstr ""
+
+#: ../../plugins/codebrowser/codebrowser/cbrowser.py:57
+msgid "Elements"
+msgstr ""
+
+#: ../../src/ed_pages.py:377
+msgid "Empty File"
+msgstr "Fișier gol"
+
+#: ../../src/plugdlg.py:949
+msgid "Enable"
+msgstr "Activează"
+
+#: ../../src/prefdlg.py:956
+msgid "Enable Vi Emulation"
+msgstr "Activează simulare Vi"
+
+#: ../../src/ed_menu.py:593
+msgid "Enable column edit mode."
+msgstr "Activează editare în mod coloană."
+
+#: ../../src/prefdlg.py:578
+msgid "Enchant Path"
+msgstr "Cale către Enchant"
+
+#: ../../src/prefdlg.py:494
+msgid "Encoding to try when auto detection fails"
+msgstr "Se codifică pentru a detecta eșecului la auto-detectare"
+
+#: ../../src/ed_menu.py:766
+msgid "End of line character formatting"
+msgstr "Formatarea caracterului de sfârșit de linie"
+
+#: ../../src/eclib/colorsetter.py:82
+msgid "Enter a hex color value"
+msgstr "Introduceți valoarea culorii în hexa"
+
+#: ../../src/style_editor.py:260
+msgid "Enter style sheet name"
+msgstr "Introduceți numele stilului"
+
+#: ../../src/prefdlg.py:1906
+msgid "Enter the name of the new key profile"
+msgstr "Introduceți numele noului profil-cheie"
+
+#: ../../src/eclib/finddlg.py:823
+msgid "Enter wildcard shell patterns for matching files (*.txt)."
+msgstr "Introduceți expresie pentru căutare fișiere (*.txt)."
+
+#: ../../src/ed_editv.py:189 ../../src/plugdlg.py:838
+msgid "Error"
+msgstr "Eroare"
+
+#: ../../src/ed_mdlg.py:87
+msgid "Error Opening File"
+msgstr "Eroare la deschiderea fișierului"
+
+#: ../../src/ed_pages.py:327
+msgid "Error Saving Session File"
+msgstr "Eroare la salvarea fișierului de sesiune"
+
+#: ../../plugins/Launch/launch/cfgdlg.py:446
+msgid "Error Text"
+msgstr "Text eroare"
+
+#: ../../src/eclib/errdlg.py:318
+msgid "Error Traceback:"
+msgstr "Stiva erorii:"
+
+#: ../../src/ed_search.py:544 ../../src/ed_search.py:705
+#, python-format
+msgid ""
+"Error in regular expression expansion.The replace action cannot be completed.\n"
+"\n"
+"Error Message: %s"
+msgstr ""
+
+#: ../../src/dev_tool.py:252
+msgid ""
+"Error: Something unexpected happend\n"
+"Help improve Editra by clicking on Report Error\n"
+"to send the Error Traceback shown below."
+msgstr ""
+"Eroare: Ceva neprevăzut s-a întâmplat.\n"
+"Ajutați la îmbunătățirea Editra apăsând pe „Raportează eroare”\n"
+"pentru a comunica eroarea de mai jos."
+
+#: ../../src/ed_main.py:1502
+#, python-format
+msgid "Error: Unable to open %s"
+msgstr "Eroare: Nu pot deschide %s"
+
+#: ../../src/plugdlg.py:129
+msgid "Errors"
+msgstr "Erori"
+
+#: ../../plugins/Launch/launch/cfgdlg.py:528
+msgid "Executable Commands"
+msgstr "Comenzi executabile"
+
+#: ../../plugins/Launch/launch/cfgdlg.py:213
+msgid "Executables"
+msgstr "Executabile"
+
+#: ../../plugins/Launch/launch/launch.py:749
+msgid "Exit Code"
+msgstr "Cod de ieșire"
+
+#: ../../src/ed_menu.py:564
+msgid "Exit the Program"
+msgstr "Închide programul"
+
+#: ../../src/eclib/errdlg.py:323
+msgid "Exit the application"
+msgstr "Ieșire din aplicație"
+
+#: ../../src/style_editor.py:133
+msgid "Export"
+msgstr "Exportă"
+
+#: ../../src/style_editor.py:261
+msgid "Export Style Sheet"
+msgstr "Exportă foaie stil"
+
+#: ../../src/prefdlg.py:947
+msgid "Extended Auto-Comp"
+msgstr "Auto-completare extinsă"
+
+#: ../../src/prefdlg.py:2045
+msgid "Extensions (space separated, no dots)"
+msgstr "Extensii (separate prin spații, fără puncte)"
+
+#: ../../src/ed_menu.py:769
+msgid "F&ormat"
+msgstr "F&ormatare"
+
+#: ../../src/updater.py:683
+msgid "Failed"
+msgstr "Eșec"
+
+#: ../../src/ed_print.py:112
+msgid "Failed to create print preview"
+msgstr "Eșec la crearea previzualizării de tipărire"
+
+#: ../../src/plugdlg.py:840
+#, python-format
+msgid "Failed to install %d plugins"
+msgstr "Eșec la instalarea modulului de extensie %d"
+
+#: ../../src/prefdlg.py:647
+msgid "Failed to load Enchant"
+msgstr "Eșec la încărcarea Enchant"
+
+#: ../../src/ed_editv.py:187
+#, python-format
+msgid ""
+"Failed to reload %(filename)s:\n"
+"Error: %(errmsg)s"
+msgstr ""
+"Eroare la reîncărcarea %(filename)s:\n"
+"Eroare: %(errmsg)s"
+
+#: ../../src/ed_main.py:1232
+#, python-format
+msgid "Failed to reload the file with: %(encoding)s"
+msgstr "Eșec la reîncărcarea fișierului cu:  %(encoding)s"
+
+#: ../../src/ed_mdlg.py:104
+#, python-format
+msgid ""
+"Failed to save file: %(filename)s\n"
+"\n"
+"Error:\n"
+"%(errormsg)s"
+msgstr ""
+"Eșec la salvarea fișierului %(filename)s\n"
+"Eroare:\n"
+"%(errormsg)s"
+
+#: ../../src/ed_menu.py:839
+msgid "Feedback"
+msgstr "Feedback"
+
+#: ../../plugins/filebrowser/filebrowser/browser.py:232
+msgid "File Browser"
+msgstr "Navigator fișiere"
+
+#: ../../src/eclib/finddlg.py:716
+msgid "File Filters:"
+msgstr "Filtre fișier:"
+
+#: ../../src/prefdlg.py:475
+msgid "File History Length"
+msgstr "Lungime istoric fișiere"
+
+#: ../../src/ed_main.py:611
+msgid "File Not Found"
+msgstr "Fișierul nu a fost găsit"
+
+#: ../../src/prefdlg.py:543
+msgid "File Settings"
+msgstr "Configurări fișier"
+
+#: ../../src/eclib/infodlg.py:115
+msgid "File Stat Failed"
+msgstr "Status fișier eșuat"
+
+#: ../../plugins/Launch/launch/cfgdlg.py:208
+msgid "File Type"
+msgstr "Tip fișier"
+
+#: ../../src/ed_stc.py:612
+#, python-format
+msgid "File backup performed: %s"
+msgstr ""
+
+#: ../../src/ed_stc.py:1841
+msgid "File is Read Only and cannot be saved"
+msgstr "Fișierul e deschid doar pentru citire și nu poate fi salvat"
+
+#: ../../src/ed_pages.py:214
+msgid ""
+"File is already open in an existing page.\n"
+"Do you wish to open it again?"
+msgstr ""
+"Fișier deja deschis.\n"
+"Vreți să îl redeschideți?"
+
+#: ../../src/prefdlg.py:305 ../../src/eclib/filemgrdlg.py:218
+msgid "Files"
+msgstr "Fișiere"
+
+#: ../../src/ed_search.py:1302
+#, python-format
+msgid "Files Searched: %d"
+msgstr "Fișiere căutate: %d"
+
+#: ../../src/prefdlg.py:1094
+msgid "Filetype Associations"
+msgstr "Asocieri tipuri de fișiere"
+
+#: ../../src/ed_cmdbar.py:261 ../../src/ed_search.py:147
+#: ../../src/ed_search.py:151 ../../src/ed_toolbar.py:90
+#: ../../src/eclib/finddlg.py:632 ../../src/eclib/finddlg.py:767
+#: ../../src/eclib/finddlg.py:843
+msgid "Find"
+msgstr "Caută"
+
+#: ../../src/ed_cmdbar.py:277 ../../src/eclib/finddlg.py:846
+msgid "Find All"
+msgstr "Caută tot"
+
+#: ../../src/ed_search.py:309
+msgid "Find Count"
+msgstr "Număr rezultate căutare"
+
+#: ../../src/ed_menu.py:636
+msgid "Find Next"
+msgstr "Caută următorul"
+
+#: ../../src/eclib/finddlg.py:812
+msgid "Find Options"
+msgstr "Opțiuni de căutare"
+
+#: ../../src/ed_menu.py:634
+msgid "Find Previous"
+msgstr "Caută precedentul"
+
+#: ../../src/ed_menu.py:638
+msgid "Find Selected"
+msgstr "Găsește selectat"
+
+#: ../../src/ed_menu.py:629 ../../src/ed_toolbar.py:90
+msgid "Find Text"
+msgstr "Caută textul"
+
+#: ../../src/ed_menu.py:631 ../../src/ed_toolbar.py:92
+msgid "Find and Replace Text"
+msgstr "Găsește și înlocuiește textul"
+
+#: ../../src/eclib/finddlg.py:765
+msgid "Find what"
+msgstr "Caută ...ce?"
+
+#: ../../src/ed_menu.py:630
+msgid "Find/R&eplace"
+msgstr "Caută și înlocui&ește"
+
+#: ../../src/ed_search.py:147 ../../src/ed_search.py:151
+#: ../../src/ed_toolbar.py:91
+msgid "Find/Replace"
+msgstr "Caută/înlocuiește"
+
+#: ../../src/updater.py:680
+msgid "Finished"
+msgstr "Încheiat"
+
+#: ../../src/plugdlg.py:486
+msgid "Finshed downloading plugins"
+msgstr "S-au descărcat modulele de extensie"
+
+#: ../../src/util.py:357 ../../src/eclib/infodlg.py:292
+msgid "Folder"
+msgstr "Dosar"
+
+#: ../../src/style_editor.py:628
+msgid "Font"
+msgstr "Font"
+
+#: ../../src/style_editor.py:623
+msgid "Font Settings"
+msgstr "Configurări fonturi"
+
+#: ../../src/style_editor.py:584 ../../plugins/Launch/launch/cfgdlg.py:433
+msgid "Foreground"
+msgstr "Prim plan"
+
+#: ../../src/prefdlg.py:796
+msgid "Format"
+msgstr "Format"
+
+#: ../../src/ed_stc.py:1187
+msgid "Format EOL?"
+msgstr "Format EOL (sfârșit linie)?"
+
+#: ../../src/ed_menu.py:757 ../../src/ed_menu.py:760 ../../src/ed_menu.py:763
+#, python-format
+msgid "Format all EOL characters to %s Mode"
+msgstr "Formatați caracterele de sfârșit de linie la modul %s"
+
+#: ../../plugins/codebrowser/codebrowser/cbrowser.py:50
+msgid "Function Definitions"
+msgstr "Definiri de funcții"
+
+#: ../../plugins/codebrowser/codebrowser/cbrowser.py:56
+msgid "Functions"
+msgstr "Funcții"
+
+#: ../../src/prefdlg.py:189 ../../src/prefdlg.py:675 ../../src/prefdlg.py:968
+#: ../../plugins/Launch/launch/cfgdlg.py:173
+msgid "General"
+msgstr "General"
+
+#: ../../src/generator.py:289 ../../src/generator.py:676
+#: ../../src/generator.py:879
+#, python-format
+msgid "Generate %s"
+msgstr "Generează %s"
+
+#: ../../src/generator.py:116
+msgid "Generate Code and Documents"
+msgstr "Generează cod și documente"
+
+#: ../../src/generator.py:290 ../../src/generator.py:880
+#, python-format
+msgid "Generate a %s version of the current document"
+msgstr "Generează o versiune %s a documentului curent"
+
+#: ../../src/generator.py:677
+#, python-format
+msgid "Generate an %s version of the current document"
+msgstr "Generează o versiune %s a documentului curent"
+
+#: ../../src/generator.py:115
+msgid "Generator"
+msgstr "Generator"
+
+#: ../../plugins/filebrowser/filebrowser/browser.py:422
+msgid "Get Info"
+msgstr "Obține informații"
+
+#: ../../plugins/codebrowser/codebrowser/cbrowser.py:51
+msgid "Global Variables"
+msgstr "Variabile globale"
+
+#: ../../plugins/codebrowser/codebrowser/cbrowser.py:385
+#, python-format
+msgid "Goto \"%s\""
+msgstr "Du-te la „%s”"
+
+#: ../../src/ed_cmdbar.py:437
+msgid "Goto Line"
+msgstr "Du-te la linia"
+
+#: ../../src/ed_menu.py:690
+msgid "Goto Line Number"
+msgstr "Du-te la linia număr"
+
+#: ../../src/ed_menu.py:691
+msgid "Goto Matching Brace"
+msgstr "Du-te la paranteza corespondentă"
+
+#: ../../src/ed_menu.py:805
+msgid "Goto command buffer"
+msgstr "Du-te la memoria-tampon comenzi"
+
+#: ../../src/ed_menu.py:695
+msgid "Goto next position in history."
+msgstr "Mergi la următoarea poziție în istoric."
+
+#: ../../src/ed_menu.py:635
+msgid "Goto previous match"
+msgstr "Du-te la potrivirea anterioară"
+
+#: ../../src/ed_menu.py:697
+msgid "Goto previous position in history."
+msgstr "Mergi la anterioara poziție în istoric."
+
+#: ../../src/ed_menu.py:637
+msgid "Goto the next match"
+msgstr "Du-te la potrivirea următoare"
+
+#: ../../src/prefdlg.py:932
+msgid "Guide Column"
+msgstr "Coloană ghid"
+
+#: ../../src/ed_menu.py:784
+msgid "Highlight Brackets/Braces"
+msgstr "Evidențiază paranteze/acolade"
+
+#: ../../src/ed_menu.py:660 ../../src/prefdlg.py:937
+msgid "Highlight Caret Line"
+msgstr "Evidențiază linia curentă"
+
+#: ../../src/ed_menu.py:661
+msgid "Highlight the background of the current line"
+msgstr "Evidențiază fundalul liniei curente"
+
+#: ../../plugins/filebrowser/filebrowser/browser.py:486
+msgid "Home directory"
+msgstr "Dosar personal"
+
+#: ../../src/ed_main.py:1554
+msgid "Homepage"
+msgstr "Pagină personală"
+
+#: ../../src/prefdlg.py:1180
+msgid "Icon Theme"
+msgstr "Temă iconițe"
+
+#: ../../src/prefdlg.py:1225
+msgid "Icons"
+msgstr "Iconițe"
+
+#: ../../plugins/codebrowser/codebrowser/cbrowser.py:51
+msgid "Identities"
+msgstr "Identități"
+
+#: ../../plugins/codebrowser/codebrowser/cbrowser.py:57
+msgid "Imports"
+msgstr ""
+
+#: ../../src/ed_menu.py:726
+msgid "Indent Lines"
+msgstr "Identează linii"
+
+#: ../../src/prefdlg.py:732
+msgid "Indent Width"
+msgstr "Mărime identare"
+
+#: ../../src/ed_menu.py:727
+msgid "Indent the selected lines"
+msgstr "Identează liniile selectate"
+
+#: ../../src/ed_menu.py:663 ../../src/prefdlg.py:940
+msgid "Indentation Guides"
+msgstr "Ghiduri indentare"
+
+#: ../../src/eclib/infodlg.py:58
+msgid "Info"
+msgstr "Informații"
+
+#: ../../plugins/Launch/launch/cfgdlg.py:453
+msgid "Info Text"
+msgstr "Text informativ"
+
+#: ../../src/prefdlg.py:977
+msgid "Input Helpers"
+msgstr "Ajutor introducere"
+
+#: ../../src/ed_menu.py:737
+msgid "Insert spaces instead of tab characters with tab key"
+msgstr "Inserați spații în loc de tab-uri cu tasta tab"
+
+#: ../../src/plugdlg.py:121 ../../src/plugdlg.py:763
+msgid "Install"
+msgstr "Instalează"
+
+#: ../../src/plugdlg.py:770
+msgid ""
+"Install the plugins for all users\n"
+" **requires administrative privileges**"
+msgstr ""
+"Instalează modulele de extensie pentru toți utilizatorii\n"
+" **necesită drepturi de administrator**"
+
+#: ../../src/plugdlg.py:767
+msgid "Install the plugins only for the current user"
+msgstr "Instalează modulele de extensie doar pentru utilizatorul curent"
+
+#: ../../src/plugdlg.py:842
+msgid "Installation Error"
+msgstr "Eroare de instalare"
+
+#: ../../src/prefdlg.py:1510
+msgid "Installed Version"
+msgstr "Versiune instalată"
+
+#: ../../src/ed_pages.py:356
+msgid "Invalid File"
+msgstr "Fișier nevalid"
+
+#: ../../src/ed_cmdbar.py:776
+msgid "Invalid Path"
+msgstr ""
+
+#: ../../src/ed_search.py:349
+#, python-format
+msgid "Invalid expression \"%s\""
+msgstr "Expresie „%s” nevalidă"
+
+#: ../../src/ed_pages.py:370
+msgid "Invalid file"
+msgstr "Fișier nevalid"
+
+#: ../../src/ed_pages.py:972
+#, python-format
+msgid "Invalid file: %s"
+msgstr "Fișier nevalid: %s"
+
+#: ../../src/prefdlg.py:2159
+msgid "Inverse"
+msgstr "Invers"
+
+#: ../../src/ed_menu.py:610
+msgid "Join Lines"
+msgstr "Concatenează liniile"
+
+#: ../../src/ed_menu.py:611
+msgid "Join the Selected Lines"
+msgstr "Concatenează liniile selectate"
+
+#: ../../plugins/filebrowser/filebrowser/browser.py:101
+msgid "Jump to Saved Path"
+msgstr "Sari la calea salvată"
+
+#: ../../src/prefdlg.py:1738
+msgid "Key"
+msgstr "Tastă"
+
+#: ../../src/prefdlg.py:1707
+msgid "Key Profile"
+msgstr "Profil tastatură"
+
+#: ../../src/prefdlg.py:1622
+msgid "Keybindings"
+msgstr "Asocieri de taste"
+
+#: ../../src/eclib/infodlg.py:182
+msgid "Kind"
+msgstr "Gen"
+
+#: ../../plugins/codebrowser/codebrowser/cbrowser.py:51
+msgid "Labels"
+msgstr "Etichete"
+
+#: ../../src/prefdlg.py:417
+msgid "Language"
+msgstr "Limba"
+
+#: ../../src/prefdlg.py:1516
+msgid "Latest Version"
+msgstr "Ultima versiune"
+
+#: ../../plugins/Launch/launch/__init__.py:140
+msgid "Launch"
+msgstr "Lansează"
+
+#: ../../plugins/Launch/launch/cfgdlg.py:112
+msgid "Launch Configuration"
+msgstr "Configurație pornire"
+
+#: ../../src/prefdlg.py:1230
+msgid "Layout"
+msgstr "Aspect"
+
+#: ../../src/prefdlg.py:2043
+msgid "Lexer"
+msgstr "Analizator sintaxă"
+
+#: ../../src/ed_menu.py:479
+msgid "Lexers"
+msgstr "Analizoare sintaxă"
+
+#: ../../src/prefdlg.py:648
+msgid "Library Error"
+msgstr "Eroare de bibliotecă"
+
+#: ../../src/ed_main.py:1556
+msgid "License: wxWindows (see COPYING.txt for full license)"
+msgstr "Licență: wxWindows (consultați COPYING.txt pentru detalii)"
+
+#: ../../src/ed_menu.py:619
+msgid "Line Edit"
+msgstr "Editare linie"
+
+#: ../../plugins/codebrowser/codebrowser/cbconfig.py:44
+#, fuzzy
+msgid "Line Number"
+msgstr "Du-te la linia număr"
+
+#: ../../src/ed_stc.py:752
+#, python-format
+msgid "Line: %(lnum)d  Column: %(cnum)d"
+msgstr "Linie: %(lnum)d Coloană: %(cnum)d"
+
+#: ../../src/prefdlg.py:401
+msgid "Load Last Session"
+msgstr "Încarcă ultima sesiune"
+
+#: ../../src/ed_menu.py:543
+msgid "Load Profile"
+msgstr "Încarcă profil"
+
+#: ../../src/ed_menu.py:552
+msgid "Load Session"
+msgstr "Încarcă sesiunea"
+
+#: ../../src/ed_main.py:754 ../../src/ed_menu.py:544
+msgid "Load a Custom Profile"
+msgstr "Încarcă profil personalizat"
+
+#: ../../src/ed_main.py:804
+msgid "Load a Session file"
+msgstr "Încarcă un fișier sesiune"
+
+#: ../../src/ed_menu.py:553
+msgid "Load a saved session."
+msgstr "Încarcă o sesiune salvată."
+
+#: ../../src/ed_menu.py:546
+msgid "Load and save custom Profiles"
+msgstr "Încarcă și salvează profil personalizat"
+
+#: ../../src/ed_menu.py:555
+msgid "Load and save custom sessions."
+msgstr "Încarcă și salvează sesiuni."
+
+#: ../../src/prefdlg.py:403
+msgid "Load files from last session on startup"
+msgstr "Încarcă fișierele din ultima sesiune la pornire"
+
+#: ../../src/ed_main.py:760
+#, python-format
+msgid "Loaded Profile: %s"
+msgstr "Încarcă profil: %s"
+
+#: ../../src/ed_main.py:818
+#, python-format
+msgid "Loaded Session: %s"
+msgstr "Sesiune încărcată: %s"
+
+#: ../../src/prefdlg.py:438
+msgid "Locale Settings"
+msgstr "Configurări locale"
+
+#: ../../plugins/Launch/launch/launch.py:182
+#, fuzzy
+msgid "Lock File"
+msgstr "Uită-te în"
+
+#: ../../src/eclib/finddlg.py:793
+msgid "Look in"
+msgstr "Uită-te în"
+
+#: ../../src/ed_menu.py:733
+msgid "Lowercase"
+msgstr "Litere mici"
+
+#: ../../plugins/codebrowser/codebrowser/cbrowser.py:52
+msgid "Macro Definitions"
+msgstr "Definire macrouri"
+
+#: ../../src/ed_script.py:201 ../../src/ed_script.py:211
+msgid "Macro Manager"
+msgstr "Administrator macrouri"
+
+#: ../../plugins/codebrowser/codebrowser/cbrowser.py:51
+msgid "Macros"
+msgstr "Macrouri"
+
+#: ../../src/prefdlg.py:1220
+msgid "Main display font for various UI components"
+msgstr "Fontul principal pentru diferite componente ale interfaței utilizator"
+
+#: ../../src/ed_menu.py:807
+msgid "Manage, Download, and Install plugins"
+msgstr "Descarcă, instalează și administrează module de extensie"
+
+#: ../../src/ed_menu.py:481
+msgid "Manually Set a Lexer/Syntax"
+msgstr "Definește manual sintaxa sau un lexer"
+
+#: ../../src/ed_cmdbar.py:283
+msgid "Match Case"
+msgstr "Sensibil la majuscule"
+
+#: ../../src/eclib/finddlg.py:814
+msgid "Match case"
+msgstr "Sensibil la majuscule"
+
+#: ../../src/ed_main.py:1428 ../../src/ed_menu.py:686
+msgid "Maximize Editor"
+msgstr "Maximizează editorul"
+
+#: ../../src/prefdlg.py:1720
+msgid "Menu"
+msgstr "Meniu"
+
+#: ../../plugins/Launch/launch/cfgdlg.py:174
+msgid "Misc"
+msgstr "Diverse"
+
+#: ../../src/ed_pages.py:391
+msgid "Missing session files"
+msgstr "Fișiere sesiune lipsă"
+
+#: ../../src/ed_stc.py:1184
+msgid ""
+"Mixed EOL characters detected.\n"
+"\n"
+"Would you like to format them to all be the same?"
+msgstr ""
+"Sfârșit de linie alambicat.\n"
+"Vreți să le uniformizăm ?"
+
+#: ../../src/eclib/infodlg.py:163 ../../src/eclib/infodlg.py:195
+msgid "Modified"
+msgstr "Modificat"
+
+#: ../../src/prefdlg.py:1730
+msgid "Modifier 1"
+msgstr "Modificator 1"
+
+#: ../../src/prefdlg.py:1734
+msgid "Modifier 2"
+msgstr "Modificator 2"
+
+#: ../../plugins/codebrowser/codebrowser/cbrowser.py:56
+msgid "Modules"
+msgstr "Module"
+
+#: ../../src/ed_menu.py:617
+msgid "Move Current Line Down"
+msgstr "Mută linia curentă mai jos"
+
+#: ../../src/ed_menu.py:614
+msgid "Move Current Line Up"
+msgstr "Mută linia curentă mai sus"
+
+#: ../../src/ed_editv.py:227
+msgid "Move Tab to New Window"
+msgstr "Mută tabul în fereastră nouă"
+
+#: ../../src/ed_menu.py:692
+msgid "Move caret matching brace"
+msgstr "Mută cursorul la paranteza corespondentă"
+
+#: ../../src/ed_menu.py:618
+msgid "Move the current line down"
+msgstr "Mută linia curentă mai jos"
+
+#: ../../src/ed_menu.py:615
+msgid "Move the current line up"
+msgstr "Mută linia curentă mai sus"
+
+#: ../../plugins/filebrowser/filebrowser/browser.py:62
+msgid "Move to Recycle Bin"
+msgstr "Mută la coșul de gunoi"
+
+#: ../../plugins/filebrowser/filebrowser/browser.py:64
+msgid "Move to Trash"
+msgstr "Mută la coșul de gunoi"
+
+#: ../../plugins/codebrowser/codebrowser/cbrowser.py:52
+msgid "Namespaces"
+msgstr "Spații de nume"
+
+#: ../../src/prefdlg.py:195
+msgid "Network"
+msgstr "Rețea"
+
+#: ../../src/ed_toolbar.py:74 ../../src/prefdlg.py:1710
+#: ../../src/style_editor.py:173
+msgid "New"
+msgstr "Nou"
+
+#: ../../src/ed_menu.py:513
+msgid "New &Window"
+msgstr "&Fereastră nouă"
+
+#: ../../plugins/filebrowser/filebrowser/browser.py:426
+msgid "New File"
+msgstr "Fișier nou"
+
+#: ../../plugins/filebrowser/filebrowser/browser.py:425
+msgid "New Folder"
+msgstr "Dosar nou"
+
+#: ../../src/ed_menu.py:596
+msgid "New Line After"
+msgstr "Linie nouă după"
+
+#: ../../src/ed_menu.py:598
+msgid "New Line Before"
+msgstr "Linia nouă înainte"
+
+#: ../../src/prefdlg.py:1905
+msgid "New Profile"
+msgstr "Profil nou"
+
+#: ../../src/ed_editv.py:226
+msgid "New Tab"
+msgstr "Tab nou"
+
+#: ../../src/ed_cmdbar.py:263
+msgid "Next"
+msgstr "Următor"
+
+#: ../../src/ed_menu.py:699
+msgid "Next Bookmark"
+msgstr "Următorul semn de carte"
+
+#: ../../src/ed_menu.py:694
+msgid "Next Position"
+msgstr "Poziția următoare"
+
+#: ../../src/plugdlg.py:370 ../../src/plugin.py:721
+msgid "No Description Available"
+msgstr "Nicio descriere disponibilă"
+
+#: ../../src/ed_editv.py:392
+msgid "No Suggestions"
+msgstr "Nicio sugestie"
+
+#: ../../src/ed_pages.py:982
+msgid "No Valid Files to Open"
+msgstr "Nu există fișiere valide de deschis"
+
+#: ../../src/prefdlg.py:1804
+msgid "None"
+msgstr "Nimic"
+
+#: ../../src/prefdlg.py:2160
+msgid "Normal"
+msgstr "Normal"
+
+#: ../../src/ed_search.py:618
+msgid "Not implemented"
+msgstr "Neimplementat"
+
+#: ../../src/style_editor.py:129
+msgid "Ok"
+msgstr "OK"
+
+#: ../../src/ed_glob.py:385 ../../src/ed_mdlg.py:137
+msgid "Old Machintosh (\\r)"
+msgstr "Macintosh vechi (\\r)"
+
+#: ../../src/ed_menu.py:756 ../../src/ed_menu.py:758 ../../src/prefdlg.py:753
+msgid "Old Macintosh (\\r)"
+msgstr "Macintosh vechi (\\r)"
+
+#: ../../src/ed_menu.py:834
+msgid "Online Documentation..."
+msgstr "Documentație Online..."
+
+#: ../../src/ed_menu.py:835
+msgid "Online project documentation and help guides"
+msgstr "Documentație și ajutor online"
+
+#: ../../src/ed_menu.py:516 ../../src/ed_toolbar.py:75
+msgid "Open"
+msgstr "Deschide"
+
+#: ../../src/ed_menu.py:518
+msgid "Open &Recent"
+msgstr "Deschide &recent"
+
+#: ../../plugins/PyShell/PyShell/__init__.py:66
+msgid "Open A Python Shell"
+msgstr "Deschide un shell Python"
+
+#: ../../plugins/codebrowser/codebrowser/cbrowser.py:91
+msgid "Open Code Browser Sidepanel"
+msgstr "Deschide panou lateral de explorare cod"
+
+#: ../../src/ed_pages.py:993
+msgid "Open Directory?"
+msgstr "Deschideți dosarul?"
+
+#: ../../src/eclib/finddlg.py:713
+msgid "Open Documents"
+msgstr "Deschide documente"
+
+#: ../../src/ed_pages.py:216
+msgid "Open File"
+msgstr "Deschide fișier"
+
+#: ../../plugins/filebrowser/filebrowser/browser.py:233
+msgid "Open File Browser Sidepanel"
+msgstr "Deschide panoul de navigare de fișiere"
+
+#: ../../src/prefdlg.py:521
+msgid "Open files in new windows by default"
+msgstr "Deschide implicit fișierele într-o fereastră nouă"
+
+#: ../../src/ed_menu.py:633
+msgid "Open the Quick Find Bar"
+msgstr "Deschide bara de căutare rapidă"
+
+#: ../../plugins/filebrowser/filebrowser/browser.py:414
+msgid "Open with "
+msgstr "Deschide cu "
+
+#: ../../src/ed_pages.py:1013
+#, python-format
+msgid "Opened file: %s"
+msgstr "Deschide fișier :%s"
+
+#: ../../src/ed_main.py:1499
+#, python-format
+msgid "Opening %s"
+msgstr "Se deschide „%s”"
+
+#: ../../src/ed_menu.py:585
+msgid "P&aste After"
+msgstr "&Lipește după"
+
+#: ../../plugins/codebrowser/codebrowser/cbrowser.py:52
+msgid "Packages"
+msgstr "Pachete"
+
+#: ../../src/ed_menu.py:558
+msgid "Page Set&up"
+msgstr "Configurare pa&gină"
+
+#: ../../src/ed_print.py:229
+#, python-format
+msgid "Page: %d"
+msgstr "Pagina: %d"
+
+#: ../../src/ed_menu.py:684
+msgid "Pane Navigator"
+msgstr "Navigator taburi"
+
+#: ../../src/prefdlg.py:1410
+msgid "Password"
+msgstr "Parolă"
+
+#: ../../src/ed_editv.py:364 ../../src/ed_toolbar.py:87
+msgid "Paste"
+msgstr "Lipește"
+
+#: ../../src/ed_menu.py:584 ../../src/ed_toolbar.py:88
+msgid "Paste Text from Clipboard to File"
+msgstr "Lipește text din clipboard în fișier"
+
+#: ../../src/ed_menu.py:586
+msgid "Paste Text from Clipboard to File after the cursor"
+msgstr "Lipește text din clipboard în fișier după cursor"
+
+#: ../../src/prefdlg.py:583 ../../src/prefdlg.py:584
+msgid "Path to libenchant"
+msgstr "Calea către libenchant"
+
+#: ../../plugins/filebrowser/filebrowser/browser.py:109
+msgid "Pathmarks"
+msgstr "Căi favorite"
+
+#: ../../src/eclib/infodlg.py:197
+msgid "Permissions"
+msgstr "Permisiuni"
+
+#: ../../src/perspective.py:253
+msgid "Perspective Name"
+msgstr "Nume perspectivă"
+
+#: ../../src/perspective.py:270
+msgid "Perspective to Delete"
+msgstr "Perspectiva de șters"
+
+#: ../../src/ed_main.py:141
+msgid "Perspectives"
+msgstr "Perspective"
+
+#: ../../plugins/Launch/launch/cfgdlg.py:439
+msgid "Plain Text"
+msgstr "Text simplu"
+
+#: ../../src/ed_main.py:1555
+msgid "Platform Info"
+msgstr "Informații platformă"
+
+#: ../../src/Editra.py:902
+msgid "Please check the preferences dialog to check your preferences"
+msgstr "Verificați configurările pentru a valida preferințele personale"
+
+#: ../../src/Editra.py:1111
+msgid "Please check the preferences dialog to verify your preferences"
+msgstr "Vă rugăm verificați setările pentru a valida preferințele personale"
+
+#: ../../src/ed_main.py:1083 ../../src/ed_menu.py:806
+msgid "Plugin Manager"
+msgstr "Manager de module"
+
+#: ../../src/prefdlg.py:1395
+msgid "Port Number"
+msgstr "Număr port"
+
+#: ../../src/ed_menu.py:641
+msgid "Pr&eferences"
+msgstr "Pr&eferințe"
+
+#: ../../src/prefdlg.py:496
+msgid "Prefered Encoding"
+msgstr "Codare preferată"
+
+#: ../../src/prefdlg.py:106
+msgid "Preferences - Editra"
+msgstr "Preferințe - Editra"
+
+#: ../../src/style_editor.py:694
+#, fuzzy
+msgid "Preview File"
+msgstr "Previzualizare"
+
+#: ../../src/ed_menu.py:561
+msgid "Preview Printout"
+msgstr "Previzualizare imprimare"
+
+#: ../../src/ed_cmdbar.py:271
+msgid "Previous"
+msgstr "Precedent"
+
+#: ../../src/ed_menu.py:701
+msgid "Previous Bookmark"
+msgstr "Semnul de carte precedent"
+
+#: ../../src/ed_menu.py:696
+msgid "Previous Position"
+msgstr "Poziția anterioară"
+
+#: ../../src/prefdlg.py:812
+msgid "Primary Font"
+msgstr "Font de bază"
+
+#: ../../src/ed_toolbar.py:77
+msgid "Print"
+msgstr "Tipărește"
+
+#: ../../src/ed_menu.py:562 ../../src/ed_toolbar.py:78
+msgid "Print Current File"
+msgstr "Tipărește fișierul curent"
+
+#: ../../src/ed_print.py:113
+msgid "Print Error"
+msgstr "Eroare la tipărire"
+
+#: ../../src/ed_menu.py:560
+msgid "Print Pre&view"
+msgstr "Pre&vizualizează și tipărește"
+
+#: ../../src/ed_print.py:105
+msgid "Print Preview"
+msgstr "Previzualizare tipărire"
+
+#: ../../src/ed_print.py:131
+msgid "Printer Error"
+msgstr "Eroare imprimantă"
+
+#: ../../src/prefdlg.py:391
+msgid "Printer Mode"
+msgstr "Mod imprimare"
+
+#: ../../plugins/codebrowser/codebrowser/cbrowser.py:53
+msgid "Procedure Definitions"
+msgstr "Definire proceduri"
+
+#: ../../src/ed_main.py:735 ../../src/ed_main.py:756 ../../src/ed_menu.py:545
+msgid "Profile"
+msgstr "Profil"
+
+#: ../../src/ed_main.py:740
+#, python-format
+msgid "Profile Saved as: %s"
+msgstr "Profil salvat ca: %s"
+
+#: ../../src/Editra.py:904 ../../src/Editra.py:1113
+msgid "Profile Updated"
+msgstr "Profil actualizat"
+
+#: ../../plugins/Launch/launch/launch.py:176
+msgid "Program Executable Command"
+msgstr ""
+
+#: ../../plugins/codebrowser/codebrowser/cbrowser.py:53
+msgid "Programs"
+msgstr "Programe"
+
+#: ../../src/ed_menu.py:831
+msgid "Project Homepage..."
+msgstr "Pagina web a proiectului..."
+
+#: ../../plugins/codebrowser/codebrowser/cbrowser.py:53
+msgid "Protocols"
+msgstr "Protocoale"
+
+#: ../../src/prefdlg.py:1381
+msgid "Proxy Settings"
+msgstr "Configurări proxy"
+
+#: ../../src/prefdlg.py:1391
+msgid "Proxy URL"
+msgstr "URL Proxy"
+
+#: ../../plugins/codebrowser/codebrowser/cbrowser.py:56
+msgid "Public Functions"
+msgstr "Funcții publice"
+
+#: ../../plugins/codebrowser/codebrowser/cbrowser.py:57
+msgid "Public Subroutines"
+msgstr "Subrutine publice"
+
+#: ../../src/ed_shelf.py:117
+msgid "Put an item on the Shelf"
+msgstr "Pune un element în Shelf"
+
+#: ../../src/updater.py:673
+#, python-format
+msgid "Rate: %.2f Kb/s"
+msgstr "Rata: %.2f Kb/s"
+
+#: ../../plugins/Launch/launch/__init__.py:100
+msgid "Re-run the last run program"
+msgstr "Re-execută ultimul program"
+
+#: ../../src/ed_stc.py:1842
+msgid "Read Only"
+msgstr "Doar citire"
+
+#: ../../src/ed_search.py:801
+msgid "Recent Searches"
+msgstr "Căutări recente"
+
+#: ../../src/ed_menu.py:519
+msgid "Recently Opened Files"
+msgstr "Fișiere deschise recent"
+
+#: ../../src/ed_stc.py:1457
+msgid "Recording Finished"
+msgstr "Înregistrare terminată"
+
+#: ../../src/ed_stc.py:1444
+msgid "Recording Macro"
+msgstr "Se înregistrează un macro"
+
+#: ../../src/ed_editv.py:360 ../../src/ed_menu.py:577
+#: ../../src/ed_toolbar.py:81
+msgid "Redo"
+msgstr "Refă"
+
+#: ../../src/ed_menu.py:577 ../../src/ed_toolbar.py:81
+msgid "Redo Last Undo"
+msgstr "Restaurează ultima acțiune anulată"
+
+#: ../../src/ed_search.py:350
+msgid "Regex Compile Error"
+msgstr "Eroare compilare Regex"
+
+#: ../../src/ed_cmdbar.py:294
+msgid "Regular Expression"
+msgstr "Expresie regulată"
+
+#: ../../src/eclib/finddlg.py:816
+msgid "Regular expression"
+msgstr "Expresie regulată"
+
+#: ../../src/ed_editv.py:465
+msgid "Reload File?"
+msgstr "Reîncărcați fișierul?"
+
+#: ../../src/ed_menu.py:536
+msgid "Reload the file with a specified encoding"
+msgstr "Reîncarcă fișierul cu codarea specificată"
+
+#: ../../src/ed_main.py:1220
+msgid "Reload with Encoding"
+msgstr "Reîncarcă cu codarea"
+
+#: ../../src/ed_menu.py:535
+msgid "Reload with Encoding..."
+msgstr "Reîncarcă cu codarea..."
+
+#: ../../src/prefdlg.py:524
+msgid "Remember File Position"
+msgstr "Reține poziția fișierului"
+
+#: ../../src/prefdlg.py:1210
+msgid "Remember Window Position on Exit"
+msgstr "Memorează poziția ferestrei la ieșire"
+
+#: ../../src/prefdlg.py:1207
+msgid "Remember Window Size on Exit"
+msgstr "Memorează dimensiunea ferestrei la ieșire"
+
+#: ../../src/ed_menu.py:624
+msgid "Remove All Bookmarks"
+msgstr "Înlătură toate favoritele"
+
+#: ../../plugins/filebrowser/filebrowser/browser.py:103
+msgid "Remove Saved Path"
+msgstr "Șterge căile salvate"
+
+#: ../../src/ed_menu.py:625
+msgid "Remove all bookmarks from the current document"
+msgstr "Înlătură favoritele din documentul curent"
+
+#: ../../plugins/Launch/launch/cfgdlg.py:244
+msgid "Remove selection from list"
+msgstr "Înlătură elementul selectat din listă"
+
+#: ../../src/ed_menu.py:750
+msgid "Remove trailing whitespace"
+msgstr "Șterge spațiile excedentare de la finalul liniilor"
+
+#: ../../plugins/filebrowser/filebrowser/browser.py:423
+msgid "Rename"
+msgstr "Redenumește"
+
+#: ../../src/eclib/finddlg.py:635 ../../src/eclib/finddlg.py:844
+msgid "Replace"
+msgstr "Înlocuiește"
+
+#: ../../src/eclib/finddlg.py:847
+msgid "Replace All"
+msgstr "Înlocuiește tot"
+
+#: ../../src/ed_search.py:547 ../../src/ed_search.py:708
+msgid "Replace Error"
+msgstr "Eroare la înlocuire"
+
+#: ../../src/eclib/finddlg.py:778
+msgid "Replace with"
+msgstr "Înlocuiește cu"
+
+#: ../../src/eclib/errdlg.py:324
+msgid "Report Error"
+msgstr "Raport eroare"
+
+#: ../../src/ed_editv.py:445
+msgid "Resave File?"
+msgstr "Resalvați fișierul?"
+
+#: ../../src/ed_main.py:1430
+msgid "Restore Editor"
+msgstr "Restaurează editorul"
+
+#: ../../src/plugdlg.py:673
+msgid "Retrieving Plugin List"
+msgstr "Descarcă lista cu module de extensie"
+
+#: ../../plugins/filebrowser/filebrowser/browser.py:415
+msgid "Reveal in "
+msgstr "Arată în "
+
+#: ../../src/ed_menu.py:534
+msgid "Revert file to last save point"
+msgstr "Readu la ultima configurație salvată"
+
+#: ../../src/prefdlg.py:1111 ../../src/prefdlg.py:1766
+msgid "Revert to Default"
+msgstr "Readu la valorile implicite"
+
+#: ../../src/ed_menu.py:533
+msgid "Revert to Saved"
+msgstr "Readu la configurația salvată"
+
+#: ../../plugins/Launch/launch/__init__.py:93
+#: ../../plugins/Launch/launch/launch.py:202
+#: ../../plugins/Launch/launch/launch.py:602
+msgid "Run"
+msgstr "Execută"
+
+#: ../../plugins/Launch/launch/__init__.py:98
+msgid "Run last executed"
+msgstr "Execută ultimul executat"
+
+#: ../../plugins/Launch/launch/__init__.py:76
+msgid "Run script from current buffer"
+msgstr "Execută scriptul din memoria-tampon curentă"
+
+#: ../../plugins/Launch/launch/__init__.py:95
+msgid "Run the file associated with the current buffer in Launch"
+msgstr "Execută fișierul asociat memoriei-tampon curente în Launch"
+
+#: ../../src/ed_toolbar.py:76
+msgid "Save"
+msgstr "Salvează"
+
+#: ../../src/ed_editv.py:229
+#, python-format
+msgid "Save \"%s\""
+msgstr "Salvează „%s”"
+
+#: ../../src/ed_menu.py:529
+msgid "Save &As"
+msgstr "S&alvează ca"
+
+#: ../../src/ed_menu.py:530
+msgid "Save All"
+msgstr "Salvează tot"
+
+#: ../../src/ed_menu.py:529 ../../src/eclib/filemgrdlg.py:121
+msgid "Save As"
+msgstr "Salvează ca"
+
+#: ../../src/ed_editv.py:501
+msgid "Save Changes?"
+msgstr "Salvați modificările?"
+
+#: ../../src/ed_menu.py:528 ../../src/ed_toolbar.py:76
+msgid "Save Current File"
+msgstr "Salvează fișierul curent"
+
+#: ../../src/ed_menu.py:542
+msgid "Save Current Settings to a New Profile"
+msgstr "Salvează configurările curente într-un profil nou"
+
+#: ../../src/perspective.py:69
+msgid "Save Current View"
+msgstr "Salvează afișarea curentă"
+
+#: ../../src/ed_mdlg.py:106
+msgid "Save Error"
+msgstr "Eroare la salvare"
+
+#: ../../src/perspective.py:254
+msgid "Save Perspective"
+msgstr "Salvează perspectiva"
+
+#: ../../src/ed_menu.py:541
+msgid "Save Profile"
+msgstr "Salvează profilul"
+
+#: ../../plugins/filebrowser/filebrowser/browser.py:100
+msgid "Save Selected Paths"
+msgstr "Salvează căile selectate"
+
+#: ../../src/ed_menu.py:550
+msgid "Save Session"
+msgstr "Salvează sesiunea"
+
+#: ../../src/style_editor.py:220
+msgid "Save Styles"
+msgstr "Salvează stilul"
+
+#: ../../src/ed_menu.py:531
+msgid "Save all open pages"
+msgstr "Salvează toate paginile deschise"
+
+#: ../../src/ed_menu.py:551
+msgid "Save the current session."
+msgstr "Salvează sesiunea curentă."
+
+#: ../../src/perspective.py:70
+msgid "Save the current window layout"
+msgstr "Salvează așezarea în pagina curentă"
+
+#: ../../src/ed_main.py:717
+#, python-format
+msgid "Saved File As: %s"
+msgstr "Salvează fișierul ca: %s"
+
+#: ../../src/ed_main.py:671
+#, python-format
+msgid "Saved File: %s"
+msgstr "Fișier salvat: %s"
+
+#: ../../src/ed_search.py:1301
+#, python-format
+msgid "Search Complete: %d matching lines where found."
+msgstr "Căutare completă: %d linii au fost găsite."
+
+#: ../../src/eclib/finddlg.py:817
+msgid "Search Recursively"
+msgstr "Caută recursiv"
+
+#: ../../src/ed_search.py:1275
+msgid "Search Started"
+msgstr "Căutare pornită"
+
+#: ../../src/ed_search.py:1294
+msgid "Search complete"
+msgstr "Căutare completă"
+
+#: ../../src/ed_menu.py:639
+msgid "Search for the currently selected phrase"
+msgstr "Caută fraza selectată"
+
+#: ../../plugins/filebrowser/filebrowser/browser.py:420
+msgid "Search in directory"
+msgstr "Caută în dosar"
+
+#: ../../src/ed_search.py:408
+msgid "Search wrapped to bottom"
+msgstr "Caută potriviri în jos"
+
+#: ../../src/ed_search.py:403
+msgid "Search wrapped to top"
+msgstr "Caută potriviri în sus"
+
+#: ../../src/ed_search.py:1385
+#, python-format
+msgid "Searching in: %s"
+msgstr "Caută în: %s"
+
+#: ../../src/prefdlg.py:815
+msgid "Secondary Font"
+msgstr "Font secundar"
+
+#: ../../plugins/codebrowser/codebrowser/cbrowser.py:54
+msgid "Sections"
+msgstr "Secțiuni"
+
+#: ../../src/ed_menu.py:590
+msgid "Select &All"
+msgstr "Select&ează tot"
+
+#: ../../src/ed_editv.py:369
+msgid "Select All"
+msgstr "Selectează tot"
+
+#: ../../src/ed_menu.py:591
+msgid "Select All Text in Document"
+msgstr "Selectează tot textul din document"
+
+#: ../../src/ed_main.py:1219
+msgid "Select an encoding to reload the file with"
+msgstr "Selectează codarea cu care se va reîncărca fișierul"
+
+#: ../../src/plugdlg.py:501
+msgid "Select plugins to download"
+msgstr "Selectează modulele de extensie de descărcat"
+
+#: ../../src/eclib/finddlg.py:712
+msgid "Selected Text"
+msgstr "Text selectat"
+
+#: ../../src/ed_pages.py:371
+msgid "Selected file is not a valid session file"
+msgstr "Fișierul selectat nu este un fișier de sesiune valid"
+
+#: ../../src/ed_menu.py:840
+msgid "Send bug reports and suggestions"
+msgstr "Trimiteți sugestii și raport probleme"
+
+#: ../../src/ed_main.py:779 ../../src/ed_main.py:806
+msgid "Session"
+msgstr "Sesiune"
+
+#: ../../src/ed_main.py:794
+#, python-format
+msgid "Session Saved as: %s"
+msgstr "Sesiunea salvată ca: %s"
+
+#: ../../src/ed_pages.py:356
+msgid "Session file doesn't exist."
+msgstr "Fișierul de sesiune nu există."
+
+#: ../../src/ed_pages.py:377
+msgid "Session file is empty."
+msgstr "Fișierul de sesiune este gol."
+
+#: ../../src/ed_menu.py:554
+msgid "Sessions"
+msgstr "Sesiuni"
+
+#: ../../src/eclib/ecpickers.py:80
+msgid "Set Font"
+msgstr "Definește fontul"
+
+#: ../../src/style_editor.py:697
+msgid "Set the preview file type"
+msgstr "Definește tipul de fișier de previzualizare"
+
+#: ../../src/prefdlg.py:789
+msgid "Sets a secondary font used for special regions when syntax highlighting is in use"
+msgstr "Definește un font secundar pentru regiunile speciale unde evidențierea este în uz"
+
+#: ../../src/prefdlg.py:784
+msgid "Sets the main/default font of the document"
+msgstr "Definește fontul implicit/principal pentru document"
+
+#: ../../plugins/Launch/launch/launch.py:169
+msgid "Settings"
+msgstr "Configurări"
+
+#: ../../src/ed_shelf.py:116
+msgid "Shelf"
+msgstr "Shelf"
+
+#: ../../src/ed_menu.py:667 ../../src/ed_menu.py:668 ../../src/prefdlg.py:765
+msgid "Show EOL Markers"
+msgstr "Arată marcatorii de sfârșit de linie"
+
+#: ../../src/ed_menu.py:665
+msgid "Show Edge Guide"
+msgstr "Arată ghid margini"
+
+#: ../../plugins/filebrowser/filebrowser/browser.py:218
+msgid "Show Hidden Files"
+msgstr "Arată fișiere ascunse"
+
+#: ../../src/prefdlg.py:1191
+msgid "Show Icons on Tabs"
+msgstr "Arată iconițe în taburi"
+
+#: ../../src/ed_menu.py:664
+msgid "Show Indentation Guides"
+msgstr "Arată sugestii pentru identare"
+
+#: ../../src/ed_menu.py:670
+msgid "Show Line Number Margin"
+msgstr "Arată marginea cu numărul liniei"
+
+#: ../../src/ed_menu.py:669 ../../src/prefdlg.py:767
+msgid "Show Line Numbers"
+msgstr "Arată marginea cu numărul liniei"
+
+#: ../../src/ed_shelf.py:369
+msgid "Show Shelf"
+msgstr "Arată Shelf"
+
+#: ../../src/prefdlg.py:405
+msgid "Show Splash Screen"
+msgstr "Arată o fotografie la pornire"
+
+#: ../../src/ed_menu.py:705 ../../src/prefdlg.py:1212
+msgid "Show Status Bar"
+msgstr "Afișează bara de stare"
+
+#: ../../src/ed_menu.py:707 ../../src/prefdlg.py:1214
+msgid "Show Toolbar"
+msgstr "Afișează bara de unelte"
+
+#: ../../src/ed_menu.py:671 ../../src/prefdlg.py:769
+msgid "Show Whitespace"
+msgstr "Arată spațiile goale"
+
+#: ../../src/ed_menu.py:672
+msgid "Show Whitespace Markers"
+msgstr "Arată marcatorii spațiilor goale"
+
+#: ../../src/ed_log.py:132
+msgid "Show output from"
+msgstr "Arată ieșire de la"
+
+#: ../../src/ed_shelf.py:371
+msgid "Show the Shelf"
+msgstr "Arată Shelf"
+
+#: ../../src/ed_menu.py:666
+msgid "Show the edge column guide"
+msgstr "Arată ghidaj coloane"
+
+#: ../../src/style_editor.py:644 ../../src/eclib/infodlg.py:189
+msgid "Size"
+msgstr "Dimensiune"
+
+#: ../../src/ed_pages.py:392
+msgid "Some files in saved session could not be found on disk:\n"
+msgstr "Unele fișiere din sesiunea salvată nu au putut fi găsite pe disc:\n"
+
+#: ../../src/style_editor.py:218
+msgid "Some styles have been changed would you like to save before exiting?"
+msgstr "Unele stiluri s-au schimbat. Doriți să le salvați înainte de a părăsi programul?"
+
+#: ../../src/ed_search.py:617
+#, fuzzy
+msgid "Sorry will be ready for future version"
+msgstr "Va fi gata pentru următoarea versiune"
+
+#: ../../plugins/codebrowser/codebrowser/cbconfig.py:40
+#, fuzzy
+msgid "Sorting"
+msgstr "Configurări"
+
+#: ../../src/ed_menu.py:745
+msgid "Spaces to Tabs"
+msgstr "Spații în loc de taburi"
+
+#: ../../src/prefdlg.py:557
+msgid "Spell Checking"
+msgstr "Verificare ortografică"
+
+#: ../../src/ed_toolbar.py:74
+msgid "Start a New File"
+msgstr "Deschide un fișier nou"
+
+#: ../../src/style_editor.py:174
+msgid "Start a blank new style"
+msgstr "Pornește un stil ne-preconfigurat"
+
+#: ../../src/ed_menu.py:512
+msgid "Start a new file in a new tab"
+msgstr "Deschide un fișier nou într-un tab nou"
+
+#: ../../src/ed_menu.py:514
+msgid "Start a new file in a new window"
+msgstr "Deschide un fișier nou într-o fereastră nouă"
+
+#: ../../src/prefdlg.py:959
+msgid "Start in Normal Mode"
+msgstr "Pornește în modul normal"
+
+#: ../../src/prefdlg.py:304
+msgid "Startup"
+msgstr "Pornire"
+
+#: ../../src/prefdlg.py:427
+msgid "Startup Settings"
+msgstr "Configurări de pornire"
+
+#: ../../src/updater.py:290
+msgid "Status Unknown"
+msgstr "Stare necunoscută"
+
+#: ../../src/ed_menu.py:808 ../../src/style_editor.py:63
+msgid "Style Editor"
+msgstr "Editor de stil"
+
+#: ../../src/style_editor.py:190
+#: ../../plugins/codebrowser/codebrowser/cbrowser.py:54
+msgid "Style Tags"
+msgstr "Etichete stiluri"
+
+#: ../../src/style_editor.py:166
+msgid "Style Theme"
+msgstr "Temă stil"
+
+#: ../../plugins/codebrowser/codebrowser/cbrowser.py:55
+msgid "Subroutine Declarations"
+msgstr "Declarații de subrutine"
+
+#: ../../plugins/codebrowser/codebrowser/cbrowser.py:54
+msgid "Subroutines"
+msgstr "Subrutine"
+
+#: ../../src/plugdlg.py:831
+msgid "Successfully Installed Plugins"
+msgstr "Modulele de extensie au fost instalate cu succes"
+
+#: ../../src/ed_menu.py:477 ../../src/syntax/syntax.py:315
+#, python-format
+msgid "Switch Lexer to %s"
+msgstr "Schimbă analizorul de sintaxă la %s"
+
+#: ../../src/ed_menu.py:787 ../../src/prefdlg.py:677 ../../src/prefdlg.py:1084
+msgid "Syntax Highlighting"
+msgstr "Evidențiere sintaxă"
+
+#: ../../src/plugdlg.py:769
+msgid "System Directory"
+msgstr "Dosar sistem"
+
+#: ../../src/prefdlg.py:724
+msgid "Tab Width"
+msgstr "Lățime tab"
+
+#: ../../src/ed_menu.py:747
+msgid "Tabs to Spaces"
+msgstr "Convertește taburile în spații"
+
+#: ../../plugins/codebrowser/codebrowser/cbrowser.py:55
+msgid "Task Definitions"
+msgstr "Definiții acțiuni personalizate"
+
+#: ../../plugins/Launch/launch/cfgdlg.py:405
+msgid "Text Colors"
+msgstr "Culori text"
+
+#: ../../src/util.py:361
+msgid "Text Document"
+msgstr "Document text"
+
+#: ../../src/ed_pages.py:165
+#, python-format
+msgid ""
+"The correct encoding of '%s' could not be determined.\n"
+"\n"
+"Choose an encoding and select Ok to open the file with the chosen encoding.\n"
+"Click Cancel to abort opening the file"
+msgstr ""
+"Codarea corectă a „%s” nu poate fi determinată.\n"
+"Alegeți o variantă și click OK pentru a deschide fișierul,\n"
+"sau click Renunță pentru a anula deschiderea."
+
+#: ../../src/ed_editv.py:498
+#, python-format
+msgid ""
+"The file: \"%s\" has been modified since the last save point.\n"
+"\n"
+"Would you like to save the changes?"
+msgstr ""
+"Fișierul „%s” a fost modificat între timp.\n"
+"Salvați schimbările?"
+
+#: ../../plugins/Launch/launch/launch.py:735
+msgid "The requested command could not be executed."
+msgstr ""
+
+#: ../../src/ed_search.py:308
+#, python-format
+msgid "The search term '%(term)s' was found %(count)d times."
+msgstr "Termenul căutat „%(term)s” a fost găsit de %(count)d ori."
+
+#: ../../src/ed_pages.py:980
+#, python-format
+msgid "There are no files that Editra can open in %s"
+msgstr "Nu există fișiere pe care Editra să le poată deschide în %s"
+
+#: ../../src/ed_print.py:129
+msgid ""
+"There was an error when printing.\n"
+"Check that your printer is properly connected."
+msgstr ""
+
+#: ../../src/plugdlg.py:408
+msgid "This plugin requires a newer version of Editra."
+msgstr ""
+
+#: ../../src/plugdlg.py:1066
+msgid "This plugin will be uninstalled on next program launch."
+msgstr ""
+
+#: ../../src/ed_editv.py:367
+msgid "To Lowercase"
+msgstr "În litere mici"
+
+#: ../../src/ed_editv.py:366
+msgid "To Uppercase"
+msgstr "În litere mari"
+
+#: ../../src/plugdlg.py:752
+msgid ""
+"To add a new item drag and drop the plugin file into the list.\n"
+"\n"
+"To remove an item select it and hit Delete or Backspace."
+msgstr ""
+"Pentru a adăuga un nou element trageți cu mausul fișierul în listă.\n"
+"\n"
+"Pentru a elimina un element, apăsați Delete sau BackSpace."
+
+#: ../../plugins/filebrowser/filebrowser/browser.py:93
+#, python-format
+msgid "To open multiple files at once %s+Click to select the desired files/folders then hit Enter to open them all at once"
+msgstr "Pentru a deschide mai multe fișiere deodată %s+clic pentru selecție apoi Enter pentru a le deschide pe toate"
+
+#: ../../src/ed_menu.py:781
+msgid "Toggle Auto-Indentation functionality"
+msgstr "Comută între funcționalitatea auto-identării"
+
+#: ../../src/ed_menu.py:622
+msgid "Toggle Bookmark"
+msgstr "Comută favorite"
+
+#: ../../src/ed_menu.py:786
+msgid "Toggle Code Folding"
+msgstr "Comută pliere cod"
+
+#: ../../src/ed_menu.py:722
+msgid "Toggle Comment"
+msgstr "Comută comentarii"
+
+#: ../../src/ed_menu.py:687
+msgid "Toggle Editor Maximization"
+msgstr "Comută maximizare editor"
+
+#: ../../src/ed_menu.py:674
+msgid "Toggle Editor View Options"
+msgstr "Comută opțiuni vizualizare ale editorului"
+
+#: ../../src/ed_menu.py:678 ../../src/ed_menu.py:679
+msgid "Toggle all folds"
+msgstr "Comută toate plierile"
+
+#: ../../src/ed_menu.py:623
+msgid "Toggle bookmark of the current line"
+msgstr "Comută semnul de carte al liniei curente"
+
+#: ../../src/ed_menu.py:723
+msgid "Toggle comment on the selected line(s)"
+msgstr "Comută comentariul pe al liniile curente"
+
+#: ../../src/ed_menu.py:677
+msgid "Toggle current fold"
+msgstr "Comută plierea curentă de cod"
+
+#: ../../src/ed_menu.py:676
+msgid "Toggle fold"
+msgstr "Comută pliere cod"
+
+#: ../../src/prefdlg.py:1185
+msgid "Toolbar Icon Size"
+msgstr "Mărimea iconițelor din bara cu unelte"
+
+#: ../../src/ed_menu.py:836
+msgid "Translate Editra..."
+msgstr "Tradu Editra..."
+
+#: ../../src/prefdlg.py:1238
+msgid "Transparency"
+msgstr "Transparență"
+
+#: ../../src/ed_menu.py:612
+msgid "Transpose Line"
+msgstr "Transpune linie"
+
+#: ../../src/ed_menu.py:613
+msgid "Transpose the current line with the previous one"
+msgstr "Înlocuiește linia curentă cu precedenta"
+
+#: ../../src/ed_menu.py:749
+msgid "Trim Trailing Whitespace"
+msgstr "Taie spațiile libere de la sfârșit"
+
+#: ../../src/prefdlg.py:773
+msgid "Turn off for better performance"
+msgstr "Închideți pentru performanțe superioare"
+
+#: ../../src/util.py:184
+msgid "Unable to accept dropped file or text"
+msgstr "Nu s-a putut accepta element din listă sau text"
+
+#: ../../src/eclib/filemgrdlg.py:174
+#, python-format
+msgid "Unable to delete %s"
+msgstr ""
+
+#: ../../src/plugdlg.py:506
+msgid "Unable to retrieve plugin list"
+msgstr "Nu pot descărca lista cu module de extensie"
+
+#: ../../src/ed_editv.py:359 ../../src/ed_toolbar.py:80
+msgid "Undo"
+msgstr "Anulează"
+
+#: ../../src/ed_menu.py:576 ../../src/ed_toolbar.py:80
+msgid "Undo Last Action"
+msgstr "Anulează ultima acțiune"
+
+#: ../../src/ed_menu.py:728
+msgid "Unindent Lines"
+msgstr "Deidentează liniile"
+
+#: ../../src/ed_menu.py:729
+msgid "Unindent the selected lines"
+msgstr "Deindentează liniile selectate"
+
+#: ../../src/plugdlg.py:952
+msgid "Uninstall"
+msgstr "Dezinstalează"
+
+#: ../../src/plugdlg.py:1062
+msgid "Uninstall Plugin"
+msgstr "Dezinstalează modulul de extensie"
+
+#: ../../src/ed_glob.py:386 ../../src/ed_mdlg.py:137 ../../src/ed_menu.py:759
+#: ../../src/ed_menu.py:761 ../../src/prefdlg.py:753
+msgid "Unix (\\n)"
+msgstr "Unix (\\n)"
+
+#: ../../src/plugdlg.py:366 ../../src/plugdlg.py:372 ../../src/plugdlg.py:419
+#: ../../src/plugdlg.py:423 ../../src/plugin.py:722 ../../src/util.py:367
+#: ../../src/eclib/infodlg.py:298
+msgid "Unknown"
+msgstr "Necunoscut"
+
+#: ../../plugins/filebrowser/filebrowser/browser.py:596
+msgid "Untitled_File"
+msgstr "Fișier_fără_nume"
+
+#: ../../plugins/filebrowser/filebrowser/browser.py:594
+msgid "Untitled_Folder"
+msgstr "Dosar_fără_nume"
+
+#: ../../src/eclib/finddlg.py:804
+msgid "Up"
+msgstr "Sus"
+
+#: ../../src/prefdlg.py:1348
+msgid "Update"
+msgstr "Actualizează"
+
+#: ../../src/Editra.py:603
+msgid "Update Available"
+msgstr "Actualizări disponibile"
+
+#: ../../src/ed_menu.py:731
+msgid "Uppercase"
+msgstr "Majuscule"
+
+#: ../../src/ed_menu.py:779
+msgid "Use Auto Completion when available"
+msgstr "Folosește auto-completarea dacă e disponibilă"
+
+#: ../../src/prefdlg.py:1386
+msgid "Use Proxy"
+msgstr "Folosește Proxy"
+
+#: ../../src/ed_menu.py:736
+msgid "Use Soft Tabs"
+msgstr ""
+
+#: ../../src/prefdlg.py:743
+msgid "Use Tabs Instead of Spaces"
+msgstr "Folosește taburi în locul spațiilor"
+
+#: ../../src/prefdlg.py:511
+msgid "Used to set a custom backup path. If not specified the backup will be put in the same directory as the file."
+msgstr ""
+
+#: ../../src/plugdlg.py:765
+msgid "User Directory"
+msgstr "Dosar utilizator"
+
+#: ../../src/prefdlg.py:1403
+msgid "Username"
+msgstr "Nume utilizator"
+
+#: ../../src/ed_log.py:80
+msgid "View Editra's console log"
+msgstr "Arată jurnalul Editra"
+
+#: ../../src/ed_menu.py:700
+msgid "View Line of Next Bookmark"
+msgstr "Arată linia următorului semn de carte"
+
+#: ../../src/ed_menu.py:702
+msgid "View Line of Previous Bookmark"
+msgstr "Arată linia anteriorului semn de carte"
+
+#: ../../src/prefdlg.py:804
+msgid "View Options"
+msgstr "Vizualizare opțiuni"
+
+#: ../../src/prefdlg.py:775
+msgid "View Virtual Space After Last Line"
+msgstr ""
+
+#: ../../src/ed_script.py:202
+msgid "View and Edit Macros"
+msgstr "Arată și modifică macrourile"
+
+#: ../../src/ed_menu.py:685
+msgid "View pane selection list"
+msgstr "Arată lista selecțiilor de panouri"
+
+#: ../../src/ed_menu.py:832
+#, python-format
+msgid "Visit the project homepage %s"
+msgstr "Vizitați pagina proiectului %s"
+
+#: ../../src/prefdlg.py:922
+msgid "Visual Helpers"
+msgstr "Ajutor vizual"
+
+#: ../../src/prefdlg.py:537
+msgid "Warn when mixed eol characters are detected"
+msgstr "Avertizează când sunt prezente caractere EOL mixte"
+
+#: ../../plugins/Launch/launch/cfgdlg.py:460
+msgid "Warning Text"
+msgstr "Atenționare text"
+
+#: ../../src/prefdlg.py:950
+msgid "Warning suggestions will include context insensitive results"
+msgstr ""
+
+#: ../../src/eclib/infodlg.py:191
+msgid "Where"
+msgstr "Unde"
+
+#: ../../src/ed_main.py:733
+msgid "Where to Save Profile?"
+msgstr "Unde doriți să salvați profilul?"
+
+#: ../../src/ed_main.py:777
+msgid "Where to Save Session?"
+msgstr "Unde doriți să salvați sesiunea?"
+
+#: ../../src/ed_menu.py:751
+msgid "Whitespace"
+msgstr "Spațiu alb"
+
+#: ../../src/ed_menu.py:752
+msgid "Whitespace formating commands"
+msgstr "Comenzi de formatare a spațiilor albe"
+
+#: ../../src/ed_cmdbar.py:290
+msgid "Whole Word"
+msgstr "Întreg cuvântul"
+
+#: ../../src/eclib/finddlg.py:815
+msgid "Whole word"
+msgstr "Întreg cuvântul"
+
+#: ../../src/ed_glob.py:387 ../../src/ed_mdlg.py:138 ../../src/ed_menu.py:762
+#: ../../src/ed_menu.py:764 ../../src/prefdlg.py:754
+msgid "Windows (\\r\\n)"
+msgstr "Windows (\\r\\n)"
+
+#: ../../src/ed_menu.py:739 ../../src/prefdlg.py:771
+msgid "Word Wrap"
+msgstr ""
+
+#: ../../src/ed_menu.py:740
+msgid "Wrap Text Horizontally"
+msgstr ""
+
+#: ../../plugins/Launch/launch/cfgdlg.py:419
+msgid "Wrap lines in output buffer"
+msgstr ""
+
+#: ../../src/ed_main.py:1553
+#, python-format
+msgid "Written in 100%% Python."
+msgstr "Scris 100%% în Python"
+
+#: ../../src/plugdlg.py:190
+msgid "You must restart Editra before your changes will take full affect."
+msgstr "Trebuie să reporniți Editra înainte ca modificările să aibă efect."
+
+#: ../../src/Editra.py:900 ../../src/Editra.py:1109
+msgid "Your profile has been updated to the latest version"
+msgstr "Profilul a fost actualizat conform ultimei versiuni"
+
+#: ../../src/ed_menu.py:656 ../../src/ed_menu.py:657
+msgid "Zoom Default"
+msgstr "Zoom implicit"
+
+#: ../../src/ed_menu.py:655
+msgid "Zoom In"
+msgstr "Mărește"
+
+#: ../../src/ed_menu.py:654
+msgid "Zoom Out"
+msgstr "Micșorează"
+
+#: ../../plugins/Launch/launch/launch.py:189
+msgid "args"
+msgstr "argumente"
+
+#: ../../src/style_editor.py:611
+msgid "bold"
+msgstr "aldin"
+
+#: ../../src/ed_cmdbar.py:871
+msgid "cwd: "
+msgstr "cwd: "
+
+#: ../../src/style_editor.py:612
+msgid "eol"
+msgstr "eol"
+
+#: ../../plugins/Launch/launch/launch.py:173
+msgid "exec"
+msgstr "exec"
+
+#: ../../src/style_editor.py:613
+msgid "italic"
+msgstr "cursiv"
+
+#: ../../src/style_editor.py:614
+msgid "underline"
+msgstr "subliniere"
+
+#: ../../src/ed_pages.py:237
+msgid "untitled"
+msgstr ""
+
+#: ../../src/ed_pages.py:235
+#, python-format
+msgid "untitled %d"
+msgstr ""
+
+#~ msgid ""
+#~ "%s could not be found\n"
+#~ "Perhaps its been moved or deleted"
+#~ msgstr ""
+#~ "%s nu a fost găsit.\n"
+#~ "Probabil a fost mutat sau șters!"
+
+#~ msgid ""
+#~ "%s has been modified by another application.\n"
+#~ "\n"
+#~ "Would you like to Reload it?"
+#~ msgstr ""
+#~ "%s a fost modificat de o altă aplicație.\n"
+#~ "Doriți să îl reîncărcați?"
+
+#~ msgid "&About"
+#~ msgstr "&Despre"
+
+#~ msgid "Changed color scheme to %s"
+#~ msgstr "Schema de culori a fost schimbată cu %s"
+
+#~ msgid "Choose a File"
+#~ msgstr "Selectează un fișier"
+
+#~ msgid ""
+#~ "Do you wish to open all %d files in this directory?\n"
+#~ "\n"
+#~ "Warning opening many files at once may cause the editor to temporarly  freeze."
+#~ msgstr ""
+#~ "Vreți să deschideți toate fișierele %d de aici?\n"
+#~ "Atenție: deschiderea a prea multe fișiere poate duce la blocarea editorului!"
+
+#~ msgid "Error/Crash Reporter"
+#~ msgstr "Raport erori/eșecuri"
+
+#~ msgid "Finished Installing Plugins"
+#~ msgstr "Am terminat instalarea adaosurilor"
+
+#~ msgid "Go to configuration page?"
+#~ msgstr "Vă duceți la pagina 'Configurare' ?"
+
+#~ msgid "Old Machintosh"
+#~ msgstr "Un Mac bătrân(fără opium)"
+
+#~ msgid "Online Documentation"
+#~ msgstr "Documentaţie online"
+
+#~ msgid "Project Homepage"
+#~ msgstr "Pagina proiectului"
+
+#~ msgid "Syntax Files"
+#~ msgstr "Fișiere sintaxă"
+
+#~ msgid "Translate Editra"
+#~ msgstr "Tradu Editra"
+
+#~ msgid "Unable to retrieve version info"
+#~ msgstr "Nu s-au putut obține informațiile despre versiune"
+
+#~ msgid "Unix"
+#~ msgstr "Unix"
+
+#~ msgid "Untitled"
+#~ msgstr "Fără titlu"
+
+#~ msgid "Untitled - %d"
+#~ msgstr "Neintitulat - %d"
+
+#~ msgid "Windows"
+#~ msgstr "Ferestre"
+
+#~ msgid "match case: %s"
+#~ msgstr "potriviri: %s"
+
+#~ msgid "regex: %s"
+#~ msgstr "regex: %s"
+
+#~ msgid "whole word: %s"
+#~ msgstr "cuvânt complet: %s"

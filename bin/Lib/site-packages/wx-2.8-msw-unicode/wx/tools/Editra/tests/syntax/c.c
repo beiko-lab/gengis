@@ -20,4 +20,6 @@ int main()
     printf("An unclosed string and unmatched brace
 }/*End Main*/
 
+void *test(void) {;}
+
 /*EOF*/

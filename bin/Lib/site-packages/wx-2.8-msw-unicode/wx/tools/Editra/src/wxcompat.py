@@ -12,8 +12,8 @@
 """
 
 __author__ = "Cody Precord <cprecord@editra.org>"
-__svnid__ = "$Id: wxcompat.py 58838 2009-02-12 04:34:21Z CJP $"
-__revision__ = "$Revision: 58838 $"
+__svnid__ = "$Id: wxcompat.py 63517 2010-02-19 02:44:37Z CJP $"
+__revision__ = "$Revision: 63517 $"
 
 #-----------------------------------------------------------------------------#
 # Imports
@@ -43,8 +43,3 @@ if wx.Platform == '__WXMAC__':
 if wx.VERSION < (2, 8, 6, 0, ''):
     wx.MenuItem.GetItemLabel = wx.MenuItem.GetText
     wx.MenuItem.GetItemLabelText = wx.MenuItem.GetLabel
-
-# HACK temporary bandaid to allow the the program to run until a replacement
-#      for this method can be found.
-if wx.VERSION >= (2, 9, 0, 0, ''):
-    wx.Brush.MacSetTheme = lambda x, y: x

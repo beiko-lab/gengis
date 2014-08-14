@@ -31,8 +31,12 @@
 #include "../core/DropLines.hpp"
 #include "../core/SequenceController.hpp"
 #include "../core/VisualLabel.hpp"
+#include "../core/LayerTreeController.hpp"
+#include "../core/LayerTreeView.hpp"
+#include "../core/TreeLayer.hpp"
 #include "../core/LocationLayer.hpp"
 #include "../core/LocationSetLayer.hpp"
+#include "../core/LocationPolygons.hpp"
 #include "../core/SequenceLayer.hpp"
 #include "../core/Viewport.hpp"
 #include "../core/LayerTreeController.hpp"
@@ -117,6 +121,8 @@ void LocationPropertiesDlg::InitSymbology()
 	ReplaceColourPicker( m_colourLabel, colour );
 
 	m_chkLabelVisible->SetValue(label->IsVisible());
+
+	m_chkLocationVisible->SetValue(locationView->IsVisible());
 }
 
 void LocationPropertiesDlg::InitMetadata()
@@ -192,6 +198,34 @@ void LocationPropertiesDlg::ApplySymbology()
 	{
 		locationView->SetShape(shape);
 		locationView->SetShapeModified(true);
+	}
+
+	if(locationView->IsVisible() != m_chkLocationVisible->GetValue())
+	{
+		//Set Visibility
+		locationView->SetVisibility(m_chkLocationVisible->GetValue());
+
+		//Set the checkbox in the layer tree
+		wxTreeItemId treeItem = m_locationLayer->GetWXTreeItemId();
+		LayerTreeViewPtr treeView = App::Inst().GetLayerTreeController()->GetTreeView();
+		treeView->SetChecked(treeItem, m_chkLocationVisible->GetValue());
+
+		//Redraw polygons
+		std::vector<LocationSetLayerPtr> locationSets = App::Inst().GetLayerTreeController()->GetLocationSetLayers();
+		for(uint i = 0; i < locationSets.size(); i++)
+			locationSets[i]->GetLocationPolygons()->SetPolygonsChanged(true);
+
+		//Update tree
+		LayerTreeControllerPtr layerTreeController = App::Inst().GetLayerTreeController();
+		for (uint i = 0; i < layerTreeController->GetNumTreeLayers(); i++)
+		{
+			//alexk Don't ask me why you have to do this in such a roundabout way, but otherwise Mac cries.
+			GeoTreeViewPtr geoTree = layerTreeController->GetTreeLayer(i)->GetGeoTreeView();
+			std::vector<GenGIS::LocationLayerPtr, std::allocator<GenGIS::LocationLayerPtr> > temp = App::Inst().GetLayerTreeController()->GetLocationLayers();
+			geoTree->ProjectToActiveSet(temp);
+			
+	//		layerTreeController->GetTreeLayer(i)->GetGeoTreeView()->ProjectToActiveSet(layerTreeController->GetLocationLayers());
+		}
 	}
 
 	// set label properties

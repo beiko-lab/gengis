@@ -248,7 +248,11 @@ class EnvironmentDataVisualizer( EnvironmentDataVisualizerLayout ):
 				locLayer = activeLocLayers[i]
 				
 				# Get field value for location
-				value = float(locLayer.GetController().GetData()[field])
+				value = locLayer.GetController().GetData()[field]
+				if value == "None":
+					value = 0
+				else:
+					value = float(value)
 				x.append(value)
 				
 				# Get alpha diversity for location

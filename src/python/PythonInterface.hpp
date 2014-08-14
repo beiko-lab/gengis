@@ -46,6 +46,7 @@ namespace GenGIS
 		~PythonInterface();              // Destructor.
 		wxPanel* GetPythonPanel() const; // Gets the wxPython panel from PythonCode.py and returns it.
 		void UpdatePythonInterface();
+		void PythonErrors() const;	//Prints errors to wxMessageBoxes
 	private:
 		PyThreadState* m_mainTState;
 	};

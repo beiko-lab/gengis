@@ -2,7 +2,7 @@
 # Purpose:      XRC editor, toolbar
 # Author:       Roman Rolinsky <rolinsky@mema.ucl.ac.be>
 # Created:      19.03.2003
-# RCS-ID:       $Id: tools.py 51051 2008-01-06 21:43:13Z RD $
+# RCS-ID:       $Id: tools.py 67456 2011-04-13 18:02:41Z RD $
 
 from globals import *
 from component import Manager, DEFAULT_POS
@@ -42,7 +42,7 @@ class ToolPanel(wx.PyPanel):
             self.tp.AssignImageList(il)
         elif g.conf.toolPanelType == 'FPB':
             self.tp = fpb.FoldPanelBar(self, -1, wx.DefaultPosition, wx.DefaultSize, 
-                                       fpb.FPB_DEFAULT_STYLE | fpb.FPB_VERTICAL)
+                                       agwStyle=fpb.FPB_VERTICAL)
             sizer.Add(self.tp, 1, wx.EXPAND)
         self.panels = []
         for name in Manager.panelNames:
@@ -127,7 +127,7 @@ class ToolPanel(wx.PyPanel):
         panel.SetBackgroundColour(self.bg)
         panel.name = name
         panel.controls = {}
-        panel.size = wx.GBSpan(0, 0) # current size
+        panel.size = wx.GBSpan(1, 1) # current size
         topSizer = wx.BoxSizer()
         panel.sizer = wx.GridBagSizer(0, 0)
         panel.sizer.SetEmptyCellSize((24, 24))

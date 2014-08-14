@@ -32,6 +32,7 @@
 #include <wx/slider.h>
 #include <wx/button.h>
 #include <wx/gbsizer.h>
+#include <wx/choice.h>
 #include <wx/richtext/richtextctrl.h>
 #include <wx/dialog.h>
 
@@ -90,6 +91,7 @@ namespace GenGIS
 				ID_LBL_LABEL_COLOUR,
 				ID_COLOUR_PICKER_LABEL_COLOUR,
 				ID_PNL_CHART,
+				ID_CHECK_SHOW_CHART,
 				ID_NOTEBOOK_CHART,
 				ID_LBL_LABEL_CHART_FIELD,
 				ID_CBO_CHART_FIELD,
@@ -109,7 +111,6 @@ namespace GenGIS
 				ID_LBL_DROPLINE_THICKNESS,
 				ID_SPIN_DROPLINE_THICKNESS,
 				ID_COLOUR_PICKER_DROPLINE,
-				ID_CHECK_SHOW_CHART,
 				wxID_RADIO_TILE_COLOUR_NO_FILL,
 				wxID_RADIO_TILE_COLOUR_UNIFORM_FILL,
 				wxID_RADIO_TILE_COLOUR_MAP_FILL,
@@ -186,6 +187,8 @@ namespace GenGIS
 			wxColourPickerCtrl* m_colourLabel;
 			
 			wxPanel* m_pnlChart;
+			wxCheckBox* m_chkShowCharts;
+			wxStaticLine* m_staticline141;
 			wxNotebook* m_notebookChart;
 			wxPanel* m_pnlChartColourMap;
 			wxStaticText* m_lblChartField;
@@ -231,9 +234,9 @@ namespace GenGIS
 			wxStaticText* m_lblChartDroplineThickness;
 			wxSpinCtrl* m_spinChartDropLineThickness;
 			wxColourPickerCtrl* m_colourChartDropLine;
-			
-			wxCheckBox* m_chkShowCharts;
 			wxPanel* m_pnlGrid;
+			wxCheckBox* m_chkShowGrid;
+			wxStaticLine* m_staticline131;
 			wxNotebook* m_notebook6;
 			wxPanel* m_panel13;
 			wxRadioButton* m_radioGridNoFill;
@@ -298,7 +301,35 @@ namespace GenGIS
 			wxTextCtrl* m_textCtrlGridElevation;
 			wxStaticText* m_txtTileFieldChoice;
 			wxComboBox* m_tileFieldChoice;
-			wxCheckBox* m_chkShowGrid;
+			wxPanel* m_pnlPolygons;
+			wxPanel* m_pnlOptions;
+			wxCheckBox* m_chkDrawPolygons;
+			wxStaticLine* m_staticline14;
+			wxStaticText* m_lblAlgorithm;
+			wxChoice* m_choiceAlgorithm;
+			wxStaticText* m_lblAlgorithmDescription;
+			wxTextCtrl* m_txtAlgorithmDescription;
+			wxStaticText* m_lblFillOpacity;
+			wxSlider* m_sliderFillOpacity;
+			wxCheckBox* m_chkSmoothPolygons;
+			wxCheckBox* m_chkAutoAdjustPolygonElevation;
+			wxCheckBox* m_chkIncreasingElevation;
+			
+			wxStaticText* m_lblPolygonElevation;
+			wxTextCtrl* m_txtPolygonElevation;
+			
+			wxStaticText* m_lblElevationOffset;
+			wxTextCtrl* m_txtElevationOffset;
+			wxStaticText* m_lblPolygonInflation;
+			wxSlider* m_sliderPolygonInflation;
+			wxStaticText* m_lblPolygonScaling;
+			wxTextCtrl* m_txtPolygonScaling;
+			wxCheckBox* m_chkShowBorders;
+			wxStaticLine* m_staticline16;
+			wxStaticText* m_lblBorderOpacity;
+			wxSlider* m_sliderBorderOpacity;
+			wxStaticText* m_lblBorderThickness;
+			wxSpinCtrl* m_spinBorderThickness;
 			wxPanel* m_pnlMetadata;
 			wxStaticText* m_lblLayerSource;
 			wxTextCtrl* m_txtLayerSource;
@@ -346,6 +377,14 @@ namespace GenGIS
 			virtual void OnAlignCoordinateToMouse( wxCommandEvent& event ) { event.Skip(); }
 			virtual void OnAutoAdjustElevation( wxCommandEvent& event ) { event.Skip(); }
 			virtual void OnTileFieldChoiceChange( wxCommandEvent& event ) { event.Skip(); }
+			virtual void OnDrawPolygons( wxCommandEvent& event ) { event.Skip(); }
+			virtual void OnChoiceAlgorithmChanged( wxCommandEvent& event ) { event.Skip(); }
+			virtual void OnFillOpacityChange( wxScrollEvent& event ) { event.Skip(); }
+			virtual void OnAutoAdjustPolygonElevation( wxCommandEvent& event ) { event.Skip(); }
+			virtual void OnIncreasingElevation( wxCommandEvent& event ) { event.Skip(); }
+			virtual void OnShowBorders( wxCommandEvent& event ) { event.Skip(); }
+			virtual void OnBorderOpacityChange( wxScrollEvent& event ) { event.Skip(); }
+			virtual void OnBorderThicknessChange( wxSpinEvent& event ) { event.Skip(); }
 			virtual void OnHelp( wxCommandEvent& event ) { event.Skip(); }
 			virtual void OnOK( wxCommandEvent& event ) { event.Skip(); }
 			virtual void OnApply( wxCommandEvent& event ) { event.Skip(); }

@@ -48,6 +48,7 @@
 #include "../core/MapLayer.hpp"
 #include "../core/VectorMapLayer.hpp"
 #include "../core/LocationSetLayer.hpp"
+#include "../core/LocationPolygons.hpp"
 #include "../core/LocationLayer.hpp"
 #include "../core/LocationSetController.hpp"
 #include "../core/TreeLayer.hpp"
@@ -110,6 +111,8 @@ const int ID_MNU_LAYER_LOCATION_SET_PROPERTIES              = 5002;
 const int ID_MNU_LAYER_LOCATION_PROPERTIES                  = 5003;
 const int ID_MNU_LAYER_TREE_PROPERTIES                      = 5004;
 const int ID_MNU_LAYER_SEQUENCE_PROPERTIES                  = 5005;
+const int ID_MNU_LAYER_LOCATION_SET_SHOW_ALL				= 5008;
+const int ID_MNU_LAYER_LOCATION_SET_HIDE_ALL				= 5009;
 
 const int ID_RIGHT_CLICK_CLADOGRAM_3D                       = 5100;
 const int ID_RIGHT_CLICK_SLANTED_CLADOGRAM_3D               = 5101;
@@ -239,6 +242,8 @@ void GenGisFrame::ConnectEvents()
 	this->Connect( ID_MNU_LAYER_LOCATION_PROPERTIES, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GenGisFrame::OnLocationProperties ) );
 	this->Connect( ID_MNU_LAYER_SEQUENCE_PROPERTIES, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GenGisFrame::OnSequenceProperties ) );
 	this->Connect( ID_MNU_LAYER_TREE_PROPERTIES, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GenGisFrame::OnTreeProperties ) );
+	this->Connect( ID_MNU_LAYER_LOCATION_SET_HIDE_ALL, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GenGisFrame::OnLocationSetHideAll ) );
+	this->Connect( ID_MNU_LAYER_LOCATION_SET_SHOW_ALL, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GenGisFrame::OnLocationSetShowAll ) );
 
 	this->Connect( ID_RIGHT_CLICK_CLADOGRAM_3D, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GenGisFrame::OnCladogram3D ) );
 	this->Connect( ID_RIGHT_CLICK_SLANTED_CLADOGRAM_3D, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GenGisFrame::OnSlantedCladogram3D ) );
@@ -276,6 +281,7 @@ void GenGisFrame::ConnectEvents()
 	this->Connect( ID_POPUP_MNU_HIDE, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GenGisFrame::OnSelectedViewHide ) );
 	this->Connect( ID_POPUP_MNU_PROPERTIES, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GenGisFrame::OnSelectedViewProperties ) );
 	this->Connect( ID_POPUP_MNU_REMOVE, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GenGisFrame::OnSelectedViewRemove ) );
+	this->Connect( ID_POPUP_MNU_HIDE_LOCATION, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GenGisFrame::OnHideLocation ) );
 
 	this->Connect( ID_POPUP_MNU_SUBTREE_SIGNIFICANCE_TEST, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GenGisFrame::OnTreeSignificanceTestPopup ) );
 	this->Connect( ID_POPUP_MNU_EXTEND_POLYLINE, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GenGisFrame::OnExtendGeographicPolyline ) );
@@ -293,6 +299,8 @@ void GenGisFrame::DisconnectEvents()
 	this->Disconnect( ID_MNU_LAYER_LOCATION_PROPERTIES, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GenGisFrame::OnLocationProperties ) );
 	this->Disconnect( ID_MNU_LAYER_SEQUENCE_PROPERTIES, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GenGisFrame::OnSequenceProperties ) );
 	this->Disconnect( ID_MNU_LAYER_TREE_PROPERTIES, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GenGisFrame::OnTreeProperties ) );
+	this->Disconnect( ID_MNU_LAYER_LOCATION_SET_HIDE_ALL, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GenGisFrame::OnLocationSetHideAll ) );
+	this->Disconnect( ID_MNU_LAYER_LOCATION_SET_SHOW_ALL, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GenGisFrame::OnLocationSetShowAll ) );
 
 	this->Disconnect( ID_RIGHT_CLICK_CLADOGRAM_3D, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GenGisFrame::OnCladogram3D ) );
 	this->Disconnect( ID_RIGHT_CLICK_SLANTED_CLADOGRAM_3D, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GenGisFrame::OnSlantedCladogram3D ) );
@@ -326,6 +334,7 @@ void GenGisFrame::DisconnectEvents()
 	this->Disconnect( ID_POPUP_MNU_HIDE, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GenGisFrame::OnSelectedViewHide ) );
 	this->Disconnect( ID_POPUP_MNU_PROPERTIES, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GenGisFrame::OnSelectedViewProperties ) );
 	this->Disconnect( ID_POPUP_MNU_REMOVE, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GenGisFrame::OnSelectedViewRemove ) );
+	this->Disconnect( ID_POPUP_MNU_HIDE_LOCATION, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GenGisFrame::OnHideLocation ) );
 
 	this->Disconnect( ID_POPUP_MNU_SUBTREE_SIGNIFICANCE_TEST, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GenGisFrame::OnTreeSignificanceTestPopup ) );
 	this->Disconnect( ID_POPUP_MNU_EXTEND_POLYLINE, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GenGisFrame::OnExtendGeographicPolyline ) );
@@ -2689,7 +2698,7 @@ void GenGisFrame::OnCheckForUpdates( wxCommandEvent& event )
 
 void GenGisFrame::OnModeDrawLayoutLine( wxCommandEvent& event ) 
 { 
-	if(!m_layoutLine)
+ 	if(!m_layoutLine)
 	{
 		App::Inst().SetMode(App::LAYOUT_LINE); 
 		m_layoutLine.reset(new LayoutLine());
@@ -2985,6 +2994,43 @@ void GenGisFrame::OnSelectedViewRemove(wxCommandEvent& event)
 	}
 }
 
+void GenGisFrame::OnHideLocation ( wxCommandEvent& event ) 
+{
+	ViewPtr view = App::Inst().GetRightClickView();
+	LocationViewPtr locationView = boost::dynamic_pointer_cast<LocationView>(view);
+	if (locationView)
+	{
+		//Get tree item to set checkbox in the layer tree
+		uint locationLayerId = locationView->GetLocationLayerId();
+		LocationLayerPtr locationLayer = App::Inst().GetLayerTreeController()->GetLocationLayerById(locationLayerId);
+		wxTreeItemId treeItem = locationLayer->GetWXTreeItemId();
+		
+		//Set the checkbox in the layer tree
+		LayerTreeViewPtr treeView = App::Inst().GetLayerTreeController()->GetTreeView();
+		treeView->SetChecked(treeItem, false);
+
+		//Hide location
+		locationView->SetVisibility(false);
+
+		//Redraw polygons
+		std::vector<LocationSetLayerPtr> locationSets = App::Inst().GetLayerTreeController()->GetLocationSetLayers();
+		for(uint i = 0; i < locationSets.size(); i++)
+			locationSets[i]->GetLocationPolygons()->SetPolygonsChanged(true);
+
+		//Update tree
+		LayerTreeControllerPtr layerTreeController = App::Inst().GetLayerTreeController();
+		for (uint i = 0; i < layerTreeController->GetNumTreeLayers(); i++)
+		{
+			GeoTreeViewPtr geoTree = layerTreeController->GetTreeLayer(i)->GetGeoTreeView();
+			std::vector<GenGIS::LocationLayerPtr, std::allocator<GenGIS::LocationLayerPtr> > temp = App::Inst().GetLayerTreeController()->GetLocationLayers();
+			geoTree->ProjectToActiveSet(temp);
+		}
+
+		//Refresh viewport
+		App::Inst().GetViewport()->Refresh();
+	}
+}
+
 void GenGisFrame::OnLayerRemove( wxCommandEvent& event ) 
 { 
 	int answer;
@@ -3017,7 +3063,6 @@ void GenGisFrame::OnAllLayersRemove( wxCommandEvent& event )
 	}
 }
 
-
 void GenGisFrame::OnLayerHideAll( wxCommandEvent& event ) 
 { 
 	App::Inst().GetLayerTreeController()->OnHideAll(event); 
@@ -3042,7 +3087,8 @@ void GenGisFrame::OnLayerTreeClick( wxMouseEvent& event )
 
 void GenGisFrame::OnLayerTreeLeftDClick( wxMouseEvent& event )
 {  
-	App::Inst().GetLayerTreeController()->OnLeftDClick(event); 
+	// needs to pass the layout line so that 2D figures can be connected
+	App::Inst().GetLayerTreeController()->OnLeftDClick(event, m_layoutLine);
 }
 
 void GenGisFrame::OnModeStandard( wxCommandEvent& event ) 
@@ -3143,6 +3189,69 @@ void GenGisFrame::OnLocationSetProperties(wxCommandEvent& event)
 	}
 }
 
+void GenGisFrame::OnLocationSetShowAll(wxCommandEvent& event)
+{
+	//m_locationSetLayer->SetActive(true);
+	foreach(LocationLayerPtr locationLayer, m_locationSetLayer->GetAllLocationLayers())
+	{
+		locationLayer->SetActive(true);
+		wxTreeItemId treeItem = locationLayer->GetWXTreeItemId();
+		//Set the checkbox in the layer tree
+		LayerTreeViewPtr treeView = App::Inst().GetLayerTreeController()->GetTreeView();
+		treeView->SetChecked(treeItem, locationLayer->IsActive());
+	}
+
+	//Redraw polygons
+	std::vector<LocationSetLayerPtr> locationSets = App::Inst().GetLayerTreeController()->GetLocationSetLayers();
+	for(uint i = 0; i < locationSets.size(); i++)
+		locationSets[i]->GetLocationPolygons()->SetPolygonsChanged(true);
+
+	//Update tree
+	LayerTreeControllerPtr layerTreeController = App::Inst().GetLayerTreeController();
+	for (uint i = 0; i < layerTreeController->GetNumTreeLayers(); i++) {
+		GeoTreeViewPtr geoTree = layerTreeController->GetTreeLayer(i)->GetGeoTreeView();
+		geoTree->RestoreTree();
+		geoTree->SetVisibility(true);
+
+		wxTreeItemId treeItem = layerTreeController->GetTreeLayer(i)->GetWXTreeItemId();
+		LayerTreeViewPtr treeView = App::Inst().GetLayerTreeController()->GetTreeView();
+		treeView->SetChecked(treeItem, true);		
+	}
+
+	App::Inst().GetViewport()->Refresh( true );
+}
+
+void GenGisFrame::OnLocationSetHideAll(wxCommandEvent& event)
+{
+	//m_locationSetLayer->SetActive(false);
+	foreach(LocationLayerPtr locationLayer, m_locationSetLayer->GetAllLocationLayers())
+	{
+		locationLayer->SetActive(false);
+		wxTreeItemId treeItem = locationLayer->GetWXTreeItemId();
+		//Set the checkbox in the layer tree
+		LayerTreeViewPtr treeView = App::Inst().GetLayerTreeController()->GetTreeView();
+		treeView->SetChecked(treeItem, locationLayer->IsActive());
+	}
+
+	//Redraw polygons
+	std::vector<LocationSetLayerPtr> locationSets = App::Inst().GetLayerTreeController()->GetLocationSetLayers();
+	for(uint i = 0; i < locationSets.size(); i++)
+		locationSets[i]->GetLocationPolygons()->SetPolygonsChanged(true);
+
+	//Update tree
+	LayerTreeControllerPtr layerTreeController = App::Inst().GetLayerTreeController();
+	for (uint i = 0; i < layerTreeController->GetNumTreeLayers(); i++) {
+		GeoTreeViewPtr geoTree = layerTreeController->GetTreeLayer(i)->GetGeoTreeView();
+		geoTree->SetVisibility(false);
+
+		wxTreeItemId treeItem = layerTreeController->GetTreeLayer(i)->GetWXTreeItemId();
+		LayerTreeViewPtr treeView = App::Inst().GetLayerTreeController()->GetTreeView();
+		treeView->SetChecked(treeItem, false);		
+	}
+
+	App::Inst().GetViewport()->Refresh( true );
+}
+
 void GenGisFrame::OnLocationProperties(wxCommandEvent& event)
 {
 	if ( m_locationLayer->HasPropertiesDialogOpen() )
@@ -3186,7 +3295,15 @@ void GenGisFrame::OnTreeProperties(wxCommandEvent& event)
 	}
 	else
 	{
-		TreePropertiesDlg* dlg = new TreePropertiesDlg(App::Inst().GetMainWindow(), m_treeLayer);
+		TreePropertiesDlg* dlg;
+		if(m_layoutLine)
+		{
+			dlg = new TreePropertiesDlg(App::Inst().GetMainWindow(), m_treeLayer, m_layoutLine);
+		}
+		else
+		{
+			dlg = new TreePropertiesDlg(App::Inst().GetMainWindow(), m_treeLayer);
+		}
 		dlg->Show();
 
 		App::Inst().GetLayerTreeController()->SetName( m_treeLayer, m_treeLayer->GetName() );
@@ -3493,6 +3610,8 @@ void GenGisFrame::OnLayerTreePopupMenu( wxTreeEvent& event )
 		{
 			m_locationSetLayer = boost::dynamic_pointer_cast<LocationSetLayer>(layer);
 			menu.Append(ID_MNU_LAYER_LOCATION_SET_PROPERTIES, wxT("Properties"));
+			menu.Append(ID_MNU_LAYER_LOCATION_SET_SHOW_ALL, wxT("Show All Locations"));
+			menu.Append(ID_MNU_LAYER_LOCATION_SET_HIDE_ALL, wxT("Hide All Locations"));
 
 			bool bHasSampleData = false;
 			for(unsigned int i = 0; i < m_locationSetLayer->GetNumLocationLayers(); ++i)

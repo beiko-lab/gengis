@@ -2,11 +2,11 @@
 # Purpose:      Core components
 # Author:       Roman Rolinsky <rolinsky@femagsoft.com>
 # Created:      31.05.2007
-# RCS-ID:       $Id: core.py 55736 2008-09-19 15:53:34Z ROL $
+# RCS-ID:       $Id: core.py 64627 2010-06-18 18:17:45Z ROL $
 
 import wx
 from wx.tools.XRCed import component, images, attribute, params, view
-from wx.tools.XRCed.globals import TRACE,is_object,STD_NAME
+from wx.tools.XRCed.globals import TRACE,is_object,is_element,STD_NAME
 import _bitmaps as bitmaps
 
 TRACE('*** creating core components')
@@ -23,7 +23,7 @@ component.Manager.panelImages['Gizmos'] = images.ToolPanel_Gizmos.GetImage()
 class Frame(component.Container):
     def getChildObject(self, node, obj, index):
         # Do not count toolbar and menubar
-        objects = filter(is_object, node.childNodes)
+        objects = filter(is_element, node.childNodes)
         indexOffset = 0         # count non-window children
         for i,o in enumerate(objects):
             if o.getAttribute('class') == 'wxMenuBar':
@@ -57,7 +57,7 @@ component.Manager.setTool(c, 'Windows', bitmaps.wxFrame.GetBitmap(), (0,0))
 class MDIParentFrame(component.Container):
     def getChildObject(self, node, obj, index):
         # Do not count toolbar and menubar
-        objects = filter(is_object, node.childNodes)
+        objects = filter(is_element, node.childNodes)
         indexOffset = 0         # count non-window children
         for i,o in enumerate(objects):
             if o.getAttribute('class') == 'wxMenuBar':
@@ -91,7 +91,7 @@ component.Manager.setMenu(c, 'TOP_LEVEL', 'MDI parent frame', 'wxMDIParentFrame'
 class MDIChildFrame(component.Container):
     def getChildObject(self, node, obj, index):
         # Do not count toolbar and menubar
-        objects = filter(is_object, node.childNodes)
+        objects = filter(is_element, node.childNodes)
         indexOffset = 0         # count non-window children
         for i,o in enumerate(objects):
             if o.getAttribute('class') == 'wxMenuBar':
@@ -308,8 +308,8 @@ class StdDialogButtonSizer(component.Sizer):
         # This sizer orders buttons by fixed ordering, so we must
         # get the ID to find them
         try:
-            n = filter(is_object, node.childNodes)[index]
-            n = filter(is_object, n.childNodes)[0]
+            n = filter(is_element, node.childNodes)[index]
+            n = filter(is_element, n.childNodes)[0]
             id = n.getAttribute('name')
         except IndexError:
             return None
@@ -501,7 +501,7 @@ class ToolBar(component.SimpleContainer):
     def getRect(self, obj):
         return None
 
-c = ToolBar('wxToolBar', ['toolbar', 'top_level'],
+c = ToolBar('wxToolBar', ['toolbar', 'top_level', 'control'],
              ['bitmapsize', 'margins', 'packing', 'separation',
               'dontattachtoframe', 'pos', 'size'],
              image=images.TreeToolBar.GetImage())

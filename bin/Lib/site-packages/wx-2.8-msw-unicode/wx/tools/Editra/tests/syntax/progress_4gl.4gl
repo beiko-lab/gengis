@@ -1,3 +1,5 @@
+/* Syntax highlight test file for Progress 4GL */
+
 DEFINE TEMP-TABLE tt
  FIELDS site like ld_site
  FIELDS loc like ld_loc

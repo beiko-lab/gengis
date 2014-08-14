@@ -1,8 +1,8 @@
 """EditWindow class."""
 
 __author__ = "Patrick K. O'Brien <pobrien@orbtech.com>"
-__cvsid__ = "$Id: editwindow.py 48373 2007-08-25 01:32:08Z RD $"
-__revision__ = "$Revision: 48373 $"[11:-2]
+__cvsid__ = "$Id: editwindow.py 63479 2010-02-14 05:24:22Z RD $"
+__revision__ = "$Revision: 63479 $"[11:-2]
 
 import wx
 from wx import stc
@@ -255,8 +255,9 @@ class EditWindow(stc.StyledTextCtrl):
         backward = not (findData.GetFlags() & wx.FR_DOWN)
         matchcase = (findData.GetFlags() & wx.FR_MATCHCASE) != 0
         end = self.GetLastPosition()
-        textstring = self.GetRange(0, end)
-        findstring = findData.GetFindString()
+        # Changed to reflect the fact that StyledTextControl is in UTF-8 encoding
+        textstring = self.GetRange(0, end).encode('utf-8')
+        findstring = findData.GetFindString().encode('utf-8')
         if not matchcase:
             textstring = textstring.lower()
             findstring = findstring.lower()

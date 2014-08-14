@@ -2,7 +2,7 @@
 # GENERICMESSAGEDIALOG wxPython IMPLEMENTATION
 #
 # Andrea Gavana, @ 07 October 2008
-# Latest Revision: 07 October 2008, 22.00 GMT
+# Latest Revision: 12 Sep 2010, 10.00 GMT
 #
 #
 # TODO List
@@ -23,17 +23,23 @@
 # --------------------------------------------------------------------------------- #
 
 """
+This class is a possible, fancy replacement for `wx.MessageDialog`.
+
+
 Description
 ===========
 
 This class represents a dialog that shows a single or multi-line message,
-with a choice of OK, Yes, No and Cancel buttons. It is a possible replacement
-for the standard wx.MessageDialog, with these extra functionalities:
+with a choice of ``OK``, ``Yes``, ``No`` and ``Cancel`` buttons. It is a possible
+replacement for the standard `wx.MessageDialog`, with these extra functionalities:
 
 * Possibility to modify the dialog position;
 * Custom themed generic bitmap & text buttons;
 * Possibility to set an icon to the dialog;
 * More visibility to the button getting the focus;
+* Support for Aqua buttons or Gradient buttons instead of themed ones (see L{AquaButton}
+  and L{GradientButton});
+* Possibility to automatically wrap long lines of text;
 * Good old Python code :-D .
 
 And a lot more. Check the demo for an almost complete review of the functionalities.
@@ -42,19 +48,58 @@ And a lot more. Check the demo for an almost complete review of the functionalit
 Supported Platforms
 ===================
 
-SuperToolTip has been tested on the following platforms:
+GenericMessageDialog has been tested on the following platforms:
   * Windows (Windows XP).
 
 
-Latest Revision: Andrea Gavana @ 07 October 2008, 22.00 GMT
-Version 0.1
+Window Styles
+=============
+
+This class supports the following window styles:
+
+=========================== =========== ==================================================
+Window Styles               Hex Value   Description
+=========================== =========== ==================================================
+``GMD_USE_AQUABUTTONS``            0x20 Uses `wx.lib.agw.aquabutton` buttons instead of generic buttons.
+``GMD_USE_GRADIENTBUTTONS``        0x40 Uses `wx.lib.agw.gradientbutton` buttons instead of generic buttons.
+=========================== =========== ==================================================
+
+
+Events Processing
+=================
+
+`No custom events are available for this class.`
+
+
+License And Version
+===================
+
+GenericMessageDialog is distributed under the wxPython license.
+
+Latest Revision: Andrea Gavana @ 12 Sep 2010, 10.00 GMT
+
+Version 0.5
 
 """
 
 import wx
-import wx.lib.buttons as buttons
+import wx.lib.wordwrap as wordwrap
 
+import wx.lib.buttons as buttons
 from wx.lib.embeddedimage import PyEmbeddedImage
+
+# To use AquaButtons or GradientButtons instead of wx.lib.buttons
+import aquabutton as AB
+import gradientbutton as GB
+
+# GenericMessageDialog styles
+GMD_USE_AQUABUTTONS = 32
+""" Uses `wx.lib.agw.aquabutton` buttons instead of generic buttons. """
+GMD_USE_GRADIENTBUTTONS = 64
+""" Uses `wx.lib.agw.gradientbutton` buttons instead of generic buttons. """
+
+# Avoid 2.9 errors
+BUTTON_SIZER_FLAGS = wx.OK | wx.CANCEL | wx.YES | wx.NO | wx.HELP | wx.NO_DEFAULT
 
 _ = wx.GetTranslation
 
@@ -347,7 +392,7 @@ class StdDialogButtonSizer(wx.BoxSizer):
         """
         Add a button to the sizer.
 
-        @param mybutton: the button to add.
+        :param `mybutton`: the button to add.
         """
 
         buttonId = mybutton.GetId()
@@ -366,25 +411,37 @@ class StdDialogButtonSizer(wx.BoxSizer):
             
 
     def SetAffirmativeButton(self, button):
-        """ Sets the affirmative button. """
+        """
+        Sets the affirmative button.
+
+        :param `button`: the button to set as affirmative one.
+        """
 
         self._buttonAffirmative = button
 
 
     def SetNegativeButton(self, button):
-        """ Sets the negative button. """
+        """
+        Sets the negative button.
+
+        :param `button`: the button to set as negative one.
+        """
 
         self._buttonNegative = button
 
 
     def SetCancelButton(self, button):
-        """ Sets the cancel button. """
+        """
+        Sets the cancel button.
+
+        :param `button`: the button to set as cancel one.
+        """
 
         self._buttonCancel = button
 
 
     def Realize(self):
-        """ Realizes the sizer depending on the Platform. """
+        """ Realizes the sizer depending on the platform. """
 
         if wx.Platform == "__WXMAC__":
             
@@ -495,31 +552,48 @@ class StdDialogButtonSizer(wx.BoxSizer):
 class GenericMessageDialog(wx.Dialog):
     """
     Main class implementation, L{GenericMessageDialog} is a possible replacement
-    for the standard wx.MessageDialog.
+    for the standard `wx.MessageDialog`.
     """
 
-    def __init__(self, parent, message, caption, style,
-                 pos=wx.DefaultPosition, size=wx.DefaultSize):
+    def __init__(self, parent, message, caption, agwStyle,
+                 pos=wx.DefaultPosition, size=wx.DefaultSize,
+                 style=wx.DEFAULT_DIALOG_STYLE|wx.WANTS_CHARS,
+                 wrap=-1):
         """
         Default class constructor.
 
-        @param parent: the L{GenericMessageDialog} parent (if any);
-        @param message: the message in the main body of the dialog;
-        @param caption: the dialog title;
-        @param style: the dialog style;
-        @param pos: the dialog position on screen;
-        @param size: the dialog size.
+        :param `parent`: the L{GenericMessageDialog} parent (if any);
+        :param `message`: the message in the main body of the dialog;
+        :param `caption`: the dialog title;
+        :param `agwStyle`: the AGW-specific dialog style; it can be one of the
+         following bits:
+
+         =========================== =========== ==================================================
+         Window Styles               Hex Value   Description
+         =========================== =========== ==================================================
+         0                                     0 Uses normal generic buttons
+         ``GMD_USE_AQUABUTTONS``            0x20 Uses L{AquaButton} buttons instead of generic buttons.
+         ``GMD_USE_GRADIENTBUTTONS``        0x40 Uses L{GradientButton} buttons instead of generic buttons.
+         =========================== =========== ==================================================
+
+        :param `pos`: the dialog position on screen;
+        :param `size`: the dialog size;
+        :param `style`: the underlying `wx.Dialog` style;
+        :param `wrap`: if set greater than zero, wraps the string in `message` so that
+         every line is at most `wrap` pixels long.
         """
 
-        wx.Dialog.__init__(self, parent, wx.ID_ANY, caption, pos,
-                           size, wx.DEFAULT_DIALOG_STYLE|wx.WANTS_CHARS)
+        wx.Dialog.__init__(self, parent, wx.ID_ANY, caption, pos, size, style)
 
-        self._dialogStyle = style        
+        self._agwStyle = agwStyle
+
+        if wrap > 0:
+            message = self.WrapMessage(message, wrap)
 
         topsizer = wx.BoxSizer(wx.VERTICAL)
         icon_text = wx.BoxSizer(wx.HORIZONTAL)
 
-        case = self._dialogStyle & wx.ICON_MASK
+        case = self._agwStyle & wx.ICON_MASK
         
         if case == wx.ICON_ERROR:
             bitmap = _error
@@ -541,10 +615,10 @@ class GenericMessageDialog(wx.Dialog):
         topsizer.Add(icon_text, 1, wx.EXPAND | wx.LEFT | wx.RIGHT | wx.TOP, 10)
 
         center_flag = wx.EXPAND
-        if self._dialogStyle & wx.YES_NO:
+        if self._agwStyle & wx.YES_NO:
             center_flag |= wx.ALIGN_CENTRE
 
-        sizerBtn = self.CreateSeparatedButtonSizer(self._dialogStyle & self.ButtonSizerFlags)
+        sizerBtn = self.CreateSeparatedButtonSizer(self._agwStyle & BUTTON_SIZER_FLAGS)
         if sizerBtn:
             topsizer.Add(sizerBtn, 0, center_flag | wx.ALL, 10)
 
@@ -568,45 +642,51 @@ class GenericMessageDialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnCancel, id=wx.ID_CANCEL)
 
         for child in self.GetChildren():
-            if isinstance(child, wx.lib.buttons.ThemedGenBitmapTextButton):
+            if isinstance(child, wx.lib.buttons.ThemedGenBitmapTextButton) or \
+               isinstance(child, AB.AquaButton) or isinstance(child, GB.GradientButton):
                 # Handles the key down for the buttons...
                 child.Bind(wx.EVT_KEY_DOWN, self.OnKeyDown)
-                child.SetUseFocusIndicator(False)
+                if isinstance(child, wx.lib.buttons.ThemedGenBitmapTextButton):
+                    child.SetUseFocusIndicator(False)
 
         self.Bind(wx.EVT_NAVIGATION_KEY, self.OnNavigation)
         self.SwitchFocus()
         
         
     def OnYes(self, event):
-        """ L{GenericMessageDialog} had received a wx.ID_YES answer. """
+        """ L{GenericMessageDialog} had received a ``wx.ID_YES`` answer. """
 
         self.EndModal(wx.ID_YES)
 
 
     def OnOk(self, event):
-        """ L{GenericMessageDialog} had received a wx.ID_OK answer. """
+        """ L{GenericMessageDialog} had received a ``wx.ID_OK`` answer. """
 
         self.EndModal(wx.ID_OK)
 
 
     def OnNo(self, event):
-        """ L{GenericMessageDialog} had received a wx.ID_NO answer. """
+        """ L{GenericMessageDialog} had received a ``wx.ID_NO`` answer. """
 
         self.EndModal(wx.ID_NO)
 
 
     def OnCancel(self, event):
-        """ L{GenericMessageDialog} had received a wx.ID_CANCEL answer. """
+        """ L{GenericMessageDialog} had received a ``wx.ID_CANCEL`` answer. """
 
         # Allow cancellation via ESC/Close button except if
         # only YES and NO are specified.
         
-        if self._dialogStyle & wx.YES_NO != wx.YES_NO or self._dialogStyle & wx.CANCEL:
+        if self._agwStyle & wx.YES_NO != wx.YES_NO or self._agwStyle & wx.CANCEL:
             self.EndModal(wx.ID_CANCEL)
 
 
     def OnKeyDown(self, event):
-        """ Handles the wx.EVT_KEY_DOWN event for L{GenericMessageDialog}. """
+        """
+        Handles the ``wx.EVT_KEY_DOWN`` event for L{GenericMessageDialog}.
+
+        :param `event`: a `wx.KeyEvent` event to be processed.
+        """
 
         key = event.GetKeyCode()
         if key == wx.WXK_ESCAPE:
@@ -614,7 +694,8 @@ class GenericMessageDialog(wx.Dialog):
 
         ids = []
         for child in self.GetChildren():
-            if isinstance(child, wx.lib.buttons.ThemedGenBitmapTextButton):
+            if isinstance(child, wx.lib.buttons.ThemedGenBitmapTextButton) or \
+               isinstance(child, AB.AquaButton) or isinstance(child, GB.GradientButton):
                 ids.append(child.GetId())
 
         if key in [ord("y"), ord("Y")] and wx.ID_YES in ids:
@@ -630,7 +711,11 @@ class GenericMessageDialog(wx.Dialog):
 
 
     def OnNavigation(self, event):
-        """ Handles the wx.EVT_NAVIGATION_KEY event for L{GenericMessageDialog}. """
+        """
+        Handles the ``wx.EVT_NAVIGATION_KEY`` event for L{GenericMessageDialog}.
+
+        :param `event`: a `wx.NavigationKeyEvent` event to be processed.
+        """
 
         # Switch the focus between buttons...
         if wx.GetKeyState(wx.WXK_LEFT) or wx.GetKeyState(wx.WXK_RIGHT) or \
@@ -656,7 +741,8 @@ class GenericMessageDialog(wx.Dialog):
                            font.GetUnderlined(), font.GetFaceName())
         
         for child in self.GetChildren():
-            if isinstance(child, wx.lib.buttons.ThemedGenBitmapTextButton):
+            if isinstance(child, wx.lib.buttons.ThemedGenBitmapTextButton) or \
+               isinstance(child, AB.AquaButton) or isinstance(child, GB.GradientButton):
                 if child == current:
                     # Set a bold font for the current focused button
                     child.SetFont(boldFont)
@@ -670,10 +756,20 @@ class GenericMessageDialog(wx.Dialog):
         """
         Creates a sizer with standard buttons.
 
-        @param flags: a bit list of the following flags:
-                      wx.OK, wx.CANCEL, wx.YES, wx.NO, wx.HELP, wx.NO_DEFAULT.
+        :param `flags`: a bit list of the following flags:
 
-        @note: The sizer lays out the buttons in a manner appropriate to the platform.
+         ================= ========= ==========================
+         Flags             Hex Value Description
+         ================= ========= ==========================
+         ``wx.YES``              0x2 Show a ``Yes`` button
+         ``wx.OK``               0x4 Show an ``OK`` button
+         ``wx.NO``               0x8 Show a ``No`` button
+         ``wx.CANCEL``          0x10 Show a ``Cancel`` button
+         ``wx.NO_DEFAULT``      0x80 Used with ``wx.YES`` and ``wx.NO``, makes ``No`` button the default
+         ``wx.HELP``          0x8000 Show a ``Help`` button
+         ================= ========= ==========================
+        
+        :note: The sizer lays out the buttons in a manner appropriate to the platform.
         """
 
         sizer = self.CreateStdDialogButtonSizer(flags)
@@ -683,8 +779,12 @@ class GenericMessageDialog(wx.Dialog):
 
     def CreateSeparatedButtonSizer(self, flags):
         """
-        Creates a sizer with standard buttons using CreateButtonSizer separated
-        from the rest of the dialog contents by a horizontal wx.StaticLine.
+        Creates a sizer with standard buttons using L{CreateButtonSizer} separated
+        from the rest of the dialog contents by a horizontal `wx.StaticLine`.
+
+        :param `flags`: the button sizer flags.
+
+        :see: L{CreateButtonSizer} for a list of valid flags.
         """
 
         sizer = self.CreateButtonSizer(flags)
@@ -702,12 +802,13 @@ class GenericMessageDialog(wx.Dialog):
 
     def CreateStdDialogButtonSizer(self, flags):
         """
-        Creates a StdDialogButtonSizer with standard buttons.
+        Creates a L{StdDialogButtonSizer} with standard buttons.
 
-        @param flags: a bit list of the following flags:
-                      wx.OK, wx.CANCEL, wx.YES, wx.NO, wx.HELP, wx.NO_DEFAULT.
+        :param `flags`: the button sizer flags.
 
-        @note: The sizer lays out the buttons in a manner appropriate to the platform.
+        :see: L{CreateButtonSizer} for a list of valid flags.
+
+        :note: The sizer lays out the buttons in a manner appropriate to the platform.
         """
         
         sizer = StdDialogButtonSizer()
@@ -715,25 +816,34 @@ class GenericMessageDialog(wx.Dialog):
         if flags & wx.OK:
             # Remove unwanted flags...
             flags &= ~(wx.YES | wx.NO | wx.NO_DEFAULT)
-        
+
+        size=(-1, 28)
+        if self._agwStyle & GMD_USE_AQUABUTTONS:
+            klass = AB.AquaButton
+            size=(-1, -1)
+        elif self._agwStyle & GMD_USE_GRADIENTBUTTONS:
+            klass = GB.GradientButton
+        else:
+            klass = buttons.ThemedGenBitmapTextButton
+            
         if flags & wx.OK:
-            ok = buttons.ThemedGenBitmapTextButton(self, wx.ID_OK, _ok.GetBitmap(), _("OK"), size=(-1, 28))
+            ok = klass(self, wx.ID_OK, _ok.GetBitmap(), _("OK"), size=size)
             sizer.AddButton(ok)
 
         if flags & wx.CANCEL:
-            cancel = buttons.ThemedGenBitmapTextButton(self, wx.ID_CANCEL, _cancel.GetBitmap(), _("Cancel"), size=(-1, 28))
+            cancel = klass(self, wx.ID_CANCEL, _cancel.GetBitmap(), _("Cancel"), size=size)
             sizer.AddButton(cancel)
         
         if flags & wx.YES:
-            yes = buttons.ThemedGenBitmapTextButton(self, wx.ID_YES, _yes.GetBitmap(), _("Yes"), size=(-1, 28))
+            yes = klass(self, wx.ID_YES, _yes.GetBitmap(), _("Yes"), size=size)
             sizer.AddButton(yes)
         
         if flags & wx.NO:
-            no = buttons.ThemedGenBitmapTextButton(self, wx.ID_NO, _no.GetBitmap(), _("No"), size=(-1, 28))
+            no = klass(self, wx.ID_NO, _no.GetBitmap(), _("No"), size=size)
             sizer.AddButton(no)
                 
         if flags & wx.HELP:
-            help = buttons.ThemedGenBitmapTextButton(self, wx.ID_HELP, _help.GetBitmap(), _("Help"), size=(-1, 28))
+            help = klass(self, wx.ID_HELP, _help.GetBitmap(), _("Help"), size=size)
             sizer.AddButton(help)
         
         if flags & wx.NO_DEFAULT:
@@ -757,3 +867,26 @@ class GenericMessageDialog(wx.Dialog):
 
         return sizer
 
+
+    def WrapMessage(self, message, wrap):
+        """
+        Wraps the input message to multi lines so that the resulting new message
+        is at most `wrap` pixels wide.
+
+        :param `message`: the original input message;
+        :param `wrap`: wraps the string in `message` so that every line is at most
+         `wrap` pixels long.
+
+        :return: a new message wrapped at maximum `wrap` pixels wide.
+        
+        :todo: Estabilish if wrapping all messages by default is a better idea than
+         provide a keyword parameter to L{GenericMessageDialog}. A default maximum
+         line width might be the wxMac one, at 360 pixels.
+        """
+        
+        dc = wx.ClientDC(self)
+        dc.SetFont(self.GetFont())
+
+        newMessage = wordwrap.wordwrap(message, wrap, dc, False)
+        return newMessage
+    

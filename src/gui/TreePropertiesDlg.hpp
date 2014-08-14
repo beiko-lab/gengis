@@ -45,6 +45,8 @@ namespace GenGIS
 		*/
 		explicit TreePropertiesDlg(wxWindow* parent, TreeLayerPtr treeLayer);
 
+		explicit TreePropertiesDlg(wxWindow* parent, TreeLayerPtr treeLayer, LayoutLinePtr layoutLine);
+
 		/** Destructor */
 		~TreePropertiesDlg();
 

@@ -21,6 +21,14 @@ __all__ = ["Hashable", "Iterable", "Iterator",
 
 ### ONE-TRICK PONIES ###
 
+def _hasattr(C, attr):
+    try:
+        return any(attr in B.__dict__ for B in C.__mro__)
+    except AttributeError:
+        # Old-style class
+        return hasattr(C, attr)
+
+
 class Hashable:
     __metaclass__ = ABCMeta
 
@@ -31,11 +39,16 @@ class Hashable:
     @classmethod
     def __subclasshook__(cls, C):
         if cls is Hashable:
-            for B in C.__mro__:
-                if "__hash__" in B.__dict__:
-                    if B.__dict__["__hash__"]:
-                        return True
-                    break
+            try:
+                for B in C.__mro__:
+                    if "__hash__" in B.__dict__:
+                        if B.__dict__["__hash__"]:
+                            return True
+                        break
+            except AttributeError:
+                # Old-style class
+                if getattr(C, "__hash__", None):
+                    return True
         return NotImplemented
 
 
@@ -50,7 +63,7 @@ class Iterable:
     @classmethod
     def __subclasshook__(cls, C):
         if cls is Iterable:
-            if any("__iter__" in B.__dict__ for B in C.__mro__):
+            if _hasattr(C, "__iter__"):
                 return True
         return NotImplemented
 
@@ -60,7 +73,7 @@ Iterable.register(str)
 class Iterator(Iterable):
 
     @abstractmethod
-    def __next__(self):
+    def next(self):
         raise StopIteration
 
     def __iter__(self):
@@ -69,7 +82,7 @@ class Iterator(Iterable):
     @classmethod
     def __subclasshook__(cls, C):
         if cls is Iterator:
-            if any("next" in B.__dict__ for B in C.__mro__):
+            if _hasattr(C, "next") and _hasattr(C, "__iter__"):
                 return True
         return NotImplemented
 
@@ -84,7 +97,7 @@ class Sized:
     @classmethod
     def __subclasshook__(cls, C):
         if cls is Sized:
-            if any("__len__" in B.__dict__ for B in C.__mro__):
+            if _hasattr(C, "__len__"):
                 return True
         return NotImplemented
 
@@ -99,7 +112,7 @@ class Container:
     @classmethod
     def __subclasshook__(cls, C):
         if cls is Container:
-            if any("__contains__" in B.__dict__ for B in C.__mro__):
+            if _hasattr(C, "__contains__"):
                 return True
         return NotImplemented
 
@@ -114,7 +127,7 @@ class Callable:
     @classmethod
     def __subclasshook__(cls, C):
         if cls is Callable:
-            if any("__call__" in B.__dict__ for B in C.__mro__):
+            if _hasattr(C, "__call__"):
                 return True
         return NotImplemented
 
@@ -249,12 +262,12 @@ class MutableSet(Set):
 
     @abstractmethod
     def add(self, value):
-        """Return True if it was added, False if already there."""
+        """Add an element."""
         raise NotImplementedError
 
     @abstractmethod
     def discard(self, value):
-        """Return True if it was deleted, False if not there."""
+        """Remove an element.  Do not raise an exception if absent."""
         raise NotImplementedError
 
     def remove(self, value):
@@ -267,7 +280,7 @@ class MutableSet(Set):
         """Return the popped value.  Raise KeyError if empty."""
         it = iter(self)
         try:
-            value = it.__next__()
+            value = next(it)
         except StopIteration:
             raise KeyError
         self.discard(value)
@@ -286,25 +299,30 @@ class MutableSet(Set):
             self.add(value)
         return self
 
-    def __iand__(self, c):
-        for value in self:
-            if value not in c:
-                self.discard(value)
+    def __iand__(self, it):
+        for value in (self - it):
+            self.discard(value)
         return self
 
     def __ixor__(self, it):
-        if not isinstance(it, Set):
-            it = self._from_iterable(it)
-        for value in it:
-            if value in self:
-                self.discard(value)
-            else:
-                self.add(value)
+        if it is self:
+            self.clear()
+        else:
+            if not isinstance(it, Set):
+                it = self._from_iterable(it)
+            for value in it:
+                if value in self:
+                    self.discard(value)
+                else:
+                    self.add(value)
         return self
 
     def __isub__(self, it):
-        for value in it:
-            self.discard(value)
+        if it is self:
+            self.clear()
+        else:
+            for value in it:
+                self.discard(value)
         return self
 
 MutableSet.register(set)
@@ -357,8 +375,9 @@ class Mapping(Sized, Iterable, Container):
     __hash__ = None
 
     def __eq__(self, other):
-        return isinstance(other, Mapping) and \
-               dict(self.items()) == dict(other.items())
+        if not isinstance(other, Mapping):
+            return NotImplemented
+        return dict(self.items()) == dict(other.items())
 
     def __ne__(self, other):
         return not (self == other)
@@ -371,8 +390,15 @@ class MappingView(Sized):
     def __len__(self):
         return len(self._mapping)
 
+    def __repr__(self):
+        return '{0.__class__.__name__}({0._mapping!r})'.format(self)
+
 
 class KeysView(MappingView, Set):
+
+    @classmethod
+    def _from_iterable(self, it):
+        return set(it)
 
     def __contains__(self, key):
         return key in self._mapping
@@ -383,6 +409,10 @@ class KeysView(MappingView, Set):
 
 
 class ItemsView(MappingView, Set):
+
+    @classmethod
+    def _from_iterable(self, it):
+        return set(it)
 
     def __contains__(self, item):
         key, value = item
@@ -450,7 +480,15 @@ class MutableMapping(Mapping):
         except KeyError:
             pass
 
-    def update(self, other=(), **kwds):
+    def update(*args, **kwds):
+        if len(args) > 2:
+            raise TypeError("update() takes at most 2 positional "
+                            "arguments ({} given)".format(len(args)))
+        elif not args:
+            raise TypeError("update() takes at least 1 argument (0 given)")
+        self = args[0]
+        other = args[1] if len(args) >= 2 else ()
+
         if isinstance(other, Mapping):
             for key in other:
                 self[key] = other[key]
@@ -519,6 +557,7 @@ class Sequence(Sized, Iterable, Container):
 Sequence.register(tuple)
 Sequence.register(basestring)
 Sequence.register(buffer)
+Sequence.register(xrange)
 
 
 class MutableSequence(Sequence):
@@ -557,5 +596,6 @@ class MutableSequence(Sequence):
 
     def __iadd__(self, values):
         self.extend(values)
+        return self
 
 MutableSequence.register(list)

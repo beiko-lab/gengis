@@ -193,3 +193,12 @@ class CDATAAttribute(Attribute):
         except IndexError:
             pass
     
+class CommentAttribute(AttributeAttribute):
+    '''Comment is the value of comment object.'''
+    @staticmethod
+    def add(node, attribute, value):
+        node.data = value
+    @staticmethod
+    def getAA(node, attribute):
+        return node.data
+            

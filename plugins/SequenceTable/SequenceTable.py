@@ -32,7 +32,7 @@ class SequenceTable( SequenceTableLayout ):
 		
 		# check required data has been loaded
 		if GenGIS.layerTree.GetNumSequenceLayers() == 0:
-			wx.MessageBox("This plugin requires location data to be loaded.", "Additional data required.")
+			wx.MessageBox("This plugin requires sequence data to be loaded.", "Additional data required.")
 			self.Close()
 			return
 			

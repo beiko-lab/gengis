@@ -144,7 +144,6 @@ bool LocationSetIO::ParseCSVFile( const std::vector<std::wstring>& csvTableRows,
 		{
 			wstring header = StringTools::RemoveSurroundingWhiteSpaces(columnValues.at(c));
 			wstring value = StringTools::RemoveSurroundingWhiteSpaces(rowValues.at(c));
-			data.insert(pair<wstring, wstring>(header, value));
 
 			// determine which column we are looking at (this allows user to put columns in any order)
 			if(StringTools::ToLower(header) == _T("site id") || StringTools::ToLower(header) == _T("siteid"))
@@ -157,6 +156,7 @@ bool LocationSetIO::ParseCSVFile( const std::vector<std::wstring>& csvTableRows,
 				easting = StringTools::ToLong(value);
 			else if(StringTools::ToLower(header) == _T("latitude"))
 			{
+				header = StringTools::ToUpper(header.substr(0,1)) + StringTools::ToLower(header.substr(1));
 				// check if latitude is numeric
 				if(!StringTools::IsDecimalNumber( StringTools::ToString(value) ) && !StringTools::IsInteger( StringTools::ToString(value) ) )
 					bReject = true;
@@ -165,12 +165,16 @@ bool LocationSetIO::ParseCSVFile( const std::vector<std::wstring>& csvTableRows,
 			}
 			else if(StringTools::ToLower(header) == _T("longitude"))
 			{
+				header = StringTools::ToUpper(header.substr(0,1)) + StringTools::ToLower(header.substr(1));
 				// check if longitude is numeric
 				if(!StringTools::IsDecimalNumber( StringTools::ToString(value) ) && !StringTools::IsInteger( StringTools::ToString(value) ) )
 					bReject = true;
 				longitude = StringTools::ToDouble(value);
 				bIsLatLong = true;
 			}
+
+			data.insert(pair<wstring, wstring>(header, value));
+
 		}
 
 		// transform lat/lon coordinates to projected coordinates

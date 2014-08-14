@@ -166,7 +166,7 @@ LocationSetPropertiesLayout::LocationSetPropertiesLayout( wxWindow* parent, wxWi
 	m_pnlLocationSetColour->SetSizer( m_sizerColourVert );
 	m_pnlLocationSetColour->Layout();
 	m_sizerColourVert->Fit( m_pnlLocationSetColour );
-	m_notebookLocationSet->AddPage( m_pnlLocationSetColour, wxT("Colour"), false );
+	m_notebookLocationSet->AddPage( m_pnlLocationSetColour, wxT("Colour"), true );
 	m_pnlLocationSetShape = new wxPanel( m_notebookLocationSet, ID_PANEL_LOCATION_SET_SHAPE, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL, wxT("Shape") );
 	wxBoxSizer* m_sizerShapeVert;
 	m_sizerShapeVert = new wxBoxSizer( wxVERTICAL );
@@ -355,7 +355,7 @@ LocationSetPropertiesLayout::LocationSetPropertiesLayout( wxWindow* parent, wxWi
 	m_pnlLocationSetLabel->SetSizer( m_sizerLabelVert );
 	m_pnlLocationSetLabel->Layout();
 	m_sizerLabelVert->Fit( m_pnlLocationSetLabel );
-	m_notebookLocationSet->AddPage( m_pnlLocationSetLabel, wxT("Label"), true );
+	m_notebookLocationSet->AddPage( m_pnlLocationSetLabel, wxT("Label"), false );
 	
 	m_sizerLocations->Add( m_notebookLocationSet, 1, wxEXPAND | wxALL, 5 );
 	
@@ -370,10 +370,21 @@ LocationSetPropertiesLayout::LocationSetPropertiesLayout( wxWindow* parent, wxWi
 	m_pnlLocations->SetSizer( m_sizerLocations );
 	m_pnlLocations->Layout();
 	m_sizerLocations->Fit( m_pnlLocations );
-	m_notebook->AddPage( m_pnlLocations, wxT("Location Set"), false );
+	m_notebook->AddPage( m_pnlLocations, wxT("Location Set"), true );
 	m_pnlChart = new wxPanel( m_notebook, ID_PNL_CHART, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL, wxT("Charts") );
 	wxBoxSizer* m_sizerLabels1;
 	m_sizerLabels1 = new wxBoxSizer( wxVERTICAL );
+	
+	wxBoxSizer* m_sizerShowCharts;
+	m_sizerShowCharts = new wxBoxSizer( wxVERTICAL );
+	
+	m_chkShowCharts = new wxCheckBox( m_pnlChart, ID_CHECK_SHOW_CHART, wxT("Show charts"), wxDefaultPosition, wxDefaultSize, wxCHK_3STATE );
+	m_sizerShowCharts->Add( m_chkShowCharts, 0, wxALL, 5 );
+	
+	m_staticline141 = new wxStaticLine( m_pnlChart, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL );
+	m_sizerShowCharts->Add( m_staticline141, 0, wxEXPAND | wxALL, 5 );
+	
+	m_sizerLabels1->Add( m_sizerShowCharts, 0, wxALL|wxEXPAND, 5 );
 	
 	m_notebookChart = new wxNotebook( m_pnlChart, ID_NOTEBOOK_CHART, wxDefaultPosition, wxDefaultSize, 0 );
 	m_pnlChartColourMap = new wxPanel( m_notebookChart, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL, wxT("Colour_Map") );
@@ -636,17 +647,6 @@ LocationSetPropertiesLayout::LocationSetPropertiesLayout( wxWindow* parent, wxWi
 	
 	m_sizerLabels1->Add( m_notebookChart, 1, wxEXPAND | wxALL, 5 );
 	
-	wxBoxSizer* m_sizerShowCharts;
-	m_sizerShowCharts = new wxBoxSizer( wxHORIZONTAL );
-	
-	
-	m_sizerShowCharts->Add( 0, 0, 1, wxEXPAND, 5 );
-	
-	m_chkShowCharts = new wxCheckBox( m_pnlChart, ID_CHECK_SHOW_CHART, wxT("Show charts"), wxDefaultPosition, wxDefaultSize, wxCHK_3STATE );
-	m_sizerShowCharts->Add( m_chkShowCharts, 0, wxALL, 5 );
-	
-	m_sizerLabels1->Add( m_sizerShowCharts, 0, wxEXPAND, 5 );
-	
 	m_pnlChart->SetSizer( m_sizerLabels1 );
 	m_pnlChart->Layout();
 	m_sizerLabels1->Fit( m_pnlChart );
@@ -654,6 +654,17 @@ LocationSetPropertiesLayout::LocationSetPropertiesLayout( wxWindow* parent, wxWi
 	m_pnlGrid = new wxPanel( m_notebook, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL, wxT("Grid") );
 	wxBoxSizer* m_sizerGrid;
 	m_sizerGrid = new wxBoxSizer( wxVERTICAL );
+	
+	wxBoxSizer* m_sizerLayerSource1;
+	m_sizerLayerSource1 = new wxBoxSizer( wxVERTICAL );
+	
+	m_chkShowGrid = new wxCheckBox( m_pnlGrid, wxID_ANY, wxT("Show Grid"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_sizerLayerSource1->Add( m_chkShowGrid, 0, wxALL, 5 );
+	
+	m_staticline131 = new wxStaticLine( m_pnlGrid, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL );
+	m_sizerLayerSource1->Add( m_staticline131, 0, wxEXPAND | wxALL, 5 );
+	
+	m_sizerGrid->Add( m_sizerLayerSource1, 0, wxALL|wxEXPAND, 5 );
 	
 	m_notebook6 = new wxNotebook( m_pnlGrid, wxID_ANY, wxDefaultPosition, wxDefaultSize, 0 );
 	m_panel13 = new wxPanel( m_notebook6, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
@@ -804,7 +815,7 @@ LocationSetPropertiesLayout::LocationSetPropertiesLayout( wxWindow* parent, wxWi
 	m_panel13->SetSizer( bSizer431 );
 	m_panel13->Layout();
 	bSizer431->Fit( m_panel13 );
-	m_notebook6->AddPage( m_panel13, wxT("Colour"), false );
+	m_notebook6->AddPage( m_panel13, wxT("Colour"), true );
 	m_panel12 = new wxPanel( m_notebook6, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
 	wxBoxSizer* bSizer451;
 	bSizer451 = new wxBoxSizer( wxVERTICAL );
@@ -998,22 +1009,255 @@ LocationSetPropertiesLayout::LocationSetPropertiesLayout( wxWindow* parent, wxWi
 	m_panel12->SetSizer( bSizer451 );
 	m_panel12->Layout();
 	bSizer451->Fit( m_panel12 );
-	m_notebook6->AddPage( m_panel12, wxT("Custom"), true );
+	m_notebook6->AddPage( m_panel12, wxT("Custom"), false );
 	
 	m_sizerGrid->Add( m_notebook6, 1, wxEXPAND | wxALL, 5 );
-	
-	wxBoxSizer* m_sizerLayerSource1;
-	m_sizerLayerSource1 = new wxBoxSizer( wxVERTICAL );
-	
-	m_chkShowGrid = new wxCheckBox( m_pnlGrid, wxID_ANY, wxT("Show Grid"), wxDefaultPosition, wxDefaultSize, 0 );
-	m_sizerLayerSource1->Add( m_chkShowGrid, 0, wxALL|wxALIGN_RIGHT, 5 );
-	
-	m_sizerGrid->Add( m_sizerLayerSource1, 0, wxEXPAND, 5 );
 	
 	m_pnlGrid->SetSizer( m_sizerGrid );
 	m_pnlGrid->Layout();
 	m_sizerGrid->Fit( m_pnlGrid );
-	m_notebook->AddPage( m_pnlGrid, wxT("Grid"), true );
+	m_notebook->AddPage( m_pnlGrid, wxT("Grid"), false );
+	m_pnlPolygons = new wxPanel( m_notebook, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL, wxT("Polygons") );
+	wxBoxSizer* m_sizerPolygons;
+	m_sizerPolygons = new wxBoxSizer( wxVERTICAL );
+	
+	wxBoxSizer* bSizer72;
+	bSizer72 = new wxBoxSizer( wxVERTICAL );
+	
+	m_pnlOptions = new wxPanel( m_pnlPolygons, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
+	wxBoxSizer* bSizer68;
+	bSizer68 = new wxBoxSizer( wxVERTICAL );
+	
+	wxBoxSizer* m_sizerDrawPolygons;
+	m_sizerDrawPolygons = new wxBoxSizer( wxVERTICAL );
+	
+	m_chkDrawPolygons = new wxCheckBox( m_pnlOptions, wxID_ANY, wxT("Draw Polygons"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_sizerDrawPolygons->Add( m_chkDrawPolygons, 0, wxALL, 5 );
+	
+	m_staticline14 = new wxStaticLine( m_pnlOptions, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL );
+	m_sizerDrawPolygons->Add( m_staticline14, 0, wxALIGN_CENTER_HORIZONTAL|wxALL|wxEXPAND, 5 );
+	
+	bSizer68->Add( m_sizerDrawPolygons, 0, wxEXPAND, 5 );
+	
+	wxBoxSizer* m_sizerAlgorithm;
+	m_sizerAlgorithm = new wxBoxSizer( wxVERTICAL );
+	
+	wxBoxSizer* m_sizerAlgorithmCBO;
+	m_sizerAlgorithmCBO = new wxBoxSizer( wxHORIZONTAL );
+	
+	m_lblAlgorithm = new wxStaticText( m_pnlOptions, wxID_ANY, wxT("Algorithm :   "), wxDefaultPosition, wxDefaultSize, 0 );
+	m_lblAlgorithm->Wrap( -1 );
+	m_sizerAlgorithmCBO->Add( m_lblAlgorithm, 0, wxALL, 5 );
+	
+	wxString m_choiceAlgorithmChoices[] = { wxT("Convex Hull") };
+	int m_choiceAlgorithmNChoices = sizeof( m_choiceAlgorithmChoices ) / sizeof( wxString );
+	m_choiceAlgorithm = new wxChoice( m_pnlOptions, wxID_ANY, wxDefaultPosition, wxDefaultSize, m_choiceAlgorithmNChoices, m_choiceAlgorithmChoices, 0 );
+	m_choiceAlgorithm->SetSelection( 0 );
+	m_sizerAlgorithmCBO->Add( m_choiceAlgorithm, 0, wxALL, 5 );
+	
+	m_sizerAlgorithm->Add( m_sizerAlgorithmCBO, 0, wxEXPAND, 5 );
+	
+	wxBoxSizer* m_sizerAlgorithmDescription;
+	m_sizerAlgorithmDescription = new wxBoxSizer( wxHORIZONTAL );
+	
+	m_lblAlgorithmDescription = new wxStaticText( m_pnlOptions, wxID_ANY, wxT("Description :"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_lblAlgorithmDescription->Wrap( -1 );
+	m_sizerAlgorithmDescription->Add( m_lblAlgorithmDescription, 0, wxALL, 5 );
+	
+	m_txtAlgorithmDescription = new wxTextCtrl( m_pnlOptions, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_READONLY );
+	m_sizerAlgorithmDescription->Add( m_txtAlgorithmDescription, 1, wxALL|wxEXPAND, 5 );
+	
+	m_sizerAlgorithm->Add( m_sizerAlgorithmDescription, 1, wxEXPAND, 5 );
+	
+	bSizer68->Add( m_sizerAlgorithm, 2, wxALL|wxEXPAND, 5 );
+	
+	wxBoxSizer* m_sizerGeneralOptions;
+	m_sizerGeneralOptions = new wxBoxSizer( wxVERTICAL );
+	
+	wxStaticBoxSizer* m_sizerGeneralOptionsBox;
+	m_sizerGeneralOptionsBox = new wxStaticBoxSizer( new wxStaticBox( m_pnlOptions, wxID_ANY, wxT("General Options") ), wxVERTICAL );
+	
+	wxGridSizer* m_sizerGeneralOptionsGrid;
+	m_sizerGeneralOptionsGrid = new wxGridSizer( 3, 2, 0, 0 );
+	
+	wxBoxSizer* m_sizerFillOpacity;
+	m_sizerFillOpacity = new wxBoxSizer( wxHORIZONTAL );
+	
+	m_lblFillOpacity = new wxStaticText( m_pnlOptions, wxID_ANY, wxT("Fill Opacity :"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_lblFillOpacity->Wrap( -1 );
+	m_sizerFillOpacity->Add( m_lblFillOpacity, 0, wxALL, 5 );
+	
+	m_sliderFillOpacity = new wxSlider( m_pnlOptions, wxID_ANY, 50, 0, 100, wxDefaultPosition, wxDefaultSize, wxSL_HORIZONTAL );
+	m_sizerFillOpacity->Add( m_sliderFillOpacity, 0, wxALL, 5 );
+	
+	m_sizerGeneralOptionsGrid->Add( m_sizerFillOpacity, 1, wxEXPAND, 5 );
+	
+	wxBoxSizer* m_sizerChkSmoothPolygons;
+	m_sizerChkSmoothPolygons = new wxBoxSizer( wxVERTICAL );
+	
+	m_chkSmoothPolygons = new wxCheckBox( m_pnlOptions, wxID_ANY, wxT("Curved Edges"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_sizerChkSmoothPolygons->Add( m_chkSmoothPolygons, 0, wxALL, 5 );
+	
+	m_sizerGeneralOptionsGrid->Add( m_sizerChkSmoothPolygons, 1, wxEXPAND, 5 );
+	
+	wxBoxSizer* m_sizerChkAutoAdjustPolygonElevation;
+	m_sizerChkAutoAdjustPolygonElevation = new wxBoxSizer( wxVERTICAL );
+	
+	m_chkAutoAdjustPolygonElevation = new wxCheckBox( m_pnlOptions, wxID_ANY, wxT("Auto adjust to map elevation"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_sizerChkAutoAdjustPolygonElevation->Add( m_chkAutoAdjustPolygonElevation, 0, wxALL, 5 );
+	
+	m_sizerGeneralOptionsGrid->Add( m_sizerChkAutoAdjustPolygonElevation, 1, wxEXPAND, 5 );
+	
+	wxBoxSizer* m_sizerChkIncreasingElevation;
+	m_sizerChkIncreasingElevation = new wxBoxSizer( wxVERTICAL );
+	
+	m_chkIncreasingElevation = new wxCheckBox( m_pnlOptions, wxID_ANY, wxT("Increase elevation for each polygon"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_sizerChkIncreasingElevation->Add( m_chkIncreasingElevation, 0, wxALL, 5 );
+	
+	m_sizerGeneralOptionsGrid->Add( m_sizerChkIncreasingElevation, 1, wxEXPAND, 5 );
+	
+	wxBoxSizer* m_sizerVerticalElevation;
+	m_sizerVerticalElevation = new wxBoxSizer( wxHORIZONTAL );
+	
+	
+	m_sizerVerticalElevation->Add( 15, 0, 0, wxEXPAND, 5 );
+	
+	m_lblPolygonElevation = new wxStaticText( m_pnlOptions, wxID_ANY, wxT("Vertical Elevation :"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_lblPolygonElevation->Wrap( -1 );
+	m_sizerVerticalElevation->Add( m_lblPolygonElevation, 0, wxALL, 5 );
+	
+	m_txtPolygonElevation = new wxTextCtrl( m_pnlOptions, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	m_sizerVerticalElevation->Add( m_txtPolygonElevation, 0, wxALL, 5 );
+	
+	m_sizerGeneralOptionsGrid->Add( m_sizerVerticalElevation, 1, wxEXPAND, 5 );
+	
+	wxBoxSizer* m_sizerIncreasingElevation;
+	m_sizerIncreasingElevation = new wxBoxSizer( wxHORIZONTAL );
+	
+	
+	m_sizerIncreasingElevation->Add( 15, 0, 0, wxEXPAND, 5 );
+	
+	m_lblElevationOffset = new wxStaticText( m_pnlOptions, wxID_ANY, wxT("Elevation Offset : "), wxDefaultPosition, wxDefaultSize, 0 );
+	m_lblElevationOffset->Wrap( -1 );
+	m_sizerIncreasingElevation->Add( m_lblElevationOffset, 0, wxALL, 5 );
+	
+	m_txtElevationOffset = new wxTextCtrl( m_pnlOptions, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	m_sizerIncreasingElevation->Add( m_txtElevationOffset, 0, wxALL, 5 );
+	
+	m_sizerGeneralOptionsGrid->Add( m_sizerIncreasingElevation, 1, wxEXPAND, 5 );
+	
+	m_sizerGeneralOptionsBox->Add( m_sizerGeneralOptionsGrid, 1, wxEXPAND, 5 );
+	
+	m_sizerGeneralOptions->Add( m_sizerGeneralOptionsBox, 1, wxEXPAND, 5 );
+	
+	bSizer68->Add( m_sizerGeneralOptions, 3, wxALL|wxEXPAND, 5 );
+	
+	wxBoxSizer* m_sizerSizingOptions;
+	m_sizerSizingOptions = new wxBoxSizer( wxVERTICAL );
+	
+	wxStaticBoxSizer* m_sizerSizingOptionsBox;
+	m_sizerSizingOptionsBox = new wxStaticBoxSizer( new wxStaticBox( m_pnlOptions, wxID_ANY, wxT("Sizing Options") ), wxVERTICAL );
+	
+	wxGridSizer* m_gridSizingOptions;
+	m_gridSizingOptions = new wxGridSizer( 1, 2, 0, 0 );
+	
+	wxBoxSizer* m_gridSizingOptions00;
+	m_gridSizingOptions00 = new wxBoxSizer( wxHORIZONTAL );
+	
+	m_lblPolygonInflation = new wxStaticText( m_pnlOptions, wxID_ANY, wxT("Polygon Inflation :"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_lblPolygonInflation->Wrap( -1 );
+	m_gridSizingOptions00->Add( m_lblPolygonInflation, 0, wxALL, 5 );
+	
+	m_sliderPolygonInflation = new wxSlider( m_pnlOptions, wxID_ANY, 200, 0, 400, wxDefaultPosition, wxDefaultSize, wxSL_HORIZONTAL );
+	m_gridSizingOptions00->Add( m_sliderPolygonInflation, 0, wxALL, 5 );
+	
+	m_gridSizingOptions->Add( m_gridSizingOptions00, 1, wxEXPAND, 5 );
+	
+	wxBoxSizer* m_gridSizingOptions01;
+	m_gridSizingOptions01 = new wxBoxSizer( wxHORIZONTAL );
+	
+	m_lblPolygonScaling = new wxStaticText( m_pnlOptions, wxID_ANY, wxT("Polygon Scaling :"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_lblPolygonScaling->Wrap( -1 );
+	m_gridSizingOptions01->Add( m_lblPolygonScaling, 0, wxALL, 5 );
+	
+	m_txtPolygonScaling = new wxTextCtrl( m_pnlOptions, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( -1,-1 ), 0 );
+	m_gridSizingOptions01->Add( m_txtPolygonScaling, 0, wxALL, 5 );
+	
+	m_gridSizingOptions->Add( m_gridSizingOptions01, 1, wxEXPAND, 5 );
+	
+	m_sizerSizingOptionsBox->Add( m_gridSizingOptions, 1, wxEXPAND, 5 );
+	
+	m_sizerSizingOptions->Add( m_sizerSizingOptionsBox, 0, wxEXPAND, 5 );
+	
+	bSizer68->Add( m_sizerSizingOptions, 0, wxALL|wxEXPAND, 5 );
+	
+	wxBoxSizer* m_sizerBorderOptions;
+	m_sizerBorderOptions = new wxBoxSizer( wxVERTICAL );
+	
+	wxStaticBoxSizer* m_sizerBorderOptionsBox;
+	m_sizerBorderOptionsBox = new wxStaticBoxSizer( new wxStaticBox( m_pnlOptions, wxID_ANY, wxT("Border Options") ), wxVERTICAL );
+	
+	wxBoxSizer* m_sizerShowBorders;
+	m_sizerShowBorders = new wxBoxSizer( wxHORIZONTAL );
+	
+	m_chkShowBorders = new wxCheckBox( m_pnlOptions, wxID_ANY, wxT("Show Borders"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_chkShowBorders->SetValue(true); 
+	m_sizerShowBorders->Add( m_chkShowBorders, 0, wxALL, 5 );
+	
+	m_sizerBorderOptionsBox->Add( m_sizerShowBorders, 0, wxEXPAND, 5 );
+	
+	wxBoxSizer* m_sizerBorderSettings;
+	m_sizerBorderSettings = new wxBoxSizer( wxVERTICAL );
+	
+	wxBoxSizer* m_sizerBorderOptionsLine;
+	m_sizerBorderOptionsLine = new wxBoxSizer( wxVERTICAL );
+	
+	m_staticline16 = new wxStaticLine( m_pnlOptions, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL );
+	m_sizerBorderOptionsLine->Add( m_staticline16, 0, wxEXPAND | wxALL, 5 );
+	
+	m_sizerBorderSettings->Add( m_sizerBorderOptionsLine, 0, wxEXPAND, 5 );
+	
+	wxBoxSizer* m_sizerBorderOpacity;
+	m_sizerBorderOpacity = new wxBoxSizer( wxHORIZONTAL );
+	
+	m_lblBorderOpacity = new wxStaticText( m_pnlOptions, wxID_ANY, wxT("Border Opacity :"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_lblBorderOpacity->Wrap( -1 );
+	m_sizerBorderOpacity->Add( m_lblBorderOpacity, 0, wxALL, 5 );
+	
+	m_sliderBorderOpacity = new wxSlider( m_pnlOptions, wxID_ANY, 80, 0, 100, wxDefaultPosition, wxDefaultSize, wxSL_HORIZONTAL );
+	m_sizerBorderOpacity->Add( m_sliderBorderOpacity, 0, wxALL, 5 );
+	
+	m_sizerBorderSettings->Add( m_sizerBorderOpacity, 1, wxEXPAND, 5 );
+	
+	wxBoxSizer* m_sizerBorderThickness;
+	m_sizerBorderThickness = new wxBoxSizer( wxHORIZONTAL );
+	
+	m_lblBorderThickness = new wxStaticText( m_pnlOptions, wxID_ANY, wxT("Border Thickness :"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_lblBorderThickness->Wrap( -1 );
+	m_sizerBorderThickness->Add( m_lblBorderThickness, 0, wxALL, 5 );
+	
+	m_spinBorderThickness = new wxSpinCtrl( m_pnlOptions, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 1, 10, 3 );
+	m_sizerBorderThickness->Add( m_spinBorderThickness, 0, wxALL, 5 );
+	
+	m_sizerBorderSettings->Add( m_sizerBorderThickness, 1, wxEXPAND, 5 );
+	
+	m_sizerBorderOptionsBox->Add( m_sizerBorderSettings, 0, wxEXPAND, 5 );
+	
+	m_sizerBorderOptions->Add( m_sizerBorderOptionsBox, 1, wxALL|wxEXPAND, 5 );
+	
+	bSizer68->Add( m_sizerBorderOptions, 0, wxEXPAND, 5 );
+	
+	m_pnlOptions->SetSizer( bSizer68 );
+	m_pnlOptions->Layout();
+	bSizer68->Fit( m_pnlOptions );
+	bSizer72->Add( m_pnlOptions, 1, wxEXPAND | wxALL, 5 );
+	
+	m_sizerPolygons->Add( bSizer72, 0, wxEXPAND, 5 );
+	
+	m_pnlPolygons->SetSizer( m_sizerPolygons );
+	m_pnlPolygons->Layout();
+	m_sizerPolygons->Fit( m_pnlPolygons );
+	m_notebook->AddPage( m_pnlPolygons, wxT("Polygons"), false );
 	m_pnlMetadata = new wxPanel( m_notebook, ID_PNL_METADATA, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL, wxT("Metadata") );
 	wxBoxSizer* m_sizerMetadata;
 	m_sizerMetadata = new wxBoxSizer( wxVERTICAL );
@@ -1119,6 +1363,30 @@ LocationSetPropertiesLayout::LocationSetPropertiesLayout( wxWindow* parent, wxWi
 	m_chkAutoAdjustElevation->Connect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( LocationSetPropertiesLayout::OnAutoAdjustElevation ), NULL, this );
 	m_textCtrlGridElevation->Connect( wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler( LocationSetPropertiesLayout::OnGridChanged ), NULL, this );
 	m_tileFieldChoice->Connect( wxEVT_COMMAND_COMBOBOX_SELECTED, wxCommandEventHandler( LocationSetPropertiesLayout::OnTileFieldChoiceChange ), NULL, this );
+	m_chkDrawPolygons->Connect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( LocationSetPropertiesLayout::OnDrawPolygons ), NULL, this );
+	m_choiceAlgorithm->Connect( wxEVT_COMMAND_CHOICE_SELECTED, wxCommandEventHandler( LocationSetPropertiesLayout::OnChoiceAlgorithmChanged ), NULL, this );
+	m_sliderFillOpacity->Connect( wxEVT_SCROLL_TOP, wxScrollEventHandler( LocationSetPropertiesLayout::OnFillOpacityChange ), NULL, this );
+	m_sliderFillOpacity->Connect( wxEVT_SCROLL_BOTTOM, wxScrollEventHandler( LocationSetPropertiesLayout::OnFillOpacityChange ), NULL, this );
+	m_sliderFillOpacity->Connect( wxEVT_SCROLL_LINEUP, wxScrollEventHandler( LocationSetPropertiesLayout::OnFillOpacityChange ), NULL, this );
+	m_sliderFillOpacity->Connect( wxEVT_SCROLL_LINEDOWN, wxScrollEventHandler( LocationSetPropertiesLayout::OnFillOpacityChange ), NULL, this );
+	m_sliderFillOpacity->Connect( wxEVT_SCROLL_PAGEUP, wxScrollEventHandler( LocationSetPropertiesLayout::OnFillOpacityChange ), NULL, this );
+	m_sliderFillOpacity->Connect( wxEVT_SCROLL_PAGEDOWN, wxScrollEventHandler( LocationSetPropertiesLayout::OnFillOpacityChange ), NULL, this );
+	m_sliderFillOpacity->Connect( wxEVT_SCROLL_THUMBTRACK, wxScrollEventHandler( LocationSetPropertiesLayout::OnFillOpacityChange ), NULL, this );
+	m_sliderFillOpacity->Connect( wxEVT_SCROLL_THUMBRELEASE, wxScrollEventHandler( LocationSetPropertiesLayout::OnFillOpacityChange ), NULL, this );
+	m_sliderFillOpacity->Connect( wxEVT_SCROLL_CHANGED, wxScrollEventHandler( LocationSetPropertiesLayout::OnFillOpacityChange ), NULL, this );
+	m_chkAutoAdjustPolygonElevation->Connect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( LocationSetPropertiesLayout::OnAutoAdjustPolygonElevation ), NULL, this );
+	m_chkIncreasingElevation->Connect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( LocationSetPropertiesLayout::OnIncreasingElevation ), NULL, this );
+	m_chkShowBorders->Connect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( LocationSetPropertiesLayout::OnShowBorders ), NULL, this );
+	m_sliderBorderOpacity->Connect( wxEVT_SCROLL_TOP, wxScrollEventHandler( LocationSetPropertiesLayout::OnBorderOpacityChange ), NULL, this );
+	m_sliderBorderOpacity->Connect( wxEVT_SCROLL_BOTTOM, wxScrollEventHandler( LocationSetPropertiesLayout::OnBorderOpacityChange ), NULL, this );
+	m_sliderBorderOpacity->Connect( wxEVT_SCROLL_LINEUP, wxScrollEventHandler( LocationSetPropertiesLayout::OnBorderOpacityChange ), NULL, this );
+	m_sliderBorderOpacity->Connect( wxEVT_SCROLL_LINEDOWN, wxScrollEventHandler( LocationSetPropertiesLayout::OnBorderOpacityChange ), NULL, this );
+	m_sliderBorderOpacity->Connect( wxEVT_SCROLL_PAGEUP, wxScrollEventHandler( LocationSetPropertiesLayout::OnBorderOpacityChange ), NULL, this );
+	m_sliderBorderOpacity->Connect( wxEVT_SCROLL_PAGEDOWN, wxScrollEventHandler( LocationSetPropertiesLayout::OnBorderOpacityChange ), NULL, this );
+	m_sliderBorderOpacity->Connect( wxEVT_SCROLL_THUMBTRACK, wxScrollEventHandler( LocationSetPropertiesLayout::OnBorderOpacityChange ), NULL, this );
+	m_sliderBorderOpacity->Connect( wxEVT_SCROLL_THUMBRELEASE, wxScrollEventHandler( LocationSetPropertiesLayout::OnBorderOpacityChange ), NULL, this );
+	m_sliderBorderOpacity->Connect( wxEVT_SCROLL_CHANGED, wxScrollEventHandler( LocationSetPropertiesLayout::OnBorderOpacityChange ), NULL, this );
+	m_spinBorderThickness->Connect( wxEVT_COMMAND_SPINCTRL_UPDATED, wxSpinEventHandler( LocationSetPropertiesLayout::OnBorderThicknessChange ), NULL, this );
 	m_btnHelp->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( LocationSetPropertiesLayout::OnHelp ), NULL, this );
 	m_btnOK->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( LocationSetPropertiesLayout::OnOK ), NULL, this );
 	m_btnApply->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( LocationSetPropertiesLayout::OnApply ), NULL, this );
@@ -1174,6 +1442,30 @@ LocationSetPropertiesLayout::~LocationSetPropertiesLayout()
 	m_chkAutoAdjustElevation->Disconnect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( LocationSetPropertiesLayout::OnAutoAdjustElevation ), NULL, this );
 	m_textCtrlGridElevation->Disconnect( wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler( LocationSetPropertiesLayout::OnGridChanged ), NULL, this );
 	m_tileFieldChoice->Disconnect( wxEVT_COMMAND_COMBOBOX_SELECTED, wxCommandEventHandler( LocationSetPropertiesLayout::OnTileFieldChoiceChange ), NULL, this );
+	m_chkDrawPolygons->Disconnect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( LocationSetPropertiesLayout::OnDrawPolygons ), NULL, this );
+	m_choiceAlgorithm->Disconnect( wxEVT_COMMAND_CHOICE_SELECTED, wxCommandEventHandler( LocationSetPropertiesLayout::OnChoiceAlgorithmChanged ), NULL, this );
+	m_sliderFillOpacity->Disconnect( wxEVT_SCROLL_TOP, wxScrollEventHandler( LocationSetPropertiesLayout::OnFillOpacityChange ), NULL, this );
+	m_sliderFillOpacity->Disconnect( wxEVT_SCROLL_BOTTOM, wxScrollEventHandler( LocationSetPropertiesLayout::OnFillOpacityChange ), NULL, this );
+	m_sliderFillOpacity->Disconnect( wxEVT_SCROLL_LINEUP, wxScrollEventHandler( LocationSetPropertiesLayout::OnFillOpacityChange ), NULL, this );
+	m_sliderFillOpacity->Disconnect( wxEVT_SCROLL_LINEDOWN, wxScrollEventHandler( LocationSetPropertiesLayout::OnFillOpacityChange ), NULL, this );
+	m_sliderFillOpacity->Disconnect( wxEVT_SCROLL_PAGEUP, wxScrollEventHandler( LocationSetPropertiesLayout::OnFillOpacityChange ), NULL, this );
+	m_sliderFillOpacity->Disconnect( wxEVT_SCROLL_PAGEDOWN, wxScrollEventHandler( LocationSetPropertiesLayout::OnFillOpacityChange ), NULL, this );
+	m_sliderFillOpacity->Disconnect( wxEVT_SCROLL_THUMBTRACK, wxScrollEventHandler( LocationSetPropertiesLayout::OnFillOpacityChange ), NULL, this );
+	m_sliderFillOpacity->Disconnect( wxEVT_SCROLL_THUMBRELEASE, wxScrollEventHandler( LocationSetPropertiesLayout::OnFillOpacityChange ), NULL, this );
+	m_sliderFillOpacity->Disconnect( wxEVT_SCROLL_CHANGED, wxScrollEventHandler( LocationSetPropertiesLayout::OnFillOpacityChange ), NULL, this );
+	m_chkAutoAdjustPolygonElevation->Disconnect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( LocationSetPropertiesLayout::OnAutoAdjustPolygonElevation ), NULL, this );
+	m_chkIncreasingElevation->Disconnect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( LocationSetPropertiesLayout::OnIncreasingElevation ), NULL, this );
+	m_chkShowBorders->Disconnect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( LocationSetPropertiesLayout::OnShowBorders ), NULL, this );
+	m_sliderBorderOpacity->Disconnect( wxEVT_SCROLL_TOP, wxScrollEventHandler( LocationSetPropertiesLayout::OnBorderOpacityChange ), NULL, this );
+	m_sliderBorderOpacity->Disconnect( wxEVT_SCROLL_BOTTOM, wxScrollEventHandler( LocationSetPropertiesLayout::OnBorderOpacityChange ), NULL, this );
+	m_sliderBorderOpacity->Disconnect( wxEVT_SCROLL_LINEUP, wxScrollEventHandler( LocationSetPropertiesLayout::OnBorderOpacityChange ), NULL, this );
+	m_sliderBorderOpacity->Disconnect( wxEVT_SCROLL_LINEDOWN, wxScrollEventHandler( LocationSetPropertiesLayout::OnBorderOpacityChange ), NULL, this );
+	m_sliderBorderOpacity->Disconnect( wxEVT_SCROLL_PAGEUP, wxScrollEventHandler( LocationSetPropertiesLayout::OnBorderOpacityChange ), NULL, this );
+	m_sliderBorderOpacity->Disconnect( wxEVT_SCROLL_PAGEDOWN, wxScrollEventHandler( LocationSetPropertiesLayout::OnBorderOpacityChange ), NULL, this );
+	m_sliderBorderOpacity->Disconnect( wxEVT_SCROLL_THUMBTRACK, wxScrollEventHandler( LocationSetPropertiesLayout::OnBorderOpacityChange ), NULL, this );
+	m_sliderBorderOpacity->Disconnect( wxEVT_SCROLL_THUMBRELEASE, wxScrollEventHandler( LocationSetPropertiesLayout::OnBorderOpacityChange ), NULL, this );
+	m_sliderBorderOpacity->Disconnect( wxEVT_SCROLL_CHANGED, wxScrollEventHandler( LocationSetPropertiesLayout::OnBorderOpacityChange ), NULL, this );
+	m_spinBorderThickness->Disconnect( wxEVT_COMMAND_SPINCTRL_UPDATED, wxSpinEventHandler( LocationSetPropertiesLayout::OnBorderThicknessChange ), NULL, this );
 	m_btnHelp->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( LocationSetPropertiesLayout::OnHelp ), NULL, this );
 	m_btnOK->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( LocationSetPropertiesLayout::OnOK ), NULL, this );
 	m_btnApply->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( LocationSetPropertiesLayout::OnApply ), NULL, this );

@@ -30,6 +30,7 @@
 #include "../core/Camera.hpp"
 #include "../core/LocationLayer.hpp"
 #include "../core/LocationSetLayer.hpp"
+#include "../core/LocationGrid.hpp"
 #include "../core/MapLayer.hpp"
 #include "../core/VectorMapLayer.hpp"
 #include "../core/SequenceLayer.hpp"
@@ -463,6 +464,7 @@ BOOST_PYTHON_MODULE(GenGIS)
 			.def("GetVectorMapLayer", &LayerTreeController::GetVectorMapLayer, "Get specified vector map layer.")
 			.def("GetNumLocationSetLayers", &LayerTreeController::GetNumLocationSetLayers, "Get number of location set layers.")
 			.def("GetLocationSetLayer", &LayerTreeController::GetLocationSetLayer, "Get specified location set layer.")
+			.def("GetLocationSetLayers", &LayerTreeController::GetLocationSetLayers, "Get all location set layers.")
 			.def("GetNumLocationLayers", &LayerTreeController::GetNumLocationLayers, "Get number of location layers.")
 			.def("GetLocationLayer", &LayerTreeController::GetLocationLayer, "Get specified location layer.")
 			.def("GetLocationLayers", &LayerTreeController::GetLocationLayers, "Get all location layers.")
@@ -471,6 +473,7 @@ BOOST_PYTHON_MODULE(GenGIS)
 			.def("GetSequenceLayers", &LayerTreeController::GetSequenceLayers, "Get all sequence layers.")
 			.def("GetNumTreeLayers", &LayerTreeController::GetNumTreeLayers, "Get number of tree layers.")
 			.def("GetTreeLayer", &LayerTreeController::GetTreeLayer, "Get specified tree layer.")
+			.def("UpdatePythonState", &LayerTreeController::UpdatePythonState, "Update active state of all layers.")
 			;
 
 		// <wiki-header>Viewport class</wiki-header>
@@ -682,6 +685,13 @@ BOOST_PYTHON_MODULE(GenGIS)
 			.def("IsSequencesData", &LocationSetLayer::IsSequencesData, "Check if there is sequence data associated with at least one location.")
 			.def("GetController", &LocationSetLayer::GetLocationSetController, "Get location set controller.")
 			.def("GetChartSet", &LocationSetLayer::GetChartSetView, "Get set of charts associated with this location set.")
+			.def("GetLocationGrid", &LocationSetLayer::GetLocationGrid, "Get location grid associated with this location set.")
+			.def("UpdateGridAndPolygons", &LocationSetLayer::UpdateGridAndPolygons, "Update the grid and polygons associated with this location set.")
+			;
+
+		// <wiki-header>Location Grid class</wiki-header>
+		class_<LocationGrid, boost::noncopyable, LocationGridPtr >("LocationGrid", "Gridding for a location set.", no_init)
+			.def("InitTileMinMax", &LocationGrid::InitTileMinMax, "Initialize min and max values a tile can have.")
 			;
 
 		// <wiki-header>Location Set Controller class</wiki-header>
@@ -850,6 +860,7 @@ BOOST_PYTHON_MODULE(GenGIS)
 			.def(init<const std::wstring&, const Colour&, float, VisualLabel::LABEL_RENDERING_STYLE>())
 			.def("GetText", &VisualLabel::GetText, "Get text of label.")
 			.def("GetColour", &VisualLabel::GetColour, "Get colour of label font.")
+			.def("GetId", &VisualLabel::GetId, "Get Id of label.")
 			.def("GetSize", &VisualLabel::GetSize, "Get size of label font.")
 			.def("GetVisibility", &VisualLabel::IsVisible, "Get visibility of label.")
 			.def("GetGridPosition", &VisualLabel::GetGridPosition, "Get grid coordinates of label.")
@@ -1047,7 +1058,7 @@ PythonInterface::PythonInterface()
 	}
 
 	// Save the current Python thread state and release the Global Interpreter Lock.
-	// m_mainTState = wxPyBeginAllowThreads();         // ~mikep. This make everything crash. When I get the time, find out why and fix it......
+	//m_mainTState = wxPyBeginAllowThreads();         // ~mikep. This make everything crash. When I get the time, find out why and fix it......
 	m_mainTState = NULL;
 
 	// Add Python to GenGIS:
@@ -1096,6 +1107,22 @@ void PythonInterface::UpdatePythonInterface()
 	initGenGIS();
 }
 
+// Prints embedded python errors to a wxMessage Box. Mostly for use in Mac where no debug tools are used
+void PythonInterface::PythonErrors() const
+{
+	PyObject *errtype, *errvalue, *traceback;
+	PyErr_Fetch(&errtype, &errvalue, &traceback);
+	if(errvalue != NULL) {
+		PyObject *s = PyObject_Str(errvalue);
+		char *error = PyString_AS_STRING(s);
+		wxMessageBox(wxString::FromUTF8(error));
+		Py_DECREF(s);
+	}
+	Py_XDECREF(errvalue);
+	Py_XDECREF(errtype);
+	Py_XDECREF(traceback);
+}
+
 // Adapted from the samples in wxPython
 wxPanel* PythonInterface::GetPythonPanel() const
 {
@@ -1110,12 +1137,14 @@ wxPanel* PythonInterface::GetPythonPanel() const
 	Py_DECREF(builtins);
 
 	// Make a method that makes the wxPython panel and return it.
-	char* pythonPanelCode = "import sys\nsys.path.insert(0,'./GenGIS.app/Contents/Resources') # Mac location \nsys.path.insert(0,'.') # Windows location \nfrom PythonCode import PythonInterpreter\n\ndef makePanel(parent):\n  pyPanel = PythonInterpreter(parent)\n  return pyPanel\n";
-	result = PyRun_String(pythonPanelCode, Py_file_input, globals, globals);
+	char* pythonPanelCode = "import sys\nsys.path.insert(0,'./GenGIS.app/Contents/Resources/') # Mac location \nsys.path.insert(0,'.') # Windows location \nfrom PythonCode import PythonInterpreter\n\ndef makePanel(parent):\n	pyPanel = PythonInterpreter(parent)\n	return pyPanel\n";
+	
+	result = PyRun_String(pythonPanelCode, Py_file_input, globals, globals);	
 
 	// Check for an exception.
 	if(!result)
 	{
+		PythonErrors();
 		PyErr_Print();
 		wxPyEndBlockThreads(blocked);
 		return NULL;
@@ -1125,17 +1154,23 @@ wxPanel* PythonInterface::GetPythonPanel() const
 	// Get the 'makePanel' method
 	PyObject* func = PyDict_GetItemString(globals, "makePanel");
 	wxASSERT(PyCallable_Check(func));
-
+	
 	// Call makePanel
 	PyObject* arg = wxPyMake_wxObject(parent, false);
 	wxASSERT(arg != NULL);
+	
 	PyObject* tuple = PyTuple_New(1);
 	PyTuple_SET_ITEM(tuple, 0, arg);
+	
 	result = PyEval_CallObject(func, tuple);
-
+	
 	// Check for an exception.
 	if(!result)
 	{
+		if(PyErr_Occurred())
+		{
+			PythonErrors();
+		}
 		PyErr_Print();
 	}
 	else

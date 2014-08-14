@@ -31,6 +31,7 @@
 #include "../core/LayerTreeModel.hpp"
 #include "../core/MapLayer.hpp"
 #include "../core/LocationSetLayer.hpp"
+#include "../core/LocationPolygons.hpp"
 #include "../core/LocationLayer.hpp"
 #include "../core/SequenceLayer.hpp"
 #include "../core/TreeLayer.hpp"
@@ -666,6 +667,10 @@ void LayerTreeController::OnClick( wxMouseEvent& event )
 		treeItem->GetLayer()->ToggleActive();
 		m_treeView->SetChecked(hitId, treeItem->GetLayer()->IsActive());
 
+		//redraw polygons
+		for(uint i = 0; i < m_locationSets.size(); i++)
+			m_locationSets[i]->GetLocationPolygons()->SetPolygonsChanged(true);
+
 		// project trees
 		for(uint i = 0; i < m_trees.size(); ++i)
 			m_trees[i]->GetGeoTreeView()->ProjectToActiveSet(m_locations);
@@ -674,7 +679,8 @@ void LayerTreeController::OnClick( wxMouseEvent& event )
 	}
 }
 
-void LayerTreeController::OnLeftDClick( wxMouseEvent& event )
+
+void LayerTreeController::OnLeftDClick( wxMouseEvent& event, LayoutLinePtr m_layoutLine )
 {
 	// cause the tree item under the cursor to become selected
 	wxTreeItemId id = GetTreeCtrl()->GetSelection();
@@ -767,7 +773,11 @@ void LayerTreeController::OnLeftDClick( wxMouseEvent& event )
 		else if(layer->GetType() == Layer::TREE)
 		{
 			TreeLayerPtr treeLayer = boost::dynamic_pointer_cast<TreeLayer>(layer);
-			TreePropertiesDlg* dlg = new TreePropertiesDlg(App::Inst().GetMainWindow(), treeLayer);
+			TreePropertiesDlg* dlg;
+			if (!m_layoutLine)
+				dlg = new TreePropertiesDlg(App::Inst().GetMainWindow(), treeLayer);
+			else
+				dlg = new TreePropertiesDlg(App::Inst().GetMainWindow(), treeLayer, m_layoutLine);
 			dlg->SetPage(TreePropertiesDlg::SYMBOLOGY);
 			dlg->Show();
 		}
@@ -1045,6 +1055,7 @@ void LayerTreeController::OnHideAll( wxCommandEvent& event )
 {
 	wxTreeItemIdValue cookie;
 	wxTreeItemId rootId = m_treeView->GetTreeCtrl()->GetFirstChild(m_treeView->GetTreeCtrl()->GetRootItem(), cookie);
+
 	SetVisibilityAllChildren(rootId, cookie, false);
 
 	App::Inst().GetViewport()->Refresh(false);
@@ -1653,6 +1664,24 @@ void LayerTreeController::UpdateActiveState()
 	UpdateActiveState(studyId, cookie);
 
 	m_treeView->GetTreeCtrl()->Thaw();
+}
+
+void LayerTreeController::UpdatePythonState()
+{
+	m_treeView->GetTreeCtrl()->Freeze();
+
+	wxTreeItemId rootId = m_treeView->GetTreeCtrl()->GetRootItem();
+	wxTreeItemIdValue cookie;
+	wxTreeItemId studyId = m_treeView->GetTreeCtrl()->GetFirstChild(rootId, cookie);
+	UpdateActiveState(studyId, cookie);
+
+	m_treeView->GetTreeCtrl()->Thaw();
+	// project trees
+	if( m_trees.size() > 0 )
+		for(uint i = 0; i < m_trees.size(); i++)
+			m_trees[i]->GetGeoTreeView()->ProjectToActiveSet(m_locations);
+
+	App::Inst().GetViewport()->Refresh(false); 
 }
 
 void LayerTreeController::UpdateActiveState(wxTreeItemId subtreeId, wxTreeItemIdValue& cookie)

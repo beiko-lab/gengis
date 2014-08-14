@@ -5,7 +5,7 @@
 # Created:      02/11/2003
 # Copyright:    (c) 2003 by Jeff Childers, Will Sadkin, 2003
 # Portions:     (c) 2002 by Will Sadkin, 2002-2003
-# RCS-ID:       $Id: textctrl.py 53519 2008-05-09 23:31:42Z RD $
+# RCS-ID:       $Id: textctrl.py 65995 2010-11-02 16:06:10Z RD $
 # License:      wxWidgets license
 #----------------------------------------------------------------------------
 #
@@ -117,7 +117,8 @@ class BaseMaskedTextCtrl( wx.TextCtrl, MaskedEditMixin ):
         REQUIRED by any class derived from MaskedEditMixin.
         """
 ####        dbg("MaskedTextCtrl::_SetSelection(%(sel_start)d, %(sel_to)d)" % locals())
-        return self.SetSelection( sel_start, sel_to )
+        if self:
+            return self.SetSelection( sel_start, sel_to )
 
 ##    def SetSelection(self, sel_start, sel_to):
 ##        """
@@ -132,7 +133,8 @@ class BaseMaskedTextCtrl( wx.TextCtrl, MaskedEditMixin ):
 
     def _SetInsertionPoint(self, pos):
 ####        dbg("MaskedTextCtrl::_SetInsertionPoint(%(pos)d)" % locals())
-        self.SetInsertionPoint(pos)
+        if self:
+            self.SetInsertionPoint(pos)
 
 ##    def SetInsertionPoint(self, pos):
 ##        """

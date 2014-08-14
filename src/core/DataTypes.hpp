@@ -125,6 +125,9 @@ namespace GenGIS
 	class   LocationSetLayer;
 	typedef boost::shared_ptr<LocationSetLayer> LocationSetLayerPtr;
 
+	class	LocationPolygons;
+	typedef boost::shared_ptr<LocationPolygons> LocationPolygonsPtr;
+
 	class   LocationSetController;
 	typedef boost::shared_ptr<LocationSetController> LocationSetControllerPtr;
 
@@ -188,6 +191,9 @@ namespace GenGIS
 
 	class   StudyModel;
 	typedef boost::shared_ptr<StudyModel> StudyModelPtr;
+
+	class PolygonModel;
+	typedef boost::shared_ptr<PolygonModel> PolygonModelPtr;
 
 	typedef boost::shared_ptr<OGRCoordinateTransformation> ProjectionToolPtr;
 

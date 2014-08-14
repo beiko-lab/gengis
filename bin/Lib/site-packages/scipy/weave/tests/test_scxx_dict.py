@@ -1,5 +1,6 @@
 """ Test refcounting and behavior of SCXX.
 """
+from __future__ import absolute_import, print_function
 
 import sys
 
@@ -127,7 +128,6 @@ class TestDictGetItemOp(TestCase):
     def test_string(self):
         self.generic_get('return_val = a[std::string("b")];')
 
-
     @dec.slow
     def test_obj(self):
         code = """
@@ -167,7 +167,7 @@ class TestDictSetOperator(TestCase):
     def generic_overwrite(self,key,val):
         a = {}
         overwritten = 1
-        a[key] = overwritten # put an item in the dict to be overwritten
+        a[key] = overwritten  # put an item in the dict to be overwritten
         # call once to handle mysterious addition of one ref count
         # on first call to inline.
         before_overwritten = sys.getrefcount(overwritten)

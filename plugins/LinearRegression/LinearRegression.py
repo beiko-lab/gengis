@@ -28,6 +28,7 @@ from dataHelper import isNumber
 import wx
 import os
 import math
+import dataHelper as dh
 
 from scipy.stats import linregress
 
@@ -41,11 +42,15 @@ class LinearRegression( LinearRegressionLayout ):
 		self.graphicalElementIds = []
 		
 		# check that required data has been loaded
-		if GenGIS.layerTree.GetNumMapLayers() == 0 or GenGIS.layerTree.GetNumLocationSetLayers() == 0 or GenGIS.layerTree.GetNumSequenceLayers() == 0:
-			wx.MessageBox("This plugin requires map, location and sequence data to be loaded.", "Additional data required.")
+	#	if GenGIS.layerTree.GetNumMapLayers() == 0 or GenGIS.layerTree.GetNumLocationSetLayers() == 0 or GenGIS.layerTree.GetNumSequenceLayers() == 0:
+	#		wx.MessageBox("This plugin requires map, location and sequence data to be loaded.", "Additional data required.")
+	#		self.Close()
+	#		return
+		if GenGIS.layerTree.GetNumMapLayers() == 0 or GenGIS.layerTree.GetNumLocationSetLayers() == 0 :
+			wx.MessageBox("This plugin requires map and location data to be loaded.", "Additional data required.")
 			self.Close()
 			return
-		
+	
 		# set location comboboxes
 		locationSetLayer = GenGIS.layerTree.GetLocationSetLayer(0)
 		numericFields = locationSetLayer.GetController().GetNumericMetadataFields(True)
@@ -55,29 +60,35 @@ class LinearRegression( LinearRegressionLayout ):
 		self.cboIndependent.SetSelection(0)
 		self.cboDependent.SetSelection(0)
 		
-		# set sequence comboboxes
-		sequenceLayer = GenGIS.layerTree.GetSequenceLayer(0)
-		seqMetadataFields = sequenceLayer.GetController().GetMetadataFields()
-	
-		for field in sorted(seqMetadataFields):
-			self.cboIndependentIDField.Append(field)
-		self.cboIndependentIDField.SetSelection(0)
+		#Locks Display if no sequence data is present
+		sequenceFlag = GenGIS.layerTree.GetNumSequenceLayers() > 0
+		if sequenceFlag:
+			# set sequence comboboxes
+			sequenceLayer = GenGIS.layerTree.GetSequenceLayer(0)
+			seqMetadataFields = sequenceLayer.GetController().GetMetadataFields()
 		
-		for field in sorted(seqMetadataFields):
-			self.cboDependentIDField.Append(field)
-		self.cboDependentIDField.SetSelection(0)
+
+			for field in sorted(seqMetadataFields):
+				self.cboIndependentIDField.Append(field)
+			self.cboIndependentIDField.SetSelection(0)
+			
+			for field in sorted(seqMetadataFields):
+				self.cboDependentIDField.Append(field)
+			self.cboDependentIDField.SetSelection(0)
 		
-		seqNumericMetadataFields = sequenceLayer.GetController().GetNumericMetadataFields(True)
-		self.cboIndependentCountField.Append('<none>')
-		for field in seqNumericMetadataFields:
-			self.cboIndependentCountField.Append(field)
-		self.cboIndependentCountField.SetSelection(0)
-		
-		self.cboDependentCountField.Append('<none>')
-		for field in seqNumericMetadataFields:
-			self.cboDependentCountField.Append(field)
-		self.cboDependentCountField.SetSelection(0)
-		
+			seqNumericMetadataFields = sequenceLayer.GetController().GetNumericMetadataFields(True)
+			self.cboIndependentCountField.Append('<none>')
+			for field in seqNumericMetadataFields:
+				self.cboIndependentCountField.Append(field)
+			self.cboIndependentCountField.SetSelection(0)
+			
+			self.cboDependentCountField.Append('<none>')
+			for field in seqNumericMetadataFields:
+				self.cboDependentCountField.Append(field)
+			self.cboDependentCountField.SetSelection(0)
+		else:
+			self.cboIndependentVariableDataType.EnableItem(1,False)
+			self.cboDependentVariableDataType.EnableItem(1,False)
 		# set colour map combobox
 		continuousColourMapNames = GenGIS.colourMapManager.GetColourMapContinuousNames()
 		for name in continuousColourMapNames:
@@ -218,6 +229,7 @@ class LinearRegression( LinearRegressionLayout ):
 	def GetData(self):
 		# Add ade4 library, save robject.r as variable
 		locationSetController = GenGIS.layerTree.GetLocationSetLayer(0).GetController()
+		switchedLocs = dh.LocationSetWeeder()
 		
 		# Get distances for Independent Variable:
 		if self.cboIndependentSubtypeField.Enabled == True:
@@ -291,7 +303,8 @@ class LinearRegression( LinearRegressionLayout ):
 			
 		# get colour map
 		self.colourMap = GenGIS.colourMapManager.GetColourMap(self.cboColourMap.GetStringSelection())
-
+		dh.LocationSetRestore( switchedLocs )
+		
 	def ViewportPlot(self):
 		terrainController = GenGIS.layerTree.GetMapLayer(0).GetController()
 		

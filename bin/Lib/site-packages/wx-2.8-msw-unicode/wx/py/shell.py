@@ -5,8 +5,8 @@ based on wxPython's wxStyledTextCtrl.
 Sponsored by Orbtech - Your source for Python programming expertise."""
 
 __author__ = "Patrick K. O'Brien <pobrien@orbtech.com>"
-__cvsid__ = "$Id: shell.py 46528 2007-06-18 19:09:00Z RD $"
-__revision__ = "$Revision: 46528 $"[11:-2]
+__cvsid__ = "$Id: shell.py 63479 2010-02-14 05:24:22Z RD $"
+__revision__ = "$Revision: 63479 $"[11:-2]
 
 import wx
 from wx import stc
@@ -24,8 +24,13 @@ from pseudo import PseudoFileIn
 from pseudo import PseudoFileOut
 from pseudo import PseudoFileErr
 from version import VERSION
+from magic import magic
+from path import ls,cd,pwd,sx
 
 sys.ps3 = '<-- '  # Input prompt.
+USE_MAGIC=True
+# Force updates from long-running commands after this many seconds
+PRINT_UPDATE_MAX_TIME=2
 
 NAVKEYS = (wx.WXK_END, wx.WXK_LEFT, wx.WXK_RIGHT,
            wx.WXK_UP, wx.WXK_DOWN, wx.WXK_PRIOR, wx.WXK_NEXT)
@@ -217,6 +222,16 @@ class ShellFacade:
         return list
 
 
+#DNM
+DISPLAY_TEXT="""
+Author: %r
+Py Version: %s
+Py Shell Revision: %s
+Py Interpreter Revision: %s
+Python Version: %s
+wxPython Version: %s
+wxPython PlatformInfo: %s
+Platform: %s"""
 
 class Shell(editwindow.EditWindow):
     """Shell based on StyledTextCtrl."""
@@ -272,6 +287,9 @@ class Shell(editwindow.EditWindow):
 
         # Keep track of multi-line commands.
         self.more = False
+        
+        # For use with forced updates during long-running scripts
+        self.lastUpdate=None
 
         # Create the command history.  Commands are added into the
         # front of the list (ie. at index 0) as they are entered.
@@ -376,6 +394,10 @@ class Shell(editwindow.EditWindow):
         import __builtin__
         __builtin__.close = __builtin__.exit = __builtin__.quit = \
             'Click on the close button to leave the application.'
+        __builtin__.cd = cd
+        __builtin__.ls = ls
+        __builtin__.pwd = pwd
+        __builtin__.sx = sx
 
 
     def quit(self):
@@ -405,15 +427,8 @@ class Shell(editwindow.EditWindow):
 
     def about(self):
         """Display information about Py."""
-        text = """
-Author: %r
-Py Version: %s
-Py Shell Revision: %s
-Py Interpreter Revision: %s
-Python Version: %s
-wxPython Version: %s
-wxPython PlatformInfo: %s
-Platform: %s""" % \
+        #DNM
+        text = DISPLAY_TEXT % \
         (__author__, VERSION, self.revision, self.interp.revision,
          sys.version.split()[0], wx.VERSION_STRING, str(wx.PlatformInfo),
          sys.platform)
@@ -497,13 +512,16 @@ Platform: %s""" % \
                     li += 1
                 endP = self.GetLineEndPosition(li-1)
                 self.ShowLines(li0, li-1)
-                self.SetSelection( startP, endP ) # select reappearing text to allow "hide again"
+                # select reappearing text to allow "hide again"
+                self.SetSelection( startP, endP )
                 return
             startP,endP = self.GetSelection()
             endP-=1
-            startL,endL = self.LineFromPosition(startP), self.LineFromPosition(endP)
+            startL = self.LineFromPosition(startP)
+            endL = self.LineFromPosition(endP)
 
-            if endL == self.LineFromPosition(self.promptPosEnd): # never hide last prompt
+            # never hide last prompt
+            if endL == self.LineFromPosition(self.promptPosEnd):
                 endL -= 1
 
             m = self.MarkerGet(startL)
@@ -514,7 +532,9 @@ Platform: %s""" % \
         if key == wx.WXK_F12: #seb
             if self.noteMode:
                 # self.promptPosStart not used anyway - or ? 
-                self.promptPosEnd = self.PositionFromLine( self.GetLineCount()-1 ) + len(str(sys.ps1))
+                self.promptPosEnd = \
+                   self.PositionFromLine( self.GetLineCount()-1 ) + \
+                   len(str(sys.ps1))
                 self.GotoLine(self.GetLineCount())
                 self.GotoPos(self.promptPosEnd)
                 self.prompt()  #make sure we have a prompt
@@ -534,7 +554,8 @@ Platform: %s""" % \
 
         # Return (Enter) is used to submit a command to the
         # interpreter.
-        if (not controlDown and not shiftDown and not altDown) and key in [wx.WXK_RETURN, wx.WXK_NUMPAD_ENTER]:
+        if (not controlDown and not shiftDown and not altDown) and \
+           key in [wx.WXK_RETURN, wx.WXK_NUMPAD_ENTER]:
             if self.CallTipActive():
                 self.CallTipCancel()
             self.processLine()
@@ -600,7 +621,7 @@ Platform: %s""" % \
             self.CopyWithPromptsPrefixed()
 
         # Home needs to be aware of the prompt.
-        elif key == wx.WXK_HOME:
+        elif controlDown and key == wx.WXK_HOME:
             home = self.promptPosEnd
             if currpos > home:
                 self.SetCurrentPos(home)
@@ -610,6 +631,23 @@ Platform: %s""" % \
             else:
                 event.Skip()
 
+        # Home needs to be aware of the prompt.
+        elif key == wx.WXK_HOME:
+            home = self.promptPosEnd
+            if currpos > home:
+                [line_str,line_len] = self.GetCurLine()
+                pos=self.GetCurrentPos()
+                if line_str[:4] in [sys.ps1,sys.ps2,sys.ps3]:
+                    self.SetCurrentPos(pos+4-line_len)
+                    #self.SetCurrentPos(home)
+                    if not selecting and not shiftDown:
+                        self.SetAnchor(pos+4-line_len)
+                        self.EnsureCaretVisible()
+                else:
+                    event.Skip()
+            else:
+                event.Skip()
+        
         #
         # The following handlers modify text, so we need to see if
         # there is a selection that includes text prior to the prompt.
@@ -632,21 +670,21 @@ Platform: %s""" % \
             self.PasteAndRun()
             
         # Replace with the previous command from the history buffer.
-        elif (controlDown and key == wx.WXK_UP) \
+        elif (controlDown and not shiftDown and key == wx.WXK_UP) \
                  or (altDown and key in (ord('P'), ord('p'))):
             self.OnHistoryReplace(step=+1)
             
         # Replace with the next command from the history buffer.
-        elif (controlDown and key == wx.WXK_DOWN) \
+        elif (controlDown and not shiftDown and key == wx.WXK_DOWN) \
                  or (altDown and key in (ord('N'), ord('n'))):
             self.OnHistoryReplace(step=-1)
             
         # Insert the previous command from the history buffer.
-        elif (shiftDown and key == wx.WXK_UP) and self.CanEdit():
+        elif (controlDown and shiftDown and key == wx.WXK_UP) and self.CanEdit():
             self.OnHistoryInsert(step=+1)
             
         # Insert the next command from the history buffer.
-        elif (shiftDown and key == wx.WXK_DOWN) and self.CanEdit():
+        elif (controlDown and shiftDown and key == wx.WXK_DOWN) and self.CanEdit():
             self.OnHistoryInsert(step=-1)
             
         # Search up the history for the text in front of the cursor.
@@ -671,10 +709,15 @@ Platform: %s""" % \
         
         # Don't allow line deletion.
         elif controlDown and key in (ord('L'), ord('l')):
+            # TODO : Allow line deletion eventually...
+            #event.Skip()
             pass
 
         # Don't allow line transposition.
         elif controlDown and key in (ord('T'), ord('t')):
+            # TODO : Allow line transposition eventually...
+            # TODO : Will have to adjust markers accordingly and test if allowed...
+            #event.Skip()
             pass
 
         # Basic navigation keys should work anywhere.
@@ -921,9 +964,16 @@ Platform: %s""" % \
         """Send command to the interpreter for execution."""
         if not silent:
             self.write(os.linesep)
+        
+        #DNM
+        if USE_MAGIC:
+            command=magic(command)
+         
         busy = wx.BusyCursor()
         self.waiting = True
+        self.lastUpdate=None
         self.more = self.interp.push(command)
+        self.lastUpdate=None
         self.waiting = False
         del busy
         if not self.more:
@@ -941,7 +991,7 @@ Platform: %s""" % \
         and (len(self.history) == 0 or command != self.history[0]):
             self.history.insert(0, command)
             dispatcher.send(signal="Shell.addHistory", command=command)
-
+    
     def write(self, text):
         """Display text in the shell.
 
@@ -949,7 +999,14 @@ Platform: %s""" % \
         text = self.fixLineEndings(text)
         self.AddText(text)
         self.EnsureCaretVisible()
-
+        
+        if self.waiting:
+            if self.lastUpdate==None:
+                self.lastUpdate=time.time()
+            if time.time()-self.lastUpdate > PRINT_UPDATE_MAX_TIME:
+                self.Update()
+                self.lastUpdate=time.time()
+    
     def fixLineEndings(self, text):
         """Return text with line endings replaced by OS-specific endings."""
         lines = text.split('\r\n')
@@ -987,9 +1044,34 @@ Platform: %s""" % \
             self.promptPosEnd = self.GetCurrentPos()
             # Keep the undo feature from undoing previous responses.
             self.EmptyUndoBuffer()
-        # XXX Add some autoindent magic here if more.
+        
         if self.more:
-            self.write(' '*4)  # Temporary hack indentation.
+            line_num=self.GetCurrentLine()
+            currentLine=self.GetLine(line_num)
+            previousLine=self.GetLine(line_num-1)[len(prompt):]
+            pstrip=previousLine.strip()
+            lstrip=previousLine.lstrip()
+            
+            # Get the first alnum word:
+            first_word=[]
+            for i in pstrip:
+                if i.isalnum():
+                    first_word.append(i)
+                else:
+                    break
+            first_word = ''.join(first_word)
+            
+            if pstrip == '':
+                # because it is all whitespace!
+                indent=previousLine.strip('\n').strip('\r')
+            else:
+                indent=previousLine[:(len(previousLine)-len(lstrip))]
+                if pstrip[-1]==':' and \
+                    first_word in ['if','else','elif','for','while',
+                                   'def','class','try','except','finally']:
+                    indent+=' '*4
+            
+            self.write(indent)
         self.EnsureCaretVisible()
         self.ScrollToColumn(0)
 
@@ -1094,15 +1176,14 @@ Platform: %s""" % \
             dispatcher.send(signal='Shell.calltip', sender=self, calltip=tip)
         if not self.autoCallTip and not forceCallTip:
             return
+        startpos = self.GetCurrentPos()
         if argspec and insertcalltip and self.callTipInsert:
-            startpos = self.GetCurrentPos()
             self.write(argspec + ')')
             endpos = self.GetCurrentPos()
-            self.SetSelection(endpos, startpos)
+            self.SetSelection(startpos, endpos)
         if tip:
-            curpos = self.GetCurrentPos()
-            tippos = curpos - (len(name) + 1)
-            fallback = curpos - self.GetColumn(curpos)
+            tippos = startpos - (len(name) + 1)
+            fallback = startpos - self.GetColumn(startpos)
             # In case there isn't enough room, only go back to the
             # fallback.
             tippos = max(tippos, fallback)
@@ -1151,7 +1232,8 @@ Platform: %s""" % \
                 if ctindex != -1 and not self.CallTipActive():
                     #insert calltip, if current pos is '(', otherwise show it only
                     self.autoCallTipShow(ctips[:ctindex + 1], 
-                        self.GetCharAt(currpos - 1) == ord('(') and self.GetCurrentPos() == self.GetTextLength(),
+                        self.GetCharAt(currpos - 1) == ord('(') and \
+                           self.GetCurrentPos() == self.GetTextLength(),
                         True)
                 
 
@@ -1352,10 +1434,14 @@ Platform: %s""" % \
 
 
     def LoadSettings(self, config):
-        self.autoComplete              = config.ReadBool('Options/AutoComplete', True)
-        self.autoCompleteIncludeMagic  = config.ReadBool('Options/AutoCompleteIncludeMagic', True)
-        self.autoCompleteIncludeSingle = config.ReadBool('Options/AutoCompleteIncludeSingle', True)
-        self.autoCompleteIncludeDouble = config.ReadBool('Options/AutoCompleteIncludeDouble', True)
+        self.autoComplete              = \
+            config.ReadBool('Options/AutoComplete', True)
+        self.autoCompleteIncludeMagic  = \
+            config.ReadBool('Options/AutoCompleteIncludeMagic', True)
+        self.autoCompleteIncludeSingle = \
+            config.ReadBool('Options/AutoCompleteIncludeSingle', True)
+        self.autoCompleteIncludeDouble = \
+            config.ReadBool('Options/AutoCompleteIncludeDouble', True)
 
         self.autoCallTip = config.ReadBool('Options/AutoCallTip', True)
         self.callTipInsert = config.ReadBool('Options/CallTipInsert', True)
@@ -1369,13 +1455,15 @@ Platform: %s""" % \
         if zoom != -99:
             self.SetZoom(zoom)
 
-
     
     def SaveSettings(self, config):
         config.WriteBool('Options/AutoComplete', self.autoComplete)
-        config.WriteBool('Options/AutoCompleteIncludeMagic', self.autoCompleteIncludeMagic)
-        config.WriteBool('Options/AutoCompleteIncludeSingle', self.autoCompleteIncludeSingle)
-        config.WriteBool('Options/AutoCompleteIncludeDouble', self.autoCompleteIncludeDouble)
+        config.WriteBool('Options/AutoCompleteIncludeMagic',
+                         self.autoCompleteIncludeMagic)
+        config.WriteBool('Options/AutoCompleteIncludeSingle',
+                         self.autoCompleteIncludeSingle)
+        config.WriteBool('Options/AutoCompleteIncludeDouble',
+                         self.autoCompleteIncludeDouble)
         config.WriteBool('Options/AutoCallTip', self.autoCallTip)
         config.WriteBool('Options/CallTipInsert', self.callTipInsert)
         config.WriteBool('Options/UseAntiAliasing', self.GetUseAntiAliasing())
@@ -1427,7 +1515,7 @@ Platform: %s""" % \
 
 
 
-## NOTE: The DnD of file names is disabled until I can figure out how
+## NOTE: The DnD of file names is disabled until we can figure out how
 ## best to still allow DnD of text.
 
 
@@ -1487,4 +1575,3 @@ Platform: %s""" % \
 ##             self.shell.SetSelection( pos, pos )
 
 ##         return result
-    

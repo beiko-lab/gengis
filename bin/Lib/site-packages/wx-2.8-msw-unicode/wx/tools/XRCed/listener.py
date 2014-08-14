@@ -2,7 +2,7 @@
 # Purpose:      Listener for dispatching events from view to presenter
 # Author:       Roman Rolinsky <rolinsky@femagsoft.com>
 # Created:      07.06.2007
-# RCS-ID:       $Id: listener.py 57249 2008-12-11 14:00:41Z ROL $
+# RCS-ID:       $Id: listener.py 64627 2010-06-18 18:17:45Z ROL $
 
 import wx
 import os,sys,shutil,tempfile
@@ -42,6 +42,7 @@ class _Listener:
                           self.OnComponentReplace)
 
         wx.EVT_MENU(frame, ID.REF, self.OnReference)
+        wx.EVT_MENU(frame, ID.COMMENT, self.OnComment)
 
         # Other events
         frame.Bind(wx.EVT_IDLE, self.OnIdle)
@@ -131,6 +132,7 @@ class _Listener:
         wx.EVT_UPDATE_UI(frame, frame.ID_SHOW_XML, self.OnUpdateUI)
         wx.EVT_UPDATE_UI(frame, ID.COLLAPSE, self.OnUpdateUI)
         wx.EVT_UPDATE_UI(frame, ID.EXPAND, self.OnUpdateUI)
+        wx.EVT_UPDATE_UI(frame, ID.SUBCLASS, self.OnUpdateUI)
 
         wx.EVT_MENU_HIGHLIGHT_ALL(self.frame, self.OnMenuHighlight)
 
@@ -209,6 +211,10 @@ class _Listener:
         if not ref: return
         Presenter.createRef(ref)
 
+    def OnComment(self, evt):
+        '''Create comment node.'''
+        Presenter.createComment()
+
     def OnNew(self, evt):
         '''wx.ID_NEW hadndler.'''
         if not self.AskSave(): return
@@ -277,19 +283,19 @@ class _Listener:
                 dlg.Destroy()
                 return
 
-            if g.conf.localconf:
-                # if we already have a localconf then it needs to be
-                # copied to a new config with the new name
-                lc = g.conf.localconf
-                nc = Presenter.createLocalConf(path)
-                flag, key, idx = lc.GetFirstEntry()
-                while flag:
-                    nc.Write(key, lc.Read(key))
-                    flag, key, idx = lc.GetNextEntry(idx)
-                g.conf.localconf = nc
-            else:
-                # otherwise create a new one
-                g.conf.localconf = Presenter.createLocalConf(path)
+        if g.conf.localconf:
+            # if we already have a localconf then it needs to be
+            # copied to a new config with the new name
+            lc = g.conf.localconf
+            nc = Presenter.createLocalConf(path)
+            flag, key, idx = lc.GetFirstEntry()
+            while flag:
+                nc.Write(key, lc.Read(key))
+                flag, key, idx = lc.GetNextEntry(idx)
+            g.conf.localconf = nc
+        else:
+            # otherwise create a new one
+            g.conf.localconf = Presenter.createLocalConf(path)
         wx.BeginBusyCursor()
         try:
             Presenter.save(path) # save temporary file first
@@ -713,6 +719,7 @@ Homepage: http://xrced.sourceforge.net\
         container = Presenter.container
         comp = Presenter.comp
         treeNode = self.tree.GetPyData(Presenter.item)
+        isComment = treeNode and treeNode.nodeType == treeNode.COMMENT_NODE
         # Wokraround for wxMSW: view.tree.GetPrevSibling crashes
         if evt.GetId() in [self.frame.ID_MOVEUP, self.frame.ID_MOVERIGHT,
                            self.frame.ID_MOVEDOWN, self.frame.ID_MOVELEFT] and \
@@ -748,6 +755,8 @@ Homepage: http://xrced.sourceforge.net\
             evt.Enable(not self.tree.GetSelection() or
                        len(self.tree.GetSelections()) == 1 and \
                            self.tree.ItemHasChildren(self.tree.GetSelection()))
+        elif evt.GetId() == ID.SUBCLASS:
+            evt.Enable(not isComment)
         self.inUpdateUI = False
 
     def OnIdle(self, evt):

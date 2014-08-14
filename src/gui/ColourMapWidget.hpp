@@ -23,6 +23,7 @@
 #define _GENGIS_COLOUR_MAP_WIDGET_
 
 #include "../core/Precompiled.hpp"
+#include "../core/LocationLayer.hpp"
 
 #include "../utils/ColourMapDiscrete.hpp"
 
@@ -38,6 +39,19 @@ namespace GenGIS
 	{
 	public:
 		explicit ColourPickerTracker(int index): m_index(index) {}
+
+		int GetIndex() const { return m_index; }
+
+	public:
+		int m_index;
+	};
+
+
+	//Used to track the checkbox events
+	class CheckboxTracker : public wxObject
+	{
+	public:
+		explicit CheckboxTracker(int index): m_index(index) {}
 
 		int GetIndex() const { return m_index; }
 
@@ -83,6 +97,10 @@ namespace GenGIS
 		/** Populate the wxScrolledWindow with all possible field values. */
 		void SetFieldValues(wxScrolledWindow* scrolledWindow, const std::vector<std::wstring>& fieldValues);
 
+		/** Overloaded to handle adding visibility checkboxes to the colour window */
+		void SetFieldValues(wxScrolledWindow* scrolledWindow, const std::vector<std::wstring>& fieldValues, 
+							const std::wstring& colourField, const std::vector<LocationLayerPtr>& locations);
+
 		/** Populate combo box with all available colour maps. */
 		void PopulateColourMapComboBox();
 
@@ -93,15 +111,33 @@ namespace GenGIS
 		/** Disconnect event for all wxColourPickers. */
 		void DisconnectColourPickerEvents();
 
+		/** Specify event for all wxCheckboxes */
+		void ConnectCheckboxEvents();
+
+		/** Disconnect event for all wxCheckboxes */
+		void DisconnectCheckboxEvents();
+
+		/** Checks all checkboxes and shows all locations */
+		void ActivateLocations();
+
 		/** Event handler for selecting colours under Mac/Unix. */
 		void OnCustomColourButtonClicked( wxMouseEvent& event );
 
 		/** Event indicating the colour of a field value has been changed. */
 		void OnColourChange( wxColourPickerEvent& event );
 
+		/** Event handler for the visibility checkboxes */
+		void OnChecked( wxCommandEvent& event );
+
 	private:
 		/** Colour map of interest. */
 		ColourMapDiscretePtr m_colourMap;
+
+		/** Location Layers used for hiding/revealing locations */
+		std::vector<LocationLayerPtr> m_locations;
+
+		/** Colour field used to determine the current field being charted */
+		std::wstring m_colourField;
 
 		/** Colour pickers used to display colour map. */
 		std::vector<wxColourPickerCtrl*> m_colourPickers;
@@ -112,8 +148,14 @@ namespace GenGIS
 		/** Labels indicating name associated with a colour. */
 		std::vector<wxStaticText*> m_fieldValues;
 
+		/** Checkboxes used to determine whether a certain field of locations should be shown */
+		std::vector<wxCheckBox*> m_visibilityBoxes;
+
 		/** Tracker used to determine which colour picker triggered an event. */
 		std::vector<ColourPickerTracker*> m_trackers;
+
+		/** Tracker used to determine which checkbox triggered an event */
+		std::vector<CheckboxTracker*> m_checkboxTrackers;
 
 		/** Combo box to populate with available colour maps. */
 		wxComboBox* m_cboColourMap;

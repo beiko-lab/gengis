@@ -33,6 +33,7 @@
 #include "../core/LayerTreeController.hpp"
 #include "../core/SequenceController.hpp"
 #include "../core/LocationGrid.hpp"
+#include "../core/LocationPolygons.hpp"
 #include "../core/TileModel.hpp"
 #include "../core/LocationSetLayer.hpp"
 #include "../core/LocationLayer.hpp"
@@ -70,6 +71,7 @@ LocationSetPropertiesDlg::LocationSetPropertiesDlg(wxWindow* parent, LocationSet
 	InitLocationSet();
 	InitChart();
 	InitLocationGrid();
+	InitLocationPolygons();
 
 	m_pnlLocations->Fit();
 	m_pnlChart->Fit();
@@ -403,7 +405,8 @@ void LocationSetPropertiesDlg::InitChart()
 	ChartViewPtr chartView = m_locationSetLayer->GetLocationLayer(0)->GetLocationController()->GetChartView();
 	
 	// populate field combo box with all possible fields
-	if(App::Inst().GetLayerTreeController()->GetNumSequenceLayers() > 0)
+	if(App::Inst().GetLayerTreeController()->GetNumSequenceLayers() > 0 && 
+	   m_locationSetController->GetSequenceMetadata().size() > 2)
 	{
 		// populate combo box with all fields associated with a sequence
 		std::map<std::wstring,std::wstring> data = m_locationSetController->GetSequenceMetadata();
@@ -778,6 +781,97 @@ void LocationSetPropertiesDlg::InitLocationGrid()
 //	OnRadioDivideBy(setting);
 }
 
+void LocationSetPropertiesDlg::InitLocationPolygons() {
+
+	LocationPolygonsPtr locationPolygons = m_locationSetLayer->GetLocationPolygons();
+	locationPolygons->SetCurrentLocationSet(m_locationSetLayer->GetAllLocationLayers());
+
+	//Sets values of checkboxes
+	m_chkDrawPolygons->SetValue(locationPolygons->IsVisible());
+	m_chkShowBorders->SetValue(locationPolygons->GetBorderVisibility());
+	m_chkAutoAdjustPolygonElevation->SetValue(locationPolygons->GetAutoAdjustElevationStatus());
+	m_chkIncreasingElevation->SetValue(locationPolygons->GetIncreasingElevationStatus());
+	m_chkSmoothPolygons->SetValue(locationPolygons->GetSmoothPolygonStatus());
+
+	//Disables all options if polygons aren't visible
+	if (!locationPolygons->IsVisible()) {
+
+		m_lblAlgorithm->Disable();
+		m_choiceAlgorithm->Disable();
+		m_lblAlgorithmDescription->Disable();
+		m_txtAlgorithmDescription->Disable();
+		m_lblFillOpacity->Disable();
+		m_sliderFillOpacity->Disable();
+		m_chkSmoothPolygons->Disable();
+		m_chkAutoAdjustPolygonElevation->Disable();
+		m_chkIncreasingElevation->Disable();
+		m_lblPolygonInflation->Disable();
+		m_sliderPolygonInflation->Disable();
+		m_lblPolygonScaling->Disable();
+		m_txtPolygonScaling->Disable();
+		m_chkShowBorders->Disable();
+		m_lblBorderOpacity->Disable();
+		m_sliderBorderOpacity->Disable();
+		m_lblBorderThickness->Disable();
+		m_spinBorderThickness->Disable();
+
+	}
+
+	//Disables elevation option if auto adjusted to map elevation
+	if (locationPolygons->GetAutoAdjustElevationStatus()) {
+
+		m_lblPolygonElevation->Disable();
+		m_txtPolygonElevation->Disable();
+
+	}
+
+	if (!locationPolygons->GetIncreasingElevationStatus()) {
+
+		m_lblElevationOffset->Disable();
+		m_txtElevationOffset->Disable();
+
+	}
+
+	//Disables all border options if borders aren't visible
+	if (!locationPolygons->GetBorderVisibility()) {
+	
+		m_lblBorderOpacity->Disable();
+		m_sliderBorderOpacity->Disable();
+		m_lblBorderThickness->Disable();
+		m_spinBorderThickness->Disable();
+	
+	}
+
+	//Sets algorithm and description
+	LocationPolygons::ALGORITHM algorithm = locationPolygons->GetAlgorithm();
+	m_choiceAlgorithm->SetSelection(algorithm);
+	SetAlgorithmDescription(algorithm);
+
+	//Sets general options
+	m_sliderFillOpacity->SetValue(locationPolygons->GetFillOpacity() * 100);
+	m_txtPolygonElevation->SetValue(wxString( StringTools::ToStringW( locationPolygons->GetElevation(), 3 ).c_str() ) );
+	m_txtElevationOffset->SetValue(wxString( StringTools::ToStringW( locationPolygons->GetElevationOffset(), 3 ).c_str() ) );
+
+	//Sets sizing options
+	m_sliderPolygonInflation->SetValue(locationPolygons->GetPolygonInflation() * 10000);
+	m_txtPolygonScaling->SetValue( StringTools::ToStringW( locationPolygons->GetPolygonScaling(), 3 ).c_str() );
+
+	//Sets border options
+	m_chkShowBorders->SetValue(locationPolygons->GetBorderVisibility());
+	m_sliderBorderOpacity->SetValue(locationPolygons->GetBorderOpacity() * 100);
+	m_spinBorderThickness->SetValue(locationPolygons->GetBorderThickness());
+
+}
+
+void LocationSetPropertiesDlg::SetAlgorithmDescription(int algorithm) 
+{
+	if (algorithm == LocationPolygons::CONVEX_HULL) {
+		m_txtAlgorithmDescription->SetValue( _T( "Creates the smallest convex polygon that will enclose every active location." ) );
+	} else if (algorithm == LocationPolygons::BLANK) {
+		m_txtAlgorithmDescription->SetValue( _T( "test description" ) );
+	}
+}
+
 void LocationSetPropertiesDlg::OnRadioColourFill( wxCommandEvent& event )
 {
 	int  wxID = event.GetId();
@@ -931,8 +1025,9 @@ void LocationSetPropertiesDlg::OnColourFieldChange( wxCommandEvent& event )
 { 
 	std::vector<std::wstring> fieldValues;
 	GetSortedFieldValues(m_cboColourField->GetValue().c_str(), fieldValues);
+	std::wstring curColField = m_cboColourField->GetValue().c_str();
+	m_colourMapWidget->SetFieldValues(m_scrolledWindowColour, fieldValues, curColField, m_locationSetLayer->GetAllLocationLayers());
 
-	m_colourMapWidget->SetFieldValues(m_scrolledWindowColour, fieldValues);
 }
 
 void LocationSetPropertiesDlg::OnChoiceGridFieldToChartChange( wxCommandEvent& event )
@@ -1175,6 +1270,7 @@ void LocationSetPropertiesDlg::Apply()
 	ApplyChart();
 
 	ApplyGrid();
+	ApplyPolygons();
 
 	((GenGisFrame*)App::Inst().GetMainWindow())->FillSamplesLegend(); 
 	((GenGisFrame*)App::Inst().GetMainWindow())->FillSequenceLegend();
@@ -1209,6 +1305,7 @@ void LocationSetPropertiesDlg::ApplyLocationSetColour()
 	m_locationSetController->SetBorderColour(Colour(m_colourBorders->GetColour()));
 
 	m_locationSetController->SetLocationBorders();
+
 }
 
 void LocationSetPropertiesDlg::ApplyLocationSetShape()
@@ -1353,9 +1450,49 @@ void LocationSetPropertiesDlg::ApplyChart()
 			else if(m_cboChartDropLineStyle->GetValue() == _T("Hidden"))
 				chartView->GetDropLines()->SetStyle(VisualLine::HIDDEN);
 		}
-
-		m_locationSetLayer->GetChartSetView()->UpdateCharts(m_cboChartField->GetValue().c_str());
+		
+		if (m_locationSetController->GetSequenceMetadata().size() > 2)
+			m_locationSetLayer->GetChartSetView()->UpdateCharts(m_cboChartField->GetValue().c_str());
 	}
+}
+
+void LocationSetPropertiesDlg::ApplyPolygons()
+{
+	LocationPolygonsPtr locationPolygons = m_locationSetLayer->GetLocationPolygons();
+	locationPolygons->SetPolygonsChanged(true);
+
+	//Set visibility of polygons
+	locationPolygons->SetVisibility( m_chkDrawPolygons->GetValue() );
+
+	//Set algorithm
+	if ( m_choiceAlgorithm->GetSelection() == 0 ) {
+		locationPolygons->SetAlgorithm( LocationPolygons::CONVEX_HULL );
+	} else if (m_choiceAlgorithm->GetSelection() == 1 ) {
+		locationPolygons->SetAlgorithm( LocationPolygons::BLANK );
+	}
+
+	//Set general options
+	locationPolygons->SetFillOpacity( m_sliderFillOpacity->GetValue() / 100.0f );
+	locationPolygons->SetSmoothPolygonStatus( m_chkSmoothPolygons->GetValue() );
+	locationPolygons->SetAutoAdjustElevationStatus( m_chkAutoAdjustPolygonElevation->GetValue() );
+	locationPolygons->SetElevation( wxAtof( (m_txtPolygonElevation->GetValue()) ) );
+	locationPolygons->SetIncreasingElevationStatus( m_chkIncreasingElevation->GetValue() );
+	locationPolygons->SetElevationOffset( wxAtof( (m_txtElevationOffset->GetValue()) ) );
+
+	//Set sizing options
+	locationPolygons->SetPolygonInflation( m_sliderPolygonInflation->GetValue() / 10000.0f );
+	if (wxAtof( (m_txtPolygonScaling->GetValue()) ) < 0) {
+		locationPolygons->SetPolygonScaling( 1.00f );
+	} else {
+		locationPolygons->SetPolygonScaling( wxAtof( (m_txtPolygonScaling->GetValue()) ) );
+	}
+
+	//Set border options
+	locationPolygons->SetBorderVisibility( m_chkShowBorders->GetValue() );
+	locationPolygons->SetBorderOpacity( m_sliderBorderOpacity->GetValue() / 100.0f );
+	locationPolygons->SetBorderThickness( m_spinBorderThickness->GetValue() );
+
+
 }
 
 void LocationSetPropertiesDlg::ApplyGrid()
@@ -1716,4 +1853,84 @@ void LocationSetPropertiesDlg::OnRadioDivideType(wxCommandEvent& event)
 		m_spinBoxDivisions->SetRange( 1, 600 );	// should definitely be turned into something not hard coded... map.height / 100 ?
 
 	}
+}
+
+void LocationSetPropertiesDlg::OnChoiceAlgorithmChanged( wxCommandEvent& event )
+{
+	int algorithm = event.GetSelection();
+	m_choiceAlgorithm->SetSelection(algorithm);
+	SetAlgorithmDescription(algorithm);
+}
+
+void LocationSetPropertiesDlg::OnDrawPolygons ( wxCommandEvent& event )
+{
+	bool checked = event.IsChecked();
+
+	m_lblAlgorithm->Enable(checked);
+	m_choiceAlgorithm->Enable(checked);
+	m_lblAlgorithmDescription->Enable(checked);
+	m_txtAlgorithmDescription->Enable(checked);
+	m_lblFillOpacity->Enable(checked);
+	m_sliderFillOpacity->Enable(checked);
+	m_chkSmoothPolygons->Enable(checked);
+	m_chkAutoAdjustPolygonElevation->Enable(checked);
+	m_chkIncreasingElevation->Enable(checked);
+	m_lblPolygonInflation->Enable(checked);
+	m_sliderPolygonInflation->Enable(checked);
+	m_lblPolygonScaling->Enable(checked);
+	m_txtPolygonScaling->Enable(checked);
+	m_chkShowBorders->Enable(checked);
+
+	if (!m_chkAutoAdjustPolygonElevation->GetValue()) {
+
+		m_lblPolygonElevation->Enable(checked);
+		m_txtPolygonElevation->Enable(checked);
+
+	}
+
+	if (m_chkIncreasingElevation->GetValue()) {
+		
+		m_lblElevationOffset->Enable(checked);
+		m_txtElevationOffset->Enable(checked);
+
+	}
+
+	if (m_chkShowBorders->GetValue()){
+
+		m_lblBorderOpacity->Enable(checked);
+		m_sliderBorderOpacity->Enable(checked);
+		m_lblBorderThickness->Enable(checked);
+		m_spinBorderThickness->Enable(checked);
+
+	}
+
+}
+
+void LocationSetPropertiesDlg::OnShowBorders( wxCommandEvent& event )
+{
+	bool checked = event.IsChecked();
+
+	m_lblBorderOpacity->Enable(checked);
+	m_sliderBorderOpacity->Enable(checked);
+	m_lblBorderThickness->Enable(checked);
+	m_spinBorderThickness->Enable(checked);
+
+}
+
+void LocationSetPropertiesDlg::OnAutoAdjustPolygonElevation( wxCommandEvent& event )
+{
+	bool checked = event.IsChecked();
+
+	m_lblPolygonElevation->Enable(!checked);
+	m_txtPolygonElevation->Enable(!checked);
+
+}
+
+void LocationSetPropertiesDlg::OnIncreasingElevation( wxCommandEvent& event )
+{
+	bool checked = event.IsChecked();
+
+	m_lblElevationOffset->Enable(checked);
+	m_txtElevationOffset->Enable(checked);
+
 }

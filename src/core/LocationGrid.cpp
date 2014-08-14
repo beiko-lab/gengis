@@ -262,17 +262,22 @@ void LocationGrid::GenerateTileCoordinates()
 	}
 
 	// Add the remainder if currentX is smaller than map width
-	if ( currentX < m_mapOpenGLBoundaries.dx )
+	if ( m_divideTilesAlong == LATITUDE || m_divideTilesBy == BOX )
 	{
-		currentX += m_mapOpenGLBoundaries.dx - currentX;
-		m_xCoordinates.push_back( currentX );
+		if ( currentX < m_mapOpenGLBoundaries.dx )
+		{
+			currentX += m_mapOpenGLBoundaries.dx - currentX;
+			m_xCoordinates.push_back( currentX );
+		}
 	}
-
-	// Add the remainder if currentY is smaller than map height
-	if ( currentY < m_mapOpenGLBoundaries.dy )
+	if ( m_divideTilesAlong == LONGITUDE || m_divideTilesBy == BOX )
 	{
-		currentY += m_mapOpenGLBoundaries.dy - currentY;
-		m_yCoordinates.push_back( currentY );
+		// Add the remainder if currentY is smaller than map height
+		if ( currentY < m_mapOpenGLBoundaries.dy )
+		{
+			currentY += m_mapOpenGLBoundaries.dy - currentY;
+			m_yCoordinates.push_back( currentY );
+		}
 	}
 
 	if ( m_gridChanged )
@@ -430,11 +435,14 @@ void LocationGrid::FillTiles()
 			northing = locationLayers[i]->GetLocationController()->GetNorthing();
 		}
 
+		// Use Binary Search until FindLocationTile can be sorted out
 		Point3D locationCoord;
 		GeoCoord locationGeo( easting,northing );
-		App::Inst().GetMapController()->GetMapModel()->LatLongToGrid(locationGeo,locationCoord);
-		Point2D locPoint(locationCoord.x,locationCoord.z);
-		TileModelPtr tile = FindLocationTile(locPoint);
+//		App::Inst().GetMapController()->GetMapModel()->LatLongToGrid(locationGeo,locationCoord);
+//		Point2D locPoint(locationCoord.x,locationCoord.z);
+//		TileModelPtr tile = FindLocationTile(locPoint);
+		Point2D locPoint(easting, northing);
+		TileModelPtr tile = BinarySort(locPoint);
 		tile->AddLocationLayer(locationLayers[i]);
 	}
 	// now set tile true values for every tile
@@ -491,13 +499,243 @@ void LocationGrid::SetLocationColours()
 			}
 
 			// set alpha of colour
-			colour.SetAlpha( GetTileAlpha() );
+			if (colour == m_defaultColourOfTiles)
+			{
+				colour.SetAlpha( GetDefaultTileAlpha() );
+			}
+			else 
+			{
+				colour.SetAlpha( GetTileAlpha() );
+			}
 		}
 
 		m_tileModels.at(i)->SetColour(colour);
 	}
 }
 
+void LocationGrid::UpdateGridColours() {
+
+	//Calculates and prints max/min, used to test
+	//InitTileMinMax();
+	//Log::Inst().Error("Max: " + StringTools::ToString(m_maxFieldValue));
+	//Log::Inst().Error("Min: " + StringTools::ToString(m_minFieldValue));
+
+	InitTiles();
+	FillTiles();
+
+	std::vector<LocationLayerPtr> locationLayers = m_locationSetLayer->GetAllActiveLocationLayers();
+	if ( !locationLayers.empty()
+		&& StringTools::IsDecimalNumber(locationLayers[0]->GetLocationController()->GetData()[m_field])
+	    || m_combination == TileModel::GINI ) {
+
+		UpdateNumericColourMap( m_minFieldValue, m_maxFieldValue );
+
+	} else {
+		UpdateQualitativeColourMap();
+	}
+
+	SetLocationColours();
+
+}
+
+void LocationGrid::InitTileMinMax() {
+
+	if (!m_bVisible || m_tileFillMode == UNIFORM)
+		return;
+
+	std::vector<LocationLayerPtr> locationLayers = m_locationSetLayer->GetAllActiveLocationLayers();
+
+	if ( !locationLayers.empty()
+		&& StringTools::IsDecimalNumber(locationLayers[0]->GetLocationController()->GetData()[m_field]) 
+		&& m_combination != TileModel::GINI ) {
+
+		InitTiles();
+
+		for( uint i = 0; i < locationLayers.size() ; i++)
+		{
+			std::map<std::wstring,std::wstring> data = locationLayers[i]->GetLocationController()->GetData();
+			float easting = StringTools::ToDouble(data[StringTools::ToStringW("Longitude")]);
+			float northing = StringTools::ToDouble(data[StringTools::ToStringW("Latitude")]);
+			
+			// check if long and lat values exist. if they don't use easting and westing
+			if( easting != easting || 
+				northing != northing ||
+				!(easting<=DBL_MAX && easting >= -DBL_MAX) ||
+				!(northing<=DBL_MAX && northing >= -DBL_MAX)||
+				(!App::Inst().GetStudyController()->IsUsingProjection() &&
+				!App::Inst().GetStudyController()->IsUsingGeographic() ) )
+			{
+				easting = locationLayers[i]->GetLocationController()->GetEasting();
+				northing = locationLayers[i]->GetLocationController()->GetNorthing();
+			}
+
+			Point3D locationCoord;
+			GeoCoord locationGeo( easting,northing );
+			App::Inst().GetMapController()->GetMapModel()->LatLongToGrid(locationGeo,locationCoord);
+			Point2D locPoint(locationCoord.x,locationCoord.z);
+			TileModelPtr tile = FindLocationTile(locPoint);
+			tile->AddLocationLayer(locationLayers[i]);
+		}
+
+		m_minFieldValue = FLT_MAX;
+		m_maxFieldValue = -FLT_MAX;
+
+		if (m_combination == TileModel::SUM || m_combination == TileModel::AVERAGE || m_combination == TileModel::STDEV) {
+
+			for (uint i = 0; i < m_tileModels.size(); i++) {
+
+				std::map<std::wstring, std::wstring> data = m_tileModels[i]->GetData();
+				std::map<std::wstring, std::wstring>::const_iterator it = data.find(m_field);
+
+				if (it != data.end()) {
+
+					std::wstring field = it->first;
+					std::wstring value = it->second;
+
+					std::vector<std::wstring> seperatedValue;
+					float sumOfPositiveValues = 0;
+					float sumOfNegativeValues = 0;
+					float minValue;
+					float maxValue;
+					boost::split(seperatedValue,value,boost::is_any_of("|"),boost::token_compress_on);
+
+					// combination Methods that only handle numbers
+					//		FIND A WAY TO EXCLUDE SEQUENCE ID!!!!!!!!!!
+					if( ( StringTools::IsDecimalNumber( seperatedValue[0] ) )
+						&& ( StringTools::ToLower(field).compare(_T("cell id")) != 0 )
+						&& ( StringTools::ToLower(field).compare(_T("cellid")) != 0 ) )
+					{
+						// convert string values to double values. Non numeric already parsed out
+						for( uint i = 0; i < seperatedValue.size(); i++)
+						{	
+							double doubValue = StringTools::ToDouble(seperatedValue[i]);
+
+							if (i == 0) {
+								minValue = doubValue;
+								maxValue = doubValue;
+							} else if (doubValue < minValue) {
+								minValue = doubValue;
+							} else if (doubValue > maxValue) {
+								maxValue = doubValue;
+							}
+
+							if (m_combination == TileModel::SUM) {
+								if (doubValue < 0) {
+									sumOfNegativeValues += doubValue;
+								} else {
+									sumOfPositiveValues += doubValue;
+								}
+							}
+
+						}
+					}
+					
+					float tileMin = 0;
+					float tileMax = 0;
+
+					if (m_combination == TileModel::SUM) {
+
+						//If there aren't any positive values then the maximum sum is the maximum negative value
+						//otherwise, it's the accumulated positive values
+						if (sumOfPositiveValues == 0) {
+							tileMax = maxValue;
+						} else {
+							tileMax = sumOfPositiveValues;
+						}
+
+						//If there aren't any negative values then the minimum sum is the minimum positive value 
+						//(default colour used when no points in tile) otherwise, it's the accumulated negative values
+						if (sumOfNegativeValues == 0) {
+							tileMin = minValue;
+						} else {
+							tileMin = sumOfNegativeValues;
+						}
+
+					} else if (m_combination == TileModel::AVERAGE) {
+
+						//The average is between the min and max values
+						tileMin = minValue;
+						tileMax = maxValue;
+
+					} else if (m_combination == TileModel::STDEV) {
+
+						//Find max standard deviation by calculating stdev between min / max
+						float mean = ( minValue + maxValue ) / 2;
+						float sq_sum = minValue * minValue + maxValue * maxValue;
+						tileMax = sqrt( sq_sum / 2 - mean * mean );
+
+						//Tiles with one value are given a stdev of 0, so the min stdev is always 0
+						tileMin = 0;
+
+					}
+
+					if (tileMin < m_minFieldValue) {
+						m_minFieldValue = tileMin;
+					}
+
+					if (tileMax > m_maxFieldValue) {
+						m_maxFieldValue = tileMax;
+					}
+				}
+			}
+		}
+	} else if (m_combination == TileModel::GINI) {
+
+		m_minFieldValue = 0;
+		m_maxFieldValue = 1;
+
+	}
+}
+
+void LocationGrid::UpdateNumericColourMap(float min, float max) {
+
+	ColourMapPtr selectedColourMap = m_gridColourMap;
+
+	std::vector<std::wstring> data = GetSelectedValues(m_field);
+	StringTools::SortFieldValues(data);
+
+	std::vector<std::wstring>::const_iterator setIt;
+	for (setIt = data.begin(); setIt != data.end(); ++setIt) {
+
+		double numberValue = StringTools::ToDouble( *setIt );
+
+		Colour colour;
+		if (numberValue < min && numberValue >= floor(min))
+			min = numberValue;
+		if (numberValue > max && numberValue <= ceil(max))
+			max = numberValue;
+
+		colour = selectedColourMap->GetInterpolatedColour( numberValue, min, max );
+		m_gridColourMap->SetColour(*setIt, colour);
+
+	}
+}
+
+void LocationGrid::UpdateQualitativeColourMap() {
+
+	
+	ColourMapPtr selectedColourMap = m_gridColourMap;
+
+	std::vector<std::wstring> data = GetSelectedValues(m_field);
+	StringTools::SortFieldValues(data);
+
+	std::vector<std::wstring>::const_iterator setIt;
+	uint index = 0;
+
+	for (setIt = data.begin(); setIt != data.end(); ++setIt) {
+
+		Colour colour;
+
+		if (!m_gridColourMap->GetColour(*setIt, colour))
+			colour = m_defaultColourOfTiles;
+
+		m_gridColourMap->SetColour(*setIt, colour);
+
+	}
+
+}
+
+// SOMETHING WRONG HERE, NEED TO HUNT IT DOWN
 // find a tile based on OpenGL coordinates
 TileModelPtr LocationGrid::FindLocationTile(Point2D loc)
 {
@@ -524,14 +762,17 @@ TileModelPtr LocationGrid::FindLocationTile(Point2D loc)
 
 	int whichColumn = 0;
 	int whichRow = 0;
+
+	// if division = lat/lon just divide into m_divisions
+	// otherwise if lat -> divisions = height / degrees
+	//				lon -> divisions = widght / degrees
+	Point2D tile_divisions = Point2D( m_xCoordinates.size() -1, m_yCoordinates.size() -1);
 	// Determine appropriate tile size according to whether the user
 	// wishes to divide the latitude or longitude 'n' number of times
-	double tileSize;
-	if ( m_divideTilesAlong == LATITUDE )
-		tileSize = m_mapOpenGLBoundaries.Height() / m_divisions;
-	else if ( m_divideTilesAlong == LONGITUDE )
-		tileSize = m_mapOpenGLBoundaries.Width() / m_divisions;
-
+//	double tileSize;
+	Point2D tileSize( m_mapOpenGLBoundaries.Width() / tile_divisions.x 
+						,  m_mapOpenGLBoundaries.Height() / tile_divisions.y );
+	
 	// calculate tile row
 	if( (loc.x + m_mapOpenGLBoundaries.dx) < m_mapOffset.x )
 	{
@@ -540,9 +781,12 @@ TileModelPtr LocationGrid::FindLocationTile(Point2D loc)
 	else
 	{
 		double x = loc.x - m_mapOffset.x; 
-		float divisions = m_mapOpenGLBoundaries.Height() / tileSize ; 
-		float tileRatio =  m_mapOpenGLBoundaries.Height() / divisions;
-		whichColumn = x / tileRatio;;
+		float x_divisions = m_mapOpenGLBoundaries.Height() / tileSize.x; 
+	//	float tileRatio =  m_mapOpenGLBoundaries.Height() / x_divisions;
+		float tileRatio =  m_mapOpenGLBoundaries.Height() / (tile_divisions.y);
+	//	whichColumn = x / tileRatio;
+	//	whichColumn = x / tileSize.y;
+		whichColumn = x / tileSize.x;
 	}
 	// calculate tile column
 	if( (loc.y + m_mapOpenGLBoundaries.dy) < m_mapOffset.y )
@@ -552,26 +796,54 @@ TileModelPtr LocationGrid::FindLocationTile(Point2D loc)
 	else
 	{
 		double y = ( loc.y - m_mapOffset.y );
-		float divisions = m_mapOpenGLBoundaries.Width() / tileSize ; 
-		float tileRatio = m_mapOpenGLBoundaries.Width() / divisions;
-		whichRow = y / tileRatio ;
+		float y_divisions = m_mapOpenGLBoundaries.Width() / tileSize.y; 
+	//	float tileRatio = m_mapOpenGLBoundaries.Width() / y_divisions;
+		float tileRatio = m_mapOpenGLBoundaries.Width() / (tile_divisions.x);
+	//	whichRow = y / tileRatio ;
+	//	whichRow = y / tileSize.x ;
+		whichRow = y / tileSize.y ;
 	}
 	uint divisionIndex = 0;
-	if ( m_divideTilesAlong == LATITUDE )
-	{
-		float divisions = floor( m_mapOpenGLBoundaries.Width() / tileSize ); 
-		divisionIndex = whichRow * (divisions) + whichRow + whichColumn;
-	}
-	else if ( m_divideTilesAlong == LONGITUDE )
-	{
-		float divisions = floor( m_mapOpenGLBoundaries.Width() / tileSize ); 
-		divisionIndex = whichRow * divisions + whichColumn;
-	}
+
+	divisionIndex = whichRow * (tile_divisions.x) + whichColumn;
 
 	TileModelPtr tile = m_tileModels[divisionIndex];
 
 	return tile;
 }
+
+// Binary Sort algorithm used to find which tile a location should be in
+TileModelPtr LocationGrid::BinarySort(Point2D loc)
+{
+	int imid = m_tileModels.size() / 2;
+	int imin = 0;
+	int imax = m_tileModels.size() - 1;
+	TileModelPtr tile;
+	while( imax >= imin)
+	{
+		imid = (imin + imax) / 2;
+		tile = m_tileModels[imid];
+		Point2D topLeft = tile->GetTopLeft();
+		Point2D botRight = tile->GetBottomRight();
+		if( ( topLeft.x <= loc.x && loc.x <= botRight.x) && ( botRight.y <= loc.y && loc.y <= topLeft.y ) )
+		{
+			return tile;
+		}
+		else if( loc.x < topLeft.x && loc.y > botRight.y )
+			imax = imid - 1;
+		else if ( loc.x > topLeft.x && loc.y > topLeft.y )
+			imax = imid - 1;
+		else if (loc.x < botRight.x && loc.y < topLeft.y )
+			imin = imid + 1;
+		else if (loc.x > botRight.x && loc.y < topLeft.y )
+			imin = imid + 1;
+		
+	}
+	// if this happens the wrong tile has been returned
+	Log::Inst().Warning("(Error) Could not find correct tile for location.");
+	return tile;
+}
+
 
 void LocationGrid::SetOriginOffset( std::wstring selectedName )
 {

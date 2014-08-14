@@ -126,6 +126,17 @@ LocationPropertiesLayout::LocationPropertiesLayout( wxWindow* parent, wxWindowID
 	
 	m_sizerSymbolProperties->Add( m_sizerSymbolColour, 1, wxEXPAND, 5 );
 	
+	wxBoxSizer* bSizer15;
+	bSizer15 = new wxBoxSizer( wxHORIZONTAL );
+	
+	
+	bSizer15->Add( 0, 0, 1, wxEXPAND, 5 );
+	
+	m_chkLocationVisible = new wxCheckBox( m_pnlSymbology, wxID_ANY, wxT("Show Location"), wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer15->Add( m_chkLocationVisible, 0, wxALL, 5 );
+	
+	m_sizerSymbolProperties->Add( bSizer15, 1, wxEXPAND, 5 );
+	
 	m_sizerSymbology->Add( m_sizerSymbolProperties, 0, wxALL|wxEXPAND, 5 );
 	
 	wxStaticBoxSizer* m_sizerLabel;
@@ -178,7 +189,7 @@ LocationPropertiesLayout::LocationPropertiesLayout( wxWindow* parent, wxWindowID
 	
 	m_sizerLabelColour->Add( 0, 0, 1, wxEXPAND, 5 );
 	
-	m_chkLabelVisible = new wxCheckBox( m_pnlSymbology, wxID_ANY, wxT("Show"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_chkLabelVisible = new wxCheckBox( m_pnlSymbology, wxID_ANY, wxT("Show Label"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_sizerLabelColour->Add( m_chkLabelVisible, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
 	
 	m_sizerLabel->Add( m_sizerLabelColour, 0, wxEXPAND, 5 );

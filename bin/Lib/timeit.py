@@ -9,7 +9,7 @@ the Python Cookbook, published by O'Reilly.
 Library usage: see the Timer class.
 
 Command line usage:
-    python timeit.py [-n N] [-r N] [-s S] [-t] [-c] [-h] [statement]
+    python timeit.py [-n N] [-r N] [-s S] [-t] [-c] [-h] [--] [statement]
 
 Options:
   -n/--number N: how many times to execute 'statement' (default: see below)
@@ -19,6 +19,7 @@ Options:
   -c/--clock: use time.clock() (default on Windows)
   -v/--verbose: print raw timing results; repeat for more digits precision
   -h/--help: print this usage message and exit
+  --: separate options from statement, use when statement starts with -
   statement: statement to be timed (default 'pass')
 
 A multi-line statement may be given by specifying each line as a
@@ -92,11 +93,11 @@ def reindent(src, indent):
 
 def _template_func(setup, func):
     """Create a timer function. Used if the "statement" is a callable."""
-    def inner(_it, _timer):
+    def inner(_it, _timer, _func=func):
         setup()
         _t0 = _timer()
         for _i in _it:
-            func()
+            _func()
         _t1 = _timer()
         return _t1 - _t0
     return inner
@@ -126,7 +127,7 @@ class Timer:
             if isinstance(setup, basestring):
                 setup = reindent(setup, 4)
                 src = template % {'stmt': stmt, 'setup': setup}
-            elif callable(setup):
+            elif hasattr(setup, '__call__'):
                 src = template % {'stmt': stmt, 'setup': '_setup()'}
                 ns['_setup'] = setup
             else:
@@ -135,13 +136,13 @@ class Timer:
             code = compile(src, dummy_src_name, "exec")
             exec code in globals(), ns
             self.inner = ns["inner"]
-        elif callable(stmt):
+        elif hasattr(stmt, '__call__'):
             self.src = None
             if isinstance(setup, basestring):
                 _setup = setup
                 def setup():
                     exec _setup in globals(), ns
-            elif not callable(setup):
+            elif not hasattr(setup, '__call__'):
                 raise ValueError("setup is neither a string nor callable")
             self.inner = _template_func(setup, stmt)
         else:
@@ -190,9 +191,11 @@ class Timer:
             it = [None] * number
         gcold = gc.isenabled()
         gc.disable()
-        timing = self.inner(it, self.timer)
-        if gcold:
-            gc.enable()
+        try:
+            timing = self.inner(it, self.timer)
+        finally:
+            if gcold:
+                gc.enable()
         return timing
 
     def repeat(self, repeat=default_repeat, number=default_number):

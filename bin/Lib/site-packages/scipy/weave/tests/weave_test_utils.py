@@ -1,4 +1,7 @@
+from __future__ import absolute_import, print_function
+
 import os
+
 
 def remove_whitespace(in_str):
     out = in_str.replace(" ","")
@@ -14,6 +17,7 @@ from scipy.weave import catalog
 
 import glob
 
+
 def temp_catalog_files(prefix=''):
     # might need to add some more platform specific catalog file
     # suffixes to remove.  The .pag was recently added for SunOS
@@ -23,17 +27,19 @@ def temp_catalog_files(prefix=''):
 
 import tempfile
 
+
 def clear_temp_catalog():
     """ Remove any catalog from the temp dir
     """
     global backup_dir
-    backup_dir =tempfile.mktemp()
+    backup_dir = tempfile.mktemp()
     os.mkdir(backup_dir)
     for file in temp_catalog_files():
         move_file(file,backup_dir)
-        #d,f = os.path.split(file)
-        #backup = os.path.join(backup_dir,f)
-        #os.rename(file,backup)
+        # d,f = os.path.split(file)
+        # backup = os.path.join(backup_dir,f)
+        # os.rename(file,backup)
+
 
 def restore_temp_catalog():
     """ Remove any catalog from the temp dir
@@ -46,10 +52,11 @@ def restore_temp_catalog():
         dst_file = os.path.join(cat_dir, f)
         if os.path.exists(dst_file):
             os.remove(dst_file)
-        #os.rename(file,dst_file)
+        # os.rename(file,dst_file)
         move_file(file,dst_file)
     os.rmdir(backup_dir)
     backup_dir = None
+
 
 def empty_temp_dir():
     """ Create a sub directory in the temp directory for use in tests
@@ -57,11 +64,12 @@ def empty_temp_dir():
     import tempfile
     d = catalog.default_dir()
     for i in range(10000):
-        new_d = os.path.join(d,tempfile.gettempprefix()[1:-1]+`i`)
+        new_d = os.path.join(d,tempfile.gettempprefix()[1:-1]+repr(i))
         if not os.path.exists(new_d):
             os.mkdir(new_d)
             break
     return new_d
+
 
 def cleanup_temp_dir(d):
     """ Remove a directory created by empty_temp_dir
@@ -75,7 +83,7 @@ def cleanup_temp_dir(d):
             else:
                 os.remove(i)
         except OSError:
-            pass # failed to remove file for whatever reason
+            pass  # failed to remove file for whatever reason
                  # (maybe it is a DLL Python is currently using)
     try:
         os.rmdir(d)
@@ -87,7 +95,9 @@ def cleanup_temp_dir(d):
 # a working version is available.
 from distutils.errors import DistutilsFileError
 import distutils.file_util
-def move_file (src, dst,
+
+
+def move_file(src, dst,
                verbose=0,
                dry_run=0):
 
@@ -102,7 +112,7 @@ def move_file (src, dst,
     import errno
 
     if verbose:
-        print "moving %s -> %s" % (src, dst)
+        print("moving %s -> %s" % (src, dst))
 
     if dry_run:
         return dst
@@ -123,7 +133,8 @@ def move_file (src, dst,
     copy_it = 0
     try:
         os.rename(src, dst)
-    except os.error, (num, msg):
+    except os.error as xxx_todo_changeme1:
+        (num, msg) = xxx_todo_changeme1.args
         if num == errno.EXDEV:
             copy_it = 1
         else:
@@ -134,7 +145,8 @@ def move_file (src, dst,
         distutils.file_util.copy_file(src, dst)
         try:
             os.unlink(src)
-        except os.error, (num, msg):
+        except os.error as xxx_todo_changeme:
+            (num, msg) = xxx_todo_changeme.args
             try:
                 os.unlink(dst)
             except os.error:

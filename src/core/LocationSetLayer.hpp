@@ -147,6 +147,13 @@ namespace GenGIS
 			return m_locationGrid;
 		}
 
+		LocationPolygonsPtr GetLocationPolygons() const
+		{
+			return m_locationPolygons;
+		}
+
+		void UpdateGridAndPolygons();
+
 		/** 
 		* @brief Set active state of layer.
 		* @param state Active state of layer.
@@ -190,6 +197,9 @@ namespace GenGIS
 
 		/** Location set controller for setting visual properties to entire set of locations. */
 		LocationSetControllerPtr m_locationSetController;
+
+		/** Location polygons associated with this location set */
+		LocationPolygonsPtr m_locationPolygons;
 	};
 }
 

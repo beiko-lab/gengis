@@ -208,6 +208,9 @@ namespace GenGIS
 		/** Get location layers. */
 		std::vector<LocationLayerPtr> GetLocationLayers() const { return m_locations; }
 
+		/** Get location set layers. */
+		std::vector<LocationSetLayerPtr> GetLocationSetLayers() const { return m_locationSets; }
+
 		/** Get location controller with the given id. */
 		LocationControllerPtr GetLocationController(const std::wstring& id) const;
 
@@ -262,7 +265,7 @@ namespace GenGIS
 		void OnClick( wxMouseEvent& event );
 
 		/** Handle the layer tree left float click event. */
-		void OnLeftDClick( wxMouseEvent& event );
+		void OnLeftDClick( wxMouseEvent& event, LayoutLinePtr m_layoutLine );
 
 		/** Remove layer from layer tree. */
 		void OnLayerRemove( wxCommandEvent& event );
@@ -353,6 +356,7 @@ namespace GenGIS
 		void SetSelection( LayerPtr layer );
 
 		/** Update active state of all layers. */
+		void UpdatePythonState();
 		void UpdateActiveState();
 		void UpdateActiveState(wxTreeItemId subtreeId, wxTreeItemIdValue& cookie);
 

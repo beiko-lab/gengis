@@ -88,6 +88,9 @@ namespace GenGIS
 		/** Initialize alignment controls on Grid page. */
 		void InitLocationGridAlignment();
 
+		/** Initialize controls on Polygons page */
+		void InitLocationPolygons();
+
 		/** Initialize controls on MetaData page. */
 		void InitMetadata();
 
@@ -117,6 +120,9 @@ namespace GenGIS
 
 		/** Apply parameter values of controls on Grid page. */
 		void ApplyGrid();
+
+		/** Apply parameter values of controls on Polygons page. */
+		void ApplyPolygons();
 
 		/** User is requesting a new uniform colour for location sites. */
 		void OnUniformColourPicker( wxCommandEvent& event );
@@ -247,6 +253,23 @@ namespace GenGIS
 
 		/** Change how to divide tiles. */
 		void OnRadioDivideType(wxCommandEvent& event);
+
+		/** Updates description value when algorithm is changed */
+		void OnChoiceAlgorithmChanged( wxCommandEvent& event );
+
+		/** Holds descriptions to update with */
+		void SetAlgorithmDescription(int algorithm);
+
+		/** Enable/Disable polygon options depending on whether or not they should be drawn */
+		void OnDrawPolygons( wxCommandEvent& event );
+
+		/** Enable/Disable border options depending on whether or not they should be drawn */
+		void OnShowBorders( wxCommandEvent& event );
+
+		/** Enable/Disable elevation option depending on whether or not the elevation is auto adjusted */
+		void OnAutoAdjustPolygonElevation( wxCommandEvent& event );
+
+		void OnIncreasingElevation( wxCommandEvent& event );
 
 		void OnHelp( wxCommandEvent& event )
 		{

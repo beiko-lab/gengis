@@ -2,7 +2,7 @@
 # Purpose:      Presenter part
 # Author:       Roman Rolinsky <rolinsky@femagsoft.com>
 # Created:      07.06.2007
-# RCS-ID:       $Id: presenter.py 54812 2008-07-29 13:39:00Z ROL $
+# RCS-ID:       $Id: presenter.py 64627 2010-06-18 18:17:45Z ROL $
 
 import os,tempfile,shutil
 from xml.parsers import expat
@@ -80,7 +80,6 @@ class _Presenter:
     def setModified(self, state=True, setDirty=True):
         '''Set global modified state.'''
         TRACE('setModified %s %s', state, setDirty)
-#        import pdb;pdb.set_trace()
         self.modified = state
         # Set applied flag
         if not state: self.applied = True
@@ -136,7 +135,8 @@ class _Presenter:
             self.panels = view.panel.SetData(self.container, self.comp, Model.mainNode)
         else:
             node = view.tree.GetPyData(item)
-            TRACE('setData: %s', node.getAttribute('class'))
+            if node.nodeType != node.COMMENT_NODE:
+                TRACE('setData: %s', node.getAttribute('class'))
             self.comp = Manager.getNodeComp(node)
             parentItem = view.tree.GetItemParent(item)
             parentNode = view.tree.GetPyData(parentItem)
@@ -154,7 +154,8 @@ class _Presenter:
 
     def highlight(self, item):
         TRACE('highlight')
-        if view.testWin.IsDirty():
+        if view.testWin.IsDirty() or item == view.tree.root or \
+            view.tree.GetPyData(item).nodeType == Model.dom.COMMENT_NODE:
             view.testWin.RemoveHighlight()
             return
         try:
@@ -242,9 +243,17 @@ class _Presenter:
         if child is None:
             child = Model.createRefNode(ref)
         refNode = Model.findResource(ref)
-        if not refNode: return None
-        comp = Manager.getNodeComp(refNode)
+        if refNode: 
+            comp = Manager.getNodeComp(refNode)
+        else:
+            comp = Manager.getNodeComp(child)
         self.create(comp, child)
+
+    def createComment(self):
+        '''Create comment node.'''
+        node = Model.createCommentNode()
+        comp = Manager.getNodeComp(node)
+        self.create(comp, node)
 
     def replace(self, comp, node=None):
         '''Replace DOM node by new or passed node. Return new item.'''
@@ -290,14 +299,19 @@ class _Presenter:
     def update(self, item):
         '''Update DOM with new attribute values. Update tree if necessary.'''
         node = view.tree.GetPyData(item)
-        subclass = node.getAttribute('subclass')
+        isComment = node.nodeType == node.COMMENT_NODE
+        if isComment:
+            subclass = None
+        else:
+            subclass = node.getAttribute('subclass')
         # Update (sub)class if needed
         cls = view.panel.textClass.GetValue()
         if not subclass:
-            if cls != self.comp.klass:
+            if not isComment and cls != self.comp.klass:
                 if node.tagName == 'object_ref' and not cls:
                     if node.hasAttribute('class'):
                         node.removeAttribute('class')
+                        TRACE('removed "class" tag')
                 else:
                     TRACE('update class: %s', cls)
                     node.setAttribute('class', cls)
@@ -340,7 +354,7 @@ class _Presenter:
                             comp = self.comp
                         comp.addAttribute(panel.node, a, value)
                     except:
-                        logging.exception('addAttribute error: %s %s', a, value)
+                        logger.exception('addAttribute error: %s %s', a, value)
         if item != view.tree.root:
             view.tree.SetItemImage(item, self.comp.getTreeImageId(node))
             view.tree.SetItemText(item, self.comp.getTreeText(node))
@@ -406,11 +420,18 @@ class _Presenter:
         if not self.applied:
             self.update(item)
         node = view.tree.GetPyData(item)
+        if self.container.requireImplicit(node):
+            implicit = node.parentNode
+        else:
+            implicit = None
         if wx.TheClipboard.Open():
             if node.nodeType == node.ELEMENT_NODE:
                 data = wx.CustomDataObject('XRCED_elem')
                 s = node.toxml(encoding=expat.native_encoding)
+                # Replace by a pair
+                if implicit: s = [s, implicit.toxml(encoding=expat.native_encoding)]
             else:
+                # Non-element nodes are normally comments
                 data = wx.CustomDataObject('XRCED_node')
                 s = node.data
             data.SetData(cPickle.dumps(s))
@@ -456,12 +477,16 @@ class _Presenter:
 
         # XML representation of element or node value string
         data = cPickle.loads(data.GetData()) 
+        implicit = None
         if success:
-            node = Model.parseString(data)
-            comp = Manager.getNodeComp(node)
+            if type(data) is list:
+                node = Model.parseString(data[0])
+                implicit = Model.parseString(data[1])
+            else:
+                node = Model.parseString(data)
         else:
             node = Model.dom.createComment(data)
-            raise NotImplementedError
+        comp = Manager.getNodeComp(node)
 
         # Check compatibility
         if not self.checkCompatibility(comp):
@@ -473,6 +498,14 @@ class _Presenter:
             self.update(item)
         
         item = self.create(comp, node)
+        if implicit:   # copy parameters for implicit node if possible
+            parentNode = view.tree.GetPyData(view.tree.GetItemParent(item))
+            parentComp = Manager.getNodeComp(parentNode)
+            if parentComp.requireImplicit(node) and \
+                    parentComp.implicitKlass == implicit.getAttribute('class'):
+                parentComp.copyImplicitAttributes(implicit, node.parentNode, parentComp)
+            implicit.unlink()
+
         # Add children
         for n in filter(is_object, node.childNodes):
             view.tree.AddNode(item, comp.getTreeNode(n))
@@ -485,7 +518,7 @@ class _Presenter:
         node = self.container.getTreeOrImplicitNode(treeNode)
         parent = node.parentNode
         prevNode = node.previousSibling
-        while prevNode.nodeType != node.ELEMENT_NODE:
+        while not is_object(prevNode):
             prevNode = prevNode.previousSibling
         parent.removeChild(node)
         parent.insertBefore(node, prevNode)
@@ -502,10 +535,10 @@ class _Presenter:
         node = self.container.getTreeOrImplicitNode(treeNode)
         parent = node.parentNode
         nextNode = node.nextSibling
-        while nextNode.nodeType != node.ELEMENT_NODE:
+        while not is_object(nextNode):
             nextNode = nextNode.nextSibling
         nextNode = nextNode.nextSibling
-        while nextNode and nextNode.nodeType != node.ELEMENT_NODE:
+        while nextNode and not is_object(nextNode):
             nextNode = nextNode.nextSibling
         parent.removeChild(node)
         parent.insertBefore(node, nextNode)
@@ -577,6 +610,17 @@ class _Presenter:
         TRACE('createTestWin')
         # Create a window with this resource
         node = view.tree.GetPyData(item)
+        # Execute "pragma" comment node
+        if node.nodeType == node.COMMENT_NODE:
+            if node.data and node.data[0] == '%' and g.conf.allowExec != 'no':
+                say = wx.NO
+                if g.conf.allowExec == 'ask' and Model.allowExec is None:
+                    say = wx.MessageBox('Execute comment directive?', 'Warning', 
+                                        wx.ICON_EXCLAMATION | wx.YES_NO)
+                if g.conf.allowExec == 'yes' or say == wx.YES:
+                    code = node.data[1:] # skip '%'
+                    view.tree.ExecCode(code)
+            return
         # Close old window, remember where it was
         comp = Manager.getNodeComp(node)
         # Create memory XML file
@@ -598,6 +642,7 @@ class _Presenter:
         xrc.XmlResource.Set(res)        # set as global
         # Init other handlers
         Manager.addXmlHandlers(res)
+        Manager.preload(res)
         # Same module list
         res.Load('memory:test.xrc')
         object = None
@@ -617,6 +662,7 @@ class _Presenter:
                 pass
             except NotImplementedError:
                 wx.LogError('Test window not implemented for %s' % node.getAttribute('class'))
+                logger.exception('error creating test view')
             except:
                 logger.exception('error creating test view')
                 wx.LogError('Error creating test view')
@@ -640,8 +686,7 @@ class _Presenter:
         '''Refresh test window after some change.'''
         TRACE('refreshTestWin')
         if not view.testWin.IsDirty(): return
-        if not self.applied:
-            self.update(self.item)
+        if not self.applied: self.update(self.item)
         # Dumb refresh
         self.createTestWin(view.testWin.item)
         self.highlight(self.item)

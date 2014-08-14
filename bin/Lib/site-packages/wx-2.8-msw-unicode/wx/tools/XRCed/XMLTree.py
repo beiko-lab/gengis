@@ -2,7 +2,7 @@
 # Purpose:      XMLTree class
 # Author:       Roman Rolinsky <rolinsky@femagsoft.com>
 # Created:      31.05.2007
-# RCS-ID:       $Id: XMLTree.py 54812 2008-07-29 13:39:00Z ROL $
+# RCS-ID:       $Id: XMLTree.py 64627 2010-06-18 18:17:45Z ROL $
 
 from globals import *
 from model import Model
@@ -14,6 +14,8 @@ class XMLTree(wx.TreeCtrl):
         style = wx.TR_HAS_BUTTONS | wx.TR_MULTIPLE | \
                 wx.TR_HIDE_ROOT | wx.TR_LINES_AT_ROOT
         wx.TreeCtrl.__init__(self, parent, style=style)
+
+        self.locals = {}        # namespace for comment directives
 
         # Color scheme
         self.SetBackgroundColour(wx.Colour(222, 248, 222))
@@ -73,7 +75,7 @@ class XMLTree(wx.TreeCtrl):
             attributes = []
             isContainer = False
             for n in node.childNodes:
-                if is_object(n):
+                if is_element(n):
                     isContainer = True
                 elif n.nodeType == node.ELEMENT_NODE and not n.tagName in attributes:
                     attributes.append(n.tagName)
@@ -91,14 +93,35 @@ class XMLTree(wx.TreeCtrl):
         if comp.isContainer():
             for n in filter(is_object, node.childNodes):
                 self.AddNode(item, comp.getTreeNode(n))
+        elif node.nodeType == node.COMMENT_NODE:
+            if node.data and node.data[0] == '%' and g.conf.allowExec != 'no':
+                if g.conf.allowExec == 'ask' and Model.allowExec is None:
+                    say = wx.MessageBox('''This file contains executable comment directives. \
+Allow to execute?''', 'Warning', wx.ICON_EXCLAMATION | wx.YES_NO)
+                    if say == wx.YES:
+                        Model.allowExec = True
+                    else:
+                        Model.allowExec = False
+                if g.conf.allowExec == 'yes' or Model.allowExec:
+                    code = node.data[1:] # skip '%'
+                    self.ExecCode(code)
+
+    # Maybe this should be moved to presenter?
+    def ExecCode(self, code):
+        logger.debug('executing comment pragma: \n%s', code)
+        try:
+            exec code in globals(), self.locals
+        except:
+            wx.LogError('exec error: "%s"' % code)
+            logger.exception("execution of in-line comment failed")
 
     def SetItemStyle(self, item, node):
         # Different color for comments and references
-        if node.tagName == 'object_ref':
+        if node.nodeType == node.COMMENT_NODE:
+            self.SetItemTextColour(item, self.COLOUR_COMMENT)
+            self.SetItemFont(item, self.fontComment)
+        elif node.tagName == 'object_ref':
             self.SetItemTextColour(item, self.COLOUR_REF)
-#        if className == 'comment':
-#            self.SetItemTextColour(item, self.COLOUR_COMMENT)
-#            self.SetItemFont(item, self.fontComment)
 #        elif treeObj.hasStyle and treeObj.params.get('hidden', False):
 #            self.SetItemTextColour(item, self.COLOUR_HIDDEN)        
 
@@ -107,7 +130,7 @@ class XMLTree(wx.TreeCtrl):
         self.Clear()
         # Update root item
         self.SetPyData(self.root, Model.mainNode)
-        # (first node is test node)
+        # (first node is test node, skip it)
         for n in filter(is_object, Model.mainNode.childNodes[1:]):
             self.AddNode(self.root, n)
 
@@ -179,6 +202,16 @@ class XMLTree(wx.TreeCtrl):
             for k in range(i): item = self.GetNextSibling(item)
         return item
 
+    # Return item child index in parent (skip non-window items)
+    def ItemIndexWin(self, item):
+        n = 0                           # index of sibling
+        prev = self.GetPrevSibling(item)
+        while prev.IsOk():
+            if self.GetPyData(prev).nodeType != Model.dom.COMMENT_NODE: 
+                n += 1
+            prev = self.GetPrevSibling(prev)
+        return n
+
     # Get expanded state of all items
     def GetFullState(self, item=None):
         if not item: item = self.root
@@ -209,7 +242,7 @@ class XMLTree(wx.TreeCtrl):
     # Find item with given data (node)
     def Find(self, item, name):
         node = self.GetPyData(item)
-        if is_object(node) and node.getAttribute('name') == name:
+        if is_element(node) and node.getAttribute('name') == name:
             return item
         item,cookie = self.GetFirstChild(item)
         while item:
