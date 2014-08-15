@@ -54,6 +54,9 @@ namespace GenGIS
 		/** Get position of implicit root. */
 		Point3D GetImplicitRoot() const { return m_implicitRoot; }
 
+		/** Distribute leaf nodes along the layout line accounting for decreased space between collapsed nodes*/
+		void DistributeLeafNodes( std::vector<NodeGeoTree*> &leafNodes );
+
 	protected:
 		/** Scale, rotate, and translate a canonical layout. */
 		void TransformTreeLayout(Tree<NodeGeoTree>::Ptr tree, LayoutLinePtr layoutLine, float height, bool bHorizontal);

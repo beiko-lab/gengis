@@ -72,6 +72,8 @@ namespace GenGIS
 		/** Inequality operator. */
 		bool operator!=(const Colour &other) const;
 
+		bool operator<(const Colour &other) const;
+
 		/** Set red colour channel (0 to 1). */
 		void SetRed( float r ) { m_red = r; }
 
@@ -132,6 +134,12 @@ namespace GenGIS
 		/** Interpolate colour. */
 		static Colour Interpolate(ColourPtr colour1, ColourPtr colour2, float curValue, float startValue, float endValue); 
 
+		/** Set an ordering number for the colour */
+		void SetOrderingNumber(int number) { m_orderingNumber = number; }
+
+		/** Get the ordering number for the colour */
+		int GetOrderingNumber() const { return m_orderingNumber; }
+
 	private:
 		/** Serialization. */
 		friend class boost::serialization::access;
@@ -149,6 +157,9 @@ namespace GenGIS
 
 		/** Alpha channel. */
 		float m_alpha;
+
+		/** Ordering number that can be used to give colours a specific order */
+		int m_orderingNumber;
 	};
 
 }

@@ -51,6 +51,7 @@
 #include "../utils/StringTools.hpp"
 #include "../utils/Geometry.hpp"
 #include "../utils/Font.hpp"
+#include "../utils/UniqueId.hpp"
 
 #include "../gui/TreePropertiesDlg.hpp"
 #include "../gui/ProgressDlg.hpp"
@@ -119,7 +120,8 @@ GeoTreeView::GeoTreeView(Tree<NodeGeoTree>::Ptr tree, boost::shared_ptr<Layer> m
 	m_branchBorderSize(1.0),
 	m_branchBorderColour(Colour(0,0,0)),
 	m_treeColourStyle(COLOUR_SINGLE),
-	m_selectedNode(NULL)
+	m_selectedNode(NULL),
+	m_savedCollapsedParentsId()
 {
 	m_geographyLine = VisualLine(App::Inst().GetLayoutObjProp()->GetLayoutLineColour(),
 		App::Inst().GetLayoutObjProp()->GetLayoutLineThickness(),
@@ -140,18 +142,84 @@ GeoTreeView::GeoTreeView(Tree<NodeGeoTree>::Ptr tree, boost::shared_ptr<Layer> m
 	m_suppressMessage = false;
 }
 
+GeoTreeView::GeoTreeView( const GeoTreeView &rhs ) :
+	m_tree(),
+	m_mapLayer( rhs.GetMapLayer() ),
+	m_originalTree(),
+	m_layout( rhs.GetLayout() ),
+	m_orientation( rhs.GetOrientation() ),
+	m_bShowLabels( rhs.GetLabelVisibility() ),
+	m_markerQuadric( gluNewQuadric() ),
+	m_height( rhs.GetHeight() ),
+	m_colour( rhs.GetColour() ),
+	m_lineThickness( rhs.GetLineThickness() ),
+	m_bOptimizeTopology( rhs.GetOptimizeTopology() ),
+	m_fontColour( rhs.GetFontColour() ),
+	m_fontSize( rhs.GetFontSize() ),
+	m_leafNodeSize( rhs.GetLeafNodeSize() ),
+	m_internalNodeSize( rhs.GetInternalNodeSize() ),
+	m_activeView( NO_ACTIVE_VIEW ),
+	m_bActiveViewMoved( false ),
+	m_linearLayout( new GeoTreeLinearLayout() ),
+	m_ellipticalLayout( new GeoTreeEllipticalLayout() ),
+	m_bSpreadGeoPts( rhs.GetSpreadGeographyPts() ),
+	m_bSelectedFirstGeoLineCP( false ),
+	m_geographyLineOffsetPercentage( rhs.GetGeographyLineOffsetPercentage() ),
+	m_locationLines( rhs.GetLocationLinesColour() ),							
+	m_correlationLines( rhs.GetCorrelationLinesColour() ),						
+	m_phylogramDropLines( Colour(230, 171, 2), 1.0f, VisualLine::SHORT_DASH ),  //
+	m_geoPts( rhs.GetGeoPtsColour() ),											
+	m_bReverseOrderGeographicPts( rhs.GetReverseOrderGeographicPts() ),
+	m_leafNodeBorderSize( rhs.GetLeafNodeBorderSize() ),
+	m_leafNodeBorderColour( rhs.GetLeafNodeBorderColour() ),
+	m_internalNodeBorderSize( rhs.GetInternalNodeBorderSize() ),
+	m_internalNodeBorderColour( rhs.GetInternalNodeBorderColour() ),
+	m_geoPtsBorderSize( rhs.GetGeoPtsBorderSize() ), 
+	m_geoPtsBorderColour( rhs.GetGeoPtsBorderColour() ),
+	m_locationLineBorderSize( rhs.GetLocationLineBorderSize() ),
+	m_locationLineBorderColour( rhs.GetLocationLineBorderColour() ),
+	m_correlationLineBorderSize( rhs.GetCorrelationLineBorderSize() ),
+	m_correlationLineBorderColour( rhs.GetCorrelationLineBorderColour() ),
+	m_branchBorderSize( rhs.GetBranchBorderSize() ),
+	m_branchBorderColour( rhs.GetBranchBorderColour() ),
+	m_treeColourStyle( rhs.GetTreeColourStyle() ),
+	m_selectedNode( NULL ),
+	m_savedCollapsedParentsId(),
+	m_layoutLine( new LayoutLine() )
+{
+	m_tree = rhs.GetTreeLayer()->Clone();
+	m_originalTree = rhs.GetTreeLayer()->CloneUncollapsed();
+
+	m_geographyLine = VisualLine(App::Inst().GetLayoutObjProp()->GetLayoutLineColour(),
+							   	 App::Inst().GetLayoutObjProp()->GetLayoutLineThickness(),
+								 App::Inst().GetLayoutObjProp()->GetLayoutLineStyle());
+
+	m_layoutLine->SetStartControlPoint( rhs.GetLayoutLine()->GetStartPt() );
+	m_layoutLine->SetEndControlPoint( rhs.GetLayoutLine()->GetEndPt() );
+	m_layoutLine->SetStage( LayoutLine::COMPLETE );
+
+	m_locationLines.SetLineStyle( rhs.GetLocationLinesStyle() );
+	m_correlationLines.SetLineStyle( rhs.GetCorrelationLinesStyle() );
+
+	m_3dInternalDropLine.SetLineStyle( rhs.Get3dInternalDropLineStyle().GetLineStyle() );
+	m_3dInternalDropLine.SetColour( rhs.Get3dInternalDropLineStyle().GetColour() );
+
+	m_3dLeafDropLine.SetLineStyle( rhs.Get3dLeafDropLineStyle().GetLineStyle() );
+	m_3dLeafDropLine.SetColour( rhs.Get3dLeafDropLineStyle().GetColour() );
+}
+
 template<class Archive>
 void GeoTreeView::serialize(Archive & ar, const unsigned int file_version)
 {
 	ar & m_originalTree;                  // Tree<NodeGeoTree>::Ptr
 	ar & m_treeLayerId;                   // uint
-	//ar & m_sigNodeUpdate;                 // SigNodeUpdate
+	//ar & m_sigNodeUpdate;               // SigNodeUpdate
 	ar & m_layout;                        // LAYOUT
 	ar & m_orientation;                   // ORIENTATION
 	ar & m_layoutLine;                    // LayoutLinePtr
 	ar & m_layoutEllipse;                 // LayoutEllipsePtr
 	ar & m_geoAxisPolyline;               // GeoAxisPolylinePtr
-	//ar & m_markerQuadric;                 // GLUquadricObj*
+	//ar & m_markerQuadric;               // GLUquadricObj*
 	ar & m_locationLines;                 // VisualLines
 	ar & m_correlationLines;              // VisualLines
 	ar & m_geographyLine;                 // VisualLine
@@ -195,6 +263,7 @@ void GeoTreeView::serialize(Archive & ar, const unsigned int file_version)
 	ar & m_branchBorderColour;            // Colour
 	ar & m_treeColourStyle;               // TREE_COLOUR_STYLE
 	ar & m_linearAxesResults;             // std::vector<GeoTreeOptLeafOrder::LinearResults>
+	ar & m_savedCollapsedParentsId;		  // std::vector<unsigned int>
 
 	if ( Archive::is_loading::value )
 	{
@@ -495,9 +564,22 @@ void GeoTreeView::RenderTree()
 
 			// render node
 			if(m_layout == SLANTED_CLADOGRAM_3D || m_layout == CLADOGRAM_3D || m_layout == SLANTED_PHYLOGRAM_3D)
+			{
 				RenderNode3D(curCoord, nodeColour, curNode->IsLeaf(), curNode->GetSelected());
+			}
 			else
-				RenderNode2D(curCoord, nodeColour, curNode->IsLeaf(), curNode->GetSelected());
+			{
+				//Do not render collapsed nodes unless it's a phylogram
+				if (!curNode->IsCollapsed() || m_layout == PHYLOGRAM_2D)
+				{
+					RenderNode2D(curCoord, nodeColour, curNode->IsLeaf(), curNode->GetSelected());
+				}
+				
+				if (curNode->IsCollapsedParent() && m_layout != PHYLOGRAM_2D)
+				{
+					RenderCollapsedSubtree(curNode);
+				}
+			}
 
 			// get screen coordinates of grid point	
 			NodeGeoTree* parentNode = curNode->GetParent();
@@ -513,12 +595,12 @@ void GeoTreeView::RenderTree()
 				RenderLine3D(Line3D(parentCoord, cornerPt), nodeColour, GetLineThickness(), VisualLine::SOLID,  parentNode->GetSelected());
 				RenderLine3D(Line3D(cornerPt, curCoord), nodeColour, GetLineThickness(), VisualLine::SOLID,  parentNode->GetSelected());
 			}
-			else if(m_layout == SLANTED_CLADOGRAM_2D)
+			else if(m_layout == SLANTED_CLADOGRAM_2D && !curNode->IsCollapsed())
 			{
 				VisualLine::RenderLineWithBorder(Line3D(parentCoord, curCoord), nodeColour, GetLineThickness(), VisualLine::SOLID,
 					m_branchBorderColour, m_branchBorderSize, TREE_LAYER, parentNode->GetSelected());	
 			}
-			else if(m_layout == CLADOGRAM_2D || m_layout == PHYLOGRAM_2D)
+			else if((m_layout == CLADOGRAM_2D  && !curNode->IsCollapsed()) || m_layout == PHYLOGRAM_2D)
 			{		
 				Point3D cornerCoord;
 				bool bReverseOrientation = false;
@@ -595,7 +677,101 @@ void GeoTreeView::RenderTree()
 	else
 		RenderNode2D(m_tree->GetRootNode()->GetGridCoord(), nodeColour, false, m_tree->GetRootNode()->GetSelected());
 
+	if (m_tree->GetRootNode()->IsCollapsedParent())
+		RenderCollapsedSubtree(m_tree->GetRootNode());
+
 	error::ErrorGL::Check();
+}
+
+void GeoTreeView::RenderCollapsedSubtree( NodeGeoTree* parent )
+{
+	std::vector<NodeGeoTree*> leaves = TreeTools<NodeGeoTree>::GetLeaves(parent);
+	Point3D parentCoord = parent->GetGridCoord();
+	Point3D firstPoint = leaves[0]->GetGridCoord();
+	Point3D lastPoint = leaves[leaves.size()-1]->GetGridCoord();
+
+	std::map<Colour,int> colourFrequency;
+	std::map<Colour,int>::iterator it;
+
+	//Create a map connecting each different leaf colour with the number of times it appears
+	int numColours = 1;
+	for (uint i = 0; i < leaves.size(); i++) 
+	{
+		Colour nodeColour = leaves[i]->GetColour();
+
+		for (it = colourFrequency.begin(); it != colourFrequency.end(); ++it)
+		{
+			if ( it->first == nodeColour )
+			{
+				it->second = it->second + 1;
+				break;
+			}
+		}
+
+		if ( it == colourFrequency.end() )
+		{
+			nodeColour.SetOrderingNumber(numColours++);
+			colourFrequency[nodeColour] = 1;
+		}
+	}
+	
+	//Draw a triangle for each colour
+	//New triangles start at the accumulated percentage between first and last point
+	Point3D cornerPt1, cornerPt2 = firstPoint;
+	uint accumulatedFrequency = 0;
+	float percentage = 0.0f;
+	for (it = colourFrequency.begin(); it != colourFrequency.end(); ++it) {
+
+		cornerPt1 = cornerPt2;
+		accumulatedFrequency += it->second;
+		percentage = float(accumulatedFrequency) / leaves.size();
+		cornerPt2 = ((1-percentage) * firstPoint + percentage * lastPoint);
+
+		glBegin(GL_TRIANGLES);
+
+		glColor3f( it->first.GetRed(), it->first.GetGreen(), it->first.GetBlue() );
+		glVertex3f( parentCoord.x, parentCoord.y, parentCoord.z );
+		glVertex3f( cornerPt1.x, cornerPt1.y, cornerPt1.z );
+		glVertex3f( cornerPt2.x, cornerPt2.y, cornerPt2.z );
+
+		glEnd();
+
+		//Triangle edge looks jagged without this extra line
+		glBegin(GL_LINES);
+
+		glVertex3f( parentCoord.x, parentCoord.y, parentCoord.z );
+		glVertex3f( cornerPt1.x, cornerPt1.y, cornerPt1.z );
+
+		glEnd();
+
+	}
+
+
+	if (GetBranchBorderSize() != 0)
+	{
+		//Render border
+		glLineWidth(GetBranchBorderSize());
+		glBegin(GL_LINES);
+
+		Colour selected = App::Inst().GetSelectionColour();
+		if ( parent->GetSelected() )
+		{
+			glColor3f( selected.GetRed(), selected.GetGreen(), selected.GetBlue() );
+		}
+		else
+		{
+			glColor3f(m_branchBorderColour.GetRed(), m_branchBorderColour.GetGreen(), m_branchBorderColour.GetBlue());
+		}
+
+		glVertex3f(parentCoord.x, parentCoord.y, parentCoord.z);
+		glVertex3f(firstPoint.x, firstPoint.y, firstPoint.z);
+		glVertex3f(parentCoord.x, parentCoord.y, parentCoord.z);
+		glVertex3f(lastPoint.x, lastPoint.y, lastPoint.z);
+		glVertex3f(firstPoint.x, firstPoint.y, firstPoint.z);
+		glVertex3f(lastPoint.x, lastPoint.y, lastPoint.z);
+
+		glEnd();
+	}
 }
 
 void GeoTreeView::RenderLocationLines()
@@ -1981,13 +2157,42 @@ bool GeoTreeView::MouseRightDown(const Point2D& mousePt, wxMenu& popupMenu)
 				popupMenu.Append(ID_POPUP_MNU_SUBTREE_SIGNIFICANCE_TEST, wxT("Perform significance test on subtree"));
 				popupMenu.AppendSeparator();
 				popupMenu.Append(ID_POPUP_MNU_LINEAR_AXES_ANALYSIS, wxT("Perform linear axes analysis on subtree"));
+				popupMenu.AppendSeparator();
+				popupMenu.Append(ID_POPUP_MNU_SPLIT_TREE, wxT("Split tree"));
 
-				if(m_geoAxisPolyline)
+				if ( m_layout != PHYLOGRAM_2D && !m_selectedNode->IsLeaf() )
+				{
+					popupMenu.AppendSeparator();
+					if (m_selectedNode->GetChild(0)->IsCollapsed())
+					{
+						popupMenu.Append(ID_POPUP_MNU_EXPAND_SUBTREE, wxT("Expand subtree"));	
+					}
+					else 
+					{
+						popupMenu.Append(ID_POPUP_MNU_COLLAPSE_SUBTREE, wxT("Collapse subtree"));
+					}
+					popupMenu.Append(ID_POPUP_MNU_REMOVE_HOMOG_SUBTREES, wxT("Collapse all homogeneous subtrees"));
+				}
+
+				popupMenu.AppendSeparator();
+				popupMenu.Append(ID_POPUP_MNU_ZOOM_INTO_SUBTREE, wxT("Zoom into subtree"));
+				popupMenu.Append(ID_POPUP_MNU_ZOOM_OUT_OF_SUBTREE, wxT("Zoom out of subtree"));
+				popupMenu.AppendSeparator();
+				popupMenu.Append(ID_POPUP_MNU_RESTORE_TREE, wxT("Restore tree"));
+
+				if ( m_geoAxisPolyline )
 				{
 					popupMenu.AppendSeparator();
 					popupMenu.Append(ID_POPUP_MNU_SHOW_GEOGRAPHIC_AXIS_TABLE, wxT("Show nonlinear axis table"));
 				}
 			}
+			else if ( m_layout == CLADOGRAM_3D || m_layout == SLANTED_CLADOGRAM_3D || m_layout == SLANTED_PHYLOGRAM_3D )
+			{
+				popupMenu.AppendSeparator();
+				popupMenu.Append(ID_POPUP_MNU_ZOOM_INTO_SUBTREE, wxT("Zoom into subtree"));
+				popupMenu.Append(ID_POPUP_MNU_RESTORE_TREE, wxT("Restore tree"));
+			}
+
 		}
 
 		m_activeView = TREE;
@@ -2049,6 +2254,300 @@ void GeoTreeView::MouseDragging(const Point2D& mousePt)
 		TranslateGeoLine();
 	}
 
+}
+
+void GeoTreeView::RemoveHomogeneousSubtrees( NodeGeoTree* node ) 
+{
+	if ( node->IsLeaf() )
+	{
+		return;
+	}
+
+	switch ( m_treeColourStyle )
+	{
+		case COLOUR_SINGLE:
+
+			if ( !node->IsCollapsedParent() && !node->IsCollapsed() )
+			{
+				CollapseSubtree( node );
+			}
+
+			break;
+
+		case COLOUR_DISCRETE:
+
+			if ( node->GetColour() == m_colour ) 
+			{
+				foreach( NodeGeoTree* child, node->GetChildren() ) 
+				{
+					if ( !child->IsLeaf() ) 
+					{
+						RemoveHomogeneousSubtrees( child );
+					}
+				}
+			} 
+			else if ( !node->IsCollapsedParent() && !node->IsCollapsed() ) 
+			{
+				CollapseSubtree( node );
+			}
+
+			break;
+
+		case COLOUR_CONTINUOUS:
+
+			bool childrenSameColour = true;
+
+			Colour firstColour = node->GetChild(0)->GetColour();
+			for (uint i = 1; i < node->GetNumberOfChildren(); i++)
+			{
+				if (firstColour != node->GetChild(i)->GetColour())
+				{
+					childrenSameColour = false;
+				}
+			}
+
+			if ( (childrenSameColour || node->GetColour() == node->GetChild(0)->GetColour()) 
+				 && !node->IsCollapsedParent() && !node->IsCollapsed() )
+			{
+				CollapseSubtree( node );
+			}
+			else 
+			{
+				foreach ( NodeGeoTree* child, node->GetChildren() )
+				{
+					if ( !child->IsLeaf() )
+					{
+						RemoveHomogeneousSubtrees( child );
+					}
+				}
+			}
+
+			break;
+	}
+}
+
+void GeoTreeView::ExpandSubtree(NodeGeoTree* node)
+{
+	if ( node->IsLeaf() )
+	{
+		return;
+	}
+
+	foreach ( NodeGeoTree* child, TreeTools<NodeGeoTree>::GetNodes(node) )
+	{
+		child->SetCollapsed(false);
+	}
+}
+
+void GeoTreeView::CollapseSubtree(NodeGeoTree* node) 
+{
+	if ( node->IsLeaf() )
+	{
+		return;
+	}
+
+	foreach ( NodeGeoTree* child, TreeTools<NodeGeoTree>::GetNodes(node) )
+	{
+		if (child != node)
+		{
+			child->SetCollapsed(true);
+		}
+	}
+}
+
+void GeoTreeView::ZoomIntoSubtree( NodeGeoTree* selectedNode )
+{
+	if (!selectedNode->IsLeaf() && !selectedNode->IsRoot()) 
+	{
+		SaveParentsIdOutsideOfSubtree( m_tree->GetRootNode(), selectedNode );
+
+		//Create a deep copy of the zoomed in subtree
+		selectedNode->RemoveParent()->RemoveChild(selectedNode);
+		selectedNode->SetDistanceToParent(Node::NO_DISTANCE);
+		NodeGeoTree* newRoot = TreeTools<NodeGeoTree>::CloneSubtree(selectedNode);
+
+		//Free the memory from original tree
+		m_tree->DestroySubtree(m_tree->GetRootNode());
+		delete m_tree->GetRootNode();
+		m_selectedNode = NULL;
+
+		//Replace deleted root node with copy of subtree
+		m_tree->SetRootNode(newRoot);
+		ForceTreeLayout();
+	}
+}
+
+void GeoTreeView::SaveParentsIdOutsideOfSubtree( NodeGeoTree* root, NodeGeoTree* selectedNode )
+{
+	if ( root == selectedNode )
+		return;
+
+	if ( root->IsCollapsedParent() )
+	{
+		m_savedCollapsedParentsId.push_back( root->GetId() );
+	}
+
+	for (uint i = 0; i < root->GetNumberOfChildren(); i++)
+	{
+		SaveParentsIdOutsideOfSubtree( root->GetChild(i), selectedNode );
+	}
+}
+
+void GeoTreeView::ZoomOutOfSubtree()
+{
+	if (m_tree->GetRootNode()->GetId() == m_originalTree->GetRootNode()->GetId())
+	{
+		return;
+	}
+
+	//Save each of the current collapsed parents
+	foreach ( NodeGeoTree* node, TreeTools<NodeGeoTree>::GetNodes(m_tree->GetRootNode()) )
+	{
+		if (node->IsCollapsedParent())
+		{
+			m_savedCollapsedParentsId.push_back( node->GetId() );
+		}
+	}
+
+	//Restore the tree to the original
+	RestoreTree();
+	
+	//Recollapse all saved parents
+	if (!m_savedCollapsedParentsId.empty())
+	{
+		foreach ( uint id, m_savedCollapsedParentsId )
+		{
+			CollapseSubtree( m_tree->GetNode(id) );
+		}
+
+		m_savedCollapsedParentsId.clear();
+	}
+
+	ForceTreeLayout();
+}
+
+void GeoTreeView::SplitTree( NodeGeoTree* selectedNode, LayoutLinePtr layoutLine )
+{
+	//Illegal tree splits result from the selected node being a root, being a leaf, 
+	//or the split creating a tree with only one node
+	bool illegalTreeSplit = selectedNode->IsRoot()
+							|| selectedNode->IsLeaf()
+							|| ( selectedNode->GetParent()->IsRoot() 
+								 && selectedNode->GetParent()->GetChildren().size() == 2 
+								 && selectedNode->GetNeighbors()[0]->IsLeaf() );
+
+	if ( illegalTreeSplit )
+	{
+		wxMessageBox( wxT("Cannot split tree at selected node."), wxT("Error: Illegal tree split") );
+		return;
+	}
+
+	LayerTreeControllerPtr layerTreeController = App::Inst().GetLayerTreeController();
+	MapLayerPtr map = layerTreeController->GetMapLayer(0);
+
+	//Get the original number of leaves, which will be used to determine 
+	//the amount of space the new tree will get on the layout line
+	uint originalNumOfLeaves = m_tree->GetNumberOfLeaves();
+
+	//Added to fix a problem where splitting a tree directly after loading could cause a crash
+	ForceTreeLayout();
+
+	//Remove the selected subtree from the original tree
+	NodeGeoTree* parent = selectedNode->RemoveParent();
+	parent->RemoveChild(selectedNode);
+
+	//If this subtree removal causes its parent to only have 1 child, 
+	//then the parent node needs to be removed from the tree
+	if ( parent->GetChildren().size() == 1 )
+	{
+		NodeGeoTree* child = parent->GetChild(0);
+
+		if ( parent->IsRoot() )
+		{
+			child->SetParent(NULL);
+			child->SetDistanceToParent(Node::NO_DISTANCE);
+			m_tree->SetRootNode(child);
+			delete parent;
+		}
+		else
+		{
+			NodeGeoTree* grandparent = parent->GetParent();
+			grandparent->AddChild(child);
+
+			if(child->GetDistanceToParent() != Node::NO_DISTANCE)
+			{
+				child->SetDistanceToParent(child->GetDistanceToParent() + parent->GetDistanceToParent());
+			}
+
+			grandparent->RemoveChild(parent);
+			delete parent;
+		}
+		parent = NULL;
+	}
+
+
+	//The new tree will be a copy of the removed subtree where selected node is the root node
+	NodeGeoTree* root = m_tree->GetRootNode();
+	selectedNode->SetDistanceToParent(Node::NO_DISTANCE);
+	m_tree->SetRootNode( selectedNode );
+	GeoTreeViewPtr splitGeoTree ( new GeoTreeView(*this) );
+
+	//Restore the original root node, the selected node has already been removed from the original tree
+	m_tree->SetRootNode( root );
+
+	m_tree->DestroySubtree( selectedNode );
+	delete selectedNode;
+	selectedNode = NULL;
+	m_selectedNode = NULL;
+
+	//Make it so the original tree doesn't contain the split subtree
+	m_originalTree->SetRootNode( TreeTools<NodeGeoTree>::CloneSubtree(m_tree->GetRootNode()) );
+	m_originalTree->UncollapseAllNodes(m_originalTree->GetRootNode());
+
+	//Remove saved collapsed parent ids that are no longer in the tree
+	std::vector<unsigned int>::iterator it = m_savedCollapsedParentsId.begin();
+	for (it; it != m_savedCollapsedParentsId.end();)
+	{
+		if (!m_tree->HasNode(*it))
+		{
+			it = m_savedCollapsedParentsId.erase(it);
+		}
+		else
+		{
+			++it;
+		}
+	}
+
+	//If no layout line is specified,
+	//adjust both layout lines based on the percentage of leaves the split tree will have
+	if (!layoutLine)
+	{
+		uint newNumOfLeaves = splitGeoTree->GetTreeLayer()->GetNumberOfLeaves();
+		float percentage = float(newNumOfLeaves) / originalNumOfLeaves;
+
+		Point3D midpoint = (percentage) * splitGeoTree->GetLayoutLine()->GetEndControlPoint()
+							 + (1-percentage) * splitGeoTree->GetLayoutLine()->GetStartControlPoint();
+
+		m_layoutLine->SetStartControlPoint( midpoint );
+		splitGeoTree->GetLayoutLine()->SetEndControlPoint( midpoint );
+	}
+	else
+	{
+		splitGeoTree->SetLayoutLine(layoutLine);
+	}
+
+	TreeLayerPtr treeLayer = layerTreeController->GetTreeLayerById( GetTreeLayerId() );
+
+	//Create the new tree layer, add it to the map and layout both trees
+	TreeLayerPtr newTreeLayer ( new TreeLayer(UniqueId::Inst().GenerateId(), treeLayer->GetParent(), splitGeoTree) );
+	newTreeLayer->SetName( treeLayer->GetName() );
+	splitGeoTree->SetTreeLayerId( newTreeLayer->GetId() );
+
+	layerTreeController->SetSelection( map );
+	layerTreeController->AddTreeLayer( newTreeLayer );
+
+	ForceTreeLayout();
+	splitGeoTree->ForceTreeLayout();
 }
 
 void GeoTreeView::TranslateGeoLine()
