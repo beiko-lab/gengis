@@ -26,7 +26,7 @@
 using namespace GenGIS;
 
 Colour::Colour( float r, float g, float b, float alpha )
-	: m_red(r), m_green(g), m_blue(b), m_alpha(alpha), m_orderingNumber(0)
+	: m_red(r), m_green(g), m_blue(b), m_alpha(alpha)
 {
 	assert(m_alpha >= 0 && m_alpha <= 1.0); 
 	assert(m_red   >= 0 && m_red   <= 1.0);
@@ -35,7 +35,7 @@ Colour::Colour( float r, float g, float b, float alpha )
 }
 
 Colour::Colour( int r, int g, int b, int alpha )
-	: m_red(r/255.0f), m_green(g/255.0f), m_blue(b/255.0f), m_alpha(alpha/255.0f), m_orderingNumber(0)
+	: m_red(r/255.0f), m_green(g/255.0f), m_blue(b/255.0f), m_alpha(alpha/255.0f)
 {
 	assert(m_alpha >= 0 && m_alpha <= 1.0); 
 	assert(m_red   >= 0 && m_red   <= 1.0);
@@ -45,7 +45,7 @@ Colour::Colour( int r, int g, int b, int alpha )
 
 Colour::Colour( const wxColour& colour )
 	: m_red(colour.Red()/255.0f), m_green(colour.Green()/255.0f), 
-		m_blue(colour.Blue()/255.0f), m_alpha(colour.Alpha()/255.0f), m_orderingNumber(0)
+		m_blue(colour.Blue()/255.0f), m_alpha(colour.Alpha()/255.0f)
 {
 	assert(m_alpha >= 0 && m_alpha <= 1.0); 
 	assert(m_red   >= 0 && m_red   <= 1.0);
@@ -54,7 +54,7 @@ Colour::Colour( const wxColour& colour )
 }
 
 Colour::Colour()
-	: m_red(1.0f), m_green(1.0f), m_blue(1.0f), m_alpha(1.0f), m_orderingNumber(0)
+	: m_red(1.0f), m_green(1.0f), m_blue(1.0f), m_alpha(1.0f)
 {
 
 }
@@ -66,7 +66,6 @@ void Colour::serialize(Archive & ar, const unsigned int file_version)
 	ar & m_blue;			// float
 	ar & m_green;			// float
 	ar & m_alpha;			// float
-	ar & m_orderingNumber;	// int
 }
 template void Colour::serialize<boost::archive::text_woarchive>(boost::archive::text_woarchive& ar, const unsigned int version); 
 template void Colour::serialize<boost::archive::text_wiarchive>(boost::archive::text_wiarchive& ar, const unsigned int version);
@@ -77,7 +76,6 @@ Colour::Colour(const Colour& rhs)
 	m_green = rhs.GetGreen();
 	m_blue  = rhs.GetBlue();
 	m_alpha = rhs.GetAlpha();
-	m_orderingNumber = rhs.GetOrderingNumber();
 }
 
 Colour& Colour::operator=(const Colour& rhs)
@@ -89,7 +87,6 @@ Colour& Colour::operator=(const Colour& rhs)
 	m_green = rhs.GetGreen();
 	m_blue  = rhs.GetBlue();
 	m_alpha = rhs.GetAlpha();
-	m_orderingNumber = rhs.GetOrderingNumber();
 
 	return *this;
 }
@@ -103,11 +100,6 @@ bool Colour::operator==(const Colour &other) const
 bool Colour::operator!=(const Colour &other) const 
 {
 	return !(*this == other);
-}
-
-bool Colour::operator<(const Colour &other) const
-{
-	return (this->GetOrderingNumber() < other.GetOrderingNumber());
 }
 
 void Colour::SetRndColour(float alpha) 

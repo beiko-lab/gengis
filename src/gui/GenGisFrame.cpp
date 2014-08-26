@@ -3091,7 +3091,7 @@ void GenGisFrame::OnSplitTree ( wxCommandEvent& event )
 
 	//If there was an active layout line, it was used up by the new tree and should be replaced by an empty pointer
 	if (m_layoutLine)
-		m_layoutLine = LayoutLinePtr();
+		m_layoutLine.reset();
 
 	App::Inst().GetViewport()->Refresh();
 }

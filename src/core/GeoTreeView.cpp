@@ -690,28 +690,26 @@ void GeoTreeView::RenderCollapsedSubtree( NodeGeoTree* parent )
 	Point3D firstPoint = leaves[0]->GetGridCoord();
 	Point3D lastPoint = leaves[leaves.size()-1]->GetGridCoord();
 
-	std::map<Colour,int> colourFrequency;
-	std::map<Colour,int>::iterator it;
+	std::vector<std::pair<Colour, int> > colourFrequency;
+	std::vector<std::pair<Colour, int> >::iterator it;
 
-	//Create a map connecting each different leaf colour with the number of times it appears
-	int numColours = 1;
+	//Create a vector connecting each different leaf colour with the number of times it appears
 	for (uint i = 0; i < leaves.size(); i++) 
 	{
 		Colour nodeColour = leaves[i]->GetColour();
 
 		for (it = colourFrequency.begin(); it != colourFrequency.end(); ++it)
 		{
-			if ( it->first == nodeColour )
+			if (it->first == nodeColour)
 			{
-				it->second = it->second + 1;
+				++it->second;
 				break;
 			}
 		}
 
-		if ( it == colourFrequency.end() )
+		if (it == colourFrequency.end())
 		{
-			nodeColour.SetOrderingNumber(numColours++);
-			colourFrequency[nodeColour] = 1;
+			colourFrequency.push_back( std::pair<Colour, int> (nodeColour, 1) );
 		}
 	}
 	
@@ -728,20 +726,16 @@ void GeoTreeView::RenderCollapsedSubtree( NodeGeoTree* parent )
 		cornerPt2 = ((1-percentage) * firstPoint + percentage * lastPoint);
 
 		glBegin(GL_TRIANGLES);
-
 		glColor3f( it->first.GetRed(), it->first.GetGreen(), it->first.GetBlue() );
 		glVertex3f( parentCoord.x, parentCoord.y, parentCoord.z );
 		glVertex3f( cornerPt1.x, cornerPt1.y, cornerPt1.z );
 		glVertex3f( cornerPt2.x, cornerPt2.y, cornerPt2.z );
-
 		glEnd();
 
 		//Triangle edge looks jagged without this extra line
 		glBegin(GL_LINES);
-
 		glVertex3f( parentCoord.x, parentCoord.y, parentCoord.z );
 		glVertex3f( cornerPt1.x, cornerPt1.y, cornerPt1.z );
-
 		glEnd();
 
 	}
@@ -2163,7 +2157,7 @@ bool GeoTreeView::MouseRightDown(const Point2D& mousePt, wxMenu& popupMenu)
 				if ( m_layout != PHYLOGRAM_2D && !m_selectedNode->IsLeaf() )
 				{
 					popupMenu.AppendSeparator();
-					if (m_selectedNode->GetChild(0)->IsCollapsed())
+					if (m_selectedNode->IsCollapsedParent())
 					{
 						popupMenu.Append(ID_POPUP_MNU_EXPAND_SUBTREE, wxT("Expand subtree"));	
 					}
@@ -2492,17 +2486,13 @@ void GeoTreeView::SplitTree( NodeGeoTree* selectedNode, LayoutLinePtr layoutLine
 	m_tree->SetRootNode( selectedNode );
 	GeoTreeViewPtr splitGeoTree ( new GeoTreeView(*this) );
 
-	//Restore the original root node, the selected node has already been removed from the original tree
+	//Restore the original root node, then free the pruned subtree from memory
 	m_tree->SetRootNode( root );
 
 	m_tree->DestroySubtree( selectedNode );
 	delete selectedNode;
 	selectedNode = NULL;
 	m_selectedNode = NULL;
-
-	//Make it so the original tree doesn't contain the split subtree
-	m_originalTree->SetRootNode( TreeTools<NodeGeoTree>::CloneSubtree(m_tree->GetRootNode()) );
-	m_originalTree->UncollapseAllNodes(m_originalTree->GetRootNode());
 
 	//Remove saved collapsed parent ids that are no longer in the tree
 	std::vector<unsigned int>::iterator it = m_savedCollapsedParentsId.begin();
@@ -2537,8 +2527,6 @@ void GeoTreeView::SplitTree( NodeGeoTree* selectedNode, LayoutLinePtr layoutLine
 	}
 
 	TreeLayerPtr treeLayer = layerTreeController->GetTreeLayerById( GetTreeLayerId() );
-
-	//Create the new tree layer, add it to the map and layout both trees
 	TreeLayerPtr newTreeLayer ( new TreeLayer(UniqueId::Inst().GenerateId(), treeLayer->GetParent(), splitGeoTree) );
 	newTreeLayer->SetName( treeLayer->GetName() );
 	splitGeoTree->SetTreeLayerId( newTreeLayer->GetId() );
