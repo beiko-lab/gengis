@@ -206,6 +206,8 @@ GeoTreeView::GeoTreeView( const GeoTreeView &rhs ) :
 
 	m_3dLeafDropLine.SetLineStyle( rhs.Get3dLeafDropLineStyle().GetLineStyle() );
 	m_3dLeafDropLine.SetColour( rhs.Get3dLeafDropLineStyle().GetColour() );
+
+	SetGeographicAxisVisibility( rhs.GetGeographicAxisVisibility() );
 }
 
 template<class Archive>
@@ -1408,6 +1410,7 @@ void GeoTreeView::LayoutTrees2D()
 		std::vector<std::wstring> leaves = m_tree->GetLeafNames();
 		if(leaves.size() == 0)
 		{
+			m_tree->GetRootNode()->SetGridCoord( 0.5*m_layoutLine->GetStartControlPoint() + 0.5*m_layoutLine->GetEndControlPoint() );
 			return;
 		}
 		OptimizeLeafNodeOrdering();
@@ -2422,15 +2425,7 @@ void GeoTreeView::ZoomOutOfSubtree()
 
 void GeoTreeView::SplitTree( NodeGeoTree* selectedNode, LayoutLinePtr layoutLine )
 {
-	//Illegal tree splits result from the selected node being a root, being a leaf, 
-	//or the split creating a tree with only one node
-	bool illegalTreeSplit = selectedNode->IsRoot()
-							|| selectedNode->IsLeaf()
-							|| ( selectedNode->GetParent()->IsRoot() 
-								 && selectedNode->GetParent()->GetChildren().size() == 2 
-								 && selectedNode->GetNeighbors()[0]->IsLeaf() );
-
-	if ( illegalTreeSplit )
+	if ( selectedNode->IsRoot() || selectedNode->IsLeaf() )
 	{
 		wxMessageBox( wxT("Cannot split tree at selected node."), wxT("Error: Illegal tree split") );
 		return;
@@ -2488,7 +2483,6 @@ void GeoTreeView::SplitTree( NodeGeoTree* selectedNode, LayoutLinePtr layoutLine
 
 	//Restore the original root node, then free the pruned subtree from memory
 	m_tree->SetRootNode( root );
-
 	m_tree->DestroySubtree( selectedNode );
 	delete selectedNode;
 	selectedNode = NULL;
@@ -2496,7 +2490,7 @@ void GeoTreeView::SplitTree( NodeGeoTree* selectedNode, LayoutLinePtr layoutLine
 
 	//Remove saved collapsed parent ids that are no longer in the tree
 	std::vector<unsigned int>::iterator it = m_savedCollapsedParentsId.begin();
-	for (it; it != m_savedCollapsedParentsId.end();)
+	for (it; it != m_savedCollapsedParentsId.end(); )
 	{
 		if (!m_tree->HasNode(*it))
 		{

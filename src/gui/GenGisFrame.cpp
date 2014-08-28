@@ -3482,6 +3482,11 @@ void GenGisFrame::OnPerformLinearAxesAnalysisPopup( wxCommandEvent& event )
 {
 	TreeLayerPtr treeLayer = GetSelectedTree();
 
+	if (treeLayer->GetGeoTreeView()->GetRootNode()->GetChildren().empty())
+	{
+		return;
+	}
+
 	NodeGeoTree* selectedNode = treeLayer->GetGeoTreeView()->GetSelectedNode();
 	std::vector<LinearResults> results = treeLayer->GetGeoTreeView()->PerformLinearAxesAnalysis(selectedNode);
 
@@ -3607,6 +3612,11 @@ void GenGisFrame::OnTreeSignificanceTest( wxCommandEvent& event )
 void GenGisFrame::OnTreeSignificanceTestPopup( wxCommandEvent& event )
 {
 	TreeLayerPtr treeLayer = GetSelectedTree();
+
+	if (treeLayer->GetGeoTreeView()->GetRootNode()->GetChildren().empty())
+	{
+		return;
+	}
 
 	std::map<uint, uint> pdf;
 	uint originalNumberCrossings;
