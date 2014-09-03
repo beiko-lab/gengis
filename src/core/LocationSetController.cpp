@@ -317,7 +317,7 @@ std::vector<std::wstring> LocationSetController::GetNumericMetadataFields(bool b
 			{
 				std::wstring value = locLayer->GetLocationController()->GetData()[field];
 				
-				if(!StringTools::IsDecimalNumber(value))
+				if(!StringTools::IsDecimalNumber(value) && value.compare(L"None")!=0)
 				{
 					bNumeric = false;
 					break;
@@ -360,7 +360,11 @@ std::vector<float> LocationSetController::GetNumericMetadata(const std::wstring&
 	for(uint i = 0; i < m_locationLayers.size(); ++i)
 	{
 		if(m_locationLayers.at(i)->IsActive() || !bOnlyActiveLocs)
-			data.push_back(StringTools::ToDouble(m_locationLayers.at(i)->GetLocationController()->GetData()[field]));
+		{
+			std::wstring value = m_locationLayers.at(i)->GetLocationController()->GetData()[field];
+			if( value.compare(L"None")!=0 )
+				data.push_back(StringTools::ToDouble(value));
+		}
 	}
 
 	return data;

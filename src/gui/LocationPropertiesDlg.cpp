@@ -218,7 +218,14 @@ void LocationPropertiesDlg::ApplySymbology()
 		//Update tree
 		LayerTreeControllerPtr layerTreeController = App::Inst().GetLayerTreeController();
 		for (uint i = 0; i < layerTreeController->GetNumTreeLayers(); i++)
-			layerTreeController->GetTreeLayer(i)->GetGeoTreeView()->ProjectToActiveSet(layerTreeController->GetLocationLayers());
+		{
+			//alexk Don't ask me why you have to do this in such a roundabout way, but otherwise Mac cries.
+			GeoTreeViewPtr geoTree = layerTreeController->GetTreeLayer(i)->GetGeoTreeView();
+			std::vector<GenGIS::LocationLayerPtr, std::allocator<GenGIS::LocationLayerPtr> > temp = App::Inst().GetLayerTreeController()->GetLocationLayers();
+			geoTree->ProjectToActiveSet(temp);
+			
+	//		layerTreeController->GetTreeLayer(i)->GetGeoTreeView()->ProjectToActiveSet(layerTreeController->GetLocationLayers());
+		}
 	}
 
 	// set label properties

@@ -46,7 +46,6 @@ def GetNonNullLocations( field ):
 		# If fields are any of the special values for NULL
 		if ( data != "None" and data != "Null" and data != "NA" ):
 			nonNullLoc.append(loc)
-	print nonNullLoc
 	return nonNullLoc
 		
 		
@@ -59,8 +58,22 @@ def GetNonNullSequences( field ):
 		# If fields are any of the special values for NULL
 		if ( data != "None" and data != "Null" and data != "NA" ):
 			nonNullLoc.append(loc)
-	print nonNullLoc
 	return nonNullLoc
+	
+def LocationSetWeeder(  ):
+	locs = ggAPI.layerTree.GetLocationSetLayer(0).GetAllActiveLocationLayers()
+	switchedLocs = []
+	for loc in locs:
+		for field in loc.GetController().GetData().keys():
+		#	print field," ",loc.GetController().GetData()[field]
+			if loc.GetController().GetData()[field] == "None":
+				switchedLocs.append(loc)
+				loc.GetController().SetActive(False)
+	return switchedLocs
+	
+def LocationSetRestore( locations ):
+	for loc in locations:
+		loc.GetController().SetActive(True)
 	
 def isNumber(str):
 	try:

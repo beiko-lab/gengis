@@ -435,11 +435,14 @@ void LocationGrid::FillTiles()
 			northing = locationLayers[i]->GetLocationController()->GetNorthing();
 		}
 
+		// Use Binary Search until FindLocationTile can be sorted out
 		Point3D locationCoord;
 		GeoCoord locationGeo( easting,northing );
-		App::Inst().GetMapController()->GetMapModel()->LatLongToGrid(locationGeo,locationCoord);
-		Point2D locPoint(locationCoord.x,locationCoord.z);
-		TileModelPtr tile = FindLocationTile(locPoint);
+//		App::Inst().GetMapController()->GetMapModel()->LatLongToGrid(locationGeo,locationCoord);
+//		Point2D locPoint(locationCoord.x,locationCoord.z);
+//		TileModelPtr tile = FindLocationTile(locPoint);
+		Point2D locPoint(easting, northing);
+		TileModelPtr tile = BinarySort(locPoint);
 		tile->AddLocationLayer(locationLayers[i]);
 	}
 	// now set tile true values for every tile
@@ -732,6 +735,7 @@ void LocationGrid::UpdateQualitativeColourMap() {
 
 }
 
+// SOMETHING WRONG HERE, NEED TO HUNT IT DOWN
 // find a tile based on OpenGL coordinates
 TileModelPtr LocationGrid::FindLocationTile(Point2D loc)
 {
@@ -807,6 +811,39 @@ TileModelPtr LocationGrid::FindLocationTile(Point2D loc)
 
 	return tile;
 }
+
+// Binary Sort algorithm used to find which tile a location should be in
+TileModelPtr LocationGrid::BinarySort(Point2D loc)
+{
+	int imid = m_tileModels.size() / 2;
+	int imin = 0;
+	int imax = m_tileModels.size() - 1;
+	TileModelPtr tile;
+	while( imax >= imin)
+	{
+		imid = (imin + imax) / 2;
+		tile = m_tileModels[imid];
+		Point2D topLeft = tile->GetTopLeft();
+		Point2D botRight = tile->GetBottomRight();
+		if( ( topLeft.x <= loc.x && loc.x <= botRight.x) && ( botRight.y <= loc.y && loc.y <= topLeft.y ) )
+		{
+			return tile;
+		}
+		else if( loc.x < topLeft.x && loc.y > botRight.y )
+			imax = imid - 1;
+		else if ( loc.x > topLeft.x && loc.y > topLeft.y )
+			imax = imid - 1;
+		else if (loc.x < botRight.x && loc.y < topLeft.y )
+			imin = imid + 1;
+		else if (loc.x > botRight.x && loc.y < topLeft.y )
+			imin = imid + 1;
+		
+	}
+	// if this happens the wrong tile has been returned
+	Log::Inst().Warning("(Error) Could not find correct tile for location.");
+	return tile;
+}
+
 
 void LocationGrid::SetOriginOffset( std::wstring selectedName )
 {

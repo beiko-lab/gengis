@@ -680,7 +680,7 @@ void LayerTreeController::OnClick( wxMouseEvent& event )
 }
 
 
-void LayerTreeController::OnLeftDClick( wxMouseEvent& event )
+void LayerTreeController::OnLeftDClick( wxMouseEvent& event, LayoutLinePtr m_layoutLine )
 {
 	// cause the tree item under the cursor to become selected
 	wxTreeItemId id = GetTreeCtrl()->GetSelection();
@@ -773,7 +773,11 @@ void LayerTreeController::OnLeftDClick( wxMouseEvent& event )
 		else if(layer->GetType() == Layer::TREE)
 		{
 			TreeLayerPtr treeLayer = boost::dynamic_pointer_cast<TreeLayer>(layer);
-			TreePropertiesDlg* dlg = new TreePropertiesDlg(App::Inst().GetMainWindow(), treeLayer);
+			TreePropertiesDlg* dlg;
+			if (!m_layoutLine)
+				dlg = new TreePropertiesDlg(App::Inst().GetMainWindow(), treeLayer);
+			else
+				dlg = new TreePropertiesDlg(App::Inst().GetMainWindow(), treeLayer, m_layoutLine);
 			dlg->SetPage(TreePropertiesDlg::SYMBOLOGY);
 			dlg->Show();
 		}

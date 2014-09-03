@@ -3034,7 +3034,11 @@ void GenGisFrame::OnHideLocation ( wxCommandEvent& event )
 		//Update tree
 		LayerTreeControllerPtr layerTreeController = App::Inst().GetLayerTreeController();
 		for (uint i = 0; i < layerTreeController->GetNumTreeLayers(); i++)
-			layerTreeController->GetTreeLayer(i)->GetGeoTreeView()->ProjectToActiveSet(layerTreeController->GetLocationLayers());
+		{
+			GeoTreeViewPtr geoTree = layerTreeController->GetTreeLayer(i)->GetGeoTreeView();
+			std::vector<GenGIS::LocationLayerPtr, std::allocator<GenGIS::LocationLayerPtr> > temp = App::Inst().GetLayerTreeController()->GetLocationLayers();
+			geoTree->ProjectToActiveSet(temp);
+		}
 
 		//Refresh viewport
 		App::Inst().GetViewport()->Refresh();
@@ -3152,7 +3156,8 @@ void GenGisFrame::OnLayerTreeClick( wxMouseEvent& event )
 
 void GenGisFrame::OnLayerTreeLeftDClick( wxMouseEvent& event )
 {  
-	App::Inst().GetLayerTreeController()->OnLeftDClick(event); 
+	// needs to pass the layout line so that 2D figures can be connected
+	App::Inst().GetLayerTreeController()->OnLeftDClick(event, m_layoutLine);
 }
 
 void GenGisFrame::OnModeStandard( wxCommandEvent& event ) 

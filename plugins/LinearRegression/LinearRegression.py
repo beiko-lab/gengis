@@ -28,6 +28,7 @@ from dataHelper import isNumber
 import wx
 import os
 import math
+import dataHelper as dh
 
 from scipy.stats import linregress
 
@@ -228,6 +229,7 @@ class LinearRegression( LinearRegressionLayout ):
 	def GetData(self):
 		# Add ade4 library, save robject.r as variable
 		locationSetController = GenGIS.layerTree.GetLocationSetLayer(0).GetController()
+		switchedLocs = dh.LocationSetWeeder()
 		
 		# Get distances for Independent Variable:
 		if self.cboIndependentSubtypeField.Enabled == True:
@@ -301,7 +303,8 @@ class LinearRegression( LinearRegressionLayout ):
 			
 		# get colour map
 		self.colourMap = GenGIS.colourMapManager.GetColourMap(self.cboColourMap.GetStringSelection())
-
+		dh.LocationSetRestore( switchedLocs )
+		
 	def ViewportPlot(self):
 		terrainController = GenGIS.layerTree.GetMapLayer(0).GetController()
 		

@@ -99,7 +99,7 @@ namespace GenGIS
 
 		/** Overloaded to handle adding visibility checkboxes to the colour window */
 		void SetFieldValues(wxScrolledWindow* scrolledWindow, const std::vector<std::wstring>& fieldValues, 
-							std::wstring colourField, std::vector<LocationLayerPtr>& locations);
+							const std::wstring& colourField, const std::vector<LocationLayerPtr>& locations);
 
 		/** Populate combo box with all available colour maps. */
 		void PopulateColourMapComboBox();

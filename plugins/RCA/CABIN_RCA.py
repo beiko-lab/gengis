@@ -27,6 +27,10 @@ import rpy2.robjects as robjects
 r = robjects.r
 
 import os
+if os.name == "posix":
+        from rpy2.robjects import globalEnv as globalenv
+else:
+        from rpy2.robjects import globalenv as globalenv
 
 #Uncomment this to allow run-time debugging
 #import pdb; pdb.set_trace()
@@ -35,7 +39,7 @@ import os
 pluginPath = os.path.join(os.path.dirname(os.path.realpath(__file__)),'')
 
 print pluginPath
-robjects.globalEnv["hDir"] = pluginPath
+globalenv["hDir"] = pluginPath
 
 '''
 Example usage:
@@ -122,7 +126,7 @@ class CABIN_RCA:
 		Rdims = r["list"](RnameList,RenvList)
 			
 		RvarName = str("test_HAB_NAME")
-		robjects.globalEnv[RvarName] = RnameList
+		globalenv[RvarName] = RnameList
 			
 		### The habitat value matrix ###
 		PyHabList = []
@@ -137,7 +141,7 @@ class CABIN_RCA:
 		RhabList = r["c"](robjects.FloatVector(PyHabList))
 		RhabMatrix = r.matrix(RhabList, nrow = numExamples, byrow = True, dimnames = Rdims)
 		RhabName = str("test_HAB_MATR")
-		robjects.globalEnv[RhabName] = RhabMatrix
+		globalenv[RhabName] = RhabMatrix
 			
 		### Create the data frame in R ###
 		RhabFrName = str("test_HAB_FRAME")
@@ -182,7 +186,7 @@ class CABIN_RCA:
 		Rdims = r["list"](RnameList,RspList)
 			
 		RvarName = str("test_SP_NAME")
-		robjects.globalEnv[RvarName] = RnameList
+		globalenv[RvarName] = RnameList
 			
 		### The biodiversity matrix ###
 		PyDivList = []
@@ -197,7 +201,7 @@ class CABIN_RCA:
 		RdivList = r["c"](robjects.FloatVector(PyDivList))
 		RdivMatrix = r.matrix(RdivList, nrow = numExamples, byrow = True, dimnames = Rdims)
 		RmatName = str("test_SP_MATR")
-		robjects.globalEnv[RmatName] = RdivMatrix
+		globalenv[RmatName] = RdivMatrix
 			
 		### Create the data frame in R ###
 		RfrName = str("test_SP_FRAME")

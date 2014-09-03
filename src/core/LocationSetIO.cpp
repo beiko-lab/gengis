@@ -156,7 +156,8 @@ bool LocationSetIO::ParseCSVFile( const std::vector<std::wstring>& csvTableRows,
 				easting = StringTools::ToLong(value);
 			else if(StringTools::ToLower(header) == _T("latitude"))
 			{
-				header = toupper(header[0]) + StringTools::ToLower(header.substr(1));
+
+				header = StringTools::ToUpper(header.substr(0,1)) + StringTools::ToLower(header.substr(1));
 				// check if latitude is numeric
 				if(!StringTools::IsDecimalNumber( StringTools::ToString(value) ) && !StringTools::IsInteger( StringTools::ToString(value) ) )
 					bReject = true;
@@ -165,7 +166,8 @@ bool LocationSetIO::ParseCSVFile( const std::vector<std::wstring>& csvTableRows,
 			}
 			else if(StringTools::ToLower(header) == _T("longitude"))
 			{
-				header = toupper(header[0]) + StringTools::ToLower(header.substr(1));
+				header = StringTools::ToUpper(header.substr(0,1)) + StringTools::ToLower(header.substr(1));
+
 				// check if longitude is numeric
 				if(!StringTools::IsDecimalNumber( StringTools::ToString(value) ) && !StringTools::IsInteger( StringTools::ToString(value) ) )
 					bReject = true;
