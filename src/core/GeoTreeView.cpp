@@ -2522,7 +2522,7 @@ void GeoTreeView::SplitTree( NodeGeoTree* selectedNode, LayoutLinePtr layoutLine
 
 	TreeLayerPtr treeLayer = layerTreeController->GetTreeLayerById( GetTreeLayerId() );
 	TreeLayerPtr newTreeLayer ( new TreeLayer(UniqueId::Inst().GenerateId(), treeLayer->GetParent(), splitGeoTree) );
-	newTreeLayer->SetName( treeLayer->GetName() );
+	newTreeLayer->SetName( treeLayer->GetName().c_str() );
 	splitGeoTree->SetTreeLayerId( newTreeLayer->GetId() );
 
 	layerTreeController->SetSelection( map );

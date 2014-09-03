@@ -1,5 +1,5 @@
 /*
-Copyright or © or Copr. CNRS, (November 16, 2004)
+Copyright or ï¿½ or Copr. CNRS, (November 16, 2004)
 
 This software is a computer program whose purpose is to provide classes
 for phylogenetic data analysis.
@@ -109,7 +109,8 @@ namespace GenGIS
 		}
 
 		/** Clone tree with no collapsed nodes. */
-		Tree<NodeGeoTree>::Ptr CloneUncollapsed() const
+//		Tree<NodeGeoTree>::Ptr CloneUncollapsed() const
+		typename Tree::Ptr CloneUncollapsed() const
 		{
 			Tree<NodeGeoTree>::Ptr tree = Tree<NodeGeoTree>::Ptr(new Tree<NodeGeoTree>(*this));
 			tree->UncollapseAllNodes(tree->GetRootNode());
