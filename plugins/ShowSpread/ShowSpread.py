@@ -494,7 +494,10 @@ class ShowSpread ( ShowSpreadLayout ):
 			self.label.SetText("%.2f" %curData)
 
 			# update grid and polygons
-			GenGIS.layerTree.GetLocationSetLayer(0).UpdateGridAndPolygons()
+		#	GenGIS.layerTree.GetLocationSetLayer(0).UpdateGridAndPolygons()
+			GenGIS.layerTree.GetLocationSetLayer(0).GetLocationGrid().FillTiles()
+			GenGIS.layerTree.GetLocationSetLayer(0).GetLocationGrid().Render()
+			
 			
 			GenGIS.layerTree.UpdatePythonState()
 			GenGIS.SafeYield()

@@ -692,6 +692,8 @@ BOOST_PYTHON_MODULE(GenGIS)
 		// <wiki-header>Location Grid class</wiki-header>
 		class_<LocationGrid, boost::noncopyable, LocationGridPtr >("LocationGrid", "Gridding for a location set.", no_init)
 			.def("InitTileMinMax", &LocationGrid::InitTileMinMax, "Initialize min and max values a tile can have.")
+			.def("FillTiles", &LocationGrid::FillTiles, "Fill displayed tiles with active locations.")
+			.def("Render", &LocationGrid::Render, "Render the space.")
 			;
 
 		// <wiki-header>Location Set Controller class</wiki-header>
