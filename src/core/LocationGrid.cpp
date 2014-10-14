@@ -522,17 +522,19 @@ void LocationGrid::UpdateGridColours() {
 
 	InitTiles();
 	FillTiles();
-
+	
 	std::vector<LocationLayerPtr> locationLayers = m_locationSetLayer->GetAllActiveLocationLayers();
 	if ( !locationLayers.empty()
 		&& StringTools::IsDecimalNumber(locationLayers[0]->GetLocationController()->GetData()[m_field])
-	    || m_combination == TileModel::GINI ) {
-
+	    || m_combination == TileModel::GINI )  {
+		
 		UpdateNumericColourMap( m_minFieldValue, m_maxFieldValue );
-
+		
 	} else {
 		UpdateQualitativeColourMap();
+	
 	}
+	
 
 	SetLocationColours();
 
@@ -713,21 +715,24 @@ void LocationGrid::UpdateNumericColourMap(float min, float max) {
 
 void LocationGrid::UpdateQualitativeColourMap() {
 
+	// duplicate current colourMap
+//	ColourMapPtr selectedColourMap = m_gridColourMap;
 	
-	ColourMapPtr selectedColourMap = m_gridColourMap;
-
+	// Get tile values for current field
 	std::vector<std::wstring> data = GetSelectedValues(m_field);
+	// Sort data
 	StringTools::SortFieldValues(data);
 
 	std::vector<std::wstring>::const_iterator setIt;
-	uint index = 0;
+	// Used so that an interpolated colour can be shown for incomplete tiles displayed by showspread
+	int count = 0;
 
 	for (setIt = data.begin(); setIt != data.end(); ++setIt) {
-
+	
 		Colour colour;
 
 		if (!m_gridColourMap->GetColour(*setIt, colour))
-			colour = m_defaultColourOfTiles;
+			colour = m_gridColourMap->GetInterpolatedColour( ++count, 0, data.size() );
 
 		m_gridColourMap->SetColour(*setIt, colour);
 
