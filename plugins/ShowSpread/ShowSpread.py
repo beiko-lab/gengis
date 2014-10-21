@@ -35,10 +35,10 @@ import filterFunc
 class ShowSpread ( ShowSpreadLayout ):
 	isSequence = False
 	ColourIntensity = False
-	label = GenGIS.VisualLabel("", GenGIS.Colour(0.0, 0.0, 0.0), 20, GenGIS.LABEL_RENDERING_STYLE.PERSPECTIVE )
+	#label = GenGIS.VisualLabel("", GenGIS.Colour(0.0, 0.0, 0.0), 20, GenGIS.LABEL_RENDERING_STYLE.PERSPECTIVE )
 	dateFormat = False
 	# sort boolean. False = Descending, True = Descending
-	sort = True
+	sort = False
 	sortString = (filterFunc.lessEqual,filterFunc.greaterEqual)
 	sortFloat = (filterFunc.lessEqualFloat, filterFunc.greaterEqualFloat)
 	locData = {}
@@ -91,13 +91,13 @@ class ShowSpread ( ShowSpreadLayout ):
 		
 	def OnOK( self, event ):
 		#Need to remove the label on close too
-		GenGIS.graphics.RemoveLabel(self.label.GetId())
+	#	GenGIS.graphics.RemoveLabel(self.label.GetId())
 		GenGIS.viewport.Refresh()
 		self.Close()
 	
 	def OnRun( self, event ):
 		#clear the old label out if its there
-		GenGIS.graphics.RemoveLabel(self.label.GetId())
+	#	GenGIS.graphics.RemoveLabel(self.label.GetId())
 
 		#init min and max field values for grid
 		GenGIS.layerTree.GetLocationSetLayer(0).GetLocationGrid().InitTileMinMax()
@@ -169,9 +169,10 @@ class ShowSpread ( ShowSpreadLayout ):
 			
 		GenGIS.viewport.Refresh()
 		# label for showing current date
-		self.label.SetScreenPosition(GenGIS.Point3D(40.0, 300.0, 1.0))
-		self.label.SetRenderingStyle(GenGIS.LABEL_RENDERING_STYLE.PERSPECTIVE)
-		GenGIS.graphics.AddLabel(self.label)
+		#	Don't really like the labels anymore
+	#	self.label.SetScreenPosition(GenGIS.Point3D(40.0, 300.0, 1.0))
+	#	self.label.SetRenderingStyle(GenGIS.LABEL_RENDERING_STYLE.PERSPECTIVE)
+	#	GenGIS.graphics.AddLabel(self.label)
 		
 		if isDate:
 			self.DisplayTemporal( locData, field, startData, stopData )
@@ -491,7 +492,7 @@ class ShowSpread ( ShowSpreadLayout ):
 					self.ShowSequences(loc)
 	
 			# set text of label 
-			self.label.SetText("%.2f" %curData)
+			#self.label.SetText("%.2f" %curData)
 
 			# update grid and polygons
 			GenGIS.layerTree.GetLocationSetLayer(0).UpdateGridAndPolygons()
@@ -603,7 +604,7 @@ class ShowSpread ( ShowSpreadLayout ):
 					self.ShowSequences(loc)
 				
 			# set date of label 
-			self.label.SetText(curData)
+			#self.label.SetText(curData)
 
 			# update grid and polygons
 			GenGIS.layerTree.GetLocationSetLayer(0).UpdateGridAndPolygons()
@@ -710,7 +711,7 @@ class ShowSpread ( ShowSpreadLayout ):
 					self.ShowSequences(loc)
 					
 			# set date of label
-			self.label.SetText(str(curData.month) + "/" + str(curData.day) + "/" + str(curData.year))
+			#self.label.SetText(str(curData.month) + "/" + str(curData.day) + "/" + str(curData.year))
 
 			# update grid and polygons
 			GenGIS.layerTree.GetLocationSetLayer(0).UpdateGridAndPolygons()
