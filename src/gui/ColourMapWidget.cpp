@@ -362,9 +362,28 @@ void ColourMapWidget::SetColourMap()
 	m_colourMap->SetName(selectedColourMap->GetName());
 	m_colourMap->CopyColourMap(selectedColourMap);
 
+
+	/* Check if colour is supposed to be user selected uniform:
+		 If True, Make every location this colour */
+	if(selectedColourMap->GetName().find(_T("Uniform (Custom)")) != std::wstring::npos) 
+	{
+		wxColourDialog dialog(this);
+		if (dialog.ShowModal() == wxID_OK)
+		{
+			wxColourData colData = dialog.GetColourData();
+			wxColour wxCol = colData.GetColour();
+			Colour col(wxCol.Red(),wxCol.Green(),wxCol.Blue());
+			selectedColourMap->SetColour(col,0 );
+		}
+		else
+			return
+	}
+
 	for(unsigned int i = 0; i < m_colourPickers.size(); ++i)
 	{
 		Colour colour;
+		/* Check if colour is supposed to be uniform:
+		 If True, Make every location this colour */
 		if( (selectedColourMap->GetType() == ColourMap::DISCRETE) && 
 			(selectedColourMap->GetName().find(_T("Uniform")) != std::wstring::npos) )
 		{
