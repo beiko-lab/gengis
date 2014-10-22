@@ -355,6 +355,18 @@ void ColourMapWidget::SetFieldValues(wxScrolledWindow* scrolledWindow, const std
 	scrolledWindow->Layout();	
 }
 
+Colour ColourMapWidget::GetCustomUniformColour()
+{
+	wxColourDialog dialog(this);
+	if (dialog.ShowModal() == wxID_OK)
+	{
+		wxColourData colData = dialog.GetColourData();
+		wxColour wxCol = colData.GetColour();
+		Colour col(wxCol.Red(),wxCol.Green(),wxCol.Blue());
+		return col;
+	}
+}
+
 void ColourMapWidget::SetColourMap()
 {
 	ColourMapManagerPtr colourMapManager = App::Inst().GetColourMapManager();
@@ -367,16 +379,8 @@ void ColourMapWidget::SetColourMap()
 		 If True, Make every location this colour */
 	if(selectedColourMap->GetName().find(_T("Uniform (Custom)")) != std::wstring::npos) 
 	{
-		wxColourDialog dialog(this);
-		if (dialog.ShowModal() == wxID_OK)
-		{
-			wxColourData colData = dialog.GetColourData();
-			wxColour wxCol = colData.GetColour();
-			Colour col(wxCol.Red(),wxCol.Green(),wxCol.Blue());
-			selectedColourMap->SetColour(col,0 );
-		}
-		else
-			return
+		Colour col = GetCustomUniformColour();
+		selectedColourMap->SetColour( col ,0 );
 	}
 
 	for(unsigned int i = 0; i < m_colourPickers.size(); ++i)
