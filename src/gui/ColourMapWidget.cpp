@@ -365,7 +365,13 @@ void ColourMapWidget::SetColourMap()
 	for(unsigned int i = 0; i < m_colourPickers.size(); ++i)
 	{
 		Colour colour;
-		if(selectedColourMap->GetType() == ColourMap::DISCRETE)
+		if( (selectedColourMap->GetType() == ColourMap::DISCRETE) && 
+			(selectedColourMap->GetName().find(_T("Uniform")) != std::wstring::npos) )
+		{
+			m_colourMap->SetType(ColourMap::DISCRETE);
+			colour = selectedColourMap->GetColour(0);
+		}
+		else if(selectedColourMap->GetType() == ColourMap::DISCRETE)
 		{
 			m_colourMap->SetType(ColourMap::DISCRETE);
 			colour = selectedColourMap->GetColour(i);
