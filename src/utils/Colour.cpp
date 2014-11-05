@@ -62,10 +62,10 @@ Colour::Colour()
 template<class Archive>
 void Colour::serialize(Archive & ar, const unsigned int file_version)
 {
-	ar & m_red;   // float
-	ar & m_blue;  // float
-	ar & m_green; // float
-	ar & m_alpha; // float
+	ar & m_red;				// float
+	ar & m_blue;			// float
+	ar & m_green;			// float
+	ar & m_alpha;			// float
 }
 template void Colour::serialize<boost::archive::text_woarchive>(boost::archive::text_woarchive& ar, const unsigned int version); 
 template void Colour::serialize<boost::archive::text_wiarchive>(boost::archive::text_wiarchive& ar, const unsigned int version);

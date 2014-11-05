@@ -53,13 +53,9 @@ void GeoTreeLinearLayout::LayoutCladogram2D(Tree<NodeGeoTree>::Ptr tree, LayoutL
 		node->SetGridCoord(Point3D(Node::NO_DISTANCE, Node::NO_DISTANCE, Node::NO_DISTANCE));
 	}
 
-	// evenly distribute leaf nodes along the layout line
+	// distribute leaf nodes along the layout line
 	std::vector<NodeGeoTree*> leafNodes = tree->GetLeaves();
-	float dx = 1.0 / (leafNodes.size()-1);	
-	for(uint i = 0; i < leafNodes.size(); ++i)
-	{
-		leafNodes.at(i)->SetGridCoord(Point3D(i*dx, 0.0, 0.0));
-	}
+	DistributeLeafNodes(leafNodes);
 
 	// each internal node should be set to the mean of its immediate children
 	std::vector<NodeGeoTree*> curNodes = tree->GetLeaves();
@@ -123,13 +119,9 @@ void GeoTreeLinearLayout::LayoutSlantedCladogram2D(Tree<NodeGeoTree>::Ptr tree, 
 	// x,y plane with leaf nodes along the x-axis. It is than scaled, 
 	// rotated, and translate into the desired position.
 
-	// evenly distribute leaf nodes along the layout line
+	// distribute leaf nodes along the layout line
 	std::vector<NodeGeoTree*> leafNodes = tree->GetLeaves();
-	float dx = 1.0 / (leafNodes.size()-1);	
-	for(unsigned int i = 0; i < leafNodes.size(); ++i)
-	{
-		leafNodes.at(i)->SetGridCoord(Point3D(i*dx, 0.0, 0.0));
-	}
+	DistributeLeafNodes(leafNodes);
 
 	// position root node 
 	tree->GetRootNode()->SetGridCoord(Point3D(0.5, 1.0, 0.0));
@@ -408,4 +400,39 @@ bool GeoTreeLinearLayout::CalculateMean(const std::vector<Point3D>&  points, Poi
 	mean.z = z;
 
 	return true;
+}
+
+void GeoTreeLinearLayout::DistributeLeafNodes( std::vector<NodeGeoTree*> &leafNodes ) 
+{
+	//collapsedScaling determines how much space collapsed subtrees will get on the layout line
+	float collapsedScalingFactor = 0.2f;
+
+	//find how many spaces will be adjusted to the collapsed size
+	uint numSmallSpaces = 0;
+	for (uint i = 0; i < leafNodes.size(); ++i)
+	{
+		bool nextIsCollapsed = i < leafNodes.size()-1 && leafNodes.at(i+1)->IsCollapsed();
+		if ( leafNodes.at(i)->IsCollapsed() && nextIsCollapsed )
+		{
+			numSmallSpaces++;
+		}
+	}
+
+	//Set the grid coordinates of the leaf nodes
+	float dx = 1.0 / ( ((leafNodes.size() - numSmallSpaces) + numSmallSpaces * collapsedScalingFactor) - 1);
+	float currentPoint = 0.0f;
+	for(uint i = 0; i < leafNodes.size(); ++i)
+	{
+		leafNodes.at(i)->SetGridCoord(Point3D(currentPoint, 0.0, 0.0));
+
+		bool nextIsCollapsed = i < leafNodes.size()-1 && leafNodes.at(i+1)->IsCollapsed();
+		if ( leafNodes.at(i)->IsCollapsed() && nextIsCollapsed )
+		{
+			currentPoint += dx*collapsedScalingFactor;
+		}
+		else
+		{
+			currentPoint += dx;
+		}
+	}
 }

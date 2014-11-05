@@ -57,6 +57,8 @@ namespace GenGIS
 		/** Get stage of layout line construction. */
 		STAGE GetStage() const { return m_stage; }
 
+		void SetStage(STAGE stage) { m_stage = stage; }
+
 		/** Show properties dialog for this view. */
 		void ShowPropertiesDlg();
 

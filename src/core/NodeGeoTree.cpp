@@ -43,6 +43,7 @@ void NodeGeoTree::serialize(Archive & ar, const unsigned int version)
 	ar & m_bSelected;       // bool
 	ar & m_crossings;       // uint
 	ar & m_bActive;         // bool
+	ar & m_bCollapsed;		// bool
 }
 template void NodeGeoTree::serialize<boost::archive::text_woarchive>(boost::archive::text_woarchive& ar, const unsigned int version);
 template void NodeGeoTree::serialize<boost::archive::text_wiarchive>(boost::archive::text_wiarchive& ar, const unsigned int version);

@@ -121,7 +121,7 @@ class GBIFGeneric:
 			new_coords.append((minl,maxl,minlongitude,maxlongitude))
 		return(new_coords)	
 		
-	def WRITEEXPORT(self,outfile,outtext,header):
+	def WRITEEXPORT(self,outfile,outtext,header=""):
 		try:
 			OUTL=open(outfile,'w')
 			if(len(header)>0):

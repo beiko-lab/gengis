@@ -349,6 +349,27 @@ namespace GenGIS
 		/** Hide location in OpenGL viewport. */
 		void OnHideLocation ( wxCommandEvent& event );
 
+		/** Restore the original tree */
+		void OnRestoreTree ( wxCommandEvent& event );
+
+		/** Zoom into selected subtree */
+		void OnZoomIntoSubtree ( wxCommandEvent& event );
+
+		/** Collapse all subtrees in which all nodes are the same colour */
+		void OnRemoveHomogeneousSubtrees ( wxCommandEvent& event );
+
+		/** Collapse a subtree, displayed as a coloured triangle */
+		void OnCollapseSubtree ( wxCommandEvent& event );
+
+		/** Uncollapse a collapsed subtree */
+		void OnExpandSubtree ( wxCommandEvent& event );
+
+		/** Zoom out of a zoomed in subtree, retains collapsed nodes */
+		void OnZoomOutOfSubtree ( wxCommandEvent& event );
+
+		/** Split the tree into 2 at selected node */
+		void OnSplitTree ( wxCommandEvent& event );
+
 		/** Handle the erase event for the main form which is generated
 		whenever a window's background needs to be repainted. */
 		void OnEraseBackground( wxEraseEvent& event ){ /* prevent flicker */ }
