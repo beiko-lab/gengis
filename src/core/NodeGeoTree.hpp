@@ -52,7 +52,7 @@ namespace GenGIS
 		*/
 		explicit NodeGeoTree(int id) :
 			NodePhylo(id), m_gridCoord(Point3D(NO_DISTANCE, NO_DISTANCE)), m_bSelected(false), m_bProcessed(false),
-			m_crossings(0), m_baryCenter(0), m_layoutPos(0), m_layoutDist(0), m_bActive(true) {}
+			m_crossings(0), m_baryCenter(0), m_layoutPos(0), m_layoutDist(0), m_bActive(true), m_bCollapsed(false) {}
 
 		/**
 		* @brief Constructor.
@@ -61,7 +61,7 @@ namespace GenGIS
 		*/
 		explicit NodeGeoTree(int id,  const std::wstring & name) :
 			NodePhylo(id, name), m_gridCoord(Point3D(NO_DISTANCE, NO_DISTANCE)), m_bSelected(false), m_bProcessed(false),
-			m_crossings(0),	m_baryCenter(0), m_layoutPos(0), m_layoutDist(0), m_bActive(true) {}
+			m_crossings(0),	m_baryCenter(0), m_layoutPos(0), m_layoutDist(0), m_bActive(true), m_bCollapsed(false) {}
 
 		/** Destructor. */
 		~NodeGeoTree() {}
@@ -110,6 +110,7 @@ namespace GenGIS
 			m_bSelected       = node.GetSelected();
 			m_crossings       = node.GetNumCrossings();
 			m_bActive         = node.GetActive();
+			m_bCollapsed	  = node.IsCollapsed();
 		}
 
 		/** 
@@ -212,6 +213,15 @@ namespace GenGIS
 		/** Get the id of the corresponding location layer.  */
 		uint GetLocationLayerId() const { return m_locationLayerId; }
 
+		/** Get flag indicating if the node is in a collapsed subtree */
+		bool IsCollapsed() const { return m_bCollapsed; }
+
+		/** Check if the node is the parent node of a collapsed subtree */
+		bool IsCollapsedParent() const { return ( !m_bCollapsed && !m_children.empty() && GetChild(0)->IsCollapsed() ); }
+
+		/** Set flag indicating if the node is in a collapsed subtree */
+		void SetCollapsed(bool collapsed) { m_bCollapsed = collapsed; }
+
 	private:
 		/** Serialization. */
 		friend class boost::serialization::access;
@@ -255,6 +265,9 @@ namespace GenGIS
 
 		/** Flag indicating if node is in the active set (i.e., nodes that should be considered in an analysis). */
 		bool m_bActive;
+
+		/** Flag indicating if node is in a collapsed subtree */
+		bool m_bCollapsed;
 	};
 
 } 

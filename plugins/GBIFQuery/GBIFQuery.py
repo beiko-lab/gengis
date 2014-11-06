@@ -180,6 +180,7 @@ class GBIFQuery(GBIFQueryLayout):
 			OUTLArray.insert(0,"Site ID,Latitude,Longitude,Cell ID,Taxon,Genus")
 			#OUTSArray.insert(0,"Sequence ID,Site ID,CellLat,CellLong,Taxon,Genus,TrueLat,TrueLong,Count,AllRecords")					
 			OUTSArray.insert(0,"Sequence ID,Site ID,Taxon,Genus,TrueLat,TrueLong,Count,AllRecords")					
+			print OUTLArray
 			OUTLArray.pop()
 			OUTSArray.pop()
 			layerName = "GBIFLayer_%d" % GenGIS.layerTree.GetNumLocationSetLayers()

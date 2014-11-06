@@ -1,5 +1,5 @@
 /*
-Copyright or © or Copr. CNRS, (November 16, 2004)
+Copyright or ï¿½ or Copr. CNRS, (November 16, 2004)
 
 This software is a computer program whose purpose is to provide classes
 for phylogenetic data analysis.
@@ -61,6 +61,7 @@ knowledge of the CeCILL license and that you accept its terms.
 #include "../core/Precompiled.hpp"
 #include "../utils/Log.hpp"
 #include "../utils/TreeTools.hpp"
+#include "../core/NodeGeoTree.hpp"
 
 #include <ostream>
 
@@ -105,6 +106,15 @@ namespace GenGIS
 		typename Tree::Ptr Clone() const
 		{
 			return typename Tree::Ptr(new Tree<N>(*this));
+		}
+
+		/** Clone tree with no collapsed nodes. */
+//		Tree<NodeGeoTree>::Ptr CloneUncollapsed() const
+		typename Tree::Ptr CloneUncollapsed() const
+		{
+			Tree<NodeGeoTree>::Ptr tree = Tree<NodeGeoTree>::Ptr(new Tree<NodeGeoTree>(*this));
+			tree->UncollapseAllNodes(tree->GetRootNode());
+			return tree;
 		}
 
 	public:
@@ -331,7 +341,12 @@ namespace GenGIS
 		*/
 		void ScaleTree(float factor);
 
-	protected:		
+		/** Uncollapse all nodes in the subtree defined by the node parameter */
+		void UncollapseAllNodes(NodeGeoTree* node);
+
+		/** Remove the subtree from the tree then destroy the subtree */
+		void PruneSubtree(N* node);
+		
 		void DestroySubtree(N* node);
 
 	protected:
@@ -485,6 +500,57 @@ namespace GenGIS
 		for(unsigned int i = 0; i < m_root->GetNumberOfChildren(); i++)
 		{
 			TreeTools<N>::ScaleTree(m_root->GetChild(i), factor);
+		}
+	}
+
+	template <class N>
+	void Tree<N>::PruneSubtree(N* node)
+	{
+		if (node->IsRoot())
+			return;
+
+		N* parent = node->RemoveParent();
+		parent->RemoveChild(node);
+
+		if ( parent->GetChildren().size() == 1 )
+		{
+			N* child = parent->GetChild(0);
+
+			if ( parent->IsRoot() )
+			{
+				child->SetParent(NULL);
+				child->SetDistanceToParent(Node::NO_DISTANCE);
+				m_root = child;
+				delete parent;
+			}
+			else
+			{
+				N* grandparent = parent->GetParent();
+				grandparent->AddChild(child);
+
+				if(child->GetDistanceToParent() != Node::NO_DISTANCE)
+				{
+					child->SetDistanceToParent(child->GetDistanceToParent() + parent->GetDistanceToParent());
+				}
+
+				grandparent->RemoveChild(parent);
+				delete parent;
+			}
+			parent = NULL;
+		}
+
+		DestroySubtree(node);
+		delete node;
+	}
+
+	template <>
+	inline void Tree<NodeGeoTree>::UncollapseAllNodes(NodeGeoTree* node)
+	{
+		node->SetCollapsed( false );
+
+		for (uint i = 0; i < node->GetNumberOfChildren(); i++)
+		{
+			Tree<NodeGeoTree>::UncollapseAllNodes( node->GetChild(i) );
 		}
 	}
 

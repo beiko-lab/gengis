@@ -287,6 +287,13 @@ void GenGisFrame::ConnectEvents()
 	this->Connect( ID_POPUP_MNU_EXTEND_POLYLINE, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GenGisFrame::OnExtendGeographicPolyline ) );
 	this->Connect( ID_POPUP_MNU_LINEAR_AXES_ANALYSIS, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GenGisFrame::OnPerformLinearAxesAnalysisPopup ) );
 	this->Connect( ID_POPUP_MNU_SHOW_GEOGRAPHIC_AXIS_TABLE, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GenGisFrame::OnShowNonLinearAxisTablePopup ) );
+	this->Connect( ID_POPUP_MNU_RESTORE_TREE, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GenGisFrame::OnRestoreTree ) );
+	this->Connect( ID_POPUP_MNU_ZOOM_INTO_SUBTREE, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GenGisFrame::OnZoomIntoSubtree ) );
+	this->Connect( ID_POPUP_MNU_ZOOM_OUT_OF_SUBTREE, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GenGisFrame::OnZoomOutOfSubtree ) );
+	this->Connect( ID_POPUP_MNU_REMOVE_HOMOG_SUBTREES, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GenGisFrame::OnRemoveHomogeneousSubtrees ) );
+	this->Connect( ID_POPUP_MNU_COLLAPSE_SUBTREE, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GenGisFrame::OnCollapseSubtree ) );
+	this->Connect( ID_POPUP_MNU_EXPAND_SUBTREE, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GenGisFrame::OnExpandSubtree ) );
+	this->Connect( ID_POPUP_MNU_SPLIT_TREE, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GenGisFrame::OnSplitTree ) );
 }
 
 void GenGisFrame::DisconnectEvents()
@@ -340,6 +347,13 @@ void GenGisFrame::DisconnectEvents()
 	this->Disconnect( ID_POPUP_MNU_EXTEND_POLYLINE, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GenGisFrame::OnExtendGeographicPolyline ) );
 	this->Disconnect( ID_POPUP_MNU_LINEAR_AXES_ANALYSIS, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GenGisFrame::OnPerformLinearAxesAnalysisPopup ) );
 	this->Disconnect( ID_POPUP_MNU_SHOW_GEOGRAPHIC_AXIS_TABLE, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GenGisFrame::OnShowNonLinearAxisTablePopup ) );
+	this->Disconnect( ID_POPUP_MNU_RESTORE_TREE, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GenGisFrame::OnRestoreTree ) );
+	this->Disconnect( ID_POPUP_MNU_ZOOM_INTO_SUBTREE, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GenGisFrame::OnZoomIntoSubtree ) );
+	this->Disconnect( ID_POPUP_MNU_ZOOM_OUT_OF_SUBTREE, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GenGisFrame::OnZoomOutOfSubtree ) );
+	this->Disconnect( ID_POPUP_MNU_REMOVE_HOMOG_SUBTREES, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GenGisFrame::OnRemoveHomogeneousSubtrees ) );
+	this->Disconnect( ID_POPUP_MNU_COLLAPSE_SUBTREE, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GenGisFrame::OnCollapseSubtree ) );
+	this->Disconnect( ID_POPUP_MNU_EXPAND_SUBTREE, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GenGisFrame::OnExpandSubtree ) );
+	this->Connect( ID_POPUP_MNU_SPLIT_TREE, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GenGisFrame::OnSplitTree ) );
 }
 
 void GenGisFrame::AddConsolePanel(wxPanel* panel, wxString name)
@@ -3031,6 +3045,61 @@ void GenGisFrame::OnHideLocation ( wxCommandEvent& event )
 	}
 }
 
+void GenGisFrame::OnRestoreTree ( wxCommandEvent& event ) 
+{
+	GetSelectedTree()->GetGeoTreeView()->RestoreTree();
+	App::Inst().GetViewport()->Refresh();
+}
+
+void GenGisFrame::OnZoomIntoSubtree ( wxCommandEvent& event ) 
+{
+	NodeGeoTree* selectedNode = GetSelectedTree()->GetGeoTreeView()->GetSelectedNode();
+	GetSelectedTree()->GetGeoTreeView()->ZoomIntoSubtree(selectedNode);
+	App::Inst().GetViewport()->Refresh();
+}
+
+void GenGisFrame::OnZoomOutOfSubtree ( wxCommandEvent& event )
+{
+	GetSelectedTree()->GetGeoTreeView()->ZoomOutOfSubtree();
+	App::Inst().GetViewport()->Refresh();
+}
+
+void GenGisFrame::OnRemoveHomogeneousSubtrees ( wxCommandEvent& event ) 
+{
+	NodeGeoTree* selectedNode = GetSelectedTree()->GetGeoTreeView()->GetSelectedNode();
+	GetSelectedTree()->GetGeoTreeView()->RemoveHomogeneousSubtrees( selectedNode );
+	GetSelectedTree()->GetGeoTreeView()->ForceTreeLayout();
+	App::Inst().GetViewport()->Refresh();
+}
+
+void GenGisFrame::OnCollapseSubtree ( wxCommandEvent& event )
+{
+	NodeGeoTree* selectedNode = GetSelectedTree()->GetGeoTreeView()->GetSelectedNode();
+	GetSelectedTree()->GetGeoTreeView()->CollapseSubtree( selectedNode );
+	GetSelectedTree()->GetGeoTreeView()->ForceTreeLayout();
+	App::Inst().GetViewport()->Refresh();
+}
+
+void GenGisFrame::OnExpandSubtree ( wxCommandEvent& event )
+{
+	NodeGeoTree* selectedNode = GetSelectedTree()->GetGeoTreeView()->GetSelectedNode();
+	GetSelectedTree()->GetGeoTreeView()->ExpandSubtree( selectedNode );
+	GetSelectedTree()->GetGeoTreeView()->ForceTreeLayout();
+	App::Inst().GetViewport()->Refresh();
+}
+
+void GenGisFrame::OnSplitTree ( wxCommandEvent& event )
+{
+	NodeGeoTree* selectedNode = GetSelectedTree()->GetGeoTreeView()->GetSelectedNode();
+	GetSelectedTree()->GetGeoTreeView()->SplitTree( selectedNode, m_layoutLine );
+
+	//If there was an active layout line, it was used up by the new tree and should be replaced by an empty pointer
+	if (m_layoutLine)
+		m_layoutLine.reset();
+
+	App::Inst().GetViewport()->Refresh();
+}
+
 void GenGisFrame::OnLayerRemove( wxCommandEvent& event ) 
 { 
 	int answer;
@@ -3418,6 +3487,11 @@ void GenGisFrame::OnPerformLinearAxesAnalysisPopup( wxCommandEvent& event )
 {
 	TreeLayerPtr treeLayer = GetSelectedTree();
 
+	if (treeLayer->GetGeoTreeView()->GetRootNode()->GetChildren().empty())
+	{
+		return;
+	}
+
 	NodeGeoTree* selectedNode = treeLayer->GetGeoTreeView()->GetSelectedNode();
 	std::vector<LinearResults> results = treeLayer->GetGeoTreeView()->PerformLinearAxesAnalysis(selectedNode);
 
@@ -3543,6 +3617,11 @@ void GenGisFrame::OnTreeSignificanceTest( wxCommandEvent& event )
 void GenGisFrame::OnTreeSignificanceTestPopup( wxCommandEvent& event )
 {
 	TreeLayerPtr treeLayer = GetSelectedTree();
+
+	if (treeLayer->GetGeoTreeView()->GetRootNode()->GetChildren().empty())
+	{
+		return;
+	}
 
 	std::map<uint, uint> pdf;
 	uint originalNumberCrossings;

@@ -52,7 +52,7 @@ class ShowSpreadLayout ( wx.Frame ):
 		
 		m_SortChoiceChoices = [ u"Descending", u"Ascending" ]
 		self.m_SortChoice = wx.Choice( self.m_Page1, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, m_SortChoiceChoices, 0 )
-		self.m_SortChoice.SetSelection( 0 )
+		self.m_SortChoice.SetSelection( 1 )
 		fgSizer1.Add( self.m_SortChoice, 0, wx.ALL|wx.EXPAND|wx.ALIGN_CENTER_VERTICAL, 5 )
 		
 		self.m_StartText = wx.StaticText( self.m_Page1, wx.ID_ANY, u"Start", wx.DefaultPosition, wx.DefaultSize, 0 )

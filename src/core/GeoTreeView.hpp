@@ -82,6 +82,9 @@ namespace GenGIS
 		*/
 		explicit GeoTreeView(Tree<NodeGeoTree>::Ptr tree, boost::shared_ptr<Layer> mapLayer);
 
+		/** Copy constructor */
+		GeoTreeView( const GeoTreeView& rhs );
+
 		/** Destructor. */
 		~GeoTreeView() { gluDeleteQuadric(m_markerQuadric); }
 
@@ -123,7 +126,12 @@ namespace GenGIS
 		/** 
 		* @brief Restore original tree.
 		*/
-		void RestoreTree() { m_tree = m_originalTree->Clone(); ForceTreeLayout(); }
+		void RestoreTree() 
+		{ 
+			m_selectedNode = NULL;
+			m_tree = m_originalTree->Clone();
+			ForceTreeLayout(); 
+		}
 
 		/**
 		* @brief Get current tree.
@@ -238,7 +246,7 @@ namespace GenGIS
 		void SetLineThickness(float thickness) { m_lineThickness = thickness; }
 
 		/** Get 2D tree orientation. */
-		float GetOrientation() const { return m_orientation; }
+		ORIENTATION GetOrientation() const { return m_orientation; }
 
 		/** Set 2D tree orientation. */
 		void SetOrientation(ORIENTATION orientation);
@@ -303,14 +311,22 @@ namespace GenGIS
 		/** Get/set location lines. */
 		VisualLines& LocationLines() { return m_locationLines; }
 
+		Colour GetLocationLinesColour() const { return m_locationLines.GetColour(); }
+		VisualLine::LINE_STYLE GetLocationLinesStyle() const { return m_locationLines.GetLineStyle(); }
+
 		/** Get/set correlation lines. */
 		VisualLines& CorrelationLines() { return m_correlationLines; }
+
+		Colour GetCorrelationLinesColour() const { return m_correlationLines.GetColour(); }
+		VisualLine::LINE_STYLE GetCorrelationLinesStyle() const { return m_correlationLines.GetLineStyle(); }
 
 		/** Get/set geography line. */
 		VisualLine& GeographyLine() { return m_geographyLine; }
 
 		/** Get/set geographic points. */
 		VisualPoints& GeographicPoints() { return m_geoPts; }
+
+		Colour GetGeoPtsColour() const { return m_geoPts.GetColour(); }
 
 		/* Set offset of geography line percentage (in percentage of layout line length). */
 		void SetGeographyLineOffsetPercentage(float offset) { m_geographyLineOffsetPercentage = offset; }
@@ -367,7 +383,7 @@ namespace GenGIS
 		Colour GetBranchBorderColour() const { return m_branchBorderColour; }
 
 		void SetTreeColourStyle(TREE_COLOUR_STYLE style) { m_treeColourStyle = style; }
-		TREE_COLOUR_STYLE GetTreeColourStyle() { return m_treeColourStyle; }
+		TREE_COLOUR_STYLE GetTreeColourStyle() const { return m_treeColourStyle; }
 
 		/** Set flag indicating if order of geographic points specified by a geographic axis should be reversed. */
 		void SetReverseOrderGeographicPts(bool state) { m_bReverseOrderGeographicPts = state; ForceTreeLayout(); }
@@ -490,6 +506,32 @@ namespace GenGIS
 
 		/** Set desired ordering of nonlinear polylines. */
 		void SetNonlinearAxisOrdering(uint bestOrdering);
+
+		/** Collapses subtrees in which all children are the same colour */
+		void RemoveHomogeneousSubtrees( NodeGeoTree* node );
+
+		/** Collapses a subtree */
+		void CollapseSubtree( NodeGeoTree* node );
+
+		/** Renders a collapsed subtree */
+		void RenderCollapsedSubtree( NodeGeoTree* parent );
+
+		/** Uncollapses a collapsed subtree */
+		void ExpandSubtree( NodeGeoTree* node );
+
+		/** Restores original tree after zooming in while retaining collapsed subtrees */
+		void ZoomOutOfSubtree();
+
+		/** Enlarges the subtree */
+		void ZoomIntoSubtree( NodeGeoTree* selectedNode );
+
+		/** Saves the Ids of collapsed parents outside of the subtree specified by selectedNode */
+		void SaveParentsIdOutsideOfSubtree( NodeGeoTree* root, NodeGeoTree* selectedNode );
+
+		/** Splits the tree into 2 trees from the specified node
+		*** If an empty LayoutLinePtr is passed in, the split tree's layout line
+		*** will take up a portion of the original tree's layout line space */
+		void SplitTree( NodeGeoTree* node, LayoutLinePtr layoutLine );
 
 	protected:
 		/** Render 3D tree or 2D tree along layout line. */
@@ -803,6 +845,9 @@ namespace GenGIS
 		wxArrayString m_nonlinearPermutationStrs;
 
 		FIRST_PROJECT m_lastProjection;
+
+		/** Vector of collapsed parent ids that need to be restored when zooming out of a subtree */
+		std::vector<unsigned int> m_savedCollapsedParentsId;
 	};
 
 }

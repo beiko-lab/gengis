@@ -78,6 +78,9 @@ namespace GenGIS
 		/** Assign colours to field values based on colour map. */
 		void SetColourMap();
 
+		/** Changes the colour provided and returns 1 on success ( a colour is chosen) and 0 on failure*/
+		bool GetCustomUniformColour(Colour &col);
+
 		/** Set colour map. */
 		void SetColourMap(ColourMapDiscretePtr colourMap)
 		{
