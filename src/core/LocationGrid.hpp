@@ -31,10 +31,98 @@
 #include "../utils/StringTools.hpp"
 #include "../core/TileModel.hpp"
 
+#include "../core/BST.hpp"
+//#include "../red-black/RedBlackTree.h"
+#include "../red-black/PokeTree.h"
+
 //#include "../utils/ColourMapDiscrete.hpp"
 
 namespace GenGIS
 {
+	// A simpe struct to store tile bounds.
+	struct locBound
+	{
+		locBound( Point2D tL, Point2D bR ): topLeft(tL), botRight(bR){ }
+		Point2D topLeft;
+		Point2D botRight;
+
+		// custom contains function: 0 = contains, 1 = larger, -1 = smaller
+		int Contains(Point2D loc)
+		{
+			// if loc is within tile
+			if( ( topLeft.x <= loc.x && loc.x <= botRight.x) && ( botRight.y <= loc.y && loc.y <= topLeft.y ) )
+			{
+				return 0;
+			}
+			// if less than
+			else if( ( loc.x < topLeft.x && loc.y > botRight.y ) || ( loc.x > topLeft.x && loc.y > topLeft.y ) )
+				return -1;
+			else if( (loc.x < botRight.x && loc.y < topLeft.y ) || (loc.x > botRight.x && loc.y < topLeft.y ) )
+				return 1;
+			// some error has happened
+			return 99;	
+		}
+
+		Point2D GetTopLeft(){ return topLeft;}
+		Point2D GetBottomRight(){ return botRight;}
+	};
+
+	// A simple struct to store all possible tile bounds
+	struct locationBoundArray
+	{
+		locationBoundArray(){}
+
+		// Search all tiles for a location point, return the bounds
+		locBound Search(Point2D point)
+		{	
+			bool found = false;
+			int it  = locArr.size()/2;
+			int min = 0;
+			int max = locArr.size()-1;
+	//		while( !found && ( min != max ) )
+			while( !found && ( min <= max )  )
+			{
+				it = ( max + min )/2;
+				int contained = locArr[it].Contains( point );
+				if( contained == 0 )
+					return locArr[it];
+				else if ( contained < 0 )
+				{
+					max = it - 1;
+				}
+				else
+				{
+					min = it + 1;
+				}
+			}
+			// return impossible point if it doesn't work
+			return locBound(Point2D(-190,-100),Point2D(-190,-100));
+		}
+
+		void Add(locBound b)
+		{
+			locArr.push_back(b);
+		}
+
+		void Add(Point2D tL, Point2D bR)
+		{
+			locArr.push_back( locBound(tL,bR) );
+		}
+
+		void Clear()
+		{
+			locArr.clear();
+		}
+
+		locBound At(int i)
+		{
+			return locArr[i];
+		}
+
+		std::vector<locBound> locArr;
+		
+	};
+
 	class LocationGrid : public View
 	{
 	public:
@@ -142,7 +230,10 @@ namespace GenGIS
 		Colour    GetTileUniformColour() { return m_uniformColourOfTiles; }
 		Colour	  GetTileDefaultColour() { return m_defaultColourOfTiles; }
 		bool GetVisible()												 { return IsVisible(); }
+	
 		std::vector<TileModelPtr> GetTileModels()						 { return m_tileModels; }
+		std::vector<TileModelPtr> GetPokeModels( );
+		std::vector<TileModelPtr> GetBSTModels();
 		ColourMapDiscretePtr GetColourMap()								 { return m_gridColourMap; }
 		Point2D GetMapOffset()											 { return m_mapOffset; }
 
@@ -159,7 +250,15 @@ namespace GenGIS
 
 
 		TileModelPtr FindLocationTile(Point2D loc);
-		TileModelPtr BinarySort(Point2D loc);
+		TileModelPtr BinarySearch(Point2D loc);
+
+		TileModelPtr BSTSearch(Point2D loc);
+		int GetPokeCount(){ return m_tilePokeTree.GetLocCount(); }
+		void MakeBST();
+		void InitBoundArray();
+		void MakePokeTree();
+
+
 		void SetOriginOffset( std::wstring selectedName );
 		void SetOriginOffset( Point2D coord );
 
@@ -212,6 +311,12 @@ namespace GenGIS
 		Colour    m_uniformColourOfTiles;
 		Colour	  m_defaultColourOfTiles;
 		std::vector<TileModelPtr> m_tileModels;
+		BST m_tileBST;
+		PokeTree m_tilePokeTree;
+		//	RedBlackTree<TileModelPtr> m_tilePokeTree;
+		locationBoundArray m_tileBounds;
+		
+
 		ColourMapDiscretePtr m_gridColourMap;
 		
 		// Border variables

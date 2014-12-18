@@ -54,6 +54,50 @@ namespace GenGIS
 
 		enum DATA_COMBINE { AVERAGE, STDEV, GINI, SUM };
 		
+		bool TileModel::operator >( TileModelPtr t)
+		{
+			if( this->GetTopLeft().y < t->GetTopLeft().y )
+				return true;
+			else if( this->GetTopLeft().y < t->GetTopLeft().y
+				&& this->GetTopLeft().x > t->GetTopLeft().x )
+				return true;
+			else
+				return false;
+		}
+
+		bool TileModel::operator >( Point2D point )
+		{
+			if(this->GetTopLeft().y < point.y)
+				return true;
+			else if( this->GetTopLeft().y < point.y 
+				&& this->GetTopLeft().x > point.x )
+				return true;
+			else
+				return false;
+		}
+
+		// if left is less than right
+		bool TileModel::operator <( TileModelPtr t )
+		{
+			if( this->GetTopLeft().y > t->GetTopLeft().y )
+				return true;
+			else if( this->GetTopLeft().y < t->GetTopLeft().y
+				&& this->GetTopLeft().x < t->GetTopLeft().x )
+				return true;
+			else
+				return false;
+		}
+
+		bool TileModel::operator ==( TileModelPtr t )
+		{
+			if ( (this->GetTopLeft().x == t->GetTopLeft().x)
+				&& (this->GetTopLeft().y == t->GetTopLeft().y)
+				&& (this->GetBottomRight().x == t->GetBottomRight().x)
+				&& (this->GetBottomRight().y == t->GetBottomRight().y ) )
+				return true;
+			else
+				return false;
+		}
 		/** 
 		* @brief Constuctor.
 		* @param siteId Unique id for location site.
@@ -75,6 +119,8 @@ namespace GenGIS
 			m_combinationMethod( AVERAGE )
 		{
 		}
+	
+		TileModel();
 
 		/** Destructor. */
 		~TileModel() {}
@@ -87,6 +133,13 @@ namespace GenGIS
 			return m_topLeft;
 		}
 
+		/**
+		* A function to find if a point is with a tile
+		* Returns <0 if point is smaller, 0 if contains point and >0 if point is larger.
+		*/
+		int Compare(Point2D Location);
+
+		int Compare(TileModelPtr tile);
 		/**
 		* @brief Set top left coordinate.
 		*/
@@ -239,6 +292,7 @@ namespace GenGIS
 		/** Method for data combination of tile. */
 		DATA_COMBINE m_combinationMethod;
 	};
+
 }
 
 namespace boost

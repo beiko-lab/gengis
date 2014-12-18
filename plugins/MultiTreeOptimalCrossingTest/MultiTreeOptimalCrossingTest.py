@@ -202,7 +202,7 @@ class MultiTreeOptimalCrossingTest( MultiTreeOptimalCrossingTestLayout ):
 			# print self.treeCrossingLists[loopCounter]
 			# print comparitiveAngle
 			# print self.CrossingsAtAngle(self.treeCrossingLists[loopCounter], comparitiveAngle)
-			angleFitComparisons.append(tuple[1] / float(self.CrossingsAtAngle(self.treeCrossingLists[loopCounter], comparitiveAngle)))
+			angleFitComparisons.append(tuple[1] / max(0.00000000999,float(self.CrossingsAtAngle(self.treeCrossingLists[loopCounter], comparitiveAngle))))
 			loopCounter += 1
 		print "Goodness of optimal angle for each tree: " + str(angleFitComparisons)
 		return angleFitComparisons

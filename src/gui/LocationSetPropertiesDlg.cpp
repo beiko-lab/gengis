@@ -48,6 +48,7 @@
 
 #include "../widgets/CustomColourButton.hpp"
 
+
 using namespace GenGIS;
 
 LocationSetPropertiesDlg::LocationSetPropertiesDlg(wxWindow* parent, LocationSetLayerPtr locationSetLayer, int currentPageSelection) : 
@@ -768,7 +769,11 @@ void LocationSetPropertiesDlg::InitLocationGrid()
 	locationGrid->GenerateTileCoordinates();
 	locationGrid->InitTiles();
 	locationGrid->FillTiles();
+	
+	locationGrid->InitBoundArray();
+	locationGrid->MakeBST();
 
+	std::vector<TileModelPtr> BKARHGASD = locationGrid->GetTileModels();
 	InitLocationGridColour();
 	InitLocationGridAlignment();
 
@@ -776,9 +781,9 @@ void LocationSetPropertiesDlg::InitLocationGrid()
 	locationGrid->SetGridChanged( false );
 
 	// Removes weird click anywhere bug for divide by radio boxes
-//	wxCommandEvent setting;
-//	setting.SetId(wxID_DIVIDE_BY_AXIS);
-//	OnRadioDivideBy(setting);
+	wxCommandEvent setting;
+	setting.SetId(wxID_DIVIDE_BY_AXIS);
+	OnRadioDivideBy(setting);
 }
 
 void LocationSetPropertiesDlg::InitLocationPolygons() {
@@ -1585,10 +1590,23 @@ void LocationSetPropertiesDlg::ApplyGrid()
 	{
 		// put values in tiles
 		locationGrid->FillTiles();
+	
+		locationGrid->InitBoundArray();
+
+		locationGrid->MakeBST();
+
+		locationGrid->MakePokeTree();
+
+		std::vector<TileModelPtr> BKARHGASD = locationGrid->GetBSTModels();
+		std::vector<TileModelPtr> blarharharhar = locationGrid->GetPokeModels();
+		std::vector<TileModelPtr> asdhsadhsad = locationGrid->GetTileModels();
+		int baasdjawerjaersf = locationGrid->GetPokeCount();
+		
 		wxCommandEvent dummy;
 		OnChoiceGridFieldToChartChange( dummy );
 		OnGridColourMapChange( dummy );
 		locationGrid->SetGridChanged( false );
+
 	}
 
 	// Set Colour Map
