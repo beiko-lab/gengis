@@ -771,7 +771,8 @@ void LocationSetPropertiesDlg::InitLocationGrid()
 	locationGrid->FillTiles();
 	
 	locationGrid->InitBoundArray();
-	locationGrid->MakeBST();
+//	locationGrid->MakeBST();
+	locationGrid->MakeGrid();
 
 	std::vector<TileModelPtr> BKARHGASD = locationGrid->GetTileModels();
 	InitLocationGridColour();
@@ -1593,14 +1594,15 @@ void LocationSetPropertiesDlg::ApplyGrid()
 	
 		locationGrid->InitBoundArray();
 
-		locationGrid->MakeBST();
+		locationGrid->MakeGrid();
+//		locationGrid->MakeBST();
 
-		locationGrid->MakePokeTree();
+//		locationGrid->MakePokeTree();
 
-		std::vector<TileModelPtr> BKARHGASD = locationGrid->GetBSTModels();
-		std::vector<TileModelPtr> blarharharhar = locationGrid->GetPokeModels();
-		std::vector<TileModelPtr> asdhsadhsad = locationGrid->GetTileModels();
-		int baasdjawerjaersf = locationGrid->GetPokeCount();
+//		std::vector<TileModelPtr> BKARHGASD = locationGrid->GetBSTModels();
+//		std::vector<TileModelPtr> blarharharhar = locationGrid->GetPokeModels();
+//		std::vector<TileModelPtr> asdhsadhsad = locationGrid->GetTileModels();
+//		int baasdjawerjaersf = locationGrid->GetPokeCount();
 		
 		wxCommandEvent dummy;
 		OnChoiceGridFieldToChartChange( dummy );

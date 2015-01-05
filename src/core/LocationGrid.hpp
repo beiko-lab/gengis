@@ -73,7 +73,7 @@ namespace GenGIS
 		locationBoundArray(){}
 
 		// Search all tiles for a location point, return the bounds
-		locBound Search(Point2D point)
+		locBound Search(Point2D point, int *ref)
 		{	
 			bool found = false;
 			int it  = locArr.size()/2;
@@ -83,6 +83,7 @@ namespace GenGIS
 			while( !found && ( min <= max )  )
 			{
 				it = ( max + min )/2;
+				*ref = it;
 				int contained = locArr[it].Contains( point );
 				if( contained == 0 )
 					return locArr[it];
@@ -96,6 +97,7 @@ namespace GenGIS
 				}
 			}
 			// return impossible point if it doesn't work
+			*ref = -1;
 			return locBound(Point2D(-190,-100),Point2D(-190,-100));
 		}
 
@@ -257,7 +259,7 @@ namespace GenGIS
 		void MakeBST();
 		void InitBoundArray();
 		void MakePokeTree();
-
+		void MakeGrid();
 
 		void SetOriginOffset( std::wstring selectedName );
 		void SetOriginOffset( Point2D coord );
@@ -280,6 +282,9 @@ namespace GenGIS
 		friend class boost::serialization::access;
 		template<class Archive>
 		void serialize(Archive & ar, const unsigned int version);
+		void Search();
+	//	void Insert( TileModelPtr tile, LocationLayerPtr curLoc, Point2D locPoint );
+		void Insert( TileModelPtr tile, LocationLayerPtr loc, int tileNum );
 
 	private:
 		// General variables
@@ -311,10 +316,12 @@ namespace GenGIS
 		Colour    m_uniformColourOfTiles;
 		Colour	  m_defaultColourOfTiles;
 		std::vector<TileModelPtr> m_tileModels;
+		std::map< int, TileModelPtr> m_tileShortModels;
 		BST m_tileBST;
 		PokeTree m_tilePokeTree;
 		//	RedBlackTree<TileModelPtr> m_tilePokeTree;
 		locationBoundArray m_tileBounds;
+		std::set<int> m_occupiedTiles;
 		
 
 		ColourMapDiscretePtr m_gridColourMap;

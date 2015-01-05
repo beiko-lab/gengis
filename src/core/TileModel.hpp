@@ -54,7 +54,7 @@ namespace GenGIS
 
 		enum DATA_COMBINE { AVERAGE, STDEV, GINI, SUM };
 		
-		bool TileModel::operator >( TileModelPtr t)
+		bool operator >( const TileModelPtr t)
 		{
 			if( this->GetTopLeft().y < t->GetTopLeft().y )
 				return true;
@@ -65,7 +65,7 @@ namespace GenGIS
 				return false;
 		}
 
-		bool TileModel::operator >( Point2D point )
+		bool operator >( const Point2D point )
 		{
 			if(this->GetTopLeft().y < point.y)
 				return true;
@@ -77,7 +77,7 @@ namespace GenGIS
 		}
 
 		// if left is less than right
-		bool TileModel::operator <( TileModelPtr t )
+		bool operator <( const TileModelPtr t )
 		{
 			if( this->GetTopLeft().y > t->GetTopLeft().y )
 				return true;
@@ -88,16 +88,35 @@ namespace GenGIS
 				return false;
 		}
 
-		bool TileModel::operator ==( TileModelPtr t )
+		bool operator ==( const TileModelPtr t )
 		{
-			if ( (this->GetTopLeft().x == t->GetTopLeft().x)
-				&& (this->GetTopLeft().y == t->GetTopLeft().y)
-				&& (this->GetBottomRight().x == t->GetBottomRight().x)
-				&& (this->GetBottomRight().y == t->GetBottomRight().y ) )
+			// throw in some floating point tolerance
+			if ( (abs(this->GetTopLeft().x - t->GetTopLeft().x) < 0.001)
+				&& (abs(this->GetTopLeft().y - t->GetTopLeft().y) < 0.001)
+				&& (abs(this->GetBottomRight().x - t->GetBottomRight().x) < 0.001)
+				&& (abs(this->GetBottomRight().y - t->GetBottomRight().y ) < 0.001 ) )
 				return true;
 			else
 				return false;
 		}
+	
+		bool operator==( const Point2D loc )
+		{
+		/*	if ( ( abs(this->GetTopLeft().x - t.x) < 0.00001)
+				&& (abs(this->GetTopLeft().y - t.y) < 0.00001)
+				&& (abs(this->GetBottomRight().x - t.x) < 0.00001)
+				&& (abs(this->GetBottomRight().y - t.y) < 0.00001 ) )
+				return true;
+		*/	
+			if( ( this->GetTopLeft().x <= loc.x 
+				&& loc.x <= this->GetBottomRight().x) 
+				&& ( this->GetBottomRight().y <= loc.y 
+				&& loc.y <= this->GetTopLeft().y ) )
+				return 0;
+			else
+				return false;
+		}
+	
 		/** 
 		* @brief Constuctor.
 		* @param siteId Unique id for location site.

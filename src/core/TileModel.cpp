@@ -326,3 +326,15 @@ double TileModel::GiniSimpson(std::vector<std::wstring> values)
 	return simpson;
 
 }
+/*
+bool TileModel::operator ==( const Point2D t )
+{
+	if ( (this->GetTopLeft().x == t.x)
+		&& (this->GetTopLeft().y == t.y)
+		&& (this->GetBottomRight().x == t.x)
+		&& (this->GetBottomRight().y == t.y ) )
+		return true;
+	else
+		return false;
+}
+*/	
