@@ -767,14 +767,10 @@ void LocationSetPropertiesDlg::InitLocationGrid()
 	locationGrid->SetLocationSetLayer ( m_locationSetLayer);
 	//	Initialize and fill tiles
 	locationGrid->GenerateTileCoordinates();
-	locationGrid->InitTiles();
-	locationGrid->FillTiles();
 	
 	locationGrid->InitBoundArray();
-//	locationGrid->MakeBST();
 	locationGrid->MakeGrid();
 
-	std::vector<TileModelPtr> BKARHGASD = locationGrid->GetTileModels();
 	InitLocationGridColour();
 	InitLocationGridAlignment();
 
@@ -1194,20 +1190,21 @@ void LocationSetPropertiesDlg::GetSortedFieldValues(const std::wstring& field, s
 	SortFieldValues(fieldValues);
 }
 
-void LocationSetPropertiesDlg::GetSortedGridFieldValues(const std::wstring& field, std::vector<std::wstring>& fieldValues, std::vector<TileModelPtr> m_tileModels)
+void LocationSetPropertiesDlg::GetSortedGridFieldValues(const std::wstring& field, std::vector<std::wstring>& fieldValues, std::map<int,TileModelPtr> m_tileShortModels)
 {
 	// get all unique field values within the given field
 	std::set<std::wstring> uniqueFieldValues;
-	for(unsigned int i = 0; i < m_tileModels.size(); ++i)
+	std::map<int, TileModelPtr>::iterator tile;
+	for( tile = m_tileShortModels.begin(); tile != m_tileShortModels.end(); ++tile )
 	{
-		if( m_tileModels[i]->GetNumLocations() != 0 )
+		if( tile->second->GetNumLocations() != 0 )
 		{
 			// need to check if field comes from location or sequence layer
-			std::map<std::wstring,std::wstring> data = m_tileModels[i]->GetData();
+			std::map<std::wstring,std::wstring> data = tile->second->GetData();
 			std::map<std::wstring,std::wstring>::const_iterator it = data.find(field);
 			if( it == data.end() )
 			{
-				data = m_tileModels[i]->GetSequence(0)->GetData();
+				data = tile->second->GetSequence(0)->GetData();
 				it = data.find(field);
 			}
 			uniqueFieldValues.insert(it->second);
@@ -1590,7 +1587,7 @@ void LocationSetPropertiesDlg::ApplyGrid()
 	if( locationGrid->GetGridChanged() )
 	{
 		// put values in tiles
-		locationGrid->FillTiles();
+	//	locationGrid->FillTiles();
 	
 		locationGrid->InitBoundArray();
 

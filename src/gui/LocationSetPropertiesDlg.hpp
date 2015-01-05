@@ -231,7 +231,7 @@ namespace GenGIS
 		void GetSortedFieldValues(const std::wstring& field, std::vector<std::wstring>& fieldValues);
 
 		/** Get all field values for a given field in sorted order for tiles. */
-		void GetSortedGridFieldValues(const std::wstring& field, std::vector<std::wstring>& fieldValues, std::vector<TileModelPtr> m_tileModels);
+		void GetSortedGridFieldValues(const std::wstring& field, std::vector<std::wstring>& fieldValues, std::map<int, TileModelPtr> m_tileShortModels);
 
 		/** Sort field values either in lexigraphically or numerically. */
 		void SortFieldValues(std::vector<std::wstring>& fieldValues);

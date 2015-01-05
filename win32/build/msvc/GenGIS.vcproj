@@ -199,10 +199,6 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\src\core\BST.cpp"
-					>
-				</File>
-				<File
 					RelativePath="..\..\..\src\core\Camera.cpp"
 					>
 				</File>
@@ -807,18 +803,6 @@
 					>
 				</File>
 			</Filter>
-			<Filter
-				Name="red-black"
-				>
-				<File
-					RelativePath="..\..\..\src\red-black\PokeTree.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\..\src\red-black\RedBlackTree.cpp"
-					>
-				</File>
-			</Filter>
 		</Filter>
 		<Filter
 			Name="Header Files"
@@ -838,10 +822,6 @@
 				</File>
 				<File
 					RelativePath="..\..\..\src\core\BarChartView.hpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\..\src\core\BST.hpp"
 					>
 				</File>
 				<File

@@ -37,9 +37,6 @@
 
 #include "../utils/ErrorGL.hpp"
 
-#include <boost/timer.hpp>
-
-
 using namespace GenGIS;
 
 LocationGrid::LocationGrid() :
@@ -72,7 +69,7 @@ LocationGrid::LocationGrid() :
 	m_styleOfBorders( VisualLine::SOLID ),
 	
 //	m_tilePokeTree(),
-	m_tileBST(),
+//	m_tileBST(),
 	m_tileBounds()
 {
 	// Property of 'Layer' class
@@ -290,125 +287,10 @@ void LocationGrid::GenerateTileCoordinates()
 
 	if ( m_gridChanged )
 	{
-		InitTiles();
+	//	InitTiles();
+		InitBoundArray();
 	}
 }
-/*
-void LocationGrid::Render()
-{
-	if( !IsVisible() )
-		return;
-
-	ColourMapDiscretePtr m_colourMap = m_locationSetLayer->GetLocationSetController()->GetColourMap();
-
-	// Colour palette for tiles (temporary)
-	float alphaOfTile = m_uniformColourOfTiles.GetAlpha();
-	error::ErrorGL::Check();
-	glDisable( GL_LIGHTING );
-
-	// Render borders (lines)
-	if ( m_showBorders )
-	{
-		// Set OpenGL options
-		glColor4f( m_colourOfBorders.GetRed(), m_colourOfBorders.GetGreen(),
-			m_colourOfBorders.GetBlue(), m_colourOfBorders.GetAlpha() );
-		glEnable (GL_LINE_SMOOTH);
-		glEnable (GL_BLEND);
-		glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-		glHint (GL_LINE_SMOOTH_HINT, GL_DONT_CARE);
-		glLineWidth( m_thicknessOfBorders * App::Inst().GetResolutionFactor() );
-		glEnable( GL_LINE_STIPPLE );
-		glLineStipple( 2, m_styleOfBorders );
-
-		glBegin( GL_LINES );
-		std::list<double>::iterator col;
-		std::list<double>::iterator row;
-		for ( col = m_xCoordinates.begin(); col != m_xCoordinates.end(); ++col )
-		{
-			// Draw column borders
-			glVertex3f( *col,  m_elevationUsed, m_mapOpenGLBoundaries.y  );
-			glVertex3f( *col,  m_elevationUsed, m_mapOpenGLBoundaries.dy );
-		}
-		for ( row = m_yCoordinates.begin(); row != m_yCoordinates.end(); ++row )
-		{
-			// Draw row borders
-			glVertex3f( m_mapOpenGLBoundaries.x,  m_elevationUsed, *row );
-			glVertex3f( m_mapOpenGLBoundaries.dx, m_elevationUsed, *row );
-		}
-		glEnd();
-	}
-
-	// Render tiles
-	if ( m_showTiles )
-	{
-		if ( m_tileFillMode == UNIFORM )
-		{
-			glBegin( GL_QUADS );
-
-			glColor4f( m_uniformColourOfTiles.GetRed(), m_uniformColourOfTiles.GetGreen(),
-				m_uniformColourOfTiles.GetBlue(), m_uniformColourOfTiles.GetAlpha() );
-
-			glVertex3f( m_mapOpenGLBoundaries.x,  m_elevationUsed, m_mapOpenGLBoundaries.y  );
-			glVertex3f( m_mapOpenGLBoundaries.x,  m_elevationUsed, m_mapOpenGLBoundaries.dy );
-			glVertex3f( m_mapOpenGLBoundaries.dx, m_elevationUsed, m_mapOpenGLBoundaries.dy );
-			glVertex3f( m_mapOpenGLBoundaries.dx, m_elevationUsed, m_mapOpenGLBoundaries.y  );
-
-			glEnd();
-		}
-		else if ( m_tileFillMode == MAPPED )
-		{
-			// Render tiles from a stored list of previously generated coordinates
-			glBegin( GL_QUADS );
-			
-			int i = 0;
-			MapModelPtr mapModel = App::Inst().GetMapController()->GetMapModel();
-			std::list<double>::iterator row1, row2, col1, col2;
-			row2 = m_yCoordinates.begin(); row2++;
-			//row heads of each tile
-			for ( row1 = m_yCoordinates.begin(); row2 != m_yCoordinates.end(); ++row1 )
-			{
-				col2 = m_xCoordinates.begin(); col2++;
-					
-				//column heads of each tile
-				for ( col1 = m_xCoordinates.begin(); col2 != m_xCoordinates.end(); ++col1 )
-				{
-					Colour tileColour = m_tileModels[i]->GetColour();	
-					//emulate previous with poke nodes				
-				/*	Point3D topLeftCoord(*col1,m_elevationUsed,*row1);
-					Point3D bottomRightCoord(*col2,m_elevationUsed,*row2);
-					GeoCoord topLeftGeo;
-					GeoCoord bottomRightGeo;
-					mapModel->GridToGeo(topLeftCoord,topLeftGeo);
-					mapModel->GridToGeo(bottomRightCoord,bottomRightGeo);
-					
-					
-					locBound bound = m_tileBounds.At(i);
-					std::map<std::wstring,std::wstring> empty;
-				//	TileModelPtr t(new TileModel( StringTools::ToStringW("BLARG"), bound.GetTopLeft(),bound.GetBottomRight(),empty));
-				//	Point2D t( (bound.GetTopLeft().x + bound.GetBottomRight().x)/2 , (bound.GetTopLeft().y + bound.GetBottomRight().y)/2 );
-					Point2D t( (topLeftGeo.easting + bottomRightGeo.easting)/2 , (topLeftGeo.northing + bottomRightGeo.northing)/2 );
-					TileModelPtr result = m_tileBST.Search(t);
-					Colour tileColour;
-					if( result )
-						tileColour = result->GetColour();
-					else
-						tileColour = m_defaultColourOfTiles;
-		
-					glColor4f( tileColour.GetRed(), tileColour.GetGreen(), tileColour.GetBlue(), tileColour.GetAlpha() );
-					glVertex3f( *col1, m_elevationUsed, *row1 );
-					glVertex3f( *col2, m_elevationUsed, *row1 );
-					glVertex3f( *col2, m_elevationUsed, *row2 );
-					glVertex3f( *col1, m_elevationUsed, *row2 );
-					col2++;
-					i++;
-				}
-				row2++;
-			}	
-			glEnd();
-		}
-	}
-}
-*/
 
 void LocationGrid::Render()
 {
@@ -513,131 +395,14 @@ void LocationGrid::Render()
 	}
 }
 
-void LocationGrid::InitTiles()
-{
-	boost::timer t;
-	m_tileModels.clear();
-	MapModelPtr mapModel = App::Inst().GetMapController()->GetMapModel();
-	std::list<double>::iterator row1, row2, col1, col2;
-	row2 = m_yCoordinates.begin(); row2++;
-	//row heads of each tile
-	for ( row1 = m_yCoordinates.begin(); row2 != m_yCoordinates.end(); ++row1 )
-	{
-		col2 = m_xCoordinates.begin(); col2++;
-			
-		//column heads of each tile
-		for ( col1 = m_xCoordinates.begin(); col2 != m_xCoordinates.end(); ++col1 )
-		{
-			Point3D topLeftCoord(*col1,m_elevationUsed,*row1);
-			Point3D bottomRightCoord(*col2,m_elevationUsed,*row2);
-			GeoCoord topLeftGeo;
-			GeoCoord bottomRightGeo;
-			mapModel->GridToGeo(topLeftCoord,topLeftGeo);
-			mapModel->GridToGeo(bottomRightCoord,bottomRightGeo);
-			std::wstring ID = StringTools::ToStringW(topLeftGeo.easting,2); 
-			ID.append(StringTools::ToStringW("_"));
-			ID.append(StringTools::ToStringW(topLeftGeo.northing,2));
-			std::map<std::wstring,std::wstring> data;
-			TileModelPtr tile(new TileModel(ID,Point2D(topLeftGeo.easting,topLeftGeo.northing),Point2D(bottomRightGeo.easting,bottomRightGeo.northing),data));
-			m_tileModels.push_back(tile);
-			col2++;
-		}
-		row2++;
-	}
-	AssertCombinationMethod();
-	Log::Inst().Error("Standard Initiation took: " + StringTools::ToString(t.elapsed(), 4) +  " seconds.");
-}
-
-void LocationGrid::FillTiles()
-{
-	boost::timer t;
-	std::vector<LocationLayerPtr> locationLayers = m_locationSetLayer->GetAllActiveLocationLayers();
-	for( uint i = 0; i < locationLayers.size() ; i++)
-	{
-		std::map<std::wstring,std::wstring> data = locationLayers[i]->GetLocationController()->GetData();
-		float easting = StringTools::ToDouble(data[StringTools::ToStringW("Longitude")]);
-		float northing = StringTools::ToDouble(data[StringTools::ToStringW("Latitude")]);
-		
-		
-		// check if long and lat values exist. if they don't use easting and westing
-		if( easting != easting || 
-			northing != northing ||
-			!(easting<=DBL_MAX && easting >= -DBL_MAX) ||
-			!(northing<=DBL_MAX && northing >= -DBL_MAX)||
-			(!App::Inst().GetStudyController()->IsUsingProjection() &&
-			!App::Inst().GetStudyController()->IsUsingGeographic() ) )
-		{
-			easting = locationLayers[i]->GetLocationController()->GetEasting();
-			northing = locationLayers[i]->GetLocationController()->GetNorthing();
-		}
-
-		// Use Binary Search until FindLocationTile can be sorted out
-		Point3D locationCoord;
-		GeoCoord locationGeo( easting,northing );
-//		App::Inst().GetMapController()->GetMapModel()->LatLongToGrid(locationGeo,locationCoord);
-//		Point2D locPoint(locationCoord.x,locationCoord.z);
-//		TileModelPtr tile = FindLocationTile(locPoint);
-		Point2D locPoint(easting, northing);
-		TileModelPtr tile = BinarySearch(locPoint);
-		tile->AddLocationLayer(locationLayers[i]);
-	}
-	// now set tile true values for every tile
-	for ( uint j = 0; j < m_tileModels.size(); j++)
-	{
-		if(m_tileModels[j]->GetNumLocations() > 0 )
-		{
-			m_tileModels[j]->CombineData();
-			//combine sequence layers if there are any
-			if(m_tileModels[j]->GetNumSequence() > 0)
-				m_tileModels[j]->CombineSequenceData();
-
-		}
-	}
-	Log::Inst().Error("Standard Creation took: " + StringTools::ToString(t.elapsed(), 4) +  " seconds.");
-}
-/*
-std::vector<std::wstring> LocationGrid::GetSelectedValues( std::wstring field )
-{
-
-	std::map<std::wstring,std::wstring> data;
-	std::vector<std::wstring> values;
-	std::map<std::wstring,std::wstring>::const_iterator it;
-	TileModelPtr tile;
-
-	Colour colour;
-	std::vector<BSTNode *> nodes;
-	if( m_tileBST.IsHead() )
-		nodes.push_back( m_tileBST.GetHead() );
-
-	while( ! nodes.empty() )
-	{
-		BSTNode *node = nodes[0];
-		if( node != NULL )
-		{
-			//remove selected node
-			nodes.erase(nodes.begin(),nodes.begin()+1);
-			tile = node->tile;
-
-			data = tile->GetData();
-			if(! data[field].empty() )
-				values.push_back(data[field]);
-			
-			if( node->left !=NULL )
-				nodes.push_back( node->left );
-			if( node->right != NULL )
-				nodes.push_back( node->right );
-		}
-	}
-	return values;
-}
-*/
 std::vector<std::wstring> LocationGrid::GetSelectedValues( std::wstring field )
 {
 	std::vector<std::wstring> values;
-	std::vector<TileModelPtr>::iterator it;
-	for( it = m_tileModels.begin(); it != m_tileModels.end(); ++it )
+	std::map<int,TileModelPtr>::iterator it;
+	for( it = m_tileShortModels.begin(); it != m_tileShortModels.end(); ++it )
 	{
-		std::map<std::wstring,std::wstring> data = (*it)->GetData();
+
+		std::map<std::wstring,std::wstring> data = (it->second)->GetData();
 		if(! data[field].empty() )
 			values.push_back(data[field]);
 	}
@@ -648,87 +413,38 @@ std::vector<std::wstring> LocationGrid::GetSelectedValues( std::wstring field )
 
 void LocationGrid::SetLocationColours()
 {
-	for(unsigned int i = 0; i < m_tileModels.size(); ++i)
+	std::map<int,TileModelPtr>::iterator it;
+	for( it = m_tileShortModels.begin(); it != m_tileShortModels.end(); ++it )
 	{
 		Colour colour;
-		if( m_tileModels[i]->GetNumLocations() == 0 )
+		// find colour in colour map corrsponding to field value of location
+		std::map<std::wstring,std::wstring> data = (it->second)->GetData();
+		std::map<std::wstring,std::wstring>::const_iterator dataIt = data.find(m_field);
+
+		if( dataIt == data.end() )
 		{
-			colour = m_defaultColourOfTiles;
+			data = it->second->GetSequence(0)->GetData();
+			dataIt = data.find(m_field);
 		}
-		else
+		if(!m_gridColourMap->GetColour(dataIt->second, colour))
 		{
-			// find colour in colour map corrsponding to field value of location
-			std::map<std::wstring,std::wstring> data = m_tileModels.at(i)->GetData();
-			std::map<std::wstring,std::wstring>::const_iterator it = data.find(m_field);
-
-			if( it == data.end() )
-			{
-				data = m_tileModels.at(i)->GetSequence(0)->GetData();
-				it = data.find(m_field);
-			}
-			if(!m_gridColourMap->GetColour(it->second, colour))
-			{
-				Log::Inst().Error("(Error) LocationGrid::SetLocationColours(): no colour associated with name.");
-			}
-
-			// set alpha of colour
-			if (colour == m_defaultColourOfTiles)
-			{
-				colour.SetAlpha( GetDefaultTileAlpha() );
-			}
-			else 
-			{
-				colour.SetAlpha( GetTileAlpha() );
-			}
+			Log::Inst().Error("(Error) LocationGrid::SetLocationColours(): no colour associated with name.");
 		}
 
-		m_tileModels.at(i)->SetColour(colour);
+		// set alpha of colour
+		if (colour == m_defaultColourOfTiles)
+		{
+			colour.SetAlpha( GetDefaultTileAlpha() );
+		}
+		else 
+		{
+			colour.SetAlpha( GetTileAlpha() );
+		}
+		
+		it->second->SetColour(colour);
 	}
 }
 
-/*
-void LocationGrid::SetLocationColours()
-{
-	std::map<std::wstring,std::wstring> data;
-	std::map<std::wstring,std::wstring>::const_iterator it;
-	TileModelPtr tile;
-
-	Colour colour;
-	std::vector<BSTNode *> nodes;
-	if( m_tileBST.IsHead() )
-		nodes.push_back( m_tileBST.GetHead() );
-
-	while( ! nodes.empty() )
-	{
-		BSTNode *node = nodes[0];
-		if( node != NULL )
-		{
-			//remove selected node
-			nodes.erase(nodes.begin(),nodes.begin()+1);
-			tile = node->tile;
-
-			data = tile->GetData();
-			it = data.find(m_field);
-			if( it == data.end() )
-					{
-						data = tile->GetSequence(0)->GetData();
-						it = data.find(m_field);
-					}
-			}
-			if(!m_gridColourMap->GetColour(it->second, colour))
-			{
-				Log::Inst().Error("(Error) LocationGrid::SetLocationColours(): no colour associated with name.");
-			}
-			colour.SetAlpha( GetTileAlpha() );
-		//	m_tileBST.SetColour(tile, colour);
-			node->tile->SetColour(colour);		
-			if( node->left !=NULL )
-				nodes.push_back( node->left );
-			if( node->right != NULL )
-				nodes.push_back( node->right );
-		}	
-}
-*/
 void LocationGrid::UpdateGridColours() {
 
 	//Calculates and prints max/min, used to test
@@ -736,9 +452,11 @@ void LocationGrid::UpdateGridColours() {
 	//Log::Inst().Error("Max: " + StringTools::ToString(m_maxFieldValue));
 	//Log::Inst().Error("Min: " + StringTools::ToString(m_minFieldValue));
 
-	InitTiles();
-	FillTiles();
-	
+//	InitTiles();
+//	FillTiles();
+	InitBoundArray();
+	MakeGrid();
+
 	std::vector<LocationLayerPtr> locationLayers = m_locationSetLayer->GetAllActiveLocationLayers();
 	if ( !locationLayers.empty()
 		&& StringTools::IsDecimalNumber(locationLayers[0]->GetLocationController()->GetData()[m_field])
@@ -766,7 +484,7 @@ void LocationGrid::InitTileMinMax() {
 		&& StringTools::IsDecimalNumber(locationLayers[0]->GetLocationController()->GetData()[m_field]) 
 		&& m_combination != TileModel::GINI ) {
 
-		InitTiles();
+	//	InitTiles();
 
 		for( uint i = 0; i < locationLayers.size() ; i++)
 		{
@@ -790,7 +508,7 @@ void LocationGrid::InitTileMinMax() {
 			GeoCoord locationGeo( easting,northing );
 			App::Inst().GetMapController()->GetMapModel()->LatLongToGrid(locationGeo,locationCoord);
 			Point2D locPoint(locationCoord.x,locationCoord.z);
-			TileModelPtr tile = FindLocationTile(locPoint);
+			TileModelPtr tile = Search(locPoint);
 			tile->AddLocationLayer(locationLayers[i]);
 		}
 
@@ -799,9 +517,9 @@ void LocationGrid::InitTileMinMax() {
 
 		if (m_combination == TileModel::SUM || m_combination == TileModel::AVERAGE || m_combination == TileModel::STDEV) {
 
-			for (uint i = 0; i < m_tileModels.size(); i++) {
+			for (std::map<int, TileModelPtr>::iterator i = m_tileShortModels.begin(); i != m_tileShortModels.end(); ++i) {
 
-				std::map<std::wstring, std::wstring> data = m_tileModels[i]->GetData();
+				std::map<std::wstring, std::wstring> data = i->second->GetData();
 				std::map<std::wstring, std::wstring>::const_iterator it = data.find(m_field);
 
 				if (it != data.end()) {
@@ -823,11 +541,11 @@ void LocationGrid::InitTileMinMax() {
 						&& ( StringTools::ToLower(field).compare(_T("cellid")) != 0 ) )
 					{
 						// convert string values to double values. Non numeric already parsed out
-						for( uint i = 0; i < seperatedValue.size(); i++)
+						for( uint j = 0; j < seperatedValue.size(); j++)
 						{	
-							double doubValue = StringTools::ToDouble(seperatedValue[i]);
+							double doubValue = StringTools::ToDouble(seperatedValue[j]);
 
-							if (i == 0) {
+							if (j == 0) {
 								minValue = doubValue;
 								maxValue = doubValue;
 							} else if (doubValue < minValue) {
@@ -955,306 +673,8 @@ void LocationGrid::UpdateQualitativeColourMap() {
 
 }
 
-// SOMETHING WRONG HERE, NEED TO HUNT IT DOWN
-// find a tile based on OpenGL coordinates
-TileModelPtr LocationGrid::FindLocationTile(Point2D loc)
-{
-//  TESTING
-
-//	Point3D locationCoord; //(xAxisPosition,0.5f,yAxisPosition);
-//	GeoCoord locationGeo( -71.52,-31.31 );
-//	GeoCoord locationGeo( -71.5,-32.11 );
-//	GeoCoord locationGeo( -70.69,-31.97 );
-//	GeoCoord locationGeo( -70.91,-31.21 );
-//	GeoCoord locationGeo( -70.52,-33.61 );
-//	GeoCoord locationGeo( -66.44,-31.31 );
-//	GeoCoord locationGeo( -66.52,-33.46 );
-
-//	App::Inst().GetMapController()->GetMapModel()->LatLongToGrid(locationGeo,locationCoord);
-//	loc.x = locationCoord.x;
-//	loc.y = locationCoord.z;
-
-//	END TESTING
-
-	// shift x and y to only positive values
-	loc.x = loc.x - m_mapOpenGLBoundaries.x;
-	loc.y = loc.y - m_mapOpenGLBoundaries.y;
-
-	int whichColumn = 0;
-	int whichRow = 0;
-
-	// if division = lat/lon just divide into m_divisions
-	// otherwise if lat -> divisions = height / degrees
-	//				lon -> divisions = widght / degrees
-	Point2D tile_divisions = Point2D( m_xCoordinates.size() -1, m_yCoordinates.size() -1);
-	// Determine appropriate tile size according to whether the user
-	// wishes to divide the latitude or longitude 'n' number of times
-//	double tileSize;
-	Point2D tileSize( m_mapOpenGLBoundaries.Width() / tile_divisions.x 
-						,  m_mapOpenGLBoundaries.Height() / tile_divisions.y );
-	
-	// calculate tile row
-	if( (loc.x + m_mapOpenGLBoundaries.dx) < m_mapOffset.x )
-	{
-		whichColumn = 0;
-	}
-	else
-	{
-		double x = loc.x - m_mapOffset.x; 
-		float x_divisions = m_mapOpenGLBoundaries.Height() / tileSize.x; 
-	//	float tileRatio =  m_mapOpenGLBoundaries.Height() / x_divisions;
-		float tileRatio =  m_mapOpenGLBoundaries.Height() / (tile_divisions.y);
-	//	whichColumn = x / tileRatio;
-	//	whichColumn = x / tileSize.y;
-		whichColumn = x / tileSize.x;
-	}
-	// calculate tile column
-	if( (loc.y + m_mapOpenGLBoundaries.dy) < m_mapOffset.y )
-	{
-		whichRow = 0;
-	}
-	else
-	{
-		double y = ( loc.y - m_mapOffset.y );
-		float y_divisions = m_mapOpenGLBoundaries.Width() / tileSize.y; 
-	//	float tileRatio = m_mapOpenGLBoundaries.Width() / y_divisions;
-		float tileRatio = m_mapOpenGLBoundaries.Width() / (tile_divisions.x);
-	//	whichRow = y / tileRatio ;
-	//	whichRow = y / tileSize.x ;
-		whichRow = y / tileSize.y ;
-	}
-	uint divisionIndex = 0;
-
-	divisionIndex = whichRow * (tile_divisions.x) + whichColumn;
-
-	TileModelPtr tile = m_tileModels[divisionIndex];
-
-	return tile;
-}
-
-// Binary Search algorithm used to find which tile a location should be in
-TileModelPtr LocationGrid::BinarySearch(Point2D loc)
-{
-	int imid = m_tileModels.size() / 2;
-	int imin = 0;
-	int imax = m_tileModels.size() - 1;
-	TileModelPtr tile;
-	while( imax >= imin)
-	{
-		imid = (imin + imax) / 2;
-		tile = m_tileModels[imid];
-		Point2D topLeft = tile->GetTopLeft();
-		Point2D botRight = tile->GetBottomRight();
-		// if correct tile
-		if( ( topLeft.x <= loc.x && loc.x <= botRight.x) && ( botRight.y <= loc.y && loc.y <= topLeft.y ) )
-		{
-			return tile;
-		}
-		// if less than
-		else if( loc.x < topLeft.x && loc.y > botRight.y )
-			imax = imid - 1;
-		else if ( loc.x > topLeft.x && loc.y > topLeft.y )
-			imax = imid - 1;
-		// if greater than
-		else if (loc.x < botRight.x && loc.y < topLeft.y )
-			imin = imid + 1;
-		else if (loc.x > botRight.x && loc.y < topLeft.y )
-			imin = imid + 1;
-		
-	}
-	// if this happens the wrong tile has been returned
-	Log::Inst().Warning("(Error) Could not find correct tile for location.");
-	return tile;
-}
-/*
-// BST for Tile Nodes
-TileModelPtr LocationGrid::BSTSearch(Point2D loc)
-{
-	TileModelPtr tile;
-	return m_tileBST.Search(loc);
-}
-
-void LocationGrid::MakePokeTree()
-{
-	// refresh tree
-	//	THIS MAY NOT WORK
-	m_tilePokeTree.DestroyTree();
-
-	boost::timer t;
-	std::vector<LocationLayerPtr> locationLayers = m_locationSetLayer->GetAllActiveLocationLayers();
-	for( uint i = 0; i < locationLayers.size() ; i++)
-	{
-		std::map<std::wstring,std::wstring> data = locationLayers[i]->GetLocationController()->GetData();
-		float easting = StringTools::ToDouble(data[StringTools::ToStringW("Longitude")]);
-		float northing = StringTools::ToDouble(data[StringTools::ToStringW("Latitude")]);
-		
-		
-		// check if long and lat values exist. if they don't use easting and westing
-		if( easting != easting || 
-			northing != northing ||
-			!(easting<=DBL_MAX && easting >= -DBL_MAX) ||
-			!(northing<=DBL_MAX && northing >= -DBL_MAX)||
-			(!App::Inst().GetStudyController()->IsUsingProjection() &&
-			!App::Inst().GetStudyController()->IsUsingGeographic() ) )
-		{
-			easting = locationLayers[i]->GetLocationController()->GetEasting();
-			northing = locationLayers[i]->GetLocationController()->GetNorthing();
-		}
-
-		// Use Binary Search until FindLocationTile can be sorted out
-		Point3D locationCoord;
-		GeoCoord locationGeo( easting,northing );
-		Point2D locPoint(easting, northing);
-	//	TileModelPtr tile;
-
-		locBound bound = m_tileBounds.Search( locPoint );
-		std::wstring ID = StringTools::ToStringW(bound.GetTopLeft().x,2); 
-		ID.append(StringTools::ToStringW("_"));
-		ID.append(StringTools::ToStringW(bound.GetTopLeft().y,2));
-		std::map<std::wstring,std::wstring> empty;
-		TileModelPtr tile(new TileModel(ID,bound.GetTopLeft(),bound.GetBottomRight(),empty));
-		tile->AddLocationLayer( locationLayers[i] );
-
-	//	m_tilePokeTree.Insert(tile, locationLayers[i], locPoint);
-		m_tilePokeTree.Insert( tile, locationLayers[i], locPoint );
-
-	}
-	Log::Inst().Error("PokeTree Creation took: " + StringTools::ToString(t.elapsed(), 4) +  " seconds.");
-}
-*/
-/*
-void LocationGrid::MakeBST()
-{
-	m_tileBST.DestroyTree();
-
-	boost::timer t;
-	std::vector<LocationLayerPtr> locationLayers = m_locationSetLayer->GetAllActiveLocationLayers();
-	for( uint i = 0; i < locationLayers.size() ; i++)
-	{
-		std::map<std::wstring,std::wstring> data = locationLayers[i]->GetLocationController()->GetData();
-		float easting = StringTools::ToDouble(data[StringTools::ToStringW("Longitude")]);
-		float northing = StringTools::ToDouble(data[StringTools::ToStringW("Latitude")]);
-		
-		
-		// check if long and lat values exist. if they don't use easting and westing
-		if( easting != easting || 
-			northing != northing ||
-			!(easting<=DBL_MAX && easting >= -DBL_MAX) ||
-			!(northing<=DBL_MAX && northing >= -DBL_MAX)||
-			(!App::Inst().GetStudyController()->IsUsingProjection() &&
-			!App::Inst().GetStudyController()->IsUsingGeographic() ) )
-		{
-			easting = locationLayers[i]->GetLocationController()->GetEasting();
-			northing = locationLayers[i]->GetLocationController()->GetNorthing();
-		}
-
-		// Use Binary Search until FindLocationTile can be sorted out
-		Point3D locationCoord;
-		GeoCoord locationGeo( easting,northing );
-		Point2D locPoint(easting, northing);
-		TileModelPtr tile;
-		
-		//m_tileBST.Attach(locPoint);
-		//THIS ALL NEEDS TO BE INTERNALIZED
-		//THIS ALL NEEDS TO BE INTERNALIZED
-		BSTNode *node = m_tileBST.SearchNode(locPoint);
-		// if there's a tile that contains location, add it
-		
-		//check if node is null
-	//	bool check = false;
-		int compare = 1;
-		if (node)
-			compare = node->tile->Compare(locPoint);
-		
-		if( (compare == 0) )
-		{
-			node->tile->AddLocationLayer(locationLayers[i]);
-		}
-		// else create a new tile and add that tile to the structure
-		else
-		{
-			// first find what the geographic extents of the tile need to be
-			locBound bound = m_tileBounds.Search( locPoint );
-			std::wstring ID = StringTools::ToStringW(bound.GetTopLeft().x,2); 
-			ID.append(StringTools::ToStringW("_"));
-			ID.append(StringTools::ToStringW(bound.GetTopLeft().y,2));
-			std::map<std::wstring,std::wstring> empty;
-			TileModelPtr tile(new TileModel(ID,bound.GetTopLeft(),bound.GetBottomRight(),empty));
-			tile->AddLocationLayer( locationLayers[i] );
-			// if it has a tile, we must be the left or right child, otherwise tile goes in that node
-			if (node)
-			{
-				BSTNode *newNode = new BSTNode(tile, NULL,NULL,NULL);
-				node->AddChild(newNode);
-
-			}
-			// this should only apply to a null tile ie the head
-			else
-			{
-			//	node->SetTile( tile );
-				m_tileBST.SetHead( tile );
-			}
-			//	m_tileBST.Insert(tile);
-		}
-		
-	}
-	m_tileBST.Combine();
-
-	Log::Inst().Error("BST Creation took: " + StringTools::ToString(t.elapsed(), 4) +  " seconds.");
-}
-*/
-/*
-void LocationGrid::MakeBST()
-{
-	// refresh tree
-	//	THIS MAY NOT WORK
-	m_tileBST.DestroyTree();
-
-	boost::timer t;
-	std::vector<LocationLayerPtr> locationLayers = m_locationSetLayer->GetAllActiveLocationLayers();
-	for( uint i = 0; i < locationLayers.size() ; i++)
-	{
-		std::map<std::wstring,std::wstring> data = locationLayers[i]->GetLocationController()->GetData();
-		float easting = StringTools::ToDouble(data[StringTools::ToStringW("Longitude")]);
-		float northing = StringTools::ToDouble(data[StringTools::ToStringW("Latitude")]);
-		
-		
-		// check if long and lat values exist. if they don't use easting and westing
-		if( easting != easting || 
-			northing != northing ||
-			!(easting<=DBL_MAX && easting >= -DBL_MAX) ||
-			!(northing<=DBL_MAX && northing >= -DBL_MAX)||
-			(!App::Inst().GetStudyController()->IsUsingProjection() &&
-			!App::Inst().GetStudyController()->IsUsingGeographic() ) )
-		{
-			easting = locationLayers[i]->GetLocationController()->GetEasting();
-			northing = locationLayers[i]->GetLocationController()->GetNorthing();
-		}
-
-		// Use Binary Search until FindLocationTile can be sorted out
-		Point3D locationCoord;
-		GeoCoord locationGeo( easting,northing );
-		Point2D locPoint(easting, northing);
-	//	TileModelPtr tile;
-
-		locBound bound = m_tileBounds.Search( locPoint );
-		std::wstring ID = StringTools::ToStringW(bound.GetTopLeft().x,2); 
-		ID.append(StringTools::ToStringW("_"));
-		ID.append(StringTools::ToStringW(bound.GetTopLeft().y,2));
-		std::map<std::wstring,std::wstring> empty;
-		TileModelPtr tile(new TileModel(ID,bound.GetTopLeft(),bound.GetBottomRight(),empty));
-		tile->AddLocationLayer( locationLayers[i] );
-
-	//	m_tilePokeTree.Insert(tile, locationLayers[i], locPoint);
-		m_tileBST.Insert( tile, locationLayers[i], locPoint );
-
-	}
-	Log::Inst().Error("BSTree Creation took: " + StringTools::ToString(t.elapsed(), 4) +  " seconds.");
-}
-*/
 void LocationGrid::MakeGrid()
 {
-	boost::timer t;
 	m_tileShortModels.clear();
 	m_occupiedTiles.clear();
 	int index = 0;
@@ -1279,11 +699,9 @@ void LocationGrid::MakeGrid()
 			northing = locationLayers[i]->GetLocationController()->GetNorthing();
 		}
 
-		// Use Binary Search until FindLocationTile can be sorted out
 		Point3D locationCoord;
 		GeoCoord locationGeo( easting,northing );
 		Point2D locPoint(easting, northing);
-	//	TileModelPtr tile;
 
 		locBound bound = m_tileBounds.Search( locPoint, &index );
 		m_occupiedTiles.insert(index);
@@ -1293,45 +711,23 @@ void LocationGrid::MakeGrid()
 		std::map<std::wstring,std::wstring> empty;
 		TileModelPtr tile(new TileModel(ID,bound.GetTopLeft(),bound.GetBottomRight(),empty));
 		tile->AddLocationLayer( locationLayers[i] );
-
-	//	m_tilePokeTree.Insert(tile, locationLayers[i], locPoint);
-	//	Insert( tile, locationLayers[i], locPoint );
 		Insert( tile, locationLayers[i], index );
 	}
-	Log::Inst().Error("Fast Standard Creation took: " + StringTools::ToString(t.elapsed(), 4) +  " seconds.");
+
+	// now set tile true values for every tile
+	std::map<int,TileModelPtr>::iterator it;
+	for( it = m_tileShortModels.begin(); it != m_tileShortModels.end(); ++it )
+	{
+		if(it->second->GetNumLocations() > 0 )
+		{
+			it->second->CombineData();
+			//combine sequence layers if there are any
+			if(it->second->GetNumSequence() > 0)
+				it->second->CombineSequenceData();
+		}
+	}
 }
 
-/*	BS based insert
-*	keeps tiles in sorted order
-*	BS is used to check if the locPoint is contained in one of the tiles
-*		if yes: insert location into that tile
-*		   no: insert tile into index returned by BS
-*//*
-void LocationGrid::Insert( TileModelPtr tile, LocationLayerPtr curLoc, Point2D locPoint )
-{
-	// need to use iterators for position
-	std::vector<TileModelPtr>::iterator min = m_tileShortModels.begin();
-	std::vector<TileModelPtr>::iterator max = m_tileShortModels.end();
-	std::vector<TileModelPtr>::iterator mid;
-	while( min != max )
-	{
-		mid = min + (std::distance(min,max) /2 );
-		TileModelPtr temp = *mid;
-		// operator overload with boost!
-		if( temp->operator==(tile) )
-		{
-			temp->AddLocationLayer(curLoc);
-			return;
-		}
-		else if( temp->operator>(tile) )
-			min = mid + 1;
-		else
-			max = mid;
-	}
-	// BS was completed, but no tile was found contianing the location
-	// min == max
-	m_tileShortModels.insert( min, tile ); 
-}*/
 void LocationGrid::Insert( TileModelPtr tile, LocationLayerPtr loc, int tileNum )
 {
 	std::map<int, TileModelPtr>::iterator it;
@@ -1343,11 +739,17 @@ void LocationGrid::Insert( TileModelPtr tile, LocationLayerPtr loc, int tileNum 
 	
 }
 
-// Clears the current BST
+TileModelPtr LocationGrid::Search( Point2D point )
+{
+	int index;
+	// don't care about the bounds
+	m_tileBounds.Search( point, &index );
+	return m_tileShortModels[index];
+}
+
 void LocationGrid::InitBoundArray()
 {
 	m_tileBounds.Clear();
-//	m_tileBST->DestroyTree();
 	MapModelPtr mapModel = App::Inst().GetMapController()->GetMapModel();
 	std::list<double>::iterator row1, row2, col1, col2;
 	row2 = m_yCoordinates.begin(); row2++;
@@ -1365,12 +767,6 @@ void LocationGrid::InitBoundArray()
 			GeoCoord bottomRightGeo;
 			mapModel->GridToGeo(topLeftCoord,topLeftGeo);
 			mapModel->GridToGeo(bottomRightCoord,bottomRightGeo);
-		//	std::wstring ID = StringTools::ToStringW(topLeftGeo.easting,2); 
-		//	ID.append(StringTools::ToStringW("_"));
-		//	ID.append(StringTools::ToStringW(topLeftGeo.northing,2));
-		//	std::map<std::wstring,std::wstring> data;
-		//	locBound bound(Point2D(topLeftGeo.easting,topLeftGeo.northing), Point2D(bottomRightGeo.easting,bottomRightGeo.northing) );
-		//	m_tileBounds.Add(bound);
 			m_tileBounds.Add( Point2D(topLeftGeo.easting,topLeftGeo.northing), Point2D(bottomRightGeo.easting,bottomRightGeo.northing) );
 				
 			col2++;
@@ -1392,7 +788,7 @@ void LocationGrid::SetOriginOffset( std::wstring selectedName )
 		App::Inst().GetMapController()->GetMapModel()->GeoToGrid(locationGeo,locationCoord);
 
 		//find which tile this location belongs in
-		TileModelPtr tile = FindLocationTile( Point2D(locationCoord.x,locationCoord.z) );
+		TileModelPtr tile = Search( Point2D(locationCoord.x,locationCoord.z) );
 
 		GeoCoord tileOrigin( tile->GetTopLeft().x, tile->GetTopLeft().y ); 
 		Point3D tileCoord;
@@ -1445,7 +841,8 @@ void LocationGrid::SetOriginOffset( Point2D coord )
 
 
 		//find which tile this location belongs in
-		TileModelPtr tile = FindLocationTile( Point2D(locationCoord.x,locationCoord.z) );
+	//	TileModelPtr tile = FindLocationTile( Point2D(locationCoord.x,locationCoord.z) );
+		TileModelPtr tile = Search( Point2D(locationCoord.x,locationCoord.z) );
 
 		GeoCoord tileOrigin( tile->GetTopLeft().x, tile->GetTopLeft().y ); 
 		Point3D tileCoord;
@@ -1460,16 +857,17 @@ void LocationGrid::SetOriginOffset( Point2D coord )
 
 void LocationGrid::AssertCombinationMethod()
 {
-	for(uint i = 0; i < m_tileModels.size(); i++)
+	std::map<int,TileModelPtr>::iterator it;
+	for( it = m_tileShortModels.begin(); it != m_tileShortModels.end(); ++it )
 	{
-		m_tileModels[i]->SetCombinationMethod(m_combination);
+		it->second->SetCombinationMethod(m_combination);
 	}
 }
 
 
 TileModel::DATA_COMBINE LocationGrid::GetCombinationMethod()
 {
-	return m_tileModels[0]->GetCombinationMethod();
+	return m_tileShortModels.begin()->second->GetCombinationMethod();
 }
 
 
@@ -1485,68 +883,3 @@ void LocationGrid::SetBoxDivisions( uint divisions )
 	SetDivisions( divisions );
 
 }
-
-/*
-std::vector<TileModelPtr> LocationGrid::GetBSTModels( )
-{
-	std::vector<TileModelPtr> values;
-	std::map<std::wstring,std::wstring>::const_iterator it;
-	TileModelPtr tile;
-
-	Colour colour;
-	std::vector<BSTNode *> nodes;
-	if( m_tileBST.IsHead() )
-		nodes.push_back( m_tileBST.GetHead() );
-
-	while( ! nodes.empty() )
-	{
-		BSTNode *node = nodes[0];
-		if( node != NULL )
-		{
-			//remove selected node
-			nodes.erase(nodes.begin(),nodes.begin()+1);
-			tile = node->tile;
-			if(	tile )
-				values.push_back(tile);
-			
-			if( node->left !=NULL )
-				nodes.push_back( node->left );
-			if( node->right != NULL )
-				nodes.push_back( node->right );
-		}
-	}
-	return values;
-}
-
-
-std::vector<TileModelPtr> LocationGrid::GetPokeModels( )
-{
-	std::vector<TileModelPtr> values;
-	std::map<std::wstring,std::wstring>::const_iterator it;
-	TileModelPtr tile;
-
-	Colour colour;
-	std::vector<PokeNode *> nodes;
-	if( m_tilePokeTree.IsHead() )
-		nodes.push_back( m_tilePokeTree.GetHead() );
-
-	while( ! nodes.empty() )
-	{
-		PokeNode *node = nodes[0];
-		if( node != NULL )
-		{
-			//remove selected node
-			nodes.erase(nodes.begin(),nodes.begin()+1);
-			tile = node->tile;
-			if(	tile )
-				values.push_back(tile);
-			
-			if( node->left !=NULL )
-				nodes.push_back( node->left );
-			if( node->right != NULL )
-				nodes.push_back( node->right );
-		}
-	}
-	return values;
-}
-*/

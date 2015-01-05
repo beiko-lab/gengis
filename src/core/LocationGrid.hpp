@@ -31,12 +31,6 @@
 #include "../utils/StringTools.hpp"
 #include "../core/TileModel.hpp"
 
-#include "../core/BST.hpp"
-//#include "../red-black/RedBlackTree.h"
-#include "../red-black/PokeTree.h"
-
-//#include "../utils/ColourMapDiscrete.hpp"
-
 namespace GenGIS
 {
 	// A simpe struct to store tile bounds.
@@ -163,12 +157,6 @@ namespace GenGIS
 		/** Generate coordinates or grid. */
 		void GenerateTileCoordinates();
 
-		/** Generate tiles for grid. */
-		void InitTiles();
-
-		/** Fill tiles with location values. */
-		void FillTiles();
-
 		/** Updates the colour map of the grid for qualitative data */
 		void UpdateQualitativeColourMap();
 
@@ -185,6 +173,12 @@ namespace GenGIS
 
 		/** Render location grid. */
 		void Render();
+
+		/** Create and array of location bounds for tiles. **/
+		void InitBoundArray();
+
+		/** Initialize a sparse map of occupied tiles. Key == index in BoundArray, Value = Tile. **/
+		void MakeGrid();
 
 
 
@@ -233,9 +227,7 @@ namespace GenGIS
 		Colour	  GetTileDefaultColour() { return m_defaultColourOfTiles; }
 		bool GetVisible()												 { return IsVisible(); }
 	
-		std::vector<TileModelPtr> GetTileModels()						 { return m_tileModels; }
-		std::vector<TileModelPtr> GetPokeModels( );
-		std::vector<TileModelPtr> GetBSTModels();
+		std::map<int,TileModelPtr> GetTileModels()						 { return m_tileShortModels; }
 		ColourMapDiscretePtr GetColourMap()								 { return m_gridColourMap; }
 		Point2D GetMapOffset()											 { return m_mapOffset; }
 
@@ -249,17 +241,6 @@ namespace GenGIS
 		void SetLocationColours();
 		void SetColourMap( ColourMapDiscretePtr colourMap )				 { m_gridColourMap = colourMap; }
 		void SetMapOffset( Point2D newOffset )							 { m_mapOffset = newOffset; }
-
-
-		TileModelPtr FindLocationTile(Point2D loc);
-		TileModelPtr BinarySearch(Point2D loc);
-
-		TileModelPtr BSTSearch(Point2D loc);
-		int GetPokeCount(){ return m_tilePokeTree.GetLocCount(); }
-		void MakeBST();
-		void InitBoundArray();
-		void MakePokeTree();
-		void MakeGrid();
 
 		void SetOriginOffset( std::wstring selectedName );
 		void SetOriginOffset( Point2D coord );
@@ -282,8 +263,7 @@ namespace GenGIS
 		friend class boost::serialization::access;
 		template<class Archive>
 		void serialize(Archive & ar, const unsigned int version);
-		void Search();
-	//	void Insert( TileModelPtr tile, LocationLayerPtr curLoc, Point2D locPoint );
+		TileModelPtr Search( Point2D point );
 		void Insert( TileModelPtr tile, LocationLayerPtr loc, int tileNum );
 
 	private:
@@ -317,9 +297,6 @@ namespace GenGIS
 		Colour	  m_defaultColourOfTiles;
 		std::vector<TileModelPtr> m_tileModels;
 		std::map< int, TileModelPtr> m_tileShortModels;
-		BST m_tileBST;
-		PokeTree m_tilePokeTree;
-		//	RedBlackTree<TileModelPtr> m_tilePokeTree;
 		locationBoundArray m_tileBounds;
 		std::set<int> m_occupiedTiles;
 		
