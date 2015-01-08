@@ -156,9 +156,11 @@ namespace GenGIS
 		* A function to find if a point is with a tile
 		* Returns <0 if point is smaller, 0 if contains point and >0 if point is larger.
 		*/
+		/*
 		int Compare(Point2D Location);
 
 		int Compare(TileModelPtr tile);
+		*/
 		/**
 		* @brief Set top left coordinate.
 		*/

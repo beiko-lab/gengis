@@ -68,8 +68,6 @@ LocationGrid::LocationGrid() :
 	m_thicknessOfBorders( 1 ),
 	m_styleOfBorders( VisualLine::SOLID ),
 	
-//	m_tilePokeTree(),
-//	m_tileBST(),
 	m_tileBounds()
 {
 	// Property of 'Layer' class
@@ -116,7 +114,6 @@ void LocationGrid::serialize(Archive & ar, const unsigned int version)
 	ar & m_uniformColourOfTiles; // Colour
 	ar & m_defaultColourOfTiles; // Colour
 	ar & m_tileModels;           // std::vector<TileModelPtr>
-//	ar & m_tileBST;		 // BSTPtr
 	ar & m_gridColourMap;		 // ColourMapDiscretePtr
 
 	// Border variables
@@ -253,15 +250,30 @@ void LocationGrid::GenerateTileCoordinates()
 	numberOfMiddleTiles = floor( abs( ( m_mapOpenGLBoundaries.Width() - mapOffsetX ) / tileSizeX ) );
 	for ( uint col = 0; col < numberOfMiddleTiles; col++ )
 	{
+		// if current X is greater than extents, BREAK
+		if( currentX > m_mapOpenGLBoundaries.dx )
+			break;
+
 		currentX += tileSizeX;
-		
+
+		// if current X is greater than extents, set equal
+		if( currentX > m_mapOpenGLBoundaries.dx )
+			currentX = m_mapOpenGLBoundaries.dx;
+
 		m_xCoordinates.push_back( currentX );
 	}
 
-	numberOfMiddleTiles = floor( abs( ( m_mapOpenGLBoundaries.Height() - mapOffsetY ) / tileSizeY ) );
+	numberOfMiddleTiles = ceil( abs( ( m_mapOpenGLBoundaries.Height() - mapOffsetY ) / tileSizeY ) );
 	for ( uint row = 0; row < numberOfMiddleTiles; row++ )
 	{
+		if( currentY > m_mapOpenGLBoundaries.dy )
+			break;
+
 		currentY += tileSizeY;
+
+		// if current X is greater than extents, set equal
+		if( currentY > m_mapOpenGLBoundaries.dy )
+			currentY = m_mapOpenGLBoundaries.dy;
 
 		m_yCoordinates.push_back( currentY );
 	}
@@ -284,12 +296,7 @@ void LocationGrid::GenerateTileCoordinates()
 			m_yCoordinates.push_back( currentY );
 		}
 	}
-
-	if ( m_gridChanged )
-	{
-	//	InitTiles();
-		InitBoundArray();
-	}
+	InitBoundArray();
 }
 
 void LocationGrid::Render()
@@ -452,8 +459,6 @@ void LocationGrid::UpdateGridColours() {
 	//Log::Inst().Error("Max: " + StringTools::ToString(m_maxFieldValue));
 	//Log::Inst().Error("Min: " + StringTools::ToString(m_minFieldValue));
 
-//	InitTiles();
-//	FillTiles();
 	InitBoundArray();
 	MakeGrid();
 
@@ -646,11 +651,8 @@ void LocationGrid::UpdateNumericColourMap(float min, float max) {
 	}
 }
 
-void LocationGrid::UpdateQualitativeColourMap() {
-
-	// duplicate current colourMap
-//	ColourMapPtr selectedColourMap = m_gridColourMap;
-	
+void LocationGrid::UpdateQualitativeColourMap() 
+{	
 	// Get tile values for current field
 	std::vector<std::wstring> data = GetSelectedValues(m_field);
 	// Sort data
@@ -777,74 +779,71 @@ void LocationGrid::InitBoundArray()
 
 void LocationGrid::SetOriginOffset( std::wstring selectedName )
 {
-	if( GetGridAlignmentStyle() == LOCATIONS )
-	{
-		float xAxisPosition = m_locationSetLayer->GetLocationLayer( selectedName )->GetLocationController()->GetEasting();
-		float yAxisPosition = m_locationSetLayer->GetLocationLayer( selectedName )->GetLocationController()->GetNorthing();
-
-		//convert axis positions to open gl coordinate
-		Point3D locationCoord;
-		GeoCoord locationGeo(xAxisPosition,yAxisPosition);
-		App::Inst().GetMapController()->GetMapModel()->GeoToGrid(locationGeo,locationCoord);
-
-		//find which tile this location belongs in
-		TileModelPtr tile = Search( Point2D(locationCoord.x,locationCoord.z) );
-
-		GeoCoord tileOrigin( tile->GetTopLeft().x, tile->GetTopLeft().y ); 
-		Point3D tileCoord;
-		App::Inst().GetMapController()->GetMapModel()->LatLongToGrid( tileOrigin, tileCoord );
-
-		// negative offsets mean the wrong tile has been selected
-		float xOffset =  locationCoord.x - tileCoord.x;
-		float yOffset =  locationCoord.z - tileCoord.z;
+	// translates locations coordinates to something usable by the map.
+	// necessary as lat/lon and northing/easting coordinates may both be available, but not reliable
+	std::map<std::wstring,std::wstring> data = m_locationSetLayer->GetLocationLayer( selectedName )->GetLocationController()->GetData();
+	float easting = StringTools::ToDouble(data[StringTools::ToStringW("Longitude")]);
+	float northing = StringTools::ToDouble(data[StringTools::ToStringW("Latitude")]);
 	
-		SetMapOffset( Point2D(xOffset,yOffset) );
+	// check if long and lat values exist. if they don't use easting and westing
+	if( easting != easting || 
+		northing != northing ||
+		!(easting<=DBL_MAX && easting >= -DBL_MAX) ||
+		!(northing<=DBL_MAX && northing >= -DBL_MAX)||
+		(!App::Inst().GetStudyController()->IsUsingProjection() &&
+		!App::Inst().GetStudyController()->IsUsingGeographic() ) )
+	{
+		easting = m_locationSetLayer->GetLocationLayer( selectedName )->GetLocationController()->GetEasting();
+		northing = m_locationSetLayer->GetLocationLayer( selectedName )->GetLocationController()->GetNorthing();
 	}
+	SetOriginOffset( Point2D( easting, northing ) );
 }
 
 void LocationGrid::SetOriginOffset( Point2D coord )
 {
-	if( GetGridAlignmentStyle() == COORDINATES )
+
+	float xAxisPosition = coord.x;
+	float yAxisPosition = coord.y;
+
+	//convert axis positions to open gl coordinate
+	Point3D locationCoord;
+	GeoCoord locationGeo(xAxisPosition,yAxisPosition);
+	App::Inst().GetMapController()->GetMapModel()->LatLongToGrid(locationGeo,locationCoord);
+
+	
+	double tileSize;
+	if ( m_divideTilesAlong == LATITUDE )
+		tileSize = m_mapOpenGLBoundaries.Height() / m_divisions;
+	else if ( m_divideTilesAlong == LONGITUDE )
+		tileSize = m_mapOpenGLBoundaries.Width() / m_divisions;
+
+	// handle boundries
+	if ((locationCoord.z > m_mapOpenGLBoundaries.dy) || (locationCoord.z < m_mapOpenGLBoundaries.y))	// lat boundary
+	{		
+		double tileSizeY = tileSize;
+		if (locationCoord.z > m_mapOpenGLBoundaries.y)
+			tileSizeY = tileSize * -1;
+		while ( ( locationCoord.z > m_mapOpenGLBoundaries.dy) || (locationCoord.z < m_mapOpenGLBoundaries.y ) )
+			locationCoord.z = locationCoord.z + tileSizeY;
+	}
+	if ( (locationCoord.x > m_mapOpenGLBoundaries.dx) || (locationCoord.x < m_mapOpenGLBoundaries.x) )	// lon boundary
+	{		
+		double tileSizeX = tileSize;
+		if (locationCoord.x > m_mapOpenGLBoundaries.x)
+			tileSizeX = tileSize * -1;
+		while( (locationCoord.x > m_mapOpenGLBoundaries.dx) || (locationCoord.x < m_mapOpenGLBoundaries.x) )
+			locationCoord.x = locationCoord.x + tileSizeX;
+	}
+
+
+	//find which tile this location belongs in
+	int fault = 0;
+	locBound bound = m_tileBounds.Search( Point2D( xAxisPosition, yAxisPosition), &fault );
+	
+	// if tile found, set map offset
+	if( fault != -1 )
 	{
-		float xAxisPosition = coord.x;
-		float yAxisPosition = coord.y;
-
-		//convert axis positions to open gl coordinate
-		Point3D locationCoord;
-		GeoCoord locationGeo(xAxisPosition,yAxisPosition);
-		App::Inst().GetMapController()->GetMapModel()->LatLongToGrid(locationGeo,locationCoord);
-
-		
-		double tileSize;
-		if ( m_divideTilesAlong == LATITUDE )
-			tileSize = m_mapOpenGLBoundaries.Height() / m_divisions;
-		else if ( m_divideTilesAlong == LONGITUDE )
-			tileSize = m_mapOpenGLBoundaries.Width() / m_divisions;
-
-		// handle boundries
-		if ((locationCoord.z > m_mapOpenGLBoundaries.dy) || (locationCoord.z < m_mapOpenGLBoundaries.y))	// lat boundary
-		{		
-			double tileSizeY = tileSize;
-			if (locationCoord.z > m_mapOpenGLBoundaries.y)
-				tileSizeY = tileSize * -1;
-			while ( ( locationCoord.z > m_mapOpenGLBoundaries.dy) || (locationCoord.z < m_mapOpenGLBoundaries.y ) )
-				locationCoord.z = locationCoord.z + tileSizeY;
-		}
-		if ( (locationCoord.x > m_mapOpenGLBoundaries.dx) || (locationCoord.x < m_mapOpenGLBoundaries.x) )	// lon boundary
-		{		
-			double tileSizeX = tileSize;
-			if (locationCoord.x > m_mapOpenGLBoundaries.x)
-				tileSizeX = tileSize * -1;
-			while( (locationCoord.x > m_mapOpenGLBoundaries.dx) || (locationCoord.x < m_mapOpenGLBoundaries.x) )
-				locationCoord.x = locationCoord.x + tileSizeX;
-		}
-
-
-		//find which tile this location belongs in
-	//	TileModelPtr tile = FindLocationTile( Point2D(locationCoord.x,locationCoord.z) );
-		TileModelPtr tile = Search( Point2D(locationCoord.x,locationCoord.z) );
-
-		GeoCoord tileOrigin( tile->GetTopLeft().x, tile->GetTopLeft().y ); 
+		GeoCoord tileOrigin( bound.GetTopLeft().x, bound.GetTopLeft().y ); 
 		Point3D tileCoord;
 		App::Inst().GetMapController()->GetMapModel()->LatLongToGrid( tileOrigin, tileCoord );
 
@@ -852,6 +851,11 @@ void LocationGrid::SetOriginOffset( Point2D coord )
 		float yOffset =  locationCoord.z - tileCoord.z;
 
 		SetMapOffset( Point2D(xOffset,yOffset) );
+	}
+	// something went wrong
+	else
+	{
+		Log::Inst().Error("(Error) LocationGrid::SetOriginOffset(): Offset could not be set. May be a problem with the coordinate system.");
 	}
 }
 

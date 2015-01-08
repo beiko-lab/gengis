@@ -81,7 +81,7 @@ void TileModel::UpdateData(std::map<std::wstring,std::wstring> newData)
 	}
 
 }
-
+/*
 int TileModel::Compare(Point2D loc)
 {
 	Point2D topLeft = GetTopLeft();
@@ -98,7 +98,7 @@ int TileModel::Compare(Point2D loc)
 		return 1;
 	// some error has happened
 	return 99;
-*/
+*//*
 	// if above the tile
 
 	else if( loc.y > topLeft.y )
@@ -124,7 +124,7 @@ int TileModel::Compare(TileModelPtr tile)
 	else
 		return tL;
 }
-
+*/
 void TileModel::UpdateSequences(std::vector<SequenceLayerPtr> sequences)
 {
  	for(uint i = 0; i < sequences.size(); i++)

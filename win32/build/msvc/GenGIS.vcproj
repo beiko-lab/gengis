@@ -1513,18 +1513,6 @@
 					>
 				</File>
 			</Filter>
-			<Filter
-				Name="red-black"
-				>
-				<File
-					RelativePath="..\..\..\src\red-black\PokeTree.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\..\src\red-black\RedBlackTree.h"
-					>
-				</File>
-			</Filter>
 		</Filter>
 		<File
 			RelativePath="..\..\..\bin\images\CrazyEye\win\CrazyEye.ico"

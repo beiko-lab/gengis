@@ -765,10 +765,10 @@ void LocationSetPropertiesDlg::InitLocationGrid()
 		wxString( StringTools::ToStringW( locationGrid->GetElevation(), 2 ).c_str() ) );
 
 	locationGrid->SetLocationSetLayer ( m_locationSetLayer);
-	//	Initialize and fill tiles
+	//	Initialize tile coordinates and initialize Bound Array
 	locationGrid->GenerateTileCoordinates();
 	
-	locationGrid->InitBoundArray();
+//	locationGrid->InitBoundArray();
 	locationGrid->MakeGrid();
 
 	InitLocationGridColour();
@@ -1560,7 +1560,7 @@ void LocationSetPropertiesDlg::ApplyGrid()
 	// Generate coordinates at origin to reset grid
 	locationGrid->SetMapOffset( Point2D(0,0) );
 
-	// Generate coordinates
+	// Generate coordinates and Initialize Bound Array
 	locationGrid->GenerateTileCoordinates();
 
 	// Set Grid Origin
@@ -1587,19 +1587,8 @@ void LocationSetPropertiesDlg::ApplyGrid()
 	if( locationGrid->GetGridChanged() )
 	{
 		// put values in tiles
-	//	locationGrid->FillTiles();
-	
-		locationGrid->InitBoundArray();
-
 		locationGrid->MakeGrid();
-//		locationGrid->MakeBST();
-
-//		locationGrid->MakePokeTree();
-
-//		std::vector<TileModelPtr> BKARHGASD = locationGrid->GetBSTModels();
-//		std::vector<TileModelPtr> blarharharhar = locationGrid->GetPokeModels();
 //		std::vector<TileModelPtr> asdhsadhsad = locationGrid->GetTileModels();
-//		int baasdjawerjaersf = locationGrid->GetPokeCount();
 		
 		wxCommandEvent dummy;
 		OnChoiceGridFieldToChartChange( dummy );
