@@ -203,6 +203,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\..\src\core\Cartogram.cpp"
+					>
+				</File>
+				<File
 					RelativePath="..\..\..\src\core\ChartSetView.cpp"
 					>
 				</File>
@@ -838,6 +842,10 @@
 				</File>
 				<File
 					RelativePath="..\..\..\src\core\Camera.hpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\src\core\Cartogram.hpp"
 					>
 				</File>
 				<File

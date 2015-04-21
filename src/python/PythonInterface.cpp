@@ -54,6 +54,7 @@
 #include "../core/LocationController.hpp"
 #include "../core/LocationSetController.hpp"
 #include "../core/GeoTreeOptLeafOrder.hpp"
+#include "../core/Cartogram.hpp"
 
 #include "../gui/GenGisFrame.hpp"
 #include "../gui/MainWindowWrapper.hpp"
