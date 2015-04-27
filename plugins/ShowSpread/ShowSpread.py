@@ -31,6 +31,7 @@ import dateutil.parser
 import time
 import dataHelper as dh
 import filterFunc
+import os
 
 class ShowSpread ( ShowSpreadLayout ):
 	isSequence = False
@@ -47,6 +48,7 @@ class ShowSpread ( ShowSpreadLayout ):
 	DefaultAttrib = {}
 	# Map of Key -> State (Active/Off)
 	StartingState = {}
+	printCounter=0
 	
 	def __init__( self, parent=None ):
 		ShowSpreadLayout.__init__ ( self, parent )
@@ -89,6 +91,30 @@ class ShowSpread ( ShowSpreadLayout ):
 		# Get starting state of locations
 		self.SetStartAttrib()
 		
+		# set up  printing
+		self.m_saveSpreadFile.Enable(False)
+		
+	#	self.PrintSpread.counter=0
+		
+	def OnPrintToggle(self, event):	
+		# If ON turn directory save button on
+		# If OFF turn directory save button off
+		check=self.m_saveSpreadCheckBox.IsChecked()
+		self.m_saveSpreadFile.Enable(check)
+		
+	def PrintSpread(self):
+		# get file path from plugin browser
+		# if its empty, save in the showspread directory
+		
+		fh = self.m_saveSpreadFile.GetPath()
+		if fh == "":
+			fh = os.path.dirname(os.path.realpath(__file__)) + "\ShowSpread"
+		else:
+			fh = fh[0:(len(fh)-4)]
+		fhFile = str("%s_%s.png"%(fh,self.printCounter))
+		self.printCounter+=1
+		GenGIS.viewport.SaveImage(fhFile)
+	
 	def OnOK( self, event ):
 		#Need to remove the label on close too
 	#	GenGIS.graphics.RemoveLabel(self.label.GetId())
@@ -100,6 +126,7 @@ class ShowSpread ( ShowSpreadLayout ):
 	#	GenGIS.graphics.RemoveLabel(self.label.GetId())
 
 		#init min and max field values for grid
+		self.printCounter = 0
 		GenGIS.layerTree.GetLocationSetLayer(0).GetLocationGrid().InitTileMinMax()
 		
 		field = self.m_DataChoice.GetStringSelection()
@@ -112,6 +139,15 @@ class ShowSpread ( ShowSpreadLayout ):
 			stD = dateutil.parser.parse(stopData)
 			isDate=True
 			self.ConvertDates(isDate, field)
+		
+		# warn users if they have not selected a directory to save showspread images in
+		fh = self.m_saveSpreadFile.GetPath()
+		if fh == "":
+			fh = os.path.dirname(os.path.realpath(__file__))
+			result = wx.MessageBox(("No directory selected.\nSaving to %s"%fh),"Directory Warning",wx.OK|wx.CANCEL|wx.ICON_QUESTION)
+			if result == wx.CANCEL:
+				# oops no directroy, don't run!
+				return
 		
 		if isDate:
 			self.ShowSpread( date( sD.year,sD.month,sD.day ), date( stD.year, stD.month , stD.day ), field, isDate )
@@ -508,6 +544,10 @@ class ShowSpread ( ShowSpreadLayout ):
 			lastData = curData
 			curData = float(curData) + Delta
 			
+			# Check if I should be printing 
+			if self.m_saveSpreadCheckBox.IsChecked():
+				self.PrintSpread()
+			
 			elapsedTime = time.time() - startTime
 			if elapsedTime < timeCap:
 				time.sleep(timeCap - elapsedTime)
@@ -614,7 +654,11 @@ class ShowSpread ( ShowSpreadLayout ):
 			GenGIS.viewport.Refresh()
 				
 			curIndex = curIndex + Delta
-
+			
+			# Check if I should be printing 
+			if self.m_saveSpreadCheckBox.IsChecked():
+				self.PrintSpread()
+				
 			elapsedTime = time.time() - startTime
 			if elapsedTime < timeCap:
 				time.sleep(timeCap - elapsedTime)
@@ -734,6 +778,10 @@ class ShowSpread ( ShowSpreadLayout ):
 					curData = endData
 				else:
 					curData = curData + dayDelta
+			
+			# Check if I should be printing 
+			if self.m_saveSpreadCheckBox.IsChecked():
+				self.PrintSpread()
 			
 			elapsedTime = time.time() - startTime
 			if elapsedTime < timeCap:
