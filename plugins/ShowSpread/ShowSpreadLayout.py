@@ -90,7 +90,7 @@ class ShowSpreadLayout ( wx.Frame ):
 		self.m_Page1.SetSizer( fgSizer1 )
 		self.m_Page1.Layout()
 		fgSizer1.Fit( self.m_Page1 )
-		self.m_DisplayNotebook.AddPage( self.m_Page1, u"Default", False )
+		self.m_DisplayNotebook.AddPage( self.m_Page1, u"Default", True )
 		self.m_Page2 = wx.Panel( self.m_DisplayNotebook, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
 		fgSizer3 = wx.FlexGridSizer( 9, 2, 0, 0 )
 		fgSizer3.AddGrowableCol( 0 )
@@ -168,7 +168,7 @@ class ShowSpreadLayout ( wx.Frame ):
 		self.m_Page2.SetSizer( fgSizer3 )
 		self.m_Page2.Layout()
 		fgSizer3.Fit( self.m_Page2 )
-		self.m_DisplayNotebook.AddPage( self.m_Page2, u"Advanced", True )
+		self.m_DisplayNotebook.AddPage( self.m_Page2, u"Advanced", False )
 		self.m_Page3 = wx.Panel( self.m_DisplayNotebook, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
 		bSizer4 = wx.BoxSizer( wx.VERTICAL )
 		
