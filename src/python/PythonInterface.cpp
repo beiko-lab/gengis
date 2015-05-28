@@ -1014,6 +1014,11 @@ BOOST_PYTHON_MODULE(GenGIS)
 			.def_readonly("angle", &LinearResults::angle, "Angle of geographic layout line in degrees.")
 			.def_readonly("numCrossings", &LinearResults::numCrossings, "Number of crossings which occurs for this layout lines.")
 			;
+
+		// <wiki-header>Cartogram Class</wiki-header>
+		class_<Cartogram>("Cartogram","Distorts the map based on meta data.")
+			.def(init<>())
+			;
 	}
 
 	//==============================================================================================

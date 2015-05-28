@@ -28,12 +28,14 @@
 #include "../core/MapLayer.hpp"
 #include "../core/Viewport.hpp"
 #include "../core/LayerTreeController.hpp"
+#include "../core/Cartogram.hpp"
 
 #include "../gui/MapPropertiesDlg.hpp"
 #include "../gui/ProgressDlg.hpp"
 #include "../gui/TerrainMapWidget.hpp"
 
 #include "../utils/StringTools.hpp"
+
 
 using namespace GenGIS;
 
@@ -287,6 +289,8 @@ void MapPropertiesDlg::ApplyColourMap()
 /** OK button event handler. */
 void MapPropertiesDlg::OnOK( wxCommandEvent& event )
 {
+	CartogramPtr cartogram(new Cartogram());
+	cartogram->MakeCartogram();
 	Apply();
 	Destroy();
 }

@@ -47,7 +47,7 @@ MapModel::~MapModel( void )
 
 void MapModel::SetGrid( Point3D* grid ) 
 {
-	if(m_grid != NULL) 
+if(m_grid != NULL) 
 		delete[] m_grid;
 	
 	m_grid = grid;
@@ -93,11 +93,12 @@ void MapModel::LatLongToGrid(const GeoCoord &mapCoord, Point3D &gridCoord)
 	if(studyController->IsProjectData())
 	{
 		ProjectionToolPtr projTool = studyController->GetProjectionTool();
-		if(!projTool->Transform(1, &longitude, &latitude))
+		projTool->Transform(1, &longitude, &latitude);
+		/*	if(!projTool->Transform(1, &longitude, &latitude))
 		{
 			Log::Inst().Warning("(Warning) Failed to project data.");
 		}
-	}
+	*/}
 
 	GeoToGrid(GeoCoord(longitude, latitude), gridCoord);
 }

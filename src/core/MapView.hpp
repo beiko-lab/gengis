@@ -44,6 +44,22 @@ namespace GenGIS
 	class MapView : public View
 	{
 	private:
+		
+
+		/** Quadtree structure used to build map model. */
+		typedef struct sQUADTREE_NODE
+		{
+			GLint lodvertex[9];
+			sQUADTREE_NODE *q1, *q2, *q3, *q4;
+			bool enabled;
+			float max_err;
+		} QuadtreeNode;
+
+		Point3D theNormal;
+
+		void computNormal(int i, int j); 
+
+	public:
 		/** Holds all information required by a vertex which is part of the terrain. */
 		typedef struct sVERTEX
 		{
@@ -62,20 +78,6 @@ namespace GenGIS
 			}
 		} Vertex;					// 56??
 
-		/** Quadtree structure used to build map model. */
-		typedef struct sQUADTREE_NODE
-		{
-			GLint lodvertex[9];
-			sQUADTREE_NODE *q1, *q2, *q3, *q4;
-			bool enabled;
-			float max_err;
-		} QuadtreeNode;
-
-		Point3D theNormal;
-
-		void computNormal(int i, int j); 
-
-	public:
 		/** Constructor. */
 		explicit MapView(MapModelPtr mapModel);
 
@@ -115,7 +117,11 @@ namespace GenGIS
 
 		/** Set the visibility of view. */
 		bool IsVisible() const;
-
+		
+		/** Get and Set vertices for Cartograms. */
+		void SetVertices(MapControllerPtr mapController);
+		QuadtreeNode* createQuadtree( int lodsize, int startindex );
+		int GetDimension(){return m_dimension;};
 	private:
 		/** Serialization. */
 		friend class boost::serialization::access;
@@ -126,13 +132,13 @@ namespace GenGIS
 		template<class Archive>
 		void serialize(Archive & ar, const unsigned int file_version);
 
-		void SetVertices(MapControllerPtr mapController);
+		
 		void init_vertices(MapControllerPtr mapController);
 		void getAverageNormal( int i, int j );
 		void assignTextureCoordinate( int i , int j );
 
 		// quadtree related functions
-		QuadtreeNode* createQuadtree( int lodsize, int startindex );
+		//QuadtreeNode* createQuadtree( int lodsize, int startindex );
 		void delete_quadtree( QuadtreeNode *cur_node );
 		bool inter_error( int center, int vertexA, int vertexB);
 		bool box_test( QuadtreeNode *cur);

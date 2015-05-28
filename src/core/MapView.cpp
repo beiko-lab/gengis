@@ -263,6 +263,7 @@ void MapView::SetVertices(MapControllerPtr mapController)
 	// retrieve the elevation readings from the elevation parser;
 	//	and calculate the normals
 
+	
 	for ( int i = 0; i < m_dimension; i++ ) 
 	{
 		for ( int j = 0; j < m_dimension; j++ ) 

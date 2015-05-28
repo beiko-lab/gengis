@@ -15,7 +15,9 @@
 #include <fftw3.h>
 //#include "fftw3.h"
 //#include "../utils/fftw3.h"
+#include "../utils/Cart.hpp"
 
+using namespace GenGIS;
 
 /* Constants */
 
@@ -41,11 +43,15 @@ double *expky;         // Array needed for the Gaussian convolution
 fftw_plan rhotplan[5]; // Plan for rho(t) back-transform at time t
 
 
+Cart::Cart()
+{
+
+}
+
 /* Function to make space for the density array.  This is done in such a
  * way as to allow rho to be accessed either as a single block (for FFTW)
  * or as a normal double-indexed array (for regular use) */
-
-double** cart_dmalloc(int xsize, int ysize)
+double** Cart::cart_dmalloc(int xsize, int ysize)
 {
   int ix;
   double **userrho;
@@ -60,7 +66,7 @@ double** cart_dmalloc(int xsize, int ysize)
 
 /* Function to free space for the density array */
 
-void cart_dfree(double **userrho)
+void Cart::cart_dfree(double **userrho)
 {
   fftw_free(*userrho);
   free(userrho);
@@ -69,7 +75,7 @@ void cart_dfree(double **userrho)
 
 /* Function to allocate space for the global arrays */
 
-void cart_makews(int xsize, int ysize)
+void Cart::cart_makews(int xsize, int ysize)
 {
   int s,i;
 
@@ -103,7 +109,7 @@ void cart_makews(int xsize, int ysize)
 /* Function to free up space for the global arrays and destroy the FFT
  * plans */
 
-void cart_freews(int xsize, int ysize)
+void Cart::cart_freews(int xsize, int ysize)
 {
   int s,i;
 
@@ -130,7 +136,7 @@ void cart_freews(int xsize, int ysize)
  * assumes its input is an fftw_malloced array in column-major form with
  * size xsize*ysize */
 
-void cart_forward(double *rho, int xsize, int ysize)
+void Cart::cart_forward(double *rho, int xsize, int ysize)
 {
   fftw_plan plan;
 
@@ -145,7 +151,7 @@ void cart_forward(double *rho, int xsize, int ysize)
  * This function is just a wrapper for forward(), so the user doesn't
  * need to see the fftw-format density array */
 
-void cart_transform(double **userrho, int xsize, int ysize)
+void Cart::cart_transform(double **userrho, int xsize, int ysize)
 {
   cart_forward(*userrho,xsize,ysize);
 }
@@ -157,7 +163,7 @@ void cart_transform(double **userrho, int xsize, int ysize)
  * transforms, but this doesn't matter because the cartogram method is
  * insensitive to variation in the density by a multiplicative constant */
 
-void cart_density(double t, int s, int xsize, int ysize)
+void Cart::cart_density(double t, int s, int xsize, int ysize)
 {
   int ix,iy;
   double kx,ky;
@@ -189,7 +195,7 @@ void cart_density(double t, int s, int xsize, int ysize)
 /* Function to calculate the velocity at all integer grid points for a
  * specified snapshot */
 
-void cart_vgrid(int s, int xsize, int ysize)
+void Cart::cart_vgrid(int s, int xsize, int ysize)
 {
   int ix,iy;
   double r00,r10;
@@ -269,7 +275,7 @@ void cart_vgrid(int s, int xsize, int ysize)
  * although we should never actually do this because function cart_twosteps()
  * contains code to prevent it) */
 
-void cart_velocity(double rx, double ry, int s, int xsize, int ysize,
+void Cart::cart_velocity(double rx, double ry, int s, int xsize, int ysize,
 		   double *vxp, double *vyp)
 {
   int ix,iy;
@@ -325,7 +331,7 @@ void cart_velocity(double rx, double ry, int s, int xsize, int ysize,
  *   *spp = the snapshot index for the final function evaluation
  */
 
-void cart_twosteps(double *pointx, double *pointy, int npoints,
+void Cart::cart_twosteps(double *pointx, double *pointy, int npoints,
 		   double t, double h, int s, int xsize, int ysize,
 		   double *errorp, double *drp, int *spp)
 {
@@ -476,7 +482,7 @@ void cart_twosteps(double *pointx, double *pointy, int npoints,
 
 /* Function to estimate the percentage completion */
 
-int cart_complete(double t)
+int Cart::cart_complete(double t)
 {
   int res;
 
@@ -490,7 +496,7 @@ int cart_complete(double t)
 /* Function to do the transformation of the given set of points
  * to the cartogram */
 
-void cart_makecart(double *pointx, double *pointy, int npoints,
+void Cart::cart_makecart(double *pointx, double *pointy, int npoints,
 		   int xsize, int ysize, double blur)
 {
   int i;
@@ -545,7 +551,7 @@ void cart_makecart(double *pointx, double *pointy, int npoints,
 
     /* If no point moved then we are finished */
 
-  } while (dr>0.0 && step<=2000);
+  } while (dr>0.0);
 
 #ifdef PERCENT
   fprintf(stdout,"\n");

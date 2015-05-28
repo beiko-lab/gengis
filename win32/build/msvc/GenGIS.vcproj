@@ -64,7 +64,7 @@
 				Name="VCLinkerTool"
 				AdditionalDependencies="freetype.lib ftgl_d.lib gdal_i.lib wxmsw28ud_gl.lib wxmsw28ud_core.lib wxbase28ud.lib wxmsw28ud_adv.lib wxmsw28ud_richtext.lib wxbase28ud_net.lib wxmsw28ud_html.lib opengl32.lib glu32.lib comdlg32.lib comctl32.lib rpcrt4.lib png_d.lib zlib_d.lib libfftw3-3.lib libfftw3f-3.lib libfftw3l-3.lib"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="..\..\library3rd\lib;..\..\library3rd\boost_1_47\lib;&quot;..\..\library3rd\wxWidgets-2.8.12\lib\vc_dll&quot;;..\..\library3rd\fftw"
+				AdditionalLibraryDirectories="..\..\library3rd\lib;..\..\library3rd\boost_1_47\lib;&quot;..\..\library3rd\wxWidgets-2.8.12\lib\vc_dll&quot;;..\..\library3rd\fftw;..\..\library3rd\cart"
 				IgnoreDefaultLibraryNames="libcmtd"
 				GenerateDebugInformation="true"
 				TargetMachine="1"
@@ -703,14 +703,6 @@
 					>
 					<FileConfiguration
 						Name="Debug|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							UsePrecompiledHeader="0"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
