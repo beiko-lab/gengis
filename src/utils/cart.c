@@ -533,6 +533,7 @@ void cart_makecart(double *pointx, double *pointy, int npoints,
     else h *= desiredratio;
 
     done = cart_complete(t);
+	/*
 #ifdef PERCENT
     fprintf(stdout,"%i\n",done);
 #endif
@@ -542,15 +543,16 @@ void cart_makecart(double *pointx, double *pointy, int npoints,
     for (i=done/2; i<50; i++) fprintf(stderr," ");
     fprintf(stderr,"|\r");
 #endif
-
+*/
     /* If no point moved then we are finished */
 
-  } while (dr>0.0 && step<=2000);
-
+   } while (dr>0.0 && step<=1000);
+/*
 #ifdef PERCENT
   fprintf(stdout,"\n");
 #endif
 #ifndef NOPROGRESS
   fprintf(stderr,"  100%%  |==================================================|\n");
 #endif
+*/
 }
