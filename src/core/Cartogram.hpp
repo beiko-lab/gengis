@@ -53,8 +53,8 @@ namespace GenGIS
 
 		void MakeCartogram();
 	private:
-		const int nCol;
-		const int nRow;
+		const int ysize;
+		const int xsize;
 		/** Copied directly from MapView. See class for more information. */
 		int m_dimension;
 		MapControllerPtr m_mapController;
@@ -66,13 +66,12 @@ namespace GenGIS
 		
 		/** Translate the first location set Lat/Lon to Raster Grid coordinates. */
 		std::map<int,int> TranslateLocations();
-		std::map<int,int> BruteForceTranslate();
 		bool BoxBound(Point2D botRight, Point2D topLeft, Point2D loc);
-		//void WriteMatrix(double ** rho,int xsize, int ysize, std::string name);
-		void WriteMatrix(double ** rho, std::string name);
+		void WriteMatrix(double ** rho, int row, int col, std::string name);
 		void StdMain();
 		int readpop(FILE *stream, double **rho, int xsize, int ysize);
 		void writepoints(FILE *stream, double *gridx, double *gridy, int npoints);
+		int readpoints(FILE *stream, double **gridx, double **gridy, int xsize, int ysize);
 
 		/** Create the density matrix for input into Cart. */
 		void MakeDensityMatrix();
@@ -91,7 +90,6 @@ namespace GenGIS
 
 		/** Transform a 1D array to a 2D array in order to move between Cart and Interp steps. */
 		double ** ArrayTransform(double * grid);
-		double ** ArrayTransformSafe(double * grid);
 	};
 }
 #endif
