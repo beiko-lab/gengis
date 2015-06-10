@@ -286,13 +286,9 @@ void Cartogram::PopulateRho(double **rho)
 	}
 }
 
-//void Cartogram::Interpolate(double* gridx1D, double* gridy1D)
 void Cartogram::Interpolate(double** gridx, double** gridy)
 {
 	Point3D* grid = m_mapController->GetMapModel()->GetGrid();
-//	FileHeader* header = m_mapController->GetMapModel()->GetHeader();
-//	int xsize = ysize;
-//	int	ysize = xsize;
 	int gridSize = (xsize)*(ysize);
 	int ix,iy;
 	double xin,yin;
@@ -304,9 +300,6 @@ void Cartogram::Interpolate(double** gridx, double** gridy)
 	double height;
 	double minWidth;
 	double minHeight;
-//	Box2D mapBox = m_mapController->GetMapModel()->GetProjectionExtents();
-//	double mapHeight = mapBox.dy - mapBox.y;
-//	double mapWidth = mapBox.dx - mapBox.x;
 	
 	Point3D gridCell;
 	GeoCoord coord;
@@ -319,28 +312,18 @@ void Cartogram::Interpolate(double** gridx, double** gridy)
 	for( int i=0; i < gridSize; ++i)
 	{
 		gridCell=grid[i];
-
-	//	double indexX = (gridCell.x - minWidth)/width * double(ysize);
-	//	double indexY = (gridCell.z - minHeight)/height * double(xsize);
-
 		double indexY = (gridCell.x - minWidth)/width * double(ysize);
 		double indexX = (gridCell.z - minHeight)/height * double(xsize);
-
-		//	int index = indexX + indexY*nCols;
-		// x and y in are the Row and column of every point
-	//	xin = gridCell.x;
-	//	yin = gridCell.z;
 		xin = indexX;
 		yin = indexY;
 	/* Check if we are outside bounds */
 		
 		if ((xin<0.0)||(xin>=ysize)||(yin<0.0)||(yin>=xsize)) {
-//		if ((xin<0.0)||(xin>=xsize)||(yin<0.0)||(yin>=ysize)) {
-		//	xout = xin;
-		//	yout = yin;
 			xout = gridCell.x;
 			yout = gridCell.z;
-		} else {
+		} 
+		else 
+		{
 			ix = xin;
 			dx = xin - ix;
 			iy = yin;
@@ -354,7 +337,6 @@ void Cartogram::Interpolate(double** gridx, double** gridy)
 			coord.easting = xout;
 			coord.northing = yout;
 			m_mapController->GetMapModel()->LatLongToGrid( coord, gridCell);
-		//	m_mapController->GetMapModel()->GeoToGrid( coord, gridCell);
 		}
 		grid[i].x = gridCell.x;
 		grid[i].z = gridCell.z;
@@ -371,7 +353,6 @@ double ** Cartogram::ArrayTransform(double * grid)
 		gridx[i] = new double[xsize];
 		for( int j = 0; j<= xsize ; ++j)
 		{
-		//	index = i*ysize + j;
 			double blarg = grid[index];
 			gridx[i][j] = blarg;
 			index++;
@@ -385,13 +366,9 @@ void Cartogram::WriteMatrix(double ** rho, int row, int col, std::string name)
 {
 	std::ofstream myfile;
 	std::string fileName = "C:/Users/Admin/Desktop/" + name + ".txt";
-//	myfile.open("C:/Users/Admin/Desktop/cartlogGRID.txt");
 	myfile.open(fileName.c_str());
-
-//	for(int i = 0; i < xsize; i++)
 	for(int i = 0; i < row; i++)
 	{
-//		for( int j = 0; j < ysize; j++)
 		for( int j = 0; j < col; j++)
 		{
 			myfile << boost::lexical_cast<std::string>(rho[i][j]) + "\t"; 
@@ -445,7 +422,6 @@ void Cartogram::StdMain()
 	cart_makecart(gridx, gridy, matrixSize, xsize, ysize, 0.0);
 	
 	writepoints(tempOut,gridx,gridy,matrixSize);
-//	close(tempOut);
 	/*
 	*	Cartogram stuff is done, lets interpolate junk!	
 	*/
@@ -462,13 +438,8 @@ void Cartogram::StdMain()
 	{
 		Log::Inst().Warning("Didn't recover the temp file!");
 	}
-//	close(tempIn);
-
-//	double** gridx2d = ArrayTransformSafe(gridx, 512, 1024);
-//	double** gridy2d = ArrayTransformSafe(gridy, 512, 1024);
 	WriteMatrix(gridx2d, ysize, xsize, "gridXUSpop");
 	WriteMatrix(gridy2d, ysize, xsize, "gridYUSpop");
-//	writepoints(outfp,gridx,gridy,(xsize+1)*(ysize+1));
 }
 
 /* Function to read population data into the array rho.  Returns 1 if there
