@@ -62,6 +62,7 @@ class MGRastSpecific:
 			startTime = time.time()
 		except urllib2.HTTPError as e:
 			wx.EndBusyCursor()
+			print e;
 			wx.MessageBox("The server is temporarily unreachable.\nPlease try again later.")
 			return False
 		response=html.read()
@@ -137,15 +138,18 @@ class MGRastSpecific:
 		elif searchType =="study":
 			url="http://api.metagenomics.anl.gov/matrix/organism/?id=%s%s"%(taxon_name,options)
 			rowMeta = 'taxonomy'
-		print searchType
-		print taxon_name
-		try:	
+	#	print searchType
+	#	print taxon_name
+		try:
+	#		print url
 			html=urllib2.urlopen(url)
 			startTime = time.time()
 		except urllib2.HTTPError as e:
+	#		print url
+			print e
 			wx.MessageBox("The server is temporarily unreachable.\nPlease try again later.")
-			m_Progress.WriteText("%s"%taxon_name)
-			return False
+			m_Progress.WriteText("%s was not retrieved.\n"%taxon_name)
+			return (False,False,False)
 		response=html.read()
 		matrix = json.loads(response)
 		metaVals = {}

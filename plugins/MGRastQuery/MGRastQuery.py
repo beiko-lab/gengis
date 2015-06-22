@@ -202,6 +202,10 @@ class MGRastQuery(MGRASTQueryLayout):
 			for tax in self.__selectedTaxon__:
 				startTime = time.time()
 				obs, metaVals, taxonLength = self.MGRastSpecific.GETOBS(tax[1],searchType,additFields,self.m_Progress)
+				# Some sort of error occured trying to get that object, skip to next one
+				if not obs:
+					self.SetFocus()
+					continue
 				taxonomy = []
 				for i in range(0,taxonLength):
 					if i < len(self.__TAXON__):
