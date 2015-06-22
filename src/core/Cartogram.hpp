@@ -75,6 +75,10 @@ namespace GenGIS
 
 		/** Create the density matrix for input into Cart. */
 		void MakeDensityMatrix();
+		
+		/** Create the Rho Matrix. */
+		void MakeRho();
+
 		/** Get the average density value for all locations.
 			This will be used to fill in empty spots in the grid*/
 		int GetMapAverage(std::map<int,int> map);
@@ -88,6 +92,9 @@ namespace GenGIS
 		/** Interpolate between standard Raster coordinates and the cartogram.*/
 		void Interpolate(double** gridx, double** gridy);
 
+		/** Interpolate locations from standard raster to cartogram coordinates. */
+		void InterpolateLocations(double ** gridx, double** gridy);
+		
 		/** Transform a 1D array to a 2D array in order to move between Cart and Interp steps. */
 		double ** ArrayTransform(double * grid);
 	};

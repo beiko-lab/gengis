@@ -546,8 +546,9 @@ void cart_makecart(double *pointx, double *pointy, int npoints,
 */
     /* If no point moved then we are finished */
 
-   } while (dr>0.0 && step<=1000);
-/*
+//   } while (dr>0.0 && step<=1000);
+	} while (dr>0.0);
+	/*
 #ifdef PERCENT
   fprintf(stdout,"\n");
 #endif
