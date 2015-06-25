@@ -54,6 +54,69 @@ namespace GenGIS
 
 		enum DATA_COMBINE { AVERAGE, STDEV, GINI, SUM };
 		
+		bool operator >( const TileModelPtr t)
+		{
+			if( this->GetTopLeft().y < t->GetTopLeft().y )
+				return true;
+			else if( this->GetTopLeft().y < t->GetTopLeft().y
+				&& this->GetTopLeft().x > t->GetTopLeft().x )
+				return true;
+			else
+				return false;
+		}
+
+		bool operator >( const Point2D point )
+		{
+			if(this->GetTopLeft().y < point.y)
+				return true;
+			else if( this->GetTopLeft().y < point.y 
+				&& this->GetTopLeft().x > point.x )
+				return true;
+			else
+				return false;
+		}
+
+		// if left is less than right
+		bool operator <( const TileModelPtr t )
+		{
+			if( this->GetTopLeft().y > t->GetTopLeft().y )
+				return true;
+			else if( this->GetTopLeft().y < t->GetTopLeft().y
+				&& this->GetTopLeft().x < t->GetTopLeft().x )
+				return true;
+			else
+				return false;
+		}
+
+		bool operator ==( const TileModelPtr t )
+		{
+			// throw in some floating point tolerance
+			if ( (abs(this->GetTopLeft().x - t->GetTopLeft().x) < 0.001)
+				&& (abs(this->GetTopLeft().y - t->GetTopLeft().y) < 0.001)
+				&& (abs(this->GetBottomRight().x - t->GetBottomRight().x) < 0.001)
+				&& (abs(this->GetBottomRight().y - t->GetBottomRight().y ) < 0.001 ) )
+				return true;
+			else
+				return false;
+		}
+	
+		bool operator==( const Point2D loc )
+		{
+		/*	if ( ( abs(this->GetTopLeft().x - t.x) < 0.00001)
+				&& (abs(this->GetTopLeft().y - t.y) < 0.00001)
+				&& (abs(this->GetBottomRight().x - t.x) < 0.00001)
+				&& (abs(this->GetBottomRight().y - t.y) < 0.00001 ) )
+				return true;
+		*/	
+			if( ( this->GetTopLeft().x <= loc.x 
+				&& loc.x <= this->GetBottomRight().x) 
+				&& ( this->GetBottomRight().y <= loc.y 
+				&& loc.y <= this->GetTopLeft().y ) )
+				return 0;
+			else
+				return false;
+		}
+	
 		/** 
 		* @brief Constuctor.
 		* @param siteId Unique id for location site.
@@ -75,6 +138,8 @@ namespace GenGIS
 			m_combinationMethod( AVERAGE )
 		{
 		}
+	
+		TileModel();
 
 		/** Destructor. */
 		~TileModel() {}
@@ -87,6 +152,15 @@ namespace GenGIS
 			return m_topLeft;
 		}
 
+		/**
+		* A function to find if a point is with a tile
+		* Returns <0 if point is smaller, 0 if contains point and >0 if point is larger.
+		*/
+		/*
+		int Compare(Point2D Location);
+
+		int Compare(TileModelPtr tile);
+		*/
 		/**
 		* @brief Set top left coordinate.
 		*/
@@ -239,6 +313,7 @@ namespace GenGIS
 		/** Method for data combination of tile. */
 		DATA_COMBINE m_combinationMethod;
 	};
+
 }
 
 namespace boost

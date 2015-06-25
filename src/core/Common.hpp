@@ -112,6 +112,13 @@ typedef struct sPOINT_2D
 		ar & x; // float
 		ar & y; // float
 	}
+
+	bool operator==(const sPOINT_2D l)
+	{
+		if( this->x == l.x && this->y == l.y )
+			return true;
+		return false;
+	}
 } Point2D;
 
 /** General 2D line. */

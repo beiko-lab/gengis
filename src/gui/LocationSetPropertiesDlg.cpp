@@ -48,6 +48,7 @@
 
 #include "../widgets/CustomColourButton.hpp"
 
+
 using namespace GenGIS;
 
 LocationSetPropertiesDlg::LocationSetPropertiesDlg(wxWindow* parent, LocationSetLayerPtr locationSetLayer, int currentPageSelection) : 
@@ -764,10 +765,11 @@ void LocationSetPropertiesDlg::InitLocationGrid()
 		wxString( StringTools::ToStringW( locationGrid->GetElevation(), 2 ).c_str() ) );
 
 	locationGrid->SetLocationSetLayer ( m_locationSetLayer);
-	//	Initialize and fill tiles
+	//	Initialize tile coordinates and initialize Bound Array
 	locationGrid->GenerateTileCoordinates();
-	locationGrid->InitTiles();
-	locationGrid->FillTiles();
+	
+//	locationGrid->InitBoundArray();
+	locationGrid->MakeGrid();
 
 	InitLocationGridColour();
 	InitLocationGridAlignment();
@@ -776,9 +778,9 @@ void LocationSetPropertiesDlg::InitLocationGrid()
 	locationGrid->SetGridChanged( false );
 
 	// Removes weird click anywhere bug for divide by radio boxes
-//	wxCommandEvent setting;
-//	setting.SetId(wxID_DIVIDE_BY_AXIS);
-//	OnRadioDivideBy(setting);
+	wxCommandEvent setting;
+	setting.SetId(wxID_DIVIDE_BY_AXIS);
+	OnRadioDivideBy(setting);
 }
 
 void LocationSetPropertiesDlg::InitLocationPolygons() {
@@ -1188,20 +1190,21 @@ void LocationSetPropertiesDlg::GetSortedFieldValues(const std::wstring& field, s
 	SortFieldValues(fieldValues);
 }
 
-void LocationSetPropertiesDlg::GetSortedGridFieldValues(const std::wstring& field, std::vector<std::wstring>& fieldValues, std::vector<TileModelPtr> m_tileModels)
+void LocationSetPropertiesDlg::GetSortedGridFieldValues(const std::wstring& field, std::vector<std::wstring>& fieldValues, std::map<int,TileModelPtr> m_tileShortModels)
 {
 	// get all unique field values within the given field
 	std::set<std::wstring> uniqueFieldValues;
-	for(unsigned int i = 0; i < m_tileModels.size(); ++i)
+	std::map<int, TileModelPtr>::iterator tile;
+	for( tile = m_tileShortModels.begin(); tile != m_tileShortModels.end(); ++tile )
 	{
-		if( m_tileModels[i]->GetNumLocations() != 0 )
+		if( tile->second->GetNumLocations() != 0 )
 		{
 			// need to check if field comes from location or sequence layer
-			std::map<std::wstring,std::wstring> data = m_tileModels[i]->GetData();
+			std::map<std::wstring,std::wstring> data = tile->second->GetData();
 			std::map<std::wstring,std::wstring>::const_iterator it = data.find(field);
 			if( it == data.end() )
 			{
-				data = m_tileModels[i]->GetSequence(0)->GetData();
+				data = tile->second->GetSequence(0)->GetData();
 				it = data.find(field);
 			}
 			uniqueFieldValues.insert(it->second);
@@ -1557,7 +1560,7 @@ void LocationSetPropertiesDlg::ApplyGrid()
 	// Generate coordinates at origin to reset grid
 	locationGrid->SetMapOffset( Point2D(0,0) );
 
-	// Generate coordinates
+	// Generate coordinates and Initialize Bound Array
 	locationGrid->GenerateTileCoordinates();
 
 	// Set Grid Origin
@@ -1584,11 +1587,14 @@ void LocationSetPropertiesDlg::ApplyGrid()
 	if( locationGrid->GetGridChanged() )
 	{
 		// put values in tiles
-		locationGrid->FillTiles();
+		locationGrid->MakeGrid();
+//		std::vector<TileModelPtr> asdhsadhsad = locationGrid->GetTileModels();
+		
 		wxCommandEvent dummy;
 		OnChoiceGridFieldToChartChange( dummy );
 		OnGridColourMapChange( dummy );
 		locationGrid->SetGridChanged( false );
+
 	}
 
 	// Set Colour Map

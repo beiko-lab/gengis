@@ -159,6 +159,9 @@ namespace GenGIS
 	typedef boost::shared_ptr<Point3D> Point3DPtr;
 	typedef boost::shared_array<Point3D> Point3DArrayPtr;
 
+//	class	PokeTree;
+//	typedef boost::shared_ptr<PokeTree> PokeTreePtr;
+
 	class   ProgressDlg;
 	typedef boost::shared_ptr<ProgressDlg> ProgressDlgPtr;
 

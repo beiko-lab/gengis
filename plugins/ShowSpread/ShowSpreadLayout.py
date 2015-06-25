@@ -16,7 +16,7 @@ import wx
 class ShowSpreadLayout ( wx.Frame ):
 	
 	def __init__( self, parent ):
-		wx.Frame.__init__ ( self, parent, id = wx.ID_ANY, title = u"Show Spread", pos = wx.DefaultPosition, size = wx.Size( 276,353 ), style = wx.DEFAULT_FRAME_STYLE|wx.TAB_TRAVERSAL )
+		wx.Frame.__init__ ( self, parent, id = wx.ID_ANY, title = u"Show Spread", pos = wx.DefaultPosition, size = wx.Size( 302,414 ), style = wx.DEFAULT_FRAME_STYLE|wx.TAB_TRAVERSAL )
 		
 		self.SetSizeHintsSz( wx.Size( 276,310 ), wx.DefaultSize )
 		self.SetBackgroundColour( wx.SystemSettings.GetColour( wx.SYS_COLOUR_BTNFACE ) )
@@ -92,7 +92,7 @@ class ShowSpreadLayout ( wx.Frame ):
 		fgSizer1.Fit( self.m_Page1 )
 		self.m_DisplayNotebook.AddPage( self.m_Page1, u"Default", True )
 		self.m_Page2 = wx.Panel( self.m_DisplayNotebook, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
-		fgSizer3 = wx.FlexGridSizer( 7, 2, 0, 0 )
+		fgSizer3 = wx.FlexGridSizer( 9, 2, 0, 0 )
 		fgSizer3.AddGrowableCol( 0 )
 		fgSizer3.AddGrowableCol( 1 )
 		fgSizer3.AddGrowableRow( 0 )
@@ -155,6 +155,16 @@ class ShowSpreadLayout ( wx.Frame ):
 		self.m_Default = wx.Button( self.m_Page2, wx.ID_ANY, u"Restore", wx.DefaultPosition, wx.DefaultSize, 0 )
 		fgSizer3.Add( self.m_Default, 0, wx.ALL|wx.EXPAND, 5 )
 		
+		self.m_saveSpreadText = wx.StaticText( self.m_Page2, wx.ID_ANY, u"Save Spread", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_saveSpreadText.Wrap( -1 )
+		fgSizer3.Add( self.m_saveSpreadText, 0, wx.ALL, 5 )
+		
+		self.m_saveSpreadCheckBox = wx.CheckBox( self.m_Page2, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, 0 )
+		fgSizer3.Add( self.m_saveSpreadCheckBox, 0, wx.ALL, 5 )
+		
+		self.m_saveSpreadFile = wx.FilePickerCtrl( self.m_Page2, wx.ID_ANY, wx.EmptyString, u"Select a file", u".png", wx.DefaultPosition, wx.DefaultSize, wx.FLP_SAVE|wx.FLP_USE_TEXTCTRL )
+		fgSizer3.Add( self.m_saveSpreadFile, 0, wx.ALL, 5 )
+		
 		self.m_Page2.SetSizer( fgSizer3 )
 		self.m_Page2.Layout()
 		fgSizer3.Fit( self.m_Page2 )
@@ -203,6 +213,7 @@ class ShowSpreadLayout ( wx.Frame ):
 		self.m_RadioDayFirst.Bind( wx.EVT_RADIOBUTTON, self.OnDateRadio )
 		self.m_RadioMonthFirst.Bind( wx.EVT_RADIOBUTTON, self.OnDateRadio )
 		self.m_Default.Bind( wx.EVT_BUTTON, self.OnRestore )
+		self.m_saveSpreadCheckBox.Bind( wx.EVT_CHECKBOX, self.OnPrintToggle )
 		self.m_Help.Bind( wx.EVT_BUTTON, self.OnHelp )
 		self.m_Run.Bind( wx.EVT_BUTTON, self.OnRun )
 		self.m_OK.Bind( wx.EVT_BUTTON, self.OnOK )
@@ -233,6 +244,9 @@ class ShowSpreadLayout ( wx.Frame ):
 	
 	
 	def OnRestore( self, event ):
+		event.Skip()
+	
+	def OnPrintToggle( self, event ):
 		event.Skip()
 	
 	def OnHelp( self, event ):
