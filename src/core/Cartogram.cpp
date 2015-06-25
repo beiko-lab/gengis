@@ -54,6 +54,8 @@ Cartogram::Cartogram() :
 //	FileHeader* header = m_mapController->GetMapModel()->GetHeader();
 //	xsize = ysize;
 //	ysize = xsize;
+	valFudge=40;
+	areaFudge=20;
 }
 
 Cartogram::Cartogram(float x,float y):
@@ -230,8 +232,9 @@ void Cartogram::MakeDensityMatrix()
 //	fclose(tempIn);
 
 	// update map points
+//	InterpolateLocations(gridx2d, gridy2d);
 	Interpolate(gridx2d,gridy2d);
-	InterpolateLocations(gridx2d, gridy2d);
+	
 	// free up space again
 	cart_freews(xsize, ysize);
 	free(gridx);
@@ -278,8 +281,8 @@ void Cartogram::PopulateRho(double **rho)
 	int average = GetMapAverage(locationCounts);
 	int index=0;
 	double val = 0;
-	int areaFudge = 20;
-	int valFudge = 40;
+//	int areaFudge = 20;
+//	int valFudge = 40;
 	double rhoVal;
 	for ( int i = 0; i < xsize; ++i)
 	{
@@ -403,6 +406,10 @@ void Cartogram::InterpolateLocations(double** gridx, double** gridy)
 	
 	Point3D gridCell;
 	
+	Point3D tempCell;
+	GeoCoord tempCoord;
+	double yTemp,xTemp;
+
 	Box2D mapBox = m_mapController->GetMapModel()->GetProjectionExtents();
 	height = mapBox.dy - mapBox.y;
 	width = mapBox.dx - mapBox.x;
@@ -420,17 +427,27 @@ void Cartogram::InterpolateLocations(double** gridx, double** gridy)
 		gridCell.x = loc->GetLocationController()->GetEasting();
 		gridCell.z = loc->GetLocationController()->GetNorthing();
 		
+		tempCoord.easting = gridCell.x;
+		tempCoord.northing = gridCell.z;
+		 m_mapController->GetMapModel()->GeoToGrid(tempCoord, tempCell);
+
+		yTemp = (tempCell.x + 1)/2 * double(xsize);
+		xTemp = (tempCell.z +  m_mapController->GetMapModel()->GetHeight()/2)/ m_mapController->GetMapModel()->GetHeight()*double(ysize);
+
 	//	double indexY = abs(gridCell.x + minWidth)/width * double(xsize);
 	//	double indexX = abs(gridCell.z + minHeight)/height * double(ysize);
 	//	xin = indexX;
 	//	yin = indexY;
+	//	yin = yTemp;
+	//	xin = xTemp;
 		yin = abs(gridCell.x - minWidth)/width * double(xsize);
 		xin = abs(gridCell.z - minHeight)/height * double(ysize);
 	/* Check if we are outside bounds */
 		
 		if ((xin<0.0)||(xin>=ysize)||(yin<0.0)||(yin>=xsize)) {
-			xout = gridCell.x;
-			yout = gridCell.z;
+		//	xout = gridCell.x;
+		//	yout = gridCell.z;
+			continue;
 		} 
 		else 
 		{
@@ -521,9 +538,9 @@ void Cartogram::StdMain()
 //	ysize = 360;
 	double *gridx,*gridy;  // Array for grid points
 	double **rho;          // Initial population density
-	FILE *infp;
+//	FILE *infp;
 	FILE *outfp;
-	FILE *tempOut;
+//	FILE *tempOut;
 	FILE *tempIn;
 //	tempOut = fopen("./temp.dat","w");
 	tempIn = fopen("./temp.dat","r");
@@ -555,7 +572,9 @@ void Cartogram::StdMain()
 	cart_makecart(gridx, gridy, matrixSize, xsize, ysize, 0.0);
 	
 //	writepoints(tempOut,gridx,gridy,matrixSize);
+
 	writepoints(outfp,gridx,gridy,matrixSize);
+
 //	outfp.fclose;
 	/*
 	*	Cartogram stuff is done, lets interpolate junk!	
@@ -588,8 +607,9 @@ void Cartogram::StdMain()
 //	fclose(tempIn);
 
 	// update map points
-	Interpolate(gridx2d,gridy2d);
 	InterpolateLocations(gridx2d, gridy2d);
+	Interpolate(gridx2d,gridy2d);
+	
 	// free up space again
 	cart_freews(xsize, ysize);
 	free(gridx);

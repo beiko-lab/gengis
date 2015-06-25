@@ -89,6 +89,11 @@ namespace GenGIS
 		/** OK button event handler. */
 		void OnOK( wxCommandEvent& event );
 
+		/** Go button handler for cartogram creation. */
+		void OnCartogram( wxCommandEvent& event);
+		void OnValueFudgeClick( wxCommandEvent& event );
+		void OnAreaFudgeClick( wxCommandEvent& event );
+
 		/** Apply button event handler. */
 		void OnApply( wxCommandEvent& event );
 

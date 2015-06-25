@@ -1,15 +1,13 @@
 ///////////////////////////////////////////////////////////////////////////
-// C++ code generated with wxFormBuilder (version Jun 30 2011)
+// C++ code generated with wxFormBuilder (version Sep  8 2010)
 // http://www.wxformbuilder.org/
 //
 // PLEASE DO "NOT" EDIT THIS FILE!
 ///////////////////////////////////////////////////////////////////////////
 
-#ifndef __MAPPROPERTIESLAYOUT_H__
-#define __MAPPROPERTIESLAYOUT_H__
+#ifndef __MapPropertiesLayout__
+#define __MapPropertiesLayout__
 
-#include <wx/artprov.h>
-#include <wx/xrc/xmlres.h>
 #include <wx/string.h>
 #include <wx/stattext.h>
 #include <wx/gdicmn.h>
@@ -30,6 +28,8 @@
 #include <wx/slider.h>
 #include <wx/checkbox.h>
 #include <wx/notebook.h>
+#include <wx/statbmp.h>
+#include <wx/gbsizer.h>
 #include <wx/richtext/richtextctrl.h>
 #include <wx/dialog.h>
 
@@ -83,6 +83,7 @@ namespace GenGIS
 			wxTextCtrl* m_txtLayerDescription;
 			wxStaticText* m_lblAuthours;
 			wxTextCtrl* m_txtAuthours;
+			
 			wxPanel* m_pnlSymbology;
 			wxNotebook* m_notebook3;
 			wxPanel* m_pnlColourMap;
@@ -93,6 +94,7 @@ namespace GenGIS
 			wxStaticText* m_lblEntries;
 			wxSpinCtrl* m_spinNumEntries;
 			wxScrolledWindow* m_scrolledWindowColourMap;
+			
 			wxButton* m_btnEvenlySpace;
 			wxPanel* m_pnlAdvanced;
 			wxStaticText* m_lblVerticalExaggeration;
@@ -100,14 +102,24 @@ namespace GenGIS
 			wxStaticText* m_lblLevelOfDetail;
 			wxSlider* m_sliderLevelOfDetail;
 			wxStaticText* m_lblMinLevelOfDetail;
+			
 			wxStaticText* m_lblMaxLevelOfDetail;
 			wxSlider* m_sliderTransparency;
+			
 			wxCheckBox* m_chkWireframe;
+			wxPanel* m_pnlCartogram;
+			wxStaticText* m_lblAreaFudge;
+			wxTextCtrl* m_textAreaFudge;
+			wxStaticText* m_lblValueFudge;
+			wxTextCtrl* m_textValueFudge;
+			wxStaticBitmap* m_bitmapCart;
+			wxButton* m_btnMakeCartogram;
 			wxPanel* m_pnlMetadata;
 			wxStaticText* m_lblLayerSource;
 			wxTextCtrl* m_txtLayerSource;
 			wxRichTextCtrl* m_txtMetaData;
 			wxButton* m_btnHelp;
+			
 			wxButton* m_btnOK;
 			wxButton* m_btnApply;
 			wxButton* m_btnCancel;
@@ -119,6 +131,9 @@ namespace GenGIS
 			virtual void OnInterpolationChange( wxCommandEvent& event ) { event.Skip(); }
 			virtual void OnNumEntriesChange( wxSpinEvent& event ) { event.Skip(); }
 			virtual void OnEvenlySpace( wxCommandEvent& event ) { event.Skip(); }
+			virtual void OnAreaFudgeClick( wxMouseEvent& event ) { event.Skip(); }
+			virtual void OnValueFudgeClick( wxMouseEvent& event ) { event.Skip(); }
+			virtual void OnCartogram( wxCommandEvent& event ) { event.Skip(); }
 			virtual void OnHelp( wxCommandEvent& event ) { event.Skip(); }
 			virtual void OnOK( wxCommandEvent& event ) { event.Skip(); }
 			virtual void OnApply( wxCommandEvent& event ) { event.Skip(); }
@@ -127,11 +142,11 @@ namespace GenGIS
 		
 		public:
 			
-			MapPropertiesLayout( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Map Properties"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( -1,-1 ), long style = wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER ); 
+			MapPropertiesLayout( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Map Properties"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( -1,-1 ), long style = wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER );
 			~MapPropertiesLayout();
 		
 	};
 	
 } // namespace GenGIS
 
-#endif //__MAPPROPERTIESLAYOUT_H__
+#endif //__MapPropertiesLayout__

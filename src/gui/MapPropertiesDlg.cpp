@@ -36,7 +36,6 @@
 
 #include "../utils/StringTools.hpp"
 
-
 using namespace GenGIS;
 
 const int MAX_ELEVATION = 10000;
@@ -50,6 +49,9 @@ MapPropertiesDlg::MapPropertiesDlg(wxWindow* parent, MapLayerPtr mapLayer) :
 
 	// Limit the properties dialog to a single instance
 	m_mapLayer->SetPropertiesDialog( this );
+
+	m_textAreaFudge->Bind(wxEVT_LEFT_DOWN, OnAreaFudgeClick(), this);
+//	wx.Bind(wxEVT_LEFT_DOWN, OnAreaFudgeClick(), m_textAreaFudge);	
 
 	Init();
 	Fit();
@@ -289,10 +291,27 @@ void MapPropertiesDlg::ApplyColourMap()
 /** OK button event handler. */
 void MapPropertiesDlg::OnOK( wxCommandEvent& event )
 {
-	CartogramPtr cartogram(new Cartogram());
-	cartogram->MakeCartogram();
+//	CartogramPtr cartogram(new Cartogram());
+//	cartogram->MakeCartogram();
 	Apply();
 	Destroy();
+}
+
+void MapPropertiesDlg::OnValueFudgeClick( wxCommandEvent& event )
+{
+	m_bitmapCart->SetBitmap(wxBitmap(wxT("C:/Users/admin/Desktop/CartPropAreaFudge.png"),wxBITMAP_TYPE_BMP));
+}
+
+void MapPropertiesDlg::OnAreaFudgeClick( wxCommandEvent& event )
+{
+	m_bitmapCart->SetBitmap(wxBitmap(wxT("C:/Users/admin/Desktop/CartPropValueFudge.png"),wxBITMAP_TYPE_BMP));
+}
+
+void MapPropertiesDlg::OnCartogram( wxCommandEvent& event)
+{
+	CartogramPtr cartogram(new Cartogram());
+	/* set value and area fudge */
+	cartogram->MakeCartogram();
 }
 
 /** Apply button event handler. */

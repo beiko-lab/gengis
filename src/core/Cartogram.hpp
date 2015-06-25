@@ -55,6 +55,8 @@ namespace GenGIS
 	private:
 		const int ysize;
 		const int xsize;
+		int valFudge;
+		int areaFudge;
 		/** Copied directly from MapView. See class for more information. */
 		int m_dimension;
 		MapControllerPtr m_mapController;
@@ -97,6 +99,12 @@ namespace GenGIS
 		
 		/** Transform a 1D array to a 2D array in order to move between Cart and Interp steps. */
 		double ** ArrayTransform(double * grid);
+
+		/** Set the Area Fudge value for the Cartogram. */
+		void SetAreaFudge(int val){ areaFudge = val;}
+
+		/** Set the Value Fudge value for the Cartogram. */
+		void SetValueFudge(int val){ valFudge = val;}
 	};
 }
 #endif
