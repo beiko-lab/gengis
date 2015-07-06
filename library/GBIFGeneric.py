@@ -25,57 +25,44 @@ import wx
 import GenGIS
 from decimal import Decimal
 from operator import itemgetter
-
 class GBIFGeneric:
 	
 	def roundCoord(self,num):
 		return round(Decimal(str(num)),1)
 	
-	def GETTEXT (self,obs_list):
+	def GETTEXT (self,obs_list, masterKeys):
 		OUTL=""
 		OUTS=""
 		for obs in obs_list:
-			locs, seqs = self.MAKEOUTS(obs)
+			locs, seqs = self.MAKEOUTS(obs, masterKeys)
 			OUTL+=locs
 			OUTS+=seqs
 		return(OUTL,OUTS)
 		
 	#	Transforms the mined data into text to be output
-	def MAKEOUTS (self,obs):
+	def MAKEOUTS (self,obs, masterKeys):
 		uniqueSiteID = set()
-		OUTLTEXT=""
-		OUTSTEXT=""
+		OUTLTEXT="Site ID, Latitude, Longitude\n"
+		OUTSTEXT="Site ID, Sequence ID," + ",".join(masterKeys) + '\n'
 		seqFileAgg = {}
-		for cellOut in sorted(obs.keys()):
-			if len(obs[cellOut].keys()) > 0:
-				for taxOut in sorted(obs[cellOut].keys()):
-					thisList=obs[cellOut][taxOut]
-					for ent in sorted(thisList,key=itemgetter(1,2)):
-						fullLat = ent[1]
-						fullLon = ent[2]
-						siteID = "%s_%f_%f" %(ent[3],fullLat,fullLon)
-						siteID = re.sub(' ','_',siteID)
-						if siteID not in uniqueSiteID:
-							uniqueSiteID.add(siteID)
-						#	OUTLTEXT += ("%s,%f,%f,%d,%d,%s,%s\n" % (siteID, fullLat, fullLon, len(obs[cellOut].keys()), cellOut+(int(fullLon) +180),ent[3],taxOut ))
-							OUTLTEXT += ("%s,%f,%f,%d,%s,%s\n" % (siteID, fullLat, fullLon, cellOut+(int(fullLon) +180),ent[3],taxOut ))
-					#	toKey = "%s,%f,%f,%s,%s,%s,%s" %(siteID, fullLat,fullLon,ent[3],taxOut,ent[1],ent[2])
-						toKey = "%s,%s,%s,%s,%s" %(siteID,ent[3],taxOut,ent[1],ent[2])
-						toKey = re.sub(r'\<.*?\>','',toKey)
-						try:
-							seqFileAgg[toKey].extend([ent[0]])
-						except KeyError:
-							seqFileAgg[toKey]=[ent[0]]
-		seqFileAgg_items = seqFileAgg.items()
-		seqFileAgg_items.sort(key=lambda x: x)
-		for outME,IDlist in seqFileAgg_items:
-			save = IDlist[0]
-			IDlist = set(IDlist)
-			OUTSTEXT += ("%d,%s,%d,%s\n" %(save,outME,len(IDlist),'|'.join(str(i) for i in IDlist)))
-		return(OUTLTEXT,OUTSTEXT)
+		for location in obs:
+			#location text
+			OUTLTEXT += ("%s,%f,%f\n" % (location.id, location.lat, location.lon))
+			for id,metadata in location.metadata.items():
+				OUTSTEXT+="%s,%s" %(location.id,metadata['key'])
+				for key in masterKeys:
+					if str(key) in metadata.keys():
+						text = ('%s' % metadata[key])#.replace(',','')
+						OUTSTEXT += ',' + text.replace(',','')
+					else:
+						OUTSTEXT +=(',')
+				OUTSTEXT += ('\n')
+			
+		return(OUTLTEXT.encode('utf-8'),OUTSTEXT.encode('utf-8'))
 				
 	# Populate the Results Table using Taxa and Geographic boundaries
 	def CPPOUT (self,input):
+		input = input.decode('utf-8')
 		array = input.split("\n")
 		return (array)
 		
