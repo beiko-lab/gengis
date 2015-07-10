@@ -122,6 +122,8 @@ namespace GenGIS
 		void SetVertices(MapControllerPtr mapController);
 		QuadtreeNode* createQuadtree( int lodsize, int startindex );
 		int GetDimension(){return m_dimension;};
+		void SetRoot( QuadtreeNode* root ){ m_root=root;};
+
 	private:
 		/** Serialization. */
 		friend class boost::serialization::access;

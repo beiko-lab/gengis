@@ -50,7 +50,7 @@ MapPropertiesDlg::MapPropertiesDlg(wxWindow* parent, MapLayerPtr mapLayer) :
 	// Limit the properties dialog to a single instance
 	m_mapLayer->SetPropertiesDialog( this );
 
-	m_textAreaFudge->Bind(wxEVT_LEFT_DOWN, OnAreaFudgeClick(), this);
+//	m_textAreaFudge->Bind(wxEVT_LEFT_DOWN, OnAreaFudgeClick(), this);
 //	wx.Bind(wxEVT_LEFT_DOWN, OnAreaFudgeClick(), m_textAreaFudge);	
 
 	Init();

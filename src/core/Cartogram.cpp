@@ -54,8 +54,8 @@ Cartogram::Cartogram() :
 //	FileHeader* header = m_mapController->GetMapModel()->GetHeader();
 //	xsize = ysize;
 //	ysize = xsize;
-	valFudge=40;
-	areaFudge=20;
+	valFudge=20;
+	areaFudge=3;
 }
 
 Cartogram::Cartogram(float x,float y):
@@ -82,11 +82,11 @@ void Cartogram::MakeCartogram()
 	/* Now redraw the map. */
 	// Need to do everything after loading terrain
 	m_mapController->GetMapView()->SetVertices(m_mapController);
-	m_mapController->GetMapView()->createQuadtree( m_mapController->GetMapView()->GetDimension(), 0 );
-//	m_mapController->GetMapModel()->SetMaxElevation(180.0);
-//	float camExt = App::Inst().GetViewport()->GetCamera()->GetMapExtentsZoom();
-//	float bkarbare= App::Inst().GetViewport()->GetCamera()->GetHeight();
-//	App::Inst().GetViewport()->GetCamera()->SetHeight(bkarbare * 5);
+//	MapView::QuadtreeNode* root = 
+//	m_mapController->GetMapView()->createQuadtree( m_mapController->GetMapView()->GetDimension(), 0 );
+//	m_mapController->GetMapView()->SetRoot(root);
+	
+	m_mapController->GetMapView()->SetRoot( m_mapController->GetMapView()->createQuadtree( m_mapController->GetMapView()->GetDimension(), 0 ) );
 
 	m_mapController->GetMapView()->RefreshQuadtree();
 }
@@ -129,8 +129,8 @@ std::map<int,int> Cartogram::TranslateLocations()
 	//	yin = abs(gridCell.x - minWidth)/width * double(xsize);
 	//	xin = abs(gridCell.z - minHeight)/height * double(ysize);
 
-		int indexX = int(double(easting/mapWidth)*xsize);
-		int indexY = int(double(northing/mapHeight)*ysize);
+		double indexX = double(easting/mapWidth)*xsize;
+		double indexY = double(northing/mapHeight)*ysize;
 		int index = indexX + indexY*xsize;
 		
 		/*
@@ -232,9 +232,10 @@ void Cartogram::MakeDensityMatrix()
 //	fclose(tempIn);
 
 	// update map points
-//	InterpolateLocations(gridx2d, gridy2d);
 	Interpolate(gridx2d,gridy2d);
-	
+	InterpolateLocations(gridx2d, gridy2d);
+
+
 	// free up space again
 	cart_freews(xsize, ysize);
 	free(gridx);
@@ -281,8 +282,6 @@ void Cartogram::PopulateRho(double **rho)
 	int average = GetMapAverage(locationCounts);
 	int index=0;
 	double val = 0;
-//	int areaFudge = 20;
-//	int valFudge = 40;
 	double rhoVal;
 	for ( int i = 0; i < xsize; ++i)
 	{
@@ -295,9 +294,9 @@ void Cartogram::PopulateRho(double **rho)
 				val = locationCounts[index] + OFFSET*average;
 		//		rho[j][i]+= val*70;
 						
-				for( int x = std::max(i-areaFudge,0); x <= std::min(i+areaFudge,xsize-1); x++)
+				for( int x = std::max(i-areaFudge,0); x <= std::min(i+areaFudge,xsize); x++)
 				{
-					for( int y = std::max(j-areaFudge,0); y <= std::min(j+areaFudge,ysize-1); y++)
+					for( int y = std::max(j-areaFudge,0); y <= std::min(j+areaFudge,ysize); y++)
 					{
 						rhoVal = rho[x][y];
 						rho[y][x]+=val*valFudge;
@@ -321,6 +320,7 @@ void Cartogram::Interpolate(double** gridx, double** gridy)
 {
 	Point3D* grid = m_mapController->GetMapModel()->GetGrid();
 	int gridSize = (xsize)*(ysize);
+//	Point3D* grid = new Point3D[gridSize];
 	int ix,iy;
 	double xin,yin;
 	double xout,yout;
@@ -349,8 +349,8 @@ void Cartogram::Interpolate(double** gridx, double** gridy)
 		gridCell=grid[i];
 	//	double indexY = (gridCell.x - minWidth)/width * double(ysize);
 	//	double indexX = (gridCell.z - minHeight)/height * double(xsize);
-		double indexY = (gridCell.x - minWidth)/width * double(xsize);
-		double indexX = (gridCell.z - minHeight)/height * double(ysize);
+		double indexY = (gridCell.x - minWidth )/width * double(xsize);
+		double indexX = (gridCell.z - minHeight )/height * double(ysize);
 		xin = indexX;
 		yin = indexY;
 	/* Check if we are outside bounds */
@@ -380,6 +380,9 @@ void Cartogram::Interpolate(double** gridx, double** gridy)
 		//	gridCell.x = yout/double(xsize) * width + minWidth;
 			gridCell.z = (yout * height) / double(ysize) + minHeight;
 		//	gridCell.z = xout/double(ysize) * height + minHeight;
+			
+			grid[i].x = gridCell.x;
+			grid[i].z = gridCell.z;
 		}
 		//	gridCell.x = (xout * width) / double(xsize) + minWidth;
 	//	gridCell.x = yout/double(xsize) * width + minWidth;
@@ -388,10 +391,13 @@ void Cartogram::Interpolate(double** gridx, double** gridy)
 	
 		//	gridCell.x = xout / double(xsize) * width + minWidth;
 	//	gridCell.y = yout / double(ysize) *height + minHeight;
-		grid[i].x = gridCell.x;
-		grid[i].z = gridCell.z;
+	
+	//	grid[i].x = gridCell.x;
+	//	grid[i].z = gridCell.z;
 	}
+//	 m_mapController->GetMapModel()->SetGrid(grid);
 }
+
 
 void Cartogram::InterpolateLocations(double** gridx, double** gridy)
 {
@@ -427,12 +433,12 @@ void Cartogram::InterpolateLocations(double** gridx, double** gridy)
 		gridCell.x = loc->GetLocationController()->GetEasting();
 		gridCell.z = loc->GetLocationController()->GetNorthing();
 		
-		tempCoord.easting = gridCell.x;
-		tempCoord.northing = gridCell.z;
-		 m_mapController->GetMapModel()->GeoToGrid(tempCoord, tempCell);
+	//	tempCoord.easting = gridCell.x;
+	//	tempCoord.northing = gridCell.z;
+	//	 m_mapController->GetMapModel()->GeoToGrid(tempCoord, tempCell);
 
-		yTemp = (tempCell.x + 1)/2 * double(xsize);
-		xTemp = (tempCell.z +  m_mapController->GetMapModel()->GetHeight()/2)/ m_mapController->GetMapModel()->GetHeight()*double(ysize);
+	//	yTemp = (tempCell.x + 1)/2 * double(xsize);
+	//	xTemp = (tempCell.z +  m_mapController->GetMapModel()->GetHeight()/2)/ m_mapController->GetMapModel()->GetHeight()*double(ysize);
 
 	//	double indexY = abs(gridCell.x + minWidth)/width * double(xsize);
 	//	double indexX = abs(gridCell.z + minHeight)/height * double(ysize);
@@ -440,9 +446,9 @@ void Cartogram::InterpolateLocations(double** gridx, double** gridy)
 	//	yin = indexY;
 	//	yin = yTemp;
 	//	xin = xTemp;
-		yin = abs(gridCell.x - minWidth)/width * double(xsize);
-		xin = abs(gridCell.z - minHeight)/height * double(ysize);
-	/* Check if we are outside bounds */
+		yin = abs(gridCell.x - minWidth)/width * double(xsize);// - areaFudge;
+		xin = abs(gridCell.z - minHeight)/height * double(ysize);// + areaFudge;
+	// Check if we are outside bounds 
 		
 		if ((xin<0.0)||(xin>=ysize)||(yin<0.0)||(yin>=xsize)) {
 		//	xout = gridCell.x;
@@ -473,12 +479,71 @@ void Cartogram::InterpolateLocations(double** gridx, double** gridy)
 	//	gridCell.x = yout/double(xsize) * width + minWidth;
 	//	gridCell.z = (yout * height) / double(ysize) + minHeight;
 	//	gridCell.z = xout/double(ysize) * height + minHeight;	
+	
+		tempCell.x = gridCell.x;
+		tempCell.z = gridCell.z;
+		
+
 		gridCell.x = (xout) / double(xsize) * width + minWidth;
 		gridCell.z = (yout) / double(ysize) *height + minHeight;
+
+	//	gridCell.x = (xout) + minWidth;
+	//	gridCell.z = (yout) + minHeight;
 		loc->GetLocationController()->GetLocationModel()->SetEasting(gridCell.x);
 		loc->GetLocationController()->GetLocationModel()->SetNorthing(gridCell.z);
 	}
 }
+
+/*
+void Cartogram::InterpolateLocations(double** gridx, double** gridy)
+{
+	
+	Point3D* grid = m_mapController->GetMapModel()->GetGrid();
+	double easting,northing;
+
+	Point3D tempCell;
+	GeoCoord tempCoord;
+	GeoCoord newCoord;
+	double yTemp,xTemp;
+
+	Box2D mapBox = m_mapController->GetMapModel()->GetProjectionExtents();
+	double mapHeight = mapBox.dy - mapBox.y;
+	double mapWidth = mapBox.dx - mapBox.x;
+	
+	LocationSetLayerPtr locationSetLayer = App::Inst().GetLayerTreeController()->GetLocationSetLayer(0);
+	std::vector<LocationLayerPtr> locationLayers = locationSetLayer->GetAllActiveLocationLayers();
+	LocationLayerPtr loc;
+	
+	for( uint i = 0; i < locationLayers.size() ; i++)
+	{
+		loc = locationLayers[i];
+		tempCoord.easting = loc->GetLocationController()->GetEasting();
+		tempCoord.northing = loc->GetLocationController()->GetNorthing();
+		
+		easting = loc->GetLocationController()->GetEasting() - mapBox.x;
+		// to get the smallest y value, y - dy
+		northing = loc->GetLocationController()->GetNorthing() - mapBox.y;
+		
+	//	easting = loc->GetLocationController()->GetLocationModel()->GetEasting();
+	//	northing = loc->GetLocationController()->GetLocationModel()->GetNorthing();
+
+		int indexX = double(easting/mapWidth)*xsize;
+		int indexY = double( northing /mapHeight)*ysize;
+		int index = indexX + indexY*xsize;
+		
+		tempCell = grid[index];
+
+	//	m_mapController->GetMapModel()->GeoToGrid(tempCoord, tempCell);
+		m_mapController->GetMapModel()->GridToGeo(tempCell,newCoord);
+		
+		// adjust the Y value to be bottom up instead of top down
+		newCoord.northing = mapBox.y - newCoord.northing;
+
+		loc->GetLocationController()->GetLocationModel()->SetEasting( newCoord.easting );
+		loc->GetLocationController()->GetLocationModel()->SetNorthing( newCoord.northing );
+	}
+}
+*/
 
 double ** Cartogram::ArrayTransform(double * grid)
 {
@@ -601,14 +666,15 @@ void Cartogram::StdMain()
 	double** gridx2d = ArrayTransform(gridx);
 	double** gridy2d = ArrayTransform(gridy);
 	
-//	WriteMatrix(gridx2d, ysize, xsize, "gridX2DSafe");
-//	WriteMatrix(gridy2d, ysize, xsize, "gridY2DSafe");
+	WriteMatrix(gridx2d, ysize, xsize, "gridX2DSafe");
+	WriteMatrix(gridy2d, ysize, xsize, "gridY2DSafe");
 	
 //	fclose(tempIn);
 
 	// update map points
-	InterpolateLocations(gridx2d, gridy2d);
 	Interpolate(gridx2d,gridy2d);
+	InterpolateLocations(gridx2d, gridy2d);
+//	Interpolate(gridx2d,gridy2d);
 	
 	// free up space again
 	cart_freews(xsize, ysize);

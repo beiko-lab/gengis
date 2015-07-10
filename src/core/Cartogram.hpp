@@ -55,7 +55,7 @@ namespace GenGIS
 	private:
 		const int ysize;
 		const int xsize;
-		int valFudge;
+		double valFudge;
 		int areaFudge;
 		/** Copied directly from MapView. See class for more information. */
 		int m_dimension;
