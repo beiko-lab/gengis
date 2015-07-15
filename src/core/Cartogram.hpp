@@ -53,7 +53,9 @@ namespace GenGIS
 
 		void MakeCartogram();
 	private:
+		// number of rows in map
 		const int ysize;
+		// number of columns in map
 		const int xsize;
 		double valFudge;
 		int areaFudge;
@@ -105,6 +107,9 @@ namespace GenGIS
 
 		/** Set the Value Fudge value for the Cartogram. */
 		void SetValueFudge(int val){ valFudge = val;}
+
+		
+		int Round(double val);
 	};
 }
 #endif
