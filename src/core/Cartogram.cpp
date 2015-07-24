@@ -57,7 +57,7 @@ Cartogram::Cartogram() :
 //	xsize = ysize;
 //	ysize = xsize;
 	valFudge=30;
-	areaFudge=20;
+	areaFudge=5;
 }
 
 Cartogram::Cartogram(float x,float y):
@@ -375,9 +375,9 @@ void Cartogram::Interpolate(Matrix gridx, Matrix gridy)
 template< typename Matrix >
 void Cartogram::InterpolateLocations(Matrix gridx, Matrix gridy)
 {
-	/*
-	grid -1,-1 = top left corner (max y, min x)
-	*/ 
+	
+//	grid -1,-1 = top left corner (max y, min x)
+	 
 
 	int ix,iy;
 	double xin,yin;
@@ -412,8 +412,10 @@ void Cartogram::InterpolateLocations(Matrix gridx, Matrix gridy)
 
 	//	yin = abs(gridCell.x - minWidth)/width * double(xsize);
 	//	xin = abs((gridCell.z - minHeight))/height * double(ysize);
-		xin = (gridCell.x - minWidth)/width * double(xsize);
-		yin = (gridCell.z - minHeight)/height * double(ysize);
+		xin = (gridCell.x - minWidth)/(width+1) * double(xsize);
+		yin = (gridCell.z - minHeight)/(height+1) * double(ysize);
+	//	yin = abs(gridCell.z)/height * double(ysize);
+	//	yin = abs(gridCell.z)/height * double(ysize);
 	//	yin = abs(gridCell.z) / height * double(ysize);
 	// Check if we are outside bounds 
 		
@@ -448,10 +450,9 @@ void Cartogram::InterpolateLocations(Matrix gridx, Matrix gridy)
 		// Y direction shifts are occuring at the correct magnitude but in the wrong direction. Correct it!
 	//	double xCorrection = yin - xout + yin;
 	//	yCorrection  = xin - yout + xin ;
-		yCorrection =  yout;
-		gridCell.x = ( xout ) / double(xsize) * width + minWidth;	
-		gridCell.z = (yCorrection) / double(ysize) *height + minHeight;
-		gridCell.y = yout / double(ysize) * height + minHeight;
+		yCorrection = yout;
+		gridCell.x = ( xout ) / double(xsize) * (width+1) + minWidth;	
+		gridCell.z = (yCorrection) / double(ysize) * (height+1) + minHeight;
 		loc->GetLocationController()->GetLocationModel()->SetEasting(gridCell.x);
 		loc->GetLocationController()->GetLocationModel()->SetNorthing(gridCell.z);
 	}
@@ -471,8 +472,8 @@ void Cartogram::InterpolateLocations(Matrix gridx, Matrix gridy)
 	double yTemp,xTemp;
 
 	Box2D mapBox = m_mapController->GetMapModel()->GetProjectionExtents();
-	double mapHeight = mapBox.dy - mapBox.y ;
-	double mapWidth = mapBox.dx - mapBox.x ;
+	double mapHeight = mapBox.dy - mapBox.y + 1 ;
+	double mapWidth = mapBox.dx - mapBox.x + 1 ;
 	
 	LocationSetLayerPtr locationSetLayer = App::Inst().GetLayerTreeController()->GetLocationSetLayer(0);
 	std::vector<LocationLayerPtr> locationLayers = locationSetLayer->GetAllActiveLocationLayers();
@@ -488,16 +489,9 @@ void Cartogram::InterpolateLocations(Matrix gridx, Matrix gridy)
 		// to get the smallest y value, y - dy
 		northing = loc->GetLocationController()->GetNorthing() - mapBox.y;
 		
-	//	easting = loc->GetLocationController()->GetLocationModel()->GetEasting();
-	//	northing = loc->GetLocationController()->GetLocationModel()->GetNorthing();
-
-	//	int indexX = ceil(double(easting/mapWidth)*xsize);
-	//	int indexY = ceil(double((mapHeight - northing)/mapHeight)*ysize);
-
-	//	int indexX = Round(double(easting/mapWidth)*xsize);
 		int indexX = Round(double(easting/mapWidth)*(xsize));
 	//	int indexY = Round(double((mapHeight - northing)/mapHeight)*ysize);
-		int indexY = ysize - Round(double(northing/mapHeight)*(ysize));
+		int indexY = Round(double(northing/mapHeight)*(ysize));
 	//	int indexY = mapHeight - Round(double(northing/mapHeight)*ysize);
 		int index = indexX + indexY*xsize;
 		
