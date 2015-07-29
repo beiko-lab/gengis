@@ -33,12 +33,9 @@
 #include<sstream>
 #include <stdexcept>
 
-//#include "../utils/cart.h"
 extern "C" {
-//	#include <cart.h>
 	#include "../utils/cart.h"
 }
-//#include "../utils/Cart.hpp"
 
 using namespace GenGIS;
 
@@ -46,63 +43,61 @@ Cartogram::Cartogram() :
 	m_dimension(257),
 	m_mapController(App::Inst().GetLayerTreeController()->GetMapLayer(0)->GetMapController()),
 	xsize(App::Inst().GetLayerTreeController()->GetMapLayer(0)->GetMapController()->GetMapModel()->GetHeader()->nCols),
-	ysize(App::Inst().GetLayerTreeController()->GetMapLayer(0)->GetMapController()->GetMapModel()->GetHeader()->nRows)
+	ysize(App::Inst().GetLayerTreeController()->GetMapLayer(0)->GetMapController()->GetMapModel()->GetHeader()->nRows),
+	buffer(0)
 {
-//	MapViewPtr map = App::Inst().GetLayerTreeController()->GetMapLayer(0)->GetMapController()->GetMapView();
-//	m_vertices = map->GetVertices();
-//	map->SetVertices(m_vertices);
-
-	// Set the x and y size
-//	FileHeader* header = m_mapController->GetMapModel()->GetHeader();
-//	xsize = ysize;
-//	ysize = xsize;
 	valFudge=30;
 	areaFudge=5;
 }
 
-Cartogram::Cartogram(float x,float y):
+Cartogram::Cartogram(int buff) :
 	m_dimension(257),
 	m_mapController(App::Inst().GetLayerTreeController()->GetMapLayer(0)->GetMapController()),
-	xsize(m_mapController->GetMapModel()->GetHeader()->nCols),
-	ysize(m_mapController->GetMapModel()->GetHeader()->nRows)
+	xsize(App::Inst().GetLayerTreeController()->GetMapLayer(0)->GetMapController()->GetMapModel()->GetHeader()->nCols+buff*2),
+	ysize(App::Inst().GetLayerTreeController()->GetMapLayer(0)->GetMapController()->GetMapModel()->GetHeader()->nRows+buff*2),
+	buffer(buff)
 {
-//	MapViewPtr map = m_mapController->GetMapView();
-//	m_vertices = map->GetVertices();
-//	map->SetVertices(m_vertices);
+	valFudge=30;
+	areaFudge=5;
 }
 
 void Cartogram::MakeCartogram()
 {
-
-
-//	MakeDensityMatrix();
+	bool exaggerationChange = false;
+	double exaggeration = m_mapController->GetMapModel()->GetVerticalExaggeration();
+	// Set vertical exageration to 1.5
+	if( exaggeration == 0.0f)
+	{	
+		exaggerationChange = true;
+		m_mapController->GetMapModel()->SetVerticalExaggeration(1.5);
+	}
 	MakeRho();
 	StdMain();	
 	
 	/* Now redraw the map. */
 	// Need to do everything after loading terrain
 	m_mapController->GetMapView()->SetVertices(m_mapController);
-//	MapView::QuadtreeNode* root = 
-//	m_mapController->GetMapView()->createQuadtree( m_mapController->GetMapView()->GetDimension(), 0 );
-//	m_mapController->GetMapView()->SetRoot(root);
-	
 	m_mapController->GetMapView()->SetRoot( m_mapController->GetMapView()->createQuadtree( m_mapController->GetMapView()->GetDimension(), 0 ) );
-
 	m_mapController->GetMapView()->RefreshQuadtree();
+	App::Inst().GetViewport()->Refresh(false);
+
+	// Turn vertical exageration back to 0?
+	if( exaggerationChange )
+	{
+		m_mapController->GetMapModel()->SetVerticalExaggeration(exaggeration);
+	}
 }
 
-std::map<int,boost::array<int,3>> Cartogram::TranslateLocations()
+std::map<int,boost::array<int,4>> Cartogram::TranslateLocations()
 {
 
-	std::ofstream myfile;
-	myfile.open("C:/Users/Admin/Desktop/cartlog.txt");
+//	std::ofstream myfile;
+//	myfile.open("C:/Users/Admin/Desktop/cartlog.txt");
 
-	std::map<int,boost::array<int,3>> gridDensity;
+	std::map<int,boost::array<int,4>> gridDensity;
 	Box2D mapBox = m_mapController->GetMapModel()->GetProjectionExtents();
 	double mapHeight = mapBox.dy - mapBox.y ;
 	double mapWidth = mapBox.dx - mapBox.x ;
-//	double mapHeight = mapBox.dy;
-//	double mapWidth = mapBox.dx;
 	LocationSetLayerPtr locationSetLayer = App::Inst().GetLayerTreeController()->GetLocationSetLayer(0);
 	std::vector<LocationLayerPtr> locationLayers = locationSetLayer->GetAllActiveLocationLayers();
 	LocationLayerPtr loc;
@@ -112,121 +107,51 @@ std::map<int,boost::array<int,3>> Cartogram::TranslateLocations()
 		loc = locationLayers[i];
 		
 		// simple count metric. Will need to be buffed up!
-//		int count = std::max(1,int(loc->GetNumSequenceLayers()*10));
 		int count = std::max(1,int(loc->GetNumSequenceLayers()));
 		
 		// map box x and y are the lower left corner of the map.
 		// map box dx and dy are the width and height of the box.
 		double easting = loc->GetLocationController()->GetEasting() - mapBox.x;
-	// to get the smallest y value, y - dy
-	//	double northing = loc->GetLocationController()->GetNorthing() - mapBox.y;
+		// to get the smallest y value, y - dy
 		double northing = loc->GetLocationController()->GetNorthing() - mapBox.y;
 
 		// Oh Boy does this look right!
-		int indexX = Round(double(easting/mapWidth)*xsize);
-		int indexY = Round(double((mapHeight - northing)/mapHeight)*ysize);
-	//	int indexY = Round(double((northing)/mapHeight)*ysize);
+		int indexX = (double(easting/mapWidth)*xsize);
+		int indexY = (double((mapHeight - northing)/mapHeight)*ysize);
 		int index = indexX + indexY*xsize;
 
-		myfile << "Cell: " + boost::lexical_cast<std::string>(index) + " Count: " + boost::lexical_cast<std::string>(count) + " lat: " + boost::lexical_cast<std::string>(northing) + " lon: " + boost::lexical_cast<std::string>(easting) + "\n";
-		myfile << "\t\tgridX: "+boost::lexical_cast<std::string>(indexX) + "\tgridY: " + boost::lexical_cast<std::string>(indexY)+"\n";
+//		myfile << "Cell: " + boost::lexical_cast<std::string>(index) + " Count: " + boost::lexical_cast<std::string>(count) + " lat: " + boost::lexical_cast<std::string>(northing) + " lon: " + boost::lexical_cast<std::string>(easting) + "\n";
+//		myfile << "\t\tgridX: "+boost::lexical_cast<std::string>(indexX) + "\tgridY: " + boost::lexical_cast<std::string>(indexY)+"\n";
 
 		// check gridDensity
 		// if already index, add count
 		// else add index
-	/*	if(gridDensity.count(index) > 0)
-		{
-			gridDensity[index]+=count;
-		}
-		else
-		{
-			gridDensity[index] = count;
-		} */
 		if(gridDensity.count(index) > 0)
 		{
 			gridDensity[index][2]+=count;
-
 		}
 		else
 		{
-			boost::array<int,3> a = {indexX,indexY,count};
+			boost::array<int,4> a = {indexX,indexY,count,i};
 			gridDensity[index] = a;
 		}
 	}
-	myfile.close();
+//	myfile.close();
 	return gridDensity;
 }
 
 void Cartogram::MakeRho()
 {
 	std::string tempOut = "temp.dat";
-//	std::string tempOut = "C:/Users/admin/Desktop/HOOOOOOOOOOOOOLLLLYYYYCOOOOOOOOOOOOOOOW.dat";
-	//	cart_makews(xsize, ysize);
-//	double **rho = cart_dmalloc(xsize, ysize);
 	std::vector<std::vector<double>> rho = PopulateRho();
 	WriteMatrix(rho,ysize,xsize, tempOut);
 }
-/*
-void Cartogram::MakeDensityMatrix()
-{
-	FILE *outfp;
-	outfp = fopen("C:/Users/admin/Desktop/mapOutTest.dat","w");
-//	FILE *tempOut;
-//	FILE *tempIn;
-//	tempOut = fopen("./temp.dat","w");
-//	tempIn = fopen("./temp.dat","r");
-	double** gridx2d;
-	double** gridy2d;
 
-	cart_makews(xsize, ysize);
-	double **rho = cart_dmalloc(xsize, ysize);
-	PopulateRho(rho);
-	
-//	WriteMatrix(rho,ysize,xsize, "currentRho");
-
-	cart_transform(rho,xsize,ysize);
-	cart_dfree(rho);
-
-	// create a grid of points
-	double *gridx;
-	double *gridy;
-	int matrixSize = (ysize+1)*(xsize+1);
-	gridx = (double*) malloc(matrixSize*sizeof(double));
-	gridy = (double*) malloc(matrixSize*sizeof(double));
-	CreateGrid(gridx,gridy,xsize, ysize);
-
-	// make the cartogram
-	cart_makecart(gridx, gridy, matrixSize, xsize, ysize, 0.0);
-	
-//	writepoints(tempOut,gridx,gridy,matrixSize);
-//	fclose(tempOut);
-	
-	writepoints(outfp,gridx,gridy,matrixSize);
-	
-	gridx2d = ArrayTransform(gridx);
-	gridy2d = ArrayTransform(gridy);
-	
-	WriteMatrix(gridx2d, ysize, xsize, "gridX2DSafe");
-	WriteMatrix(gridy2d, ysize, xsize, "gridY2DSafe");
-	
-//	fclose(tempIn);
-
-	// update map points
-	Interpolate(gridx2d,gridy2d);
-	InterpolateLocations(gridx2d, gridy2d);
-
-
-	// free up space again
-	cart_freews(xsize, ysize);
-	free(gridx);
-	free(gridy);
-}
-*/
-int Cartogram::GetMapAverage(std::map<int,boost::array<int,3>> map)
+int Cartogram::GetMapAverage(std::map<int,boost::array<int,4>> map)
 {
 	int count = 0;
 	int average = 0;
-	std::map<int,boost::array<int,3>>::iterator it;
+	std::map<int,boost::array<int,4>>::iterator it;
 	for( it = map.begin(); it != map.end(); ++it )
 	{
 		average += it->second[2];
@@ -255,7 +180,7 @@ void Cartogram::CreateGrid(double *gridx, double *gridy, int xsize, int ysize)
 std::vector<std::vector<double>> Cartogram::PopulateRho()
 {
 	// Find grid squares with locations
-	std::map<int,boost::array<int,3>> locationCounts = TranslateLocations();
+	std::map<int,boost::array<int,4>> locationCounts = TranslateLocations();
 	std::vector<std::vector<double>> prime(ysize,std::vector<double>(xsize));
 	// Find average of these values (for empyt grid squares)
 	int average = GetMapAverage(locationCounts);
@@ -265,7 +190,7 @@ std::vector<std::vector<double>> Cartogram::PopulateRho()
 	int i,j;
 
 	Point2D xy;	
-	for ( std::map<int,boost::array<int,3>>::iterator iter = locationCounts.begin(); iter != locationCounts.end();++iter ) 
+	for ( std::map<int,boost::array<int,4>>::iterator iter = locationCounts.begin(); iter != locationCounts.end();++iter ) 
 	{
 		// iter->second[0] = x value
 		// iter->second[1] = y value
@@ -302,74 +227,31 @@ template< typename Matrix >
 void Cartogram::Interpolate(Matrix gridx, Matrix gridy)
 {
 	Point3D* grid = m_mapController->GetMapModel()->GetGrid();
-	int gridSize = (xsize)*(ysize);
-	int ix,iy;
-	double xin,yin;
-	double xout,yout;
-	double v1,v2,v3,v4;
-	double coeff1,coeff2,coeff3,coeff4;
-	double dx,dy;
-	int index = 0;
-	double width;
-	double height;
-	double minWidth;
-	double minHeight;
+	FileHeader* header = App::Inst().GetLayerTreeController()->GetMapLayer(0)->GetMapController()->GetMapModel()->GetHeader();
+	double aspect = header->projExtents.Height() / header->projExtents.Width();
+	float X,Z,nX,nZ;
+	int index=0;
+	Point3D gridTest;
 	
-	Point3D gridCell;
-	Point3D debugCell;
-	GeoCoord coord;
-
-	width = m_mapController->GetMapModel()->GetWidth();
-	height = m_mapController->GetMapModel()->GetHeight();
-
-	minWidth = -1*width/2;
-	minHeight = -1*height/2;
-
-	for( int i=0; i < gridSize; ++i)
-	{
-		gridCell=grid[i];
-		
-	//	double indexY = (gridCell.x - minWidth)/width * double(xsize);
-	//	double indexX = (gridCell.z - minHeight)/height * double(ysize);
-		double indexY = (gridCell.z - minHeight)/height * double(ysize);
-		double indexX = (gridCell.x - minWidth)/width * double(xsize);
-		xin = indexX;
-		yin = indexY;
-	/* Check if we are outside bounds */
-		
-		if ((xin<0.0)||(xin>=xsize)||(yin<0.0)||(yin>=ysize)) {
-			xout = gridCell.x;
-			yout = gridCell.z;
-		} 
-		else 
+	// latitude
+	for(int m = 0; m < header->nRows ; m++) 
+	{	
+		//longitude
+		for(int n = 0; n < header->nCols; n++) 
 		{
-			
-			ix = xin;
-			dx = xin - ix;
-			iy = yin;
-			dy = yin - iy;
-			
-			coeff1 = (1-dx)*(1-dy);
-			coeff2 = dx*(1-dy);
-			coeff3 = (1-dx)*dy;
-			coeff4 = dx*dy;
-			v1 = gridx[ix][iy];
-			v2 = gridx[ix+1][iy];
-			v3 = gridx[ix][iy+1];
-			v4 = gridx[ix+1][iy+1];
-			xout = (1-dx)*(1-dy)*gridx[ix][iy] + dx*(1-dy)*gridx[ix+1][iy]
-				+ (1-dx)*dy*gridx[ix][iy+1] + dx*dy*gridx[ix+1][iy+1];
-			yout = (1-dx)*(1-dy)*gridy[ix][iy] + dx*(1-dy)*gridy[ix+1][iy]
-				+ (1-dx)*dy*gridy[ix][iy+1] + dx*dy*gridy[ix+1][iy+1];
-			// reusing grid cell
-			debugCell = gridCell;
-			gridCell.x = (xout * width) / double(xsize) + minWidth;
-			gridCell.z = (yout * height) / double(ysize) + minHeight;
+			Z = gridy[n][m];
+			X = gridx[n][m];
 
-			grid[i].x = gridCell.x;
-			grid[i].z = gridCell.z;
+			nX = -1.0f + 2*((X - 0) / header->nCols );
+			nZ = (1.0f + 2*((Z - (header->nRows-1)) / header->nRows))*aspect;
+
+			grid[index].x = nX ;
+			grid[index].z = nZ;
+				
+			index++;
 		}
 	}
+
 }
 
 template< typename Matrix >
@@ -377,8 +259,6 @@ void Cartogram::InterpolateLocations(Matrix gridx, Matrix gridy)
 {
 	
 //	grid -1,-1 = top left corner (max y, min x)
-	 
-
 	int ix,iy;
 	double xin,yin;
 	double xout,yout,yCorrection;
@@ -387,18 +267,12 @@ void Cartogram::InterpolateLocations(Matrix gridx, Matrix gridy)
 	double height;
 	double minWidth;
 	double minHeight;
-	
 	Point3D gridCell;
-	
-	Point3D tempCell;
-	GeoCoord tempCoord;
-
 	Box2D mapBox = m_mapController->GetMapModel()->GetProjectionExtents();
 	height = mapBox.dy - mapBox.y;
 	width = mapBox.dx - mapBox.x;
 	minWidth = mapBox.x;
 	minHeight = mapBox.y;
-	
 	LocationSetLayerPtr locationSetLayer = App::Inst().GetLayerTreeController()->GetLocationSetLayer(0);
 	std::vector<LocationLayerPtr> locationLayers = locationSetLayer->GetAllActiveLocationLayers();
 	LocationLayerPtr loc;
@@ -406,23 +280,16 @@ void Cartogram::InterpolateLocations(Matrix gridx, Matrix gridy)
 	for( uint i = 0; i < locationLayers.size() ; i++)
 	{
 		loc = locationLayers[i];
-		
 		gridCell.x = loc->GetLocationController()->GetEasting();
 		gridCell.z = loc->GetLocationController()->GetNorthing();
-
-	//	yin = abs(gridCell.x - minWidth)/width * double(xsize);
-	//	xin = abs((gridCell.z - minHeight))/height * double(ysize);
-		xin = (gridCell.x - minWidth)/(width+1) * double(xsize);
-		yin = (gridCell.z - minHeight)/(height+1) * double(ysize);
-	//	yin = abs(gridCell.z)/height * double(ysize);
-	//	yin = abs(gridCell.z)/height * double(ysize);
-	//	yin = abs(gridCell.z) / height * double(ysize);
-	// Check if we are outside bounds 
+		xin = (gridCell.x - minWidth)/(width) * double(xsize);
+		yin = (ysize) - (gridCell.z - minHeight)/(height) * double(ysize);
+	
+		// Check if we are outside bounds 
 		
-		if ((xin<0.0)||(xin>=ysize)||(yin<0.0)||(yin>=xsize)) {
-		//	xout = gridCell.x;
-		//	yout = gridCell.z;
-			continue;
+		if ((xin<0.0)||(xin>=xsize)||(yin<0.0)||(yin>=ysize)) {
+			xout = xin;
+			yout = yin;
 		} 
 		else 
 		{
@@ -431,116 +298,25 @@ void Cartogram::InterpolateLocations(Matrix gridx, Matrix gridy)
 			iy = yin;
 			dy = yin - iy;
 			int iyy = yin;
-			
-			xout = (1-dx)*(1-dy)*gridx[ix][iy] + dx*(1-dy)*gridx[ix+1][iy]
-				+ (1-dx)*dy*gridx[ix][iy+1] + dx*dy*gridx[ix+1][iy+1];
-			yout = (1-dx)*(1-dy)*gridy[ix][iyy] + dx*(1-dy)*gridy[ix+1][iyy]
-				+ (1-dx)*dy*gridy[ix][iyy+1] + dx*dy*gridy[ix+1][iyy+1];
-		
-		}	
-	
-		// just checking positions
-		tempCoord.easting = gridCell.x;
-		tempCoord.northing = gridCell.z;
-		m_mapController->GetMapModel()->GeoToGrid(tempCoord, tempCell);
 
-		tempCell.x = gridCell.x;
-		tempCell.z = gridCell.z;
-		
+			xout = gridx[ix][iy];
+			yout = gridy[ix][iy];
+		}
 		// Y direction shifts are occuring at the correct magnitude but in the wrong direction. Correct it!
-	//	double xCorrection = yin - xout + yin;
-	//	yCorrection  = xin - yout + xin ;
-		yCorrection = yout;
-		gridCell.x = ( xout ) / double(xsize) * (width+1) + minWidth;	
-		gridCell.z = (yCorrection) / double(ysize) * (height+1) + minHeight;
+		yCorrection = (ysize) - yout;
+		gridCell.x = ( xout ) / double(xsize) * (width) + minWidth-1;	
+		gridCell.z = (yCorrection) / double(ysize) * (height) + minHeight-1;
 		loc->GetLocationController()->GetLocationModel()->SetEasting(gridCell.x);
 		loc->GetLocationController()->GetLocationModel()->SetNorthing(gridCell.z);
 	}
 }
 
-/*
-template< typename Matrix >
-void Cartogram::InterpolateLocations(Matrix gridx, Matrix gridy)
-{
-	
-	Point3D* grid = m_mapController->GetMapModel()->GetGrid();
-	double easting,northing,diffEast,diffNorth;
-
-	Point3D tempCell;
-	GeoCoord tempCoord;
-	GeoCoord newCoord;
-	double yTemp,xTemp;
-
-	Box2D mapBox = m_mapController->GetMapModel()->GetProjectionExtents();
-	double mapHeight = mapBox.dy - mapBox.y + 1 ;
-	double mapWidth = mapBox.dx - mapBox.x + 1 ;
-	
-	LocationSetLayerPtr locationSetLayer = App::Inst().GetLayerTreeController()->GetLocationSetLayer(0);
-	std::vector<LocationLayerPtr> locationLayers = locationSetLayer->GetAllActiveLocationLayers();
-	LocationLayerPtr loc;
-	
-	for( uint i = 0; i < locationLayers.size() ; i++)
-	{
-		loc = locationLayers[i];
-		tempCoord.easting = loc->GetLocationController()->GetEasting();
-		tempCoord.northing = loc->GetLocationController()->GetNorthing();
-		
-		easting = loc->GetLocationController()->GetEasting() - mapBox.x;
-		// to get the smallest y value, y - dy
-		northing = loc->GetLocationController()->GetNorthing() - mapBox.y;
-		
-		int indexX = Round(double(easting/mapWidth)*(xsize));
-	//	int indexY = Round(double((mapHeight - northing)/mapHeight)*ysize);
-		int indexY = Round(double(northing/mapHeight)*(ysize));
-	//	int indexY = mapHeight - Round(double(northing/mapHeight)*ysize);
-		int index = indexX + indexY*xsize;
-		
-		tempCell = grid[index];
-
-	//	m_mapController->GetMapModel()->GeoToGrid(tempCoord, tempCell);
-		m_mapController->GetMapModel()->GridToGeo(tempCell,newCoord);
-		
-		// adjust the Y value to be bottom up instead of top down
-	//	newCoord.northing = mapBox.y - newCoord.northing;
-	//	yCorrection  = xin - yout + xin ;
-	//	diffNorth = 2 * ( northing + mapBox.y ) - newCoord.northing;
-		diffNorth = newCoord.northing;
-		diffEast= newCoord.easting;
-
-		loc->GetLocationController()->GetLocationModel()->SetEasting( diffEast );
-		loc->GetLocationController()->GetLocationModel()->SetNorthing( diffNorth );
-	}
-}
-*/
-/*
-std::vector<std::vector<double>> Cartogram::ArrayTransform(double * grid)
-{
-	std::vector<std::vector<double>> gridx(ysize+1,std::vector<double>(xsize+1));
-//	boost::array<boost::array<double,xsize+1>,ysize+1> gridx;
-	int index = 0;
-	for( int i =0; i <= ysize ; ++i)
-//	for( int i = ysize; i >= 0 ; --i)
-	{
-	//	gridx[i] = new double[xsize];
-		for( int j = 0; j<= xsize ; ++j)
-		{
-			double blarg = grid[index];
-			gridx[i][j] = blarg;
-			index++;
-		}
-	}
-	return gridx;
-}
-*/
 template< typename Matrix >
 void Cartogram::ArrayTransform(double * grid, Matrix &transGrid)
 {
-//	boost::array<boost::array<double,xsize+1>,ysize+1> gridx;
 	int index = 0;
 	for( int i =0; i <= ysize ; ++i)
-//	for( int i = ysize; i >= 0 ; --i)
 	{
-	//	gridx[i] = new double[xsize];
 		for( int j = 0; j<= xsize ; ++j)
 		{
 			double blarg = grid[index];
@@ -548,7 +324,6 @@ void Cartogram::ArrayTransform(double * grid, Matrix &transGrid)
 			index++;
 		}
 	}
-//	return transGrid;
 }
 
 template< typename Matrix >
@@ -590,87 +365,51 @@ void Cartogram::WriteMatrix(Matrix rho, int row, int col, std::string name)
 
 	myfile.close();
 }
-/*
-	Taken straight from Newmans main implementation for debugging purposes.
-	Essentially just make sure my grid making process isn't garbage.
 
+/*
+	Following the structure of Newmans cartogram code.
 */
 void Cartogram::StdMain()
 {
 	double *gridx,*gridy;  // Array for grid points
 	double **rho;          // Initial population density
-//	FILE *infp;
-	FILE *outfp;
-	FILE *tempOut;
+//	FILE *outfp;
 	FILE *tempIn;
 	std::string fileName = GenGIS::App::Inst().GetExeDir().mb_str();
 	fileName += "temp.dat";
-	
-
-	tempOut = fopen("./tempRho.dat","w");
 	tempIn = fopen(fileName.c_str(),"r");
-
 	int matrixSize = (xsize+1)*(ysize+1);
 
-//	std::string popdat = "C:/Users/admin/Documents/cartograms/cart-1.2.2/cart-1.2.2/uspop.dat";
-//	std::string popdat = "C:/Users/admin/Dropbox/currentRho.txt";
-//	outfp = fopen("C:/Users/admin/Desktop/outpop.dat","w");
-	outfp = fopen("C:/Users/admin/Desktop/standardTest.dat","w");
-//	infp = fopen(popdat.c_str(),"r");
+//	outfp = fopen("C:/Users/admin/Desktop/standardTest.dat","w");
 	cart_makews(xsize,ysize);
-
 	rho = cart_dmalloc(xsize,ysize);
-//	if (readpop(infp,rho,xsize,ysize)) {
 	if (readpop(tempIn,rho,xsize,ysize)) {
-		Log::Inst().Warning("Density file b f'ed son");
+		Log::Inst().Warning("Density matrix was not loaded properly.");
 	}
 	cart_transform(rho,xsize,ysize);
     cart_dfree(rho);
 
 	/* Create the grid of points */
-
 	gridx = (double*) malloc(matrixSize*sizeof(double));
 	gridy = (double*) malloc(matrixSize*sizeof(double));
 
 	CreateGrid(gridx,gridy,xsize,ysize);
-
 	cart_makecart(gridx, gridy, matrixSize, xsize, ysize, 0.0);
-	
-//	writepoints(tempOut,gridx,gridy,matrixSize);
-
-	writepoints(outfp,gridx,gridy,matrixSize);
-	
-	fclose( outfp );
-	outfp = fopen("C:/Users/admin/Desktop/standardTest.dat","r");
-	/*
-	*	Cartogram stuff is done, lets interpolate junk!	
-	*/
-
-	// My Adaptation
-//	std::vector<std::vector<double>> gridx2dMe = ArrayTransform(gridx);
-//	std::vector<std::vector<double>> gridy2dMe = ArrayTransform(gridy);
+//	writepoints(outfp,gridx,gridy,matrixSize);
+//	fclose( outfp );
 
 	std::vector<std::vector<double>> gridx2d(xsize+1,std::vector<double>(ysize+1));
 	std::vector<std::vector<double>> gridy2d(xsize+1,std::vector<double>(ysize+1));
-	std::vector<std::vector<double>> gridy2dFlip(xsize+1,std::vector<double>(ysize+1));
 	ArrayTransform(gridx, gridx2d);
 	ArrayTransform(gridy, gridy2d);
-
-	MatrixFlip( gridy2d, gridy2dFlip );
-	// Load in matrix like Newman code
-//	readpoints(outfp, gridx2d, gridy2d,xsize,ysize);
-
 	
 	// matrix, numRow, numCol, name
-	WriteMatrix(gridx2d, xsize+1, ysize+1, "gridX2DSafe");
-	WriteMatrix(gridy2dFlip, xsize+1, ysize+1, "gridY2DSafe");
-
-//	fclose(tempIn);
+//	WriteMatrix(gridx2d, xsize+1, ysize+1, "gridX2DSafe");
+//	WriteMatrix(gridy2dFlip, xsize+1, ysize+1, "gridY2DSafe");
 
 	// update map points
 	Interpolate(gridx2d,gridy2d);
 	InterpolateLocations(gridx2d, gridy2d);
-//	Interpolate(gridx2d,gridy2d);
 	
 	// free up space again
 	cart_freews(xsize, ysize);
@@ -738,12 +477,3 @@ int Cartogram::Round(double val)
 		return int(floor(val));
 }
 
-template< typename Matrix >
-void Cartogram::MatrixFlip(Matrix matrix, Matrix &flip)
-{
-	int flipx = xsize;
-	for(int x = 0; x <= xsize; x++)
-	{
-		flip[flipx-x] = matrix[x];
-	}
-}

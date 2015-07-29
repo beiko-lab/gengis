@@ -49,7 +49,7 @@ namespace GenGIS
 	{
 	public:
 		explicit Cartogram();
-		explicit Cartogram(float x, float y);
+		explicit Cartogram(int buff);
 
 		void MakeCartogram();
 	private:
@@ -57,22 +57,17 @@ namespace GenGIS
 		const int ysize;
 		// number of columns in map
 		const int xsize;
+		const int buffer;
 		double valFudge;
 		int areaFudge;
 		/** Copied directly from MapView. See class for more information. */
 		int m_dimension;
 		MapControllerPtr m_mapController;
 	
-		//	std::vector<float> gridx;
-	//	std::vector<float> gridy;
-
-	//	std::vector<std::vector<float>> grid;
 		MapView::Vertex* m_vertices;
 		
 		/** Translate the first location set Lat/Lon to Raster Grid coordinates. */
-	//	std::map<int,int> TranslateLocations();
-		std::map<int,boost::array<int,3>> TranslateLocations();
-		bool BoxBound(Point2D botRight, Point2D topLeft, Point2D loc);
+		std::map<int,boost::array<int,4>> TranslateLocations();
 		
 		/** Template to write out some sort of generic matrix **/
 		template< typename Matrix >
@@ -87,15 +82,11 @@ namespace GenGIS
 		int readpoints(FILE *stream, Matrix &gridx, Matrix &gridy, int xsize, int ysize);
 
 		/** Create the density matrix for input into Cart. */
-		void MakeDensityMatrix();
-		
-		/** Create the Rho Matrix. */
 		void MakeRho();
 
 		/** Get the average density value for all locations.
 			This will be used to fill in empty spots in the grid*/
-//		int GetMapAverage(std::map<int,int> map);
-		int GetMapAverage(std::map<int,boost::array<int,3>> map);
+		int GetMapAverage(std::map<int,boost::array<int,4>> map);
 
 		/** Create grid of density values. */
 		void CreateGrid(double *gridx, double *gridy, int xsize, int ysize);
@@ -113,11 +104,9 @@ namespace GenGIS
 		void InterpolateLocations(Matrix gridx, Matrix gridy);
 		
 		/** Transform a 1D array to a 2D array in order to move between Cart and Interp steps. */
-		//double** ArrayTransform(double * grid);
 		std::vector<std::vector<double>> ArrayTransform(double * grid);
 		template< typename Matrix >
 		void ArrayTransform(double * grid, Matrix &transGrid);
-//		boost::array<boost::array<double>> ArrayTransform(double * grid)
 
 		/** Set the Area Fudge value for the Cartogram. */
 		void SetAreaFudge(int val){ areaFudge = val;}
@@ -128,8 +117,6 @@ namespace GenGIS
 		
 		int Round(double val);
 
-		template< typename Matrix >
-		void MatrixFlip(Matrix matrix, Matrix &flip);
 	};
 }
 #endif
