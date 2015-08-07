@@ -126,6 +126,7 @@ class MGRastSpecific:
 		m_Progress.WriteText("Querying %s...\n"%taxon_name)
 		limit=1000
 		obs={}
+		print taxon_name
 		if searchType == "organism":
 			url="http://api.metagenomics.anl.gov/matrix/organism/?id=%s%s"%(taxon_name,options)
 			rowMeta = 'taxonomy'
@@ -156,19 +157,20 @@ class MGRastSpecific:
 	
 		#check for errors in the return
 		if 'ERROR' in matrix:
+			print matrix
 			wx.MessageBox("Error in data: Please consult MG-RAST to verify the study you entered is valid.")
 			m_Progress.WriteText("Error. Consult MG-RAST.\n")
-			return (obs,metaVals)
+			return (obs,metaVals,False)
 			
 		if matrix['type'] != "Taxon table":
 			wx.MessageBox("Unexpected data format.")
-			return (obs,metaVals)
+			return (obs,metaVals,False)
 		if matrix['matrix_type'] == 'dense':
 			nodeList = self.DENSEHANDLER(matrix)
 		else:
 			nodeList,metaVals = self.SPARSEHANDLER(matrix)
 		if nodeList == False:
-			return (obs,metaVals,0)
+			return (obs,metaVals,False)
 		
 		for node in nodeList:
 			id = node[0]['id']
