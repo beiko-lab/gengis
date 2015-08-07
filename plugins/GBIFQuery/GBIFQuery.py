@@ -39,6 +39,7 @@ class GBIFQuery(GBIFQueryLayout):
 	__obs__ = []
 	__selectedTaxon__= set()
 	__description__=""
+	masterKeys = set()
 	
 	def __init__(self,parent=None):
 		MaxLon,MinLon,MaxLat,MinLat = 180,-180,90,-90
@@ -127,11 +128,9 @@ class GBIFQuery(GBIFQueryLayout):
 			maxLongitude= float(self.m_MaxLon.GetValue())
 			self.m_Progress.WriteText("Starting...\n")
 			for tax in self.__selectedTaxon__:
-				obs,recs,distLocs,description= self.GBIFSpecific.GETOBSENTIRERANGE(tax[1].split(),tax[0],minLatitude,maxLatitude,minLongitude,maxLongitude,self.m_Progress)
+				obs, self.masterKeys, records= self.GBIFSpecific.GETOBSENTIRERANGE(tax[0],minLatitude,maxLatitude,minLongitude,maxLongitude,self.m_Progress)
 				self.__obs__.append(obs)
-				self.__description__+="%s\n" % description
-				records += recs
-				distLocations +=distLocs
+				distLocations +=len(obs)
 			self.m_Progress.WriteText("Done.\n")
 		else:
 			wx.MessageBox("Please select some Taxa.")
@@ -153,13 +152,9 @@ class GBIFQuery(GBIFQueryLayout):
 		self.m_Progress.WriteText("Retrieving record counts.\n")
 		self.m_Summary.SetLabel("\n")
 		if(self.__selectedTaxon__):
-			minLatitude= self.GBIFGeneric.roundCoord(self.m_MinLat.GetValue())
-			maxLatitude= self.GBIFGeneric.roundCoord(self.m_MaxLat.GetValue())
-			minLongitude= self.GBIFGeneric.roundCoord(self.m_MinLon.GetValue())
-			maxLongitude= self.GBIFGeneric.roundCoord(self.m_MaxLon.GetValue())
 			count=0
 			for tax in self.__selectedTaxon__:
-				count+=self.GBIFSpecific.GETCOUNT(tax[1].split(),tax[0],minLatitude,maxLatitude,minLongitude,maxLongitude,self.m_Progress)
+				count+=self.GBIFSpecific.GETCOUNT(tax[1].split(),tax[0],self.m_Progress)
 			self.m_Summary.SetLabel("There were %d records for the given location." % count)
 		else:
 			wx.MessageBox("Please select some Taxa.")
@@ -172,15 +167,9 @@ class GBIFQuery(GBIFQueryLayout):
 	#	Adds Data to GenGIS
 	def OnAddData(self,event):
 		if (len(self.__obs__) > 0):
-			OUTLText, OUTSText = self.GBIFGeneric.GETTEXT(self.__obs__)
+			OUTLText, OUTSText = self.GBIFGeneric.GETTEXT(self.__obs__, self.masterKeys)
 			OUTLArray=self.GBIFGeneric.CPPOUT(OUTLText)
-			OUTSArray=self.GBIFGeneric.CPPOUT(OUTSText)
-			# Removing some Gridding based artifacts, may become useful again in the future.
-			#OUTLArray.insert(0,"Site ID,Latitude,Longitude,Richness,Cell ID,Taxon,Genus")
-			OUTLArray.insert(0,"Site ID,Latitude,Longitude,Cell ID,Taxon,Genus")
-			#OUTSArray.insert(0,"Sequence ID,Site ID,CellLat,CellLong,Taxon,Genus,TrueLat,TrueLong,Count,AllRecords")					
-			OUTSArray.insert(0,"Sequence ID,Site ID,Taxon,Genus,TrueLat,TrueLong,Count,AllRecords")					
-			print OUTLArray
+			OUTSArray=self.GBIFGeneric.CPPOUT(OUTSText)			
 			OUTLArray.pop()
 			OUTSArray.pop()
 			layerName = "GBIFLayer_%d" % GenGIS.layerTree.GetNumLocationSetLayers()
@@ -190,8 +179,6 @@ class GBIFQuery(GBIFQueryLayout):
 			#Get the number of last location layer added (the gbif one)
 			numLocationLayers=GenGIS.layerTree.GetNumLocationSetLayers()
 			locationSetLayer = GenGIS.layerTree.GetLocationSetLayer(numLocationLayers-1)
-			locationSetLayer.SetDescription(self.__description__)
-			
 		else:
 			wx.MessageBox("Please make a successful GBIF Query first.")
 		
@@ -207,16 +194,10 @@ class GBIFQuery(GBIFQueryLayout):
 				#creates the directories				
 				OUTLfile = os.path.join(dir,file_split[0]+"_locs.csv")		
 				OUTSfile = os.path.join(dir,file_split[0]+"_seqs.csv")
-				OUTDfile = os.path.join(dir,file_split[0]+"_source.txt")
 				
-				OUTLText, OUTSText = self.GBIFGeneric.GETTEXT(self.__obs__)
-				# Removing some Gridding based artifacts, may become useful again in the future.
-			#	self.GBIFGeneric.WRITEEXPORT(OUTLfile,OUTLText,"Site ID,Latitude,Longitude,Richness,Cell ID,Taxon,Genus\n")
-				self.GBIFGeneric.WRITEEXPORT(OUTLfile,OUTLText,"Site ID,Latitude,Longitude,Cell ID,Taxon,Genus\n")
-			#	self.GBIFGeneric.WRITEEXPORT(OUTSfile,OUTSText,"Sequence ID,Site ID,CellLat,CellLong,Taxon,Genus,TrueLat,TrueLong,Count,AllRecords\n")
-				self.GBIFGeneric.WRITEEXPORT(OUTSfile,OUTSText,"Sequence ID,Site ID,Taxon,Genus,TrueLat,TrueLong,Count,AllRecords\n")
-				description = self.__description__.encode('utf-8')
-				self.GBIFGeneric.WRITEEXPORT(OUTDfile,description,"")
+				OUTLText, OUTSText = self.GBIFGeneric.GETTEXT(self.__obs__, self.masterKeys)
+				self.GBIFGeneric.WRITEEXPORT(OUTLfile,OUTLText)
+				self.GBIFGeneric.WRITEEXPORT(OUTSfile,OUTSText)
 			dlg.Destroy()
 		else:
 			wx.MessageBox("Please make a successful GBIF Query first.")
