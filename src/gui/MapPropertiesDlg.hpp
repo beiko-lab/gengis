@@ -91,6 +91,10 @@ namespace GenGIS
 
 		/** Go button handler for cartogram creation. */
 		void OnCartogram( wxCommandEvent& event);
+		
+		/** Creates a grid like wireframe for flat images. */
+		//void OnUniformWireframe( wxCommandEvent& event );
+
 		void OnValueFudgeClick( wxCommandEvent& event );
 		void OnAreaFudgeClick( wxCommandEvent& event );
 
@@ -107,6 +111,9 @@ namespace GenGIS
 		{
 			wxLaunchDefaultBrowser( wxT( "http://kiwi.cs.dal.ca/GenGIS/The_GenGIS_2.1_Manual#Raster_Map_Layer_Properties" ));
 		}
+
+		/** Cartogram object. */
+		CartogramPtr m_cartogram;
 
 	protected:
 		/** Map layer to display properties of. */

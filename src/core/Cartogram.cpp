@@ -63,6 +63,14 @@ Cartogram::Cartogram(int buff) :
 
 void Cartogram::MakeCartogram()
 {
+//	FileMetaData* GetMetaData()
+
+	FileMetaData* meta = App::Inst().GetLayerTreeController()->GetMapLayer(0)->GetMapController()->GetMapModel()->GetMetaData();
+	if( meta->projection == "")
+	{
+		m_mapController->GetMapView()->SetCartogramState(true);
+	}
+
 	bool exaggerationChange = false;
 	double exaggeration = m_mapController->GetMapModel()->GetVerticalExaggeration();
 	// Set vertical exageration to 1.5
@@ -85,6 +93,11 @@ void Cartogram::MakeCartogram()
 	if( exaggerationChange )
 	{
 		m_mapController->GetMapModel()->SetVerticalExaggeration(exaggeration);
+	}
+	
+	if( meta->projection=="" )
+	{
+		m_mapController->GetMapView()->SetCartogramState(false);
 	}
 }
 
@@ -476,4 +489,3 @@ int Cartogram::Round(double val)
 	else
 		return int(floor(val));
 }
-

@@ -43,6 +43,7 @@ const int MAX_ELEVATION = 10000;
 MapPropertiesDlg::MapPropertiesDlg(wxWindow* parent, MapLayerPtr mapLayer) :
 	MapPropertiesLayout(parent),
 	m_mapLayer(mapLayer),
+	m_cartogram(new Cartogram()),
 	m_terrainMapWidget(new TerrainMapWidget(m_cboColourMap, m_scrolledWindowColourMap, &m_bColourMapChanged))
 {
 	SetIcon(wxIcon(App::Inst().GetExeDir() + wxT("images/CrazyEye.ico"), wxBITMAP_TYPE_ICO));
@@ -53,6 +54,9 @@ MapPropertiesDlg::MapPropertiesDlg(wxWindow* parent, MapLayerPtr mapLayer) :
 //	m_textAreaFudge->Bind(wxEVT_LEFT_DOWN, OnAreaFudgeClick(), this);
 //	wx.Bind(wxEVT_LEFT_DOWN, OnAreaFudgeClick(), m_textAreaFudge);	
 
+	
+//	CartogramPtr m_cartogram(new Cartogram());
+	
 	Init();
 	Fit();
 }
@@ -291,8 +295,6 @@ void MapPropertiesDlg::ApplyColourMap()
 /** OK button event handler. */
 void MapPropertiesDlg::OnOK( wxCommandEvent& event )
 {
-//	CartogramPtr cartogram(new Cartogram());
-//	cartogram->MakeCartogram();
 	Apply();
 	Destroy();
 }
@@ -309,9 +311,7 @@ void MapPropertiesDlg::OnAreaFudgeClick( wxCommandEvent& event )
 
 void MapPropertiesDlg::OnCartogram( wxCommandEvent& event)
 {
-	CartogramPtr cartogram(new Cartogram());
-	/* set value and area fudge */
-	cartogram->MakeCartogram();
+	m_cartogram->MakeCartogram();
 }
 
 /** Apply button event handler. */

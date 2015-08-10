@@ -59,7 +59,8 @@ MapView::MapView(MapModelPtr mapModel) :
 	m_zCenter(0),
 	m_collapseAngle(0),
 	m_displayList(0),
-	polyc(0)
+	polyc(0),
+	m_makingCartogram(false)
 {
 
 }
@@ -648,9 +649,15 @@ MapView::QuadtreeNode* MapView::createQuadtree( int lodsize, int startindex )
 
 		// by here, the max_err has the true max error in the current LOD block
 	}
-
+	
+	// For flat maps, this makes the projection cartogram-able
+	if( m_makingCartogram )
+	{
+		current->max_err = 0.000000000000000000000000000000005;
+	}
 	return current;
 }
+
 
 void MapView::update_quadtree(QuadtreeNode *root_cur) 
 {
@@ -750,6 +757,105 @@ void MapView::update_quadtree(QuadtreeNode *root_cur)
 	}
 }
 
+#if 0
+void MapView::update_quadtree(QuadtreeNode *root_cur) 
+{
+	// enable the current block
+	root_cur->enabled = true;
+
+	// center Vertex
+	m_vertices[root_cur->lodvertex[4]].enabled = true;
+
+	// corner m_vertices
+	m_vertices[root_cur->lodvertex[0]].enabled = true;
+	m_vertices[root_cur->lodvertex[2]].enabled = true;
+	m_vertices[root_cur->lodvertex[6]].enabled = true;
+	m_vertices[root_cur->lodvertex[8]].enabled = true;
+
+	// testing four edge m_vertices :
+	//		if the edge Vertex is already set
+
+	//top
+	if ( !inter_error( root_cur->lodvertex[1], root_cur->lodvertex[0], root_cur->lodvertex[2]) )
+	{
+		m_vertices[root_cur->lodvertex[1]].enabled = true;
+		// crack preventing
+		m_vertices[root_cur->lodvertex[1]].prob = true;
+
+	}
+	//left
+	if ( !inter_error( root_cur->lodvertex[3], root_cur->lodvertex[0], root_cur->lodvertex[6]) )
+	{
+		m_vertices[root_cur->lodvertex[3]].enabled = true;
+		// crack preventing
+		m_vertices[root_cur->lodvertex[3]].prob = true;
+	}
+
+	//bottom
+	if ( !inter_error( root_cur->lodvertex[7], root_cur->lodvertex[6], root_cur->lodvertex[8]) )
+	{
+		m_vertices[root_cur->lodvertex[7]].enabled = true;
+
+		// crack preventing
+		m_vertices[root_cur->lodvertex[7]].prob = true;
+
+	}
+
+	//right
+	if ( !inter_error( root_cur->lodvertex[5], root_cur->lodvertex[2], root_cur->lodvertex[8]) )
+	{
+		m_vertices[root_cur->lodvertex[5]].enabled = true;
+
+		// crack preventing
+		m_vertices[root_cur->lodvertex[5]].prob = true;
+
+	}
+
+	// box-testing the four quadrants
+	//		may save some of the calculation needed for edge m_vertices in current LOD
+
+	if ( root_cur->q1 && box_test( root_cur->q1) 
+
+		/*&& !camera->block_cliptest( m_vertices[root_cur->q1->lodvertex[0]],
+		m_vertices[root_cur->q1->lodvertex[2]],
+		m_vertices[root_cur->q1->lodvertex[6]],
+		m_vertices[root_cur->q1->lodvertex[8]] ) */) {
+		update_quadtree( root_cur->q1);
+
+		m_vertices[root_cur->lodvertex[1]].prob = true;
+		m_vertices[root_cur->lodvertex[5]].prob = true;
+	}
+
+
+	if ( root_cur->q2 && box_test( root_cur->q2) /*&& !camera->block_cliptest( m_vertices[root_cur->q2->lodvertex[0]],
+												 m_vertices[root_cur->q2->lodvertex[2]],
+												 m_vertices[root_cur->q2->lodvertex[6]],
+												 m_vertices[root_cur->q2->lodvertex[8]] ) */) {
+		update_quadtree( root_cur->q2);
+
+		m_vertices[root_cur->lodvertex[1]].prob = true;
+		m_vertices[root_cur->lodvertex[3]].prob = true;
+	}
+
+	if ( root_cur->q3 && box_test( root_cur->q3) /*&& !camera->block_cliptest( m_vertices[root_cur->q3->lodvertex[0]],
+												 m_vertices[root_cur->q3->lodvertex[2]],
+												 m_vertices[root_cur->q3->lodvertex[6]],
+												 m_vertices[root_cur->q3->lodvertex[8]]  )*/ ) {
+		update_quadtree( root_cur->q3);
+		m_vertices[root_cur->lodvertex[3]].prob = true;
+		m_vertices[root_cur->lodvertex[7]].prob = true;
+	}
+
+	if ( root_cur->q4 && box_test( root_cur->q4) /*&& !camera->block_cliptest( m_vertices[root_cur->q4->lodvertex[0]],
+												 m_vertices[root_cur->q4->lodvertex[2]],
+												 m_vertices[root_cur->q4->lodvertex[6]],
+												 m_vertices[root_cur->q4->lodvertex[8]] ) */) {
+		update_quadtree( root_cur->q4);
+		m_vertices[root_cur->lodvertex[7]].prob = true;
+		m_vertices[root_cur->lodvertex[5]].prob = true;
+	}
+}
+#endif
 void MapView::clear_enabled_quadtree( QuadtreeNode *root_cur )
 {
 	for ( int i = 0; i < m_dimension; i++ )

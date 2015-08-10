@@ -287,10 +287,13 @@ MapPropertiesLayout::MapPropertiesLayout( wxWindow* parent, wxWindowID id, const
 	bSizer23->Add( gbSizer1, 1, wxEXPAND, 5 );
 	
 	wxBoxSizer* bSizer30;
-	bSizer30 = new wxBoxSizer( wxVERTICAL );
+	bSizer30 = new wxBoxSizer( wxHORIZONTAL );
 	
 	m_btnMakeCartogram = new wxButton( m_pnlCartogram, wxID_ANY, wxT("Go!"), wxDefaultPosition, wxDefaultSize, 0 );
 	bSizer30->Add( m_btnMakeCartogram, 0, wxALL, 5 );
+	
+	m_btnWireframe = new wxButton( m_pnlCartogram, wxID_ANY, wxT("Uniform Wireframe"), wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer30->Add( m_btnWireframe, 0, wxALL, 5 );
 	
 	bSizer23->Add( bSizer30, 0, 0, 5 );
 	
@@ -366,22 +369,10 @@ MapPropertiesLayout::MapPropertiesLayout( wxWindow* parent, wxWindowID id, const
 	m_btnEvenlySpace->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( MapPropertiesLayout::OnEvenlySpace ), NULL, this );
 	m_textAreaFudge->Connect( wxEVT_ENTER_WINDOW, wxMouseEventHandler( MapPropertiesLayout::OnAreaFudgeClick ), NULL, this );
 	m_textAreaFudge->Connect( wxEVT_LEFT_DOWN, wxMouseEventHandler( MapPropertiesLayout::OnAreaFudgeClick ), NULL, this );
-	m_textAreaFudge->Connect( wxEVT_LEFT_DOWN, wxMouseEventHandler( MapPropertiesLayout::OnAreaFudgeClick ), NULL, this );
-	m_textAreaFudge->Connect( wxEVT_LEFT_UP, wxMouseEventHandler( MapPropertiesLayout::OnAreaFudgeClick ), NULL, this );
-	m_textAreaFudge->Connect( wxEVT_MIDDLE_DOWN, wxMouseEventHandler( MapPropertiesLayout::OnAreaFudgeClick ), NULL, this );
-	m_textAreaFudge->Connect( wxEVT_MIDDLE_UP, wxMouseEventHandler( MapPropertiesLayout::OnAreaFudgeClick ), NULL, this );
-	m_textAreaFudge->Connect( wxEVT_RIGHT_DOWN, wxMouseEventHandler( MapPropertiesLayout::OnAreaFudgeClick ), NULL, this );
-	m_textAreaFudge->Connect( wxEVT_RIGHT_UP, wxMouseEventHandler( MapPropertiesLayout::OnAreaFudgeClick ), NULL, this );
-	m_textAreaFudge->Connect( wxEVT_MOTION, wxMouseEventHandler( MapPropertiesLayout::OnAreaFudgeClick ), NULL, this );
-	m_textAreaFudge->Connect( wxEVT_LEFT_DCLICK, wxMouseEventHandler( MapPropertiesLayout::OnAreaFudgeClick ), NULL, this );
-	m_textAreaFudge->Connect( wxEVT_MIDDLE_DCLICK, wxMouseEventHandler( MapPropertiesLayout::OnAreaFudgeClick ), NULL, this );
-	m_textAreaFudge->Connect( wxEVT_RIGHT_DCLICK, wxMouseEventHandler( MapPropertiesLayout::OnAreaFudgeClick ), NULL, this );
-	m_textAreaFudge->Connect( wxEVT_LEAVE_WINDOW, wxMouseEventHandler( MapPropertiesLayout::OnAreaFudgeClick ), NULL, this );
-	m_textAreaFudge->Connect( wxEVT_ENTER_WINDOW, wxMouseEventHandler( MapPropertiesLayout::OnAreaFudgeClick ), NULL, this );
-	m_textAreaFudge->Connect( wxEVT_MOUSEWHEEL, wxMouseEventHandler( MapPropertiesLayout::OnAreaFudgeClick ), NULL, this );
 	m_textValueFudge->Connect( wxEVT_ENTER_WINDOW, wxMouseEventHandler( MapPropertiesLayout::OnValueFudgeClick ), NULL, this );
 	m_textValueFudge->Connect( wxEVT_LEFT_DOWN, wxMouseEventHandler( MapPropertiesLayout::OnValueFudgeClick ), NULL, this );
 	m_btnMakeCartogram->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( MapPropertiesLayout::OnCartogram ), NULL, this );
+	m_btnWireframe->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( MapPropertiesLayout::OnUniformWireframe ), NULL, this );
 	m_btnHelp->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( MapPropertiesLayout::OnHelp ), NULL, this );
 	m_btnOK->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( MapPropertiesLayout::OnOK ), NULL, this );
 	m_btnApply->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( MapPropertiesLayout::OnApply ), NULL, this );
@@ -399,22 +390,10 @@ MapPropertiesLayout::~MapPropertiesLayout()
 	m_btnEvenlySpace->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( MapPropertiesLayout::OnEvenlySpace ), NULL, this );
 	m_textAreaFudge->Disconnect( wxEVT_ENTER_WINDOW, wxMouseEventHandler( MapPropertiesLayout::OnAreaFudgeClick ), NULL, this );
 	m_textAreaFudge->Disconnect( wxEVT_LEFT_DOWN, wxMouseEventHandler( MapPropertiesLayout::OnAreaFudgeClick ), NULL, this );
-	m_textAreaFudge->Disconnect( wxEVT_LEFT_DOWN, wxMouseEventHandler( MapPropertiesLayout::OnAreaFudgeClick ), NULL, this );
-	m_textAreaFudge->Disconnect( wxEVT_LEFT_UP, wxMouseEventHandler( MapPropertiesLayout::OnAreaFudgeClick ), NULL, this );
-	m_textAreaFudge->Disconnect( wxEVT_MIDDLE_DOWN, wxMouseEventHandler( MapPropertiesLayout::OnAreaFudgeClick ), NULL, this );
-	m_textAreaFudge->Disconnect( wxEVT_MIDDLE_UP, wxMouseEventHandler( MapPropertiesLayout::OnAreaFudgeClick ), NULL, this );
-	m_textAreaFudge->Disconnect( wxEVT_RIGHT_DOWN, wxMouseEventHandler( MapPropertiesLayout::OnAreaFudgeClick ), NULL, this );
-	m_textAreaFudge->Disconnect( wxEVT_RIGHT_UP, wxMouseEventHandler( MapPropertiesLayout::OnAreaFudgeClick ), NULL, this );
-	m_textAreaFudge->Disconnect( wxEVT_MOTION, wxMouseEventHandler( MapPropertiesLayout::OnAreaFudgeClick ), NULL, this );
-	m_textAreaFudge->Disconnect( wxEVT_LEFT_DCLICK, wxMouseEventHandler( MapPropertiesLayout::OnAreaFudgeClick ), NULL, this );
-	m_textAreaFudge->Disconnect( wxEVT_MIDDLE_DCLICK, wxMouseEventHandler( MapPropertiesLayout::OnAreaFudgeClick ), NULL, this );
-	m_textAreaFudge->Disconnect( wxEVT_RIGHT_DCLICK, wxMouseEventHandler( MapPropertiesLayout::OnAreaFudgeClick ), NULL, this );
-	m_textAreaFudge->Disconnect( wxEVT_LEAVE_WINDOW, wxMouseEventHandler( MapPropertiesLayout::OnAreaFudgeClick ), NULL, this );
-	m_textAreaFudge->Disconnect( wxEVT_ENTER_WINDOW, wxMouseEventHandler( MapPropertiesLayout::OnAreaFudgeClick ), NULL, this );
-	m_textAreaFudge->Disconnect( wxEVT_MOUSEWHEEL, wxMouseEventHandler( MapPropertiesLayout::OnAreaFudgeClick ), NULL, this );
 	m_textValueFudge->Disconnect( wxEVT_ENTER_WINDOW, wxMouseEventHandler( MapPropertiesLayout::OnValueFudgeClick ), NULL, this );
 	m_textValueFudge->Disconnect( wxEVT_LEFT_DOWN, wxMouseEventHandler( MapPropertiesLayout::OnValueFudgeClick ), NULL, this );
 	m_btnMakeCartogram->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( MapPropertiesLayout::OnCartogram ), NULL, this );
+	m_btnWireframe->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( MapPropertiesLayout::OnUniformWireframe ), NULL, this );
 	m_btnHelp->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( MapPropertiesLayout::OnHelp ), NULL, this );
 	m_btnOK->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( MapPropertiesLayout::OnOK ), NULL, this );
 	m_btnApply->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( MapPropertiesLayout::OnApply ), NULL, this );

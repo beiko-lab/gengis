@@ -121,9 +121,12 @@ namespace GenGIS
 		/** Get and Set vertices for Cartograms. */
 		void SetVertices(MapControllerPtr mapController);
 		QuadtreeNode* createQuadtree( int lodsize, int startindex );
-		int GetDimension(){return m_dimension;};
-		void SetRoot( QuadtreeNode* root ){ m_root=root;};
+		int GetDimension(){return m_dimension;}
+		void SetRoot( QuadtreeNode* root ){ m_root=root;}
 
+		/** Get and Set for Cartogram state. */
+		void SetCartogramState(bool state){m_makingCartogram = state;}
+		bool GetCartogramState(){return m_makingCartogram;}
 	private:
 		/** Serialization. */
 		friend class boost::serialization::access;
@@ -199,6 +202,8 @@ namespace GenGIS
 		int polyc;
 
 		MapModelPtr m_mapModel;
+
+		bool m_makingCartogram;
 	};
 }
 
