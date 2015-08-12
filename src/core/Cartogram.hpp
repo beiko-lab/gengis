@@ -52,6 +52,7 @@ namespace GenGIS
 		explicit Cartogram(int buff);
 
 		void MakeCartogram();
+		void UndoCartogram();
 
 	private:
 		// number of rows in map
@@ -61,24 +62,26 @@ namespace GenGIS
 		const int buffer;
 		double valFudge;
 		int areaFudge;
+
+		/* X and Z coordinates for the un-distorted grid and location set. */
+		Point3D* m_originalGrid;
+		Point3D* m_originalLocations;
+		Point3D** m_originalVector;
+
 		/** Copied directly from MapView. See class for more information. */
-		int m_dimension;
 		MapControllerPtr m_mapController;
-	
-		MapView::Vertex* m_vertices;
 		
 		/** Translate the first location set Lat/Lon to Raster Grid coordinates. */
 		std::map<int,boost::array<int,4>> TranslateLocations();
 		
+		/** Function which creates the cartogram. */
+		void StdMain();
+		
 		/** Template to write out some sort of generic matrix **/
 		template< typename Matrix >
 		void WriteMatrix(Matrix rho, int row, int col, std::string name);
-
-		
-		void StdMain();
 		int readpop(FILE *stream, double **rho, int xsize, int ysize);
 		void writepoints(FILE *stream, double *gridx, double *gridy, int npoints);
-		
 		template< typename Matrix >
 		int readpoints(FILE *stream, Matrix &gridx, Matrix &gridy, int xsize, int ysize);
 
@@ -93,7 +96,7 @@ namespace GenGIS
 		void CreateGrid(double *gridx, double *gridy, int xsize, int ysize);
 
 		/** Populate the grid of density values.*/
-		void PopulateRho( double ** rho );
+	//	void PopulateRho( double ** rho );
 		std::vector<std::vector<double>> PopulateRho( );
 		
 		/** Interpolate between standard Raster coordinates and the cartogram.*/
@@ -104,6 +107,10 @@ namespace GenGIS
 		template< typename Matrix >
 		void InterpolateLocations(Matrix gridx, Matrix gridy);
 		
+		/** Interpolate between standard Raster coordinates and the cartogram for all Vector layers.*/
+		template< typename Matrix >
+		void InterpolateVector(Matrix gridx, Matrix gridy);
+
 		/** Transform a 1D array to a 2D array in order to move between Cart and Interp steps. */
 		std::vector<std::vector<double>> ArrayTransform(double * grid);
 		template< typename Matrix >
@@ -115,8 +122,8 @@ namespace GenGIS
 		/** Set the Value Fudge value for the Cartogram. */
 		void SetValueFudge(int val){ valFudge = val;}
 
-		int Round(double val);
-
+		/** Store the original grid and and location coordiantes. */
+		void SaveOriginalProjection();
 	};
 }
 #endif

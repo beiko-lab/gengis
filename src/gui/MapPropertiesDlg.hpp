@@ -92,6 +92,9 @@ namespace GenGIS
 		/** Go button handler for cartogram creation. */
 		void OnCartogram( wxCommandEvent& event);
 		
+		/** Restores map to original state. */
+		void OnUndoCartogram( wxCommandEvent& event );
+
 		/** Creates a grid like wireframe for flat images. */
 		//void OnUniformWireframe( wxCommandEvent& event );
 

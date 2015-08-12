@@ -114,7 +114,7 @@ namespace GenGIS
 			wxTextCtrl* m_textValueFudge;
 			wxStaticBitmap* m_bitmapCart;
 			wxButton* m_btnMakeCartogram;
-			wxButton* m_btnWireframe;
+			wxButton* m_btnUndoCartogram;
 			wxPanel* m_pnlMetadata;
 			wxStaticText* m_lblLayerSource;
 			wxTextCtrl* m_txtLayerSource;
@@ -135,7 +135,7 @@ namespace GenGIS
 			virtual void OnAreaFudgeClick( wxMouseEvent& event ) { event.Skip(); }
 			virtual void OnValueFudgeClick( wxMouseEvent& event ) { event.Skip(); }
 			virtual void OnCartogram( wxCommandEvent& event ) { event.Skip(); }
-			virtual void OnUniformWireframe( wxCommandEvent& event ) { event.Skip(); }
+			virtual void OnUndoCartogram( wxCommandEvent& event ) { event.Skip(); }
 			virtual void OnHelp( wxCommandEvent& event ) { event.Skip(); }
 			virtual void OnOK( wxCommandEvent& event ) { event.Skip(); }
 			virtual void OnApply( wxCommandEvent& event ) { event.Skip(); }

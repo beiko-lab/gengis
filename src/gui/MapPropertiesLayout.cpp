@@ -292,8 +292,8 @@ MapPropertiesLayout::MapPropertiesLayout( wxWindow* parent, wxWindowID id, const
 	m_btnMakeCartogram = new wxButton( m_pnlCartogram, wxID_ANY, wxT("Go!"), wxDefaultPosition, wxDefaultSize, 0 );
 	bSizer30->Add( m_btnMakeCartogram, 0, wxALL, 5 );
 	
-	m_btnWireframe = new wxButton( m_pnlCartogram, wxID_ANY, wxT("Uniform Wireframe"), wxDefaultPosition, wxDefaultSize, 0 );
-	bSizer30->Add( m_btnWireframe, 0, wxALL, 5 );
+	m_btnUndoCartogram = new wxButton( m_pnlCartogram, wxID_ANY, wxT("Restore Map"), wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer30->Add( m_btnUndoCartogram, 0, wxALL, 5 );
 	
 	bSizer23->Add( bSizer30, 0, 0, 5 );
 	
@@ -372,7 +372,7 @@ MapPropertiesLayout::MapPropertiesLayout( wxWindow* parent, wxWindowID id, const
 	m_textValueFudge->Connect( wxEVT_ENTER_WINDOW, wxMouseEventHandler( MapPropertiesLayout::OnValueFudgeClick ), NULL, this );
 	m_textValueFudge->Connect( wxEVT_LEFT_DOWN, wxMouseEventHandler( MapPropertiesLayout::OnValueFudgeClick ), NULL, this );
 	m_btnMakeCartogram->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( MapPropertiesLayout::OnCartogram ), NULL, this );
-	m_btnWireframe->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( MapPropertiesLayout::OnUniformWireframe ), NULL, this );
+	m_btnUndoCartogram->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( MapPropertiesLayout::OnUndoCartogram ), NULL, this );
 	m_btnHelp->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( MapPropertiesLayout::OnHelp ), NULL, this );
 	m_btnOK->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( MapPropertiesLayout::OnOK ), NULL, this );
 	m_btnApply->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( MapPropertiesLayout::OnApply ), NULL, this );
@@ -393,7 +393,7 @@ MapPropertiesLayout::~MapPropertiesLayout()
 	m_textValueFudge->Disconnect( wxEVT_ENTER_WINDOW, wxMouseEventHandler( MapPropertiesLayout::OnValueFudgeClick ), NULL, this );
 	m_textValueFudge->Disconnect( wxEVT_LEFT_DOWN, wxMouseEventHandler( MapPropertiesLayout::OnValueFudgeClick ), NULL, this );
 	m_btnMakeCartogram->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( MapPropertiesLayout::OnCartogram ), NULL, this );
-	m_btnWireframe->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( MapPropertiesLayout::OnUniformWireframe ), NULL, this );
+	m_btnUndoCartogram->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( MapPropertiesLayout::OnUndoCartogram ), NULL, this );
 	m_btnHelp->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( MapPropertiesLayout::OnHelp ), NULL, this );
 	m_btnOK->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( MapPropertiesLayout::OnOK ), NULL, this );
 	m_btnApply->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( MapPropertiesLayout::OnApply ), NULL, this );

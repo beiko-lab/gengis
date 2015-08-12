@@ -313,6 +313,10 @@ void MapPropertiesDlg::OnCartogram( wxCommandEvent& event)
 {
 	m_cartogram->MakeCartogram();
 }
+void MapPropertiesDlg::OnUndoCartogram( wxCommandEvent& event )
+{
+	m_cartogram->UndoCartogram();
+}
 
 /** Apply button event handler. */
 void MapPropertiesDlg::OnApply( wxCommandEvent& event )
