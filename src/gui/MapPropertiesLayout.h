@@ -28,7 +28,7 @@
 #include <wx/slider.h>
 #include <wx/checkbox.h>
 #include <wx/notebook.h>
-#include <wx/statbmp.h>
+#include <wx/choice.h>
 #include <wx/gbsizer.h>
 #include <wx/richtext/richtextctrl.h>
 #include <wx/dialog.h>
@@ -109,11 +109,17 @@ namespace GenGIS
 			wxCheckBox* m_chkWireframe;
 			wxPanel* m_pnlCartogram;
 			wxStaticText* m_lblAreaFudge;
-			wxTextCtrl* m_textAreaFudge;
+			wxSpinCtrl* m_spinAreaFudge;
 			wxStaticText* m_lblValueFudge;
-			wxTextCtrl* m_textValueFudge;
-			wxStaticBitmap* m_bitmapCart;
+			wxSpinCtrl* m_spinValueFudge;
+			wxStaticText* m_lblSelectLocation;
+			wxChoice* m_cboSelectLocation;
+			wxStaticText* m_lblSelectVectorMap;
+			wxChoice* m_cboSelectVectorMap;
+			wxStaticText* m_lblSelectMethod;
+			wxChoice* m_cboSelectMethod;
 			wxButton* m_btnMakeCartogram;
+			
 			wxButton* m_btnUndoCartogram;
 			wxPanel* m_pnlMetadata;
 			wxStaticText* m_lblLayerSource;
@@ -132,8 +138,6 @@ namespace GenGIS
 			virtual void OnInterpolationChange( wxCommandEvent& event ) { event.Skip(); }
 			virtual void OnNumEntriesChange( wxSpinEvent& event ) { event.Skip(); }
 			virtual void OnEvenlySpace( wxCommandEvent& event ) { event.Skip(); }
-			virtual void OnAreaFudgeClick( wxMouseEvent& event ) { event.Skip(); }
-			virtual void OnValueFudgeClick( wxMouseEvent& event ) { event.Skip(); }
 			virtual void OnCartogram( wxCommandEvent& event ) { event.Skip(); }
 			virtual void OnUndoCartogram( wxCommandEvent& event ) { event.Skip(); }
 			virtual void OnHelp( wxCommandEvent& event ) { event.Skip(); }

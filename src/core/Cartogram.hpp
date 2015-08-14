@@ -54,6 +54,14 @@ namespace GenGIS
 		void MakeCartogram();
 		void UndoCartogram();
 
+		/** Set the Area Fudge value for the Cartogram. */
+		void SetAreaFudge(int val){ areaFudge = val;}
+
+		/** Set the Value Fudge value for the Cartogram. */
+		void SetValueFudge(int val){ valFudge = val;}
+
+		void SetLocationSetLayer( int *indexes, int max );
+		void SetVectorMap( int *indexes, int max );
 	private:
 		// number of rows in map
 		const int ysize;
@@ -63,10 +71,15 @@ namespace GenGIS
 		double valFudge;
 		int areaFudge;
 
+		std::vector<int> m_locationSetLayerIndex;
+		std::vector<int> m_vectorMapIndex;
+
 		/* X and Z coordinates for the un-distorted grid and location set. */
 		Point3D* m_originalGrid;
-		Point3D* m_originalLocations;
-		Point3D** m_originalVector;
+		// save all location layers
+		Point3D** m_originalLocations;
+		// save all vector layers
+		Point3D*** m_originalVector;
 
 		/** Copied directly from MapView. See class for more information. */
 		MapControllerPtr m_mapController;
@@ -105,22 +118,16 @@ namespace GenGIS
 
 		/** Interpolate locations from standard raster to cartogram coordinates. */
 		template< typename Matrix >
-		void InterpolateLocations(Matrix gridx, Matrix gridy);
+		void InterpolateLocations(Matrix gridx, Matrix gridy, LocationSetLayerPtr locationSetLayer);
 		
 		/** Interpolate between standard Raster coordinates and the cartogram for all Vector layers.*/
 		template< typename Matrix >
-		void InterpolateVector(Matrix gridx, Matrix gridy);
+		void InterpolateVector(Matrix gridx, Matrix gridy, VectorMapControllerPtr vectorMap);
 
 		/** Transform a 1D array to a 2D array in order to move between Cart and Interp steps. */
 		std::vector<std::vector<double>> ArrayTransform(double * grid);
 		template< typename Matrix >
 		void ArrayTransform(double * grid, Matrix &transGrid);
-
-		/** Set the Area Fudge value for the Cartogram. */
-		void SetAreaFudge(int val){ areaFudge = val;}
-
-		/** Set the Value Fudge value for the Cartogram. */
-		void SetValueFudge(int val){ valFudge = val;}
 
 		/** Store the original grid and and location coordiantes. */
 		void SaveOriginalProjection();

@@ -40,8 +40,10 @@ namespace GenGIS
 		*/
 		explicit VectorMapController()
 		{
+			m_bVectorMapLoaded = false;
 			m_vectorMapModel = VectorMapModelPtr( new VectorMapModel() );
 			m_vectorMapView  = VectorMapViewPtr( new VectorMapView( m_vectorMapModel ) );
+		
 		}
 
 		/** Destructor. */

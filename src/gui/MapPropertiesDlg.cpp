@@ -28,6 +28,8 @@
 #include "../core/MapLayer.hpp"
 #include "../core/Viewport.hpp"
 #include "../core/LayerTreeController.hpp"
+#include "../core/LocationSetLayer.hpp"
+#include "../core/LocationSetController.hpp"
 #include "../core/Cartogram.hpp"
 
 #include "../gui/MapPropertiesDlg.hpp"
@@ -50,12 +52,6 @@ MapPropertiesDlg::MapPropertiesDlg(wxWindow* parent, MapLayerPtr mapLayer) :
 
 	// Limit the properties dialog to a single instance
 	m_mapLayer->SetPropertiesDialog( this );
-
-//	m_textAreaFudge->Bind(wxEVT_LEFT_DOWN, OnAreaFudgeClick(), this);
-//	wx.Bind(wxEVT_LEFT_DOWN, OnAreaFudgeClick(), m_textAreaFudge);	
-
-	
-//	CartogramPtr m_cartogram(new Cartogram());
 	
 	Init();
 	Fit();
@@ -108,6 +104,7 @@ void MapPropertiesDlg::Init()
 
 	InitColourMap();
 
+	InitCartogram();
 	// set state of controls on Metadata page
 	//m_txtLayerSource->SetValue(wxString(m_mapLayer->GetPath().c_str()) + _T("\\") + wxString(m_mapLayer->GetFilename().c_str()));
 	m_txtLayerSource->SetValue(m_mapLayer->GetFullPath());
@@ -148,6 +145,36 @@ void MapPropertiesDlg::InitColourMap()
 	}
 
 	m_bColourMapChanged = false;
+}
+
+void MapPropertiesDlg::InitCartogram()
+{
+	m_spinAreaFudge->SetValue(_T("5"));
+	m_spinValueFudge->SetValue(_T("10"));
+	
+	// set up location set selection
+	int numSelections = App::Inst().GetLayerTreeController()->GetNumLocationSetLayers(); 
+//	m_cboSelectLocation->Append(_T("None"));
+	for( int i = 0; i < numSelections; i++ )
+	{
+		std::wstring id = App::Inst().GetLayerTreeController()->GetLocationSetLayer(i)->GetName();
+		m_cboSelectLocation->Append(id.c_str());
+	}
+	m_cboSelectLocation->Append(_T("All"));
+	m_cboSelectLocation->SetSelection(0);
+
+	// set up vector map selection
+	numSelections = App::Inst().GetLayerTreeController()->GetNumVectorMapLayers(); 
+	m_cboSelectVectorMap->Append(_T("None"));
+	for( int i = 0; i < numSelections; i++ )
+	{
+		std::wstring id = App::Inst().GetLayerTreeController()->GetVectorMapLayer(i)->GetName();
+		m_cboSelectVectorMap->Append(id.c_str());
+	}
+	m_cboSelectVectorMap->Append(_T("All"));
+	m_cboSelectVectorMap->SetSelection(0);
+
+	// set up measure selection
 }
 
 void MapPropertiesDlg::OnNumEntriesChange() 
@@ -299,18 +326,45 @@ void MapPropertiesDlg::OnOK( wxCommandEvent& event )
 	Destroy();
 }
 
-void MapPropertiesDlg::OnValueFudgeClick( wxCommandEvent& event )
-{
-	m_bitmapCart->SetBitmap(wxBitmap(wxT("C:/Users/admin/Desktop/CartPropAreaFudge.png"),wxBITMAP_TYPE_BMP));
-}
-
-void MapPropertiesDlg::OnAreaFudgeClick( wxCommandEvent& event )
-{
-	m_bitmapCart->SetBitmap(wxBitmap(wxT("C:/Users/admin/Desktop/CartPropValueFudge.png"),wxBITMAP_TYPE_BMP));
-}
-
 void MapPropertiesDlg::OnCartogram( wxCommandEvent& event)
 {
+	m_cartogram->SetAreaFudge( m_spinAreaFudge->GetValue() );
+	m_cartogram->SetValueFudge( m_spinValueFudge->GetValue() );
+	// get index, -1 for none
+	int locationSetIndex = m_cboSelectLocation->GetSelection();
+	int max;
+	max = App::Inst().GetLayerTreeController()->GetNumLocationSetLayers();
+	// if all selected
+	if( locationSetIndex == max )
+	{	
+		int *indexes = new int[max];
+		for( int i = 0; i < max; i++ )
+		{
+			indexes[i] = i;
+		}
+		m_cartogram->SetLocationSetLayer( indexes, max );
+	}
+	else
+	{
+		m_cartogram->SetLocationSetLayer( &locationSetIndex , 1 );
+	}
+
+	int vectorMapIndex = m_cboSelectVectorMap->GetSelection()-1;
+	max = App::Inst().GetLayerTreeController()->GetNumVectorMapLayers(); 
+	if( vectorMapIndex == max )
+	{
+		int *indexes = new int[max];
+		for( int i = 0; i < max; i++ )
+		{
+			indexes[i] = i;
+		}
+		m_cartogram->SetVectorMap( indexes, max );
+	}
+	else if( vectorMapIndex >= 0 )
+	{
+		m_cartogram->SetVectorMap( &vectorMapIndex, 1 );
+	}
+
 	m_cartogram->MakeCartogram();
 }
 void MapPropertiesDlg::OnUndoCartogram( wxCommandEvent& event )
