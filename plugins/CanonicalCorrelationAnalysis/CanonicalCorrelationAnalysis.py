@@ -35,6 +35,11 @@ class CanonicalCorrelationAnalysis( CanonicalCorrelationAnalysisLayout ):
 	def __init__(self, parent = None):
 		layout = CanonicalCorrelationAnalysisLayout.__init__( self, parent )
 		
+		if GenGIS.layerTree.GetNumMapLayers() == 0 or GenGIS.layerTree.GetNumLocationSetLayers() == 0 or GenGIS.layerTree.GetNumSequenceLayers() == 0:
+			wx.MessageBox("This plugin requires map, location, and sequence data to be loaded.", "Additional data required.")
+			self.Close()
+			return
+		
 		self.chcCountField.Append("N/A")
 		for numDataField in GenGIS.layerTree.GetSequenceLayer(0).GetController().GetNumericMetadataFields(True):
 			self.chcCountField.Append(numDataField)
