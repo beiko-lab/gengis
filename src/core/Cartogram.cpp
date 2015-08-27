@@ -70,6 +70,35 @@ Cartogram::Cartogram() :
 	SaveOriginalProjection();
 }
 
+Cartogram::Cartogram(MapControllerPtr mapController) :
+	m_mapController(mapController),
+	xsize(mapController->GetMapModel()->GetHeader()->nCols),
+	ysize(mapController->GetMapModel()->GetHeader()->nRows),
+	buffer(0)
+{
+	valFudge=30;
+	areaFudge=5;
+
+//	m_locationSetLayerIndex = 0;
+//	m_vectorMapIndex = 0;
+	// this is a soft copy, need a hard one!
+	FileHeader* header = mapController->GetMapModel()->GetHeader();
+	
+	// this needs to be adjusted... everything needs an extra dimension...
+	// set to the size of grid and location layer
+	m_originalGrid = new Point3D[header->nCols*header->nRows];
+	int load = App::Inst().GetLayerTreeController()->GetNumLocationSetLayers();
+	if (load > 0)
+	//	m_originalLocations = new Point3D[App::Inst().GetLayerTreeController()->GetLocationSetLayer(0)->GetNumLocationLayers()];
+		m_originalLocations = new Point3D*[App::Inst().GetLayerTreeController()->GetNumLocationSetLayers()];
+	// need to account for No vector map
+	load = App::Inst().GetLayerTreeController()->GetNumVectorMapLayers();
+	if ( load > 0 )
+	//	m_originalVector = new Point3D*[ App::Inst().GetVectorMapController(0)->GetVectorMapModel()->GetNumberOfGeometries()];
+		m_originalVector = new Point3D**[App::Inst().GetLayerTreeController()->GetNumVectorMapLayers()];
+	SaveOriginalProjection();
+}
+
 Cartogram::Cartogram(int buff) :
 	m_mapController(App::Inst().GetLayerTreeController()->GetMapLayer(0)->GetMapController()),
 	xsize(App::Inst().GetLayerTreeController()->GetMapLayer(0)->GetMapController()->GetMapModel()->GetHeader()->nCols+buff*2),
@@ -141,7 +170,7 @@ void Cartogram::UndoCartogram()
 
 	// restore location positions
 	/* Save Location layer */
-	for( int i = 0; i < App::Inst().GetLayerTreeController()->GetNumLocationSetLayers(); i++ )
+	for( uint i = 0; i < App::Inst().GetLayerTreeController()->GetNumLocationSetLayers(); i++ )
 	{
 		LocationSetLayerPtr locationSetLayer = App::Inst().GetLayerTreeController()->GetLocationSetLayer(i);
 		std::vector<LocationLayerPtr> locationLayers = locationSetLayer->GetAllActiveLocationLayers();
@@ -163,11 +192,11 @@ void Cartogram::UndoCartogram()
 		GeoVector* geoVector;
 		
 		// g for geometries
-		for( int g = 0; g < vMapModel->GetNumberOfGeometries(); g++ )
+		for( uint g = 0; g < vMapModel->GetNumberOfGeometries(); g++ )
 		{
 			geoVector = vMapModel->GetGeoVector(g);
 			// p for points in geometry
-			for( int p = 0; p < geoVector->GetNumberOfPoints(); p++ )
+			for( uint p = 0; p < geoVector->GetNumberOfPoints(); p++ )
 			{
 				geoVector->pointX[p] = m_originalVector[i][g][p].x;
 				geoVector->pointY[p] = m_originalVector[i][g][p].z;
@@ -181,19 +210,19 @@ void Cartogram::UndoCartogram()
 	
 }
 
-std::map<int,boost::array<int,4>> Cartogram::TranslateLocations()
+std::map<int,boost::array<double,4>> Cartogram::TranslateLocations()
 {
 
 //	std::ofstream myfile;
 //	myfile.open("C:/Users/Admin/Desktop/cartlog.txt");
 
-	std::map<int,boost::array<int,4>> gridDensity;
+	std::map<int,boost::array<double,4>> gridDensity;
 	Box2D mapBox = m_mapController->GetMapModel()->GetProjectionExtents();
 	double mapHeight = mapBox.dy - mapBox.y ;
 	double mapWidth = mapBox.dx - mapBox.x ;
 	LocationSetLayerPtr locationSetLayer;
 	std::vector<LocationLayerPtr> locationLayers;
-	for( uint lSLIndex = 0; lSLIndex < boost::size(m_locationSetLayerIndex); lSLIndex++ )
+	for( int lSLIndex = 0; lSLIndex < boost::size(m_locationSetLayerIndex); lSLIndex++ )
 	{
 
 		locationSetLayer = App::Inst().GetLayerTreeController()->GetLocationSetLayer(m_locationSetLayerIndex[lSLIndex] );
@@ -204,9 +233,20 @@ std::map<int,boost::array<int,4>> Cartogram::TranslateLocations()
 		{
 			loc = locationLayers[i];
 			
-			// simple count metric. Will need to be buffed up!
-			int count = std::max(1,int(loc->GetNumSequenceLayers()));
-			
+			double count;
+			if( m_measureLabel.compare( StringTools::ToStringW("Sequence Count") ) == 0 )
+			{
+				// simple count metric. Will need to be buffed up!
+				count = std::max(1,int(loc->GetNumSequenceLayers()));
+			}
+			else
+			{
+			//int count = (int)(loc->GetLocationController()->GetData()["PhylogeneticDiversity"]);
+				std::map<std::wstring,std::wstring> data = loc->GetLocationController()->GetData();
+				std::wstring weightStr = data[m_measureLabel];
+				count = StringTools::ToDouble(weightStr);
+			}
+
 			// map box x and y are the lower left corner of the map.
 			// map box dx and dy are the width and height of the box.
 			double easting = loc->GetLocationController()->GetEasting() - mapBox.x;
@@ -230,7 +270,7 @@ std::map<int,boost::array<int,4>> Cartogram::TranslateLocations()
 			}
 			else
 			{
-				boost::array<int,4> a = {indexX,indexY,count,i};
+				boost::array<double,4> a = {indexX,indexY,count,i};
 				gridDensity[index] = a;
 			}
 		}
@@ -245,11 +285,11 @@ void Cartogram::MakeRho()
 	WriteMatrix(rho,ysize,xsize, tempOut);
 }
 
-int Cartogram::GetMapAverage(std::map<int,boost::array<int,4>> map)
+double Cartogram::GetMapAverage(std::map<int,boost::array<double,4>> map)
 {
 	int count = 0;
-	int average = 0;
-	std::map<int,boost::array<int,4>>::iterator it;
+	double average = 0;
+	std::map<int,boost::array<double,4>>::iterator it;
 	for( it = map.begin(); it != map.end(); ++it )
 	{
 		average += it->second[2];
@@ -278,17 +318,17 @@ void Cartogram::CreateGrid(double *gridx, double *gridy, int xsize, int ysize)
 std::vector<std::vector<double>> Cartogram::PopulateRho()
 {
 	// Find grid squares with locations
-	std::map<int,boost::array<int,4>> locationCounts = TranslateLocations();
+	std::map<int,boost::array<double,4>> locationCounts = TranslateLocations();
 	std::vector<std::vector<double>> prime(ysize,std::vector<double>(xsize));
 	// Find average of these values (for empyt grid squares)
-	int average = GetMapAverage(locationCounts);
+	double average = GetMapAverage(locationCounts);
 	double avgVal = average + OFFSET*average;
 	int index=0;
 	double val = 0;
 	int i,j;
 
 	Point2D xy;	
-	for ( std::map<int,boost::array<int,4>>::iterator iter = locationCounts.begin(); iter != locationCounts.end();++iter ) 
+	for ( std::map<int,boost::array<double,4>>::iterator iter = locationCounts.begin(); iter != locationCounts.end();++iter ) 
 	{
 		// iter->second[0] = x value
 		// iter->second[1] = y value
@@ -365,11 +405,11 @@ void Cartogram::InterpolateVector(Matrix gridx, Matrix gridy, VectorMapControlle
 	GeoVector* geoVector;
 	
 	// g for geometries
-	for( int g = 0; g< vMapModel->GetNumberOfGeometries(); g++ )
+	for( uint g = 0; g< vMapModel->GetNumberOfGeometries(); g++ )
 	{
 		geoVector = vMapModel->GetGeoVector(g);
 		// p for points in geometry
-		for( int p = 0; p < geoVector->GetNumberOfPoints(); p++ )
+		for( uint p = 0; p < geoVector->GetNumberOfPoints(); p++ )
 		{
 			X = (geoVector->pointX[p] - minWidth) / width * xsize;
 			Z = (geoVector->pointY[p] - minHeight) / height *ysize;
@@ -656,12 +696,12 @@ void Cartogram::SaveOriginalProjection()
 		GeoVector* geoVector;
 		
 		// g for geometries
-		for( int g = 0; g< vMapModel->GetNumberOfGeometries(); g++ )
+		for( uint g = 0; g< vMapModel->GetNumberOfGeometries(); g++ )
 		{
 			geoVector = vMapModel->GetGeoVector(g);
 			m_originalVector[i][g] = new Point3D[geoVector->GetNumberOfPoints()];
 			// p for points in geometry
-			for( int p = 0; p < geoVector->GetNumberOfPoints(); p++ )
+			for( uint p = 0; p < geoVector->GetNumberOfPoints(); p++ )
 			{
 				m_originalVector[i][g][p].x = geoVector->pointX[p];
 				m_originalVector[i][g][p].z = geoVector->pointY[p];

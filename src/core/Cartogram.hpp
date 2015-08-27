@@ -49,6 +49,7 @@ namespace GenGIS
 	{
 	public:
 		explicit Cartogram();
+		explicit Cartogram(MapControllerPtr mapController);
 		explicit Cartogram(int buff);
 
 		void MakeCartogram();
@@ -62,7 +63,10 @@ namespace GenGIS
 
 		void SetLocationSetLayer( int *indexes, int max );
 		void SetVectorMap( int *indexes, int max );
+		std::wstring GetMeasureLabel(){ return m_measureLabel;}
+		void SetMeasureLabel(std::wstring newLabel){ m_measureLabel = newLabel; }
 	private:
+
 		// number of rows in map
 		const int ysize;
 		// number of columns in map
@@ -70,6 +74,7 @@ namespace GenGIS
 		const int buffer;
 		double valFudge;
 		int areaFudge;
+		std::wstring m_measureLabel;
 
 		std::vector<int> m_locationSetLayerIndex;
 		std::vector<int> m_vectorMapIndex;
@@ -85,7 +90,7 @@ namespace GenGIS
 		MapControllerPtr m_mapController;
 		
 		/** Translate the first location set Lat/Lon to Raster Grid coordinates. */
-		std::map<int,boost::array<int,4>> TranslateLocations();
+		std::map<int,boost::array<double,4>> TranslateLocations();
 		
 		/** Function which creates the cartogram. */
 		void StdMain();
@@ -103,7 +108,7 @@ namespace GenGIS
 
 		/** Get the average density value for all locations.
 			This will be used to fill in empty spots in the grid*/
-		int GetMapAverage(std::map<int,boost::array<int,4>> map);
+		double GetMapAverage(std::map<int,boost::array<double,4>> map);
 
 		/** Create grid of density values. */
 		void CreateGrid(double *gridx, double *gridy, int xsize, int ysize);

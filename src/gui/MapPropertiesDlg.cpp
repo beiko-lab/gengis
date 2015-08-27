@@ -175,6 +175,34 @@ void MapPropertiesDlg::InitCartogram()
 	m_cboSelectVectorMap->SetSelection(0);
 
 	// set up measure selection
+	std::vector<std::wstring> fields;
+	std::vector<std::wstring> middleMan;
+	bool firstPass = true;
+	for( int i = 0; i < numSelections; i++ )
+	{
+		if (firstPass)
+		{
+			fields = App::Inst().GetLayerTreeController()->GetLocationSetLayer(i)->GetLocationSetController()->GetNumericMetadataFields();
+			firstPass = false;
+		}
+		else
+		{
+			std::vector<std::wstring> layerFields = App::Inst().GetLayerTreeController()->GetLocationSetLayer(i)->GetLocationSetController()->GetNumericMetadataFields();
+			// intersect between global fields and new fields from locationSetLayer
+			sort(fields.begin(),fields.end());
+			sort(layerFields.begin(),layerFields.end());
+			set_intersection(fields.begin(),fields.end(),layerFields.begin(),layerFields.end(),back_inserter(middleMan));
+			fields = middleMan;
+			middleMan.clear();
+		}
+	}
+	m_cboSelectMethod->Append(_T("Sequence Count"));
+	for( int i = 0; i < fields.size(); i++ )
+	{
+		m_cboSelectMethod->Append(fields[i].c_str());
+	}
+	m_cboSelectMethod->SetSelection(0);
+	
 }
 
 void MapPropertiesDlg::OnNumEntriesChange() 
@@ -330,6 +358,7 @@ void MapPropertiesDlg::OnCartogram( wxCommandEvent& event)
 {
 	m_cartogram->SetAreaFudge( m_spinAreaFudge->GetValue() );
 	m_cartogram->SetValueFudge( m_spinValueFudge->GetValue() );
+	m_cartogram->SetMeasureLabel( m_cboSelectMethod->GetStringSelection().c_str() );
 	// get index, -1 for none
 	int locationSetIndex = m_cboSelectLocation->GetSelection();
 	int max;
