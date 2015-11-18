@@ -180,6 +180,7 @@
 #include "../core/Common.hpp"
 #include "../utils/Uncopyable.hpp"
 
+
 // ~timothym Automatic leak detection with Microsoft VisualC++
 // http://wiki.wxwidgets.org/Avoiding_Memory_Leaks
 #ifdef __WXMSW__

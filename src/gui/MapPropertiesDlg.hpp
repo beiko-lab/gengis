@@ -103,6 +103,31 @@ namespace GenGIS
 			wxLaunchDefaultBrowser( wxT( "http://kiwi.cs.dal.ca/GenGIS/The_GenGIS_2.1_Manual#Raster_Map_Layer_Properties" ));
 		}
 
+		/** Initialize the settings for the cartogram page. */
+		void InitCartogram();
+		
+		/** Go button handler for cartogram creation. */
+		void OnCartogram( wxCommandEvent& event);
+		
+		/** Restores map to original state. */
+		void OnUndoCartogram( wxCommandEvent& event );
+
+	//	void SetValueFudge( wxCommandEvent& event );
+		
+	//	void SetAreaFudge( wxCommandEvent& event );
+		
+		/** Select Which Location Set should be used for distortion. */
+		void OnCartogramSelectLocationSet( wxCommandEvent& event );
+
+		/** Select which Vector Map should be distorted. */
+		void OnCartogramSelectVectorSet( wxCommandEvent& event );
+
+		/** Select which measure should be used to distort the map. */
+		void OnCartogramSelectMethod( wxCommandEvent& event );
+
+		/** Cartogram object. */
+		CartogramPtr m_cartogram;
+
 	protected:
 		/** Map layer to display properties of. */
 		MapLayerPtr m_mapLayer;

@@ -35,6 +35,12 @@ namespace GenGIS
 	class   Camera;
 	typedef boost::shared_ptr<Camera> CameraPtr;
 
+	class Cart;
+	typedef boost::shared_ptr<Cart> CartPtr;
+
+	class	Cartogram;
+	typedef boost::shared_ptr<Cartogram> CartogramPtr;
+
 	class   ChartSetView;
 	typedef boost::shared_ptr<ChartSetView> ChartSetViewPtr;
 

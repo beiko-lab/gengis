@@ -28,6 +28,9 @@
 #include "../core/MapLayer.hpp"
 #include "../core/Viewport.hpp"
 #include "../core/LayerTreeController.hpp"
+#include "../core/LocationSetLayer.hpp"
+#include "../core/LocationSetController.hpp"
+#include "../core/Cartogram.hpp"
 
 #include "../gui/MapPropertiesDlg.hpp"
 #include "../gui/ProgressDlg.hpp"
@@ -42,13 +45,14 @@ const int MAX_ELEVATION = 10000;
 MapPropertiesDlg::MapPropertiesDlg(wxWindow* parent, MapLayerPtr mapLayer) :
 	MapPropertiesLayout(parent),
 	m_mapLayer(mapLayer),
+	m_cartogram(new Cartogram()),
 	m_terrainMapWidget(new TerrainMapWidget(m_cboColourMap, m_scrolledWindowColourMap, &m_bColourMapChanged))
 {
 	SetIcon(wxIcon(App::Inst().GetExeDir() + wxT("images/CrazyEye.ico"), wxBITMAP_TYPE_ICO));
 
 	// Limit the properties dialog to a single instance
 	m_mapLayer->SetPropertiesDialog( this );
-
+	
 	Init();
 	Fit();
 }
@@ -100,6 +104,7 @@ void MapPropertiesDlg::Init()
 
 	InitColourMap();
 
+	InitCartogram();
 	// set state of controls on Metadata page
 	//m_txtLayerSource->SetValue(wxString(m_mapLayer->GetPath().c_str()) + _T("\\") + wxString(m_mapLayer->GetFilename().c_str()));
 	m_txtLayerSource->SetValue(m_mapLayer->GetFullPath());
@@ -140,6 +145,64 @@ void MapPropertiesDlg::InitColourMap()
 	}
 
 	m_bColourMapChanged = false;
+}
+
+void MapPropertiesDlg::InitCartogram()
+{
+	m_spinAreaFudge->SetValue(_T("5"));
+	m_spinValueFudge->SetValue(_T("10"));
+	
+	// set up location set selection
+	int numSelections = App::Inst().GetLayerTreeController()->GetNumLocationSetLayers(); 
+//	m_cboSelectLocation->Append(_T("None"));
+	for( int i = 0; i < numSelections; i++ )
+	{
+		std::wstring id = App::Inst().GetLayerTreeController()->GetLocationSetLayer(i)->GetName();
+		m_cboSelectLocation->Append(id.c_str());
+	}
+	m_cboSelectLocation->Append(_T("All"));
+	m_cboSelectLocation->SetSelection(0);
+
+	// set up vector map selection
+	numSelections = App::Inst().GetLayerTreeController()->GetNumVectorMapLayers(); 
+	m_cboSelectVectorMap->Append(_T("None"));
+	for( int i = 0; i < numSelections; i++ )
+	{
+		std::wstring id = App::Inst().GetLayerTreeController()->GetVectorMapLayer(i)->GetName();
+		m_cboSelectVectorMap->Append(id.c_str());
+	}
+	m_cboSelectVectorMap->Append(_T("All"));
+	m_cboSelectVectorMap->SetSelection(0);
+
+	// set up measure selection
+	std::vector<std::wstring> fields;
+	std::vector<std::wstring> middleMan;
+	bool firstPass = true;
+	for( int i = 0; i < numSelections; i++ )
+	{
+		if (firstPass)
+		{
+			fields = App::Inst().GetLayerTreeController()->GetLocationSetLayer(i)->GetLocationSetController()->GetNumericMetadataFields();
+			firstPass = false;
+		}
+		else
+		{
+			std::vector<std::wstring> layerFields = App::Inst().GetLayerTreeController()->GetLocationSetLayer(i)->GetLocationSetController()->GetNumericMetadataFields();
+			// intersect between global fields and new fields from locationSetLayer
+			sort(fields.begin(),fields.end());
+			sort(layerFields.begin(),layerFields.end());
+			set_intersection(fields.begin(),fields.end(),layerFields.begin(),layerFields.end(),back_inserter(middleMan));
+			fields = middleMan;
+			middleMan.clear();
+		}
+	}
+	m_cboSelectMethod->Append(_T("Sequence Count"));
+	for( int i = 0; i < fields.size(); i++ )
+	{
+		m_cboSelectMethod->Append(fields[i].c_str());
+	}
+	m_cboSelectMethod->SetSelection(0);
+	
 }
 
 void MapPropertiesDlg::OnNumEntriesChange() 
@@ -289,6 +352,53 @@ void MapPropertiesDlg::OnOK( wxCommandEvent& event )
 {
 	Apply();
 	Destroy();
+}
+
+void MapPropertiesDlg::OnCartogram( wxCommandEvent& event)
+{
+	m_cartogram->SetAreaFudge( m_spinAreaFudge->GetValue() );
+	m_cartogram->SetValueFudge( m_spinValueFudge->GetValue() );
+	m_cartogram->SetMeasureLabel( m_cboSelectMethod->GetStringSelection().c_str() );
+	// get index, -1 for none
+	int locationSetIndex = m_cboSelectLocation->GetSelection();
+	int max;
+	max = App::Inst().GetLayerTreeController()->GetNumLocationSetLayers();
+	// if all selected
+	if( locationSetIndex == max )
+	{	
+		int *indexes = new int[max];
+		for( int i = 0; i < max; i++ )
+		{
+			indexes[i] = i;
+		}
+		m_cartogram->SetLocationSetLayer( indexes, max );
+	}
+	else
+	{
+		m_cartogram->SetLocationSetLayer( &locationSetIndex , 1 );
+	}
+
+	int vectorMapIndex = m_cboSelectVectorMap->GetSelection()-1;
+	max = App::Inst().GetLayerTreeController()->GetNumVectorMapLayers(); 
+	if( vectorMapIndex == max )
+	{
+		int *indexes = new int[max];
+		for( int i = 0; i < max; i++ )
+		{
+			indexes[i] = i;
+		}
+		m_cartogram->SetVectorMap( indexes, max );
+	}
+	else if( vectorMapIndex >= 0 )
+	{
+		m_cartogram->SetVectorMap( &vectorMapIndex, 1 );
+	}
+
+	m_cartogram->MakeCartogram();
+}
+void MapPropertiesDlg::OnUndoCartogram( wxCommandEvent& event )
+{
+	m_cartogram->UndoCartogram();
 }
 
 /** Apply button event handler. */
