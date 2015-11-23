@@ -16,3 +16,4 @@ mac/i386/library3rd/wxPython/win32/InnoInstaller/
 win32/InnoInstaller/Setup/*.exe
 bin/temp.dat
 plugins/IRIDA/credentials.secrets
+

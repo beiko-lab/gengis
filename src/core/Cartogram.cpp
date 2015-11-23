@@ -28,6 +28,8 @@
 #include "../core/VectorMapController.hpp"
 #include "../core/LocationSetLayer.hpp"
 #include "../core/LocationLayer.hpp"
+#include "../core/TreeLayer.hpp"
+#include "../core/GeoTreeView.hpp"
 
 #include <iostream>
 #include <fstream>
@@ -139,9 +141,15 @@ void Cartogram::MakeCartogram()
 		m_mapController->GetMapModel()->SetVerticalExaggeration(exaggeration);
 	}
 	
-	if( meta->projection=="" )
+	if( meta->projection == "" )
 	{
 		m_mapController->GetMapView()->SetCartogramState(false);
+	}
+	
+	for( uint i = 0; i < App::Inst().GetLayerTreeController()->GetNumTreeLayers(); i++ )
+	{
+		GeoTreeViewPtr geoTreeView = App::Inst().GetLayerTreeController()->GetTreeLayer(i)->GetGeoTreeView();
+		geoTreeView->ProjectTree(geoTreeView->GetLeafNames());
 	}
 }
 
@@ -201,6 +209,12 @@ void Cartogram::UndoCartogram()
 	m_mapController->GetMapView()->RefreshQuadtree();
 	App::Inst().GetViewport()->Refresh(false);
 	
+	// refresh tree projection
+	for( uint i = 0; i < App::Inst().GetLayerTreeController()->GetNumTreeLayers(); i++ )
+	{
+		GeoTreeViewPtr geoTreeView = App::Inst().GetLayerTreeController()->GetTreeLayer(i)->GetGeoTreeView();
+		geoTreeView->ProjectTree(geoTreeView->GetLeafNames());
+	}
 }
 
 std::map<int,boost::array<double,4>> Cartogram::TranslateLocations()
