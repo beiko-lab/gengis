@@ -5,16 +5,16 @@
 ; NOTE: The value of AppId uniquely identifies this application.
 ; Do not use the same AppId value in installers for other applications.
 ; (To generate a new GUID, click Tools | Generate GUID inside the IDE.)
-AppId={{F8901CDF-C145-4EDF-B76D-0E53F8408F5F}
+AppId={{9E614273-1D18-409E-90B8-1FBB7D777CD3}
 AppName=GenGIS
-AppVerName=GenGIS v2.4.1
+AppVerName=GenGIS v2.5.0
 ; Remember to update the APP_VERSION::CURRENT enum in 'App.hpp' to match the AppVerName number
 AppPublisher=Beiko Lab
 AppPublisherURL=http://kiwi.cs.dal.ca/GenGIS
 AppSupportURL=http://kiwi.cs.dal.ca/GenGIS
 AppUpdatesURL=http://kiwi.cs.dal.ca/GenGIS
-DefaultDirName={pf}\GenGIS2.4.1
-DefaultGroupName=GenGIS2.4.1
+DefaultDirName={pf}\GenGIS2.5.0
+DefaultGroupName=GenGIS2.5.0
 AllowNoIcons=yes
 LicenseFile=..\..\bin\license.txt
 OutputDir=..\..\win32\InnoInstaller\Setup
@@ -94,6 +94,10 @@ Source: "..\..\bin\wxmsw28uh_qa_vc.dll"; DestDir: "{app}\bin"; Flags: ignorevers
 Source: "..\..\bin\wxmsw28uh_richtext_vc.dll"; DestDir: "{app}\bin"; Flags: ignoreversion
 Source: "..\..\bin\wxmsw28uh_stc_vc.dll"; DestDir: "{app}\bin"; Flags: ignoreversion
 Source: "..\..\bin\wxmsw28uh_xrc_vc.dll"; DestDir: "{app}\bin"; Flags: ignoreversion
+Source: "..\..\bin\libfftw3-3.dll"; DestDir: "{app}\bin"; Flags: ignoreversion
+Source: "..\..\bin\libfftw3f-3.dll"; DestDir: "{app}\bin"; Flags: ignoreversion
+Source: "..\..\bin\libfftw3l-3.dll"; DestDir: "{app}\bin"; Flags: ignoreversion
+
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]

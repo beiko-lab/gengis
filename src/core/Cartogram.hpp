@@ -92,9 +92,14 @@ namespace GenGIS
 		/** Translate the first location set Lat/Lon to Raster Grid coordinates. */
 		std::map<int,boost::array<double,4>> TranslateLocations();
 		
+		/** Create the density matrix for input into Cart. */
+		void MakeRho();
+		void MakeRho(double **rho);
+		
 		/** Function which creates the cartogram. */
 		void StdMain();
-		
+		void StdMain(double **rho);
+
 		/** Template to write out some sort of generic matrix **/
 		template< typename Matrix >
 		void WriteMatrix(Matrix rho, int row, int col, std::string name);
@@ -102,9 +107,6 @@ namespace GenGIS
 		void writepoints(FILE *stream, double *gridx, double *gridy, int npoints);
 		template< typename Matrix >
 		int readpoints(FILE *stream, Matrix &gridx, Matrix &gridy, int xsize, int ysize);
-
-		/** Create the density matrix for input into Cart. */
-		void MakeRho();
 
 		/** Get the average density value for all locations.
 			This will be used to fill in empty spots in the grid*/
@@ -114,7 +116,7 @@ namespace GenGIS
 		void CreateGrid(double *gridx, double *gridy, int xsize, int ysize);
 
 		/** Populate the grid of density values.*/
-	//	void PopulateRho( double ** rho );
+		void PopulateRho( double ** rho );
 		std::vector<std::vector<double>> PopulateRho( );
 		
 		/** Interpolate between standard Raster coordinates and the cartogram.*/
@@ -136,6 +138,9 @@ namespace GenGIS
 
 		/** Store the original grid and and location coordiantes. */
 		void SaveOriginalProjection();
+
+		template< typename Matrix >
+		void TransposeMatrix(Matrix &original, Matrix &trans);
 	};
 }
 #endif

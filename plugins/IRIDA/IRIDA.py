@@ -642,7 +642,8 @@ class IRIDA(IRIDAQueryLayout):
 			for proj in self.selectedTaxon:
 				self.m_Progress.WriteText("Retrieving %s...\n" %(proj[0]))
 				project = self.projectMap[proj[0]]
-				projectURL = '%sprojects/%s' %(self.baseURL,project)
+			#	projectURL = '%sprojects/%s' %(self.baseURL,project)
+				projectURL = '%sprojects/%s' %(self.baseURL,3)
 				self.phylo = self.RetrieveKnownPhylogeny(project)
 			#	print newick
 				projLink = self.GetResponse(projectURL, self.service, self.token,'links')

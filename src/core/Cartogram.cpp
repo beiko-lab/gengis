@@ -50,8 +50,6 @@ Cartogram::Cartogram() :
 	valFudge=30;
 	areaFudge=5;
 
-//	m_locationSetLayerIndex = 0;
-//	m_vectorMapIndex = 0;
 	// this is a soft copy, need a hard one!
 	FileHeader* header = App::Inst().GetLayerTreeController()->GetMapLayer(0)->GetMapController()->GetMapModel()->GetHeader();
 	
@@ -60,12 +58,10 @@ Cartogram::Cartogram() :
 	m_originalGrid = new Point3D[header->nCols*header->nRows];
 	int load = App::Inst().GetLayerTreeController()->GetNumLocationSetLayers();
 	if (load > 0)
-	//	m_originalLocations = new Point3D[App::Inst().GetLayerTreeController()->GetLocationSetLayer(0)->GetNumLocationLayers()];
 		m_originalLocations = new Point3D*[App::Inst().GetLayerTreeController()->GetNumLocationSetLayers()];
 	// need to account for No vector map
 	load = App::Inst().GetLayerTreeController()->GetNumVectorMapLayers();
 	if ( load > 0 )
-	//	m_originalVector = new Point3D*[ App::Inst().GetVectorMapController(0)->GetVectorMapModel()->GetNumberOfGeometries()];
 		m_originalVector = new Point3D**[App::Inst().GetLayerTreeController()->GetNumVectorMapLayers()];
 	SaveOriginalProjection();
 }
@@ -79,8 +75,6 @@ Cartogram::Cartogram(MapControllerPtr mapController) :
 	valFudge=30;
 	areaFudge=5;
 
-//	m_locationSetLayerIndex = 0;
-//	m_vectorMapIndex = 0;
 	// this is a soft copy, need a hard one!
 	FileHeader* header = mapController->GetMapModel()->GetHeader();
 	
@@ -89,12 +83,10 @@ Cartogram::Cartogram(MapControllerPtr mapController) :
 	m_originalGrid = new Point3D[header->nCols*header->nRows];
 	int load = App::Inst().GetLayerTreeController()->GetNumLocationSetLayers();
 	if (load > 0)
-	//	m_originalLocations = new Point3D[App::Inst().GetLayerTreeController()->GetLocationSetLayer(0)->GetNumLocationLayers()];
 		m_originalLocations = new Point3D*[App::Inst().GetLayerTreeController()->GetNumLocationSetLayers()];
 	// need to account for No vector map
 	load = App::Inst().GetLayerTreeController()->GetNumVectorMapLayers();
 	if ( load > 0 )
-	//	m_originalVector = new Point3D*[ App::Inst().GetVectorMapController(0)->GetVectorMapModel()->GetNumberOfGeometries()];
 		m_originalVector = new Point3D**[App::Inst().GetLayerTreeController()->GetNumVectorMapLayers()];
 	SaveOriginalProjection();
 }
@@ -111,7 +103,6 @@ Cartogram::Cartogram(int buff) :
 
 void Cartogram::MakeCartogram()
 {
-//	FileMetaData* GetMetaData()
 	// If there's no location layer, we're done!
 	if( App::Inst().GetLayerTreeController()->GetNumLocationSetLayers() == 0 || boost::size(m_locationSetLayerIndex) == 0 )
 		return;		
@@ -130,8 +121,10 @@ void Cartogram::MakeCartogram()
 		exaggerationChange = true;
 		m_mapController->GetMapModel()->SetVerticalExaggeration(1.5);
 	}
-	MakeRho();
-	StdMain();	
+	double **rho;
+	rho = cart_dmalloc(xsize,ysize);
+	MakeRho(rho);
+	StdMain(rho);	
 	
 	/* Now redraw the map. */
 	// Need to do everything after loading terrain
@@ -213,9 +206,6 @@ void Cartogram::UndoCartogram()
 std::map<int,boost::array<double,4>> Cartogram::TranslateLocations()
 {
 
-//	std::ofstream myfile;
-//	myfile.open("C:/Users/Admin/Desktop/cartlog.txt");
-
 	std::map<int,boost::array<double,4>> gridDensity;
 	Box2D mapBox = m_mapController->GetMapModel()->GetProjectionExtents();
 	double mapHeight = mapBox.dy - mapBox.y ;
@@ -258,9 +248,6 @@ std::map<int,boost::array<double,4>> Cartogram::TranslateLocations()
 			int indexY = (double((mapHeight - northing)/mapHeight)*ysize);
 			int index = indexX + indexY*xsize;
 
-	//		myfile << "Cell: " + boost::lexical_cast<std::string>(index) + " Count: " + boost::lexical_cast<std::string>(count) + " lat: " + boost::lexical_cast<std::string>(northing) + " lon: " + boost::lexical_cast<std::string>(easting) + "\n";
-	//		myfile << "\t\tgridX: "+boost::lexical_cast<std::string>(indexX) + "\tgridY: " + boost::lexical_cast<std::string>(indexY)+"\n";
-
 			// check gridDensity
 			// if already index, add count
 			// else add index
@@ -277,12 +264,20 @@ std::map<int,boost::array<double,4>> Cartogram::TranslateLocations()
 	}
 	return gridDensity;
 }
-
+/*
 void Cartogram::MakeRho()
 {
 	std::string tempOut = "temp.dat";
 	std::vector<std::vector<double>> rho = PopulateRho();
 	WriteMatrix(rho,ysize,xsize, tempOut);
+}
+*/
+void Cartogram::MakeRho(double **a)
+{
+//	std::string tempOut = "temp.dat";
+	double **b = cart_dmalloc(ysize,xsize);
+	PopulateRho(b);
+	TransposeMatrix(b,a);
 }
 
 double Cartogram::GetMapAverage(std::map<int,boost::array<double,4>> map)
@@ -330,9 +325,6 @@ std::vector<std::vector<double>> Cartogram::PopulateRho()
 	Point2D xy;	
 	for ( std::map<int,boost::array<double,4>>::iterator iter = locationCounts.begin(); iter != locationCounts.end();++iter ) 
 	{
-		// iter->second[0] = x value
-		// iter->second[1] = y value
-		// iter->second[2] = count
 		i = iter->second[0];
 		j = iter->second[1];
 		// areaFudge the value with OFFSET for cart
@@ -359,6 +351,51 @@ std::vector<std::vector<double>> Cartogram::PopulateRho()
 		}
 	}
 	return prime;
+}
+
+void Cartogram::PopulateRho(double **rho)
+{
+	// Find grid squares with locations
+	std::map<int,boost::array<double,4>> locationCounts = TranslateLocations();
+	std::vector<std::vector<double>> prime(ysize,std::vector<double>(xsize));
+	// Find average of these values (for empyt grid squares)
+	double average = GetMapAverage(locationCounts);
+	double avgVal = average + OFFSET*average;
+	int index=0;
+	double val = 0;
+	int i,j;
+
+	Point2D xy;	
+	for ( std::map<int,boost::array<double,4>>::iterator iter = locationCounts.begin(); iter != locationCounts.end();++iter ) 
+	{
+		i = iter->second[0];
+		j = iter->second[1];
+		// areaFudge the value with OFFSET for cart
+		val = iter->second[2] + OFFSET*average;
+		for( int x = std::max(i-areaFudge,0); x <= std::min(i+areaFudge,xsize-1); x++)
+		{
+			for( int y = std::max(j-areaFudge,0); y <= std::min(j+areaFudge,ysize-1); y++)
+			{
+					prime[y][x] += val*valFudge;
+					rho[y][x] += val*valFudge;
+			}
+		}
+	}
+	// xsize = number of columns
+	for ( int i = 0; i < xsize; ++i)
+	{
+		// ysize = number of rows
+		for( int j = 0; j < ysize; ++j )
+		{
+			// only assign val if it hasn't been visited by areaFudge
+			if(prime[j][i] == 0 )
+			{
+				prime[j][i] = avgVal;
+				rho[j][i] = avgVal;
+			}	
+		}
+	}
+//	return prime;
 }
 
 template< typename Matrix >
@@ -446,7 +483,6 @@ void Cartogram::InterpolateLocations(Matrix gridx, Matrix gridy, LocationSetLaye
 	width = mapBox.dx - mapBox.x;
 	minWidth = mapBox.x;
 	minHeight = mapBox.y;
-//	LocationSetLayerPtr locationSetLayer = App::Inst().GetLayerTreeController()->GetLocationSetLayer(0);
 	std::vector<LocationLayerPtr> locationLayers = locationSetLayer->GetAllActiveLocationLayers();
 	LocationLayerPtr loc;
 	
@@ -495,6 +531,19 @@ void Cartogram::ArrayTransform(double * grid, Matrix &transGrid)
 			double blarg = grid[index];
 			transGrid[j][i] = blarg;
 			index++;
+		}
+	}
+}
+
+template< typename Matrix >
+void Cartogram::TransposeMatrix(Matrix &original, Matrix &trans)
+{
+	for( int i =0; i < ysize ; ++i)
+	{
+		for( int j = 0; j< xsize ; ++j)
+		{
+			double blarg = original[i][j];
+			trans[j][i] = blarg;
 		}
 	}
 }
@@ -549,6 +598,7 @@ void Cartogram::StdMain()
 	FILE *tempIn;
 	std::string fileName = GenGIS::App::Inst().GetExeDir().mb_str();
 	fileName += "temp.dat";
+//	Log::Inst().Error(fileName);
 	tempIn = fopen(fileName.c_str(),"r");
 	int matrixSize = (xsize+1)*(ysize+1);
 
@@ -607,6 +657,55 @@ void Cartogram::StdMain()
 	free(gridx);
 	free(gridy);
 }
+
+void Cartogram::StdMain(double **rho)
+{
+	double *gridx,*gridy;  // Array for grid points
+	cart_makews(xsize,ysize);
+	int matrixSize = (xsize+1)*(ysize+1);
+	cart_transform(rho,xsize,ysize);
+    cart_dfree(rho);
+
+	/* Create the grid of points */
+	gridx = (double*) malloc(matrixSize*sizeof(double));
+	gridy = (double*) malloc(matrixSize*sizeof(double));
+
+	CreateGrid(gridx,gridy,xsize,ysize);
+	cart_makecart(gridx, gridy, matrixSize, xsize, ysize, 0.0);
+	std::vector<std::vector<double>> gridx2d(xsize+1,std::vector<double>(ysize+1));
+	std::vector<std::vector<double>> gridy2d(xsize+1,std::vector<double>(ysize+1));
+	ArrayTransform(gridx, gridx2d);
+	ArrayTransform(gridy, gridy2d);
+	
+	// update map points
+	Interpolate(gridx2d,gridy2d);
+
+	LocationSetLayerPtr locationSetLayer;
+
+	// Interpolate All location sets
+	for( int i = 0; i < boost::size(m_locationSetLayerIndex); i++ )
+	{
+		locationSetLayer = App::Inst().GetLayerTreeController()->GetLocationSetLayer( m_locationSetLayerIndex[i] );
+		InterpolateLocations(gridx2d, gridy2d, locationSetLayer);
+	}
+
+	// If there's a vector map, transform it!
+	VectorMapControllerPtr vectorController;
+	if( App::Inst().GetLayerTreeController()->GetNumVectorMapLayers() > 0 || boost::size(m_vectorMapIndex) > 0 )
+	{
+		for( int i = 0; i < boost::size(m_vectorMapIndex); i++ )
+		{
+			vectorController = App::Inst().GetVectorMapController( m_vectorMapIndex[i] );
+			InterpolateVector(gridx2d, gridy2d, vectorController);
+		}
+	}
+
+	// free up space again
+	cart_freews(xsize, ysize);
+	free(gridx);
+	free(gridy);
+}
+
 
 /* Function to read population data into the array rho.  Returns 1 if there
  * was a problem, zero otherwise */
