@@ -45,7 +45,8 @@ const int MAX_ELEVATION = 10000;
 MapPropertiesDlg::MapPropertiesDlg(wxWindow* parent, MapLayerPtr mapLayer) :
 	MapPropertiesLayout(parent),
 	m_mapLayer(mapLayer),
-	m_cartogram(new Cartogram()),
+//	m_cartogram(new Cartogram()),
+	m_cartogram(m_mapLayer->GetMapController()->GetMapModel()->GetCartogram()),
 	m_terrainMapWidget(new TerrainMapWidget(m_cboColourMap, m_scrolledWindowColourMap, &m_bColourMapChanged))
 {
 	SetIcon(wxIcon(App::Inst().GetExeDir() + wxT("images/CrazyEye.ico"), wxBITMAP_TYPE_ICO));
@@ -164,9 +165,9 @@ void MapPropertiesDlg::InitCartogram()
 	m_cboSelectLocation->SetSelection(0);
 
 	// set up vector map selection
-	numSelections = App::Inst().GetLayerTreeController()->GetNumVectorMapLayers(); 
+	int numVectSelections = App::Inst().GetLayerTreeController()->GetNumVectorMapLayers(); 
 	m_cboSelectVectorMap->Append(_T("None"));
-	for( int i = 0; i < numSelections; i++ )
+	for( int i = 0; i < numVectSelections; i++ )
 	{
 		std::wstring id = App::Inst().GetLayerTreeController()->GetVectorMapLayer(i)->GetName();
 		m_cboSelectVectorMap->Append(id.c_str());

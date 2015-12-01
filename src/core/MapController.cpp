@@ -25,6 +25,7 @@
 #include "../core/MapController.hpp"
 #include "../core/Camera.hpp"
 #include "../core/MapView.hpp"
+#include "../core/Cartogram.hpp"
 
 #include "../utils/ErrorGL.hpp"
 #include "../utils/Log.hpp"

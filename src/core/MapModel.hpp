@@ -23,6 +23,7 @@
 #define _GENGIS_MAP_MODEL_
 
 #include "../core/Precompiled.hpp"
+#include "../core/Cartogram.hpp"
 
 namespace GenGIS
 {
@@ -259,6 +260,14 @@ namespace GenGIS
 		/** Toggle active state of layer. */
 		void ToggleActive() { m_bActive = !m_bActive; }
 
+		/** Get Cartogram projection. */
+		CartogramPtr GetCartogram(){ return m_cartogram; }
+
+		/** Populate Cartogram Information. */
+//		void SetCartogram(FileHeader* header){ m_cartogram->InitCartogram(header); }
+//		void SetCartogram(FileHeader* header){ m_cartogram->GetAreaFudge(); }
+		void SetCartogram( MapModelPtr mapModel );
+
 	private:
 		/** Serialization. */
 		friend class boost::serialization::access;
@@ -301,6 +310,9 @@ namespace GenGIS
 
 		/** Texture for map. */	
 		MapTexturePtr m_mapTexture;
+
+		/** Cartgoram projection. */
+		CartogramPtr m_cartogram;// = new CartogramPtr();
 	};
 }
 

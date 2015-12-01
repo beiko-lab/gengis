@@ -25,6 +25,7 @@
 #include "../core/Precompiled.hpp"
 #include "../utils/StringTools.hpp"
 #include "../core/MapView.hpp"
+#include "../core/MapModel.hpp"
 
 //#include "../utils/cart.h"
 //#include "../utils/Cart.hpp"
@@ -51,12 +52,15 @@ namespace GenGIS
 		explicit Cartogram();
 		explicit Cartogram(MapControllerPtr mapController);
 		explicit Cartogram(int buff);
-
+		
+		void InitCartogram(MapModelPtr mapModel);
+	//	void InitCartogram();
 		void MakeCartogram();
 		void UndoCartogram();
 
 		/** Set the Area Fudge value for the Cartogram. */
 		void SetAreaFudge(int val){ areaFudge = val;}
+		int GetAreaFudge(){return areaFudge;}
 
 		/** Set the Value Fudge value for the Cartogram. */
 		void SetValueFudge(int val){ valFudge = val;}
@@ -66,12 +70,14 @@ namespace GenGIS
 		std::wstring GetMeasureLabel(){ return m_measureLabel;}
 		void SetMeasureLabel(std::wstring newLabel){ m_measureLabel = newLabel; }
 	private:
-
+		// Can't be const due to serialization
 		// number of rows in map
-		const int ysize;
+		int ysize;
 		// number of columns in map
-		const int xsize;
-		const int buffer;
+		int xsize;
+		int buffer;
+
+		// fudge values for the area and value of a location
 		double valFudge;
 		int areaFudge;
 		std::wstring m_measureLabel;
@@ -141,6 +147,11 @@ namespace GenGIS
 
 		template< typename Matrix >
 		void TransposeMatrix(Matrix &original, Matrix &trans);
+
+		/* Serialization. */
+		friend class boost::serialization::access;
+		template<class Archive>
+		void serialize(Archive & ar, const unsigned int version);
 	};
 }
 #endif

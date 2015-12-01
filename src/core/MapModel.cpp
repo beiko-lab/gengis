@@ -25,6 +25,7 @@
 #include "../core/MapTexture.hpp"
 #include "../core/StudyController.hpp"
 #include "../core/App.hpp"
+#include "../core/Cartogram.hpp"
 
 #include "../utils/Log.hpp"
 #include "../utils/StringTools.hpp"
@@ -33,7 +34,7 @@ using namespace GenGIS;
 
 
 MapModel::MapModel( void ) :
-	m_oCT(NULL), m_verticalExaggeration(0.0), m_grid(NULL), m_mapTexture(new MapTexture()), 
+	m_oCT(NULL), m_verticalExaggeration(0.0), m_grid(NULL), m_mapTexture(new MapTexture()), m_cartogram(new Cartogram()),
 	m_bElevationMap(false), m_bActive(true)
 {
 
@@ -66,6 +67,7 @@ void MapModel::serialize(Archive & ar, const unsigned int file_version)
 	ar & m_verticalExaggeration;  // float
 	ar & m_bElevationMap;         // bool
 	ar & m_mapTexture;            // MapTexturePtr
+	ar & m_cartogram;			  // CartogramPtr
 }
 template void MapModel::serialize<boost::archive::text_woarchive>(boost::archive::text_woarchive& ar, const unsigned int version); 
 template void MapModel::serialize<boost::archive::text_wiarchive>(boost::archive::text_wiarchive& ar, const unsigned int version);
@@ -171,4 +173,9 @@ float MapModel::GetElevation(float gridX, float gridZ) const
 float MapModel::GetExaggeratedElevation(float gridX, float gridZ) const
 { 
 	return m_verticalExaggeration*GetElevation(gridX, gridZ); 
+}
+
+void MapModel::SetCartogram(MapModelPtr mapModel)
+{
+	m_cartogram->InitCartogram(mapModel);
 }

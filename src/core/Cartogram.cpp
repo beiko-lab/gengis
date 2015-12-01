@@ -23,6 +23,7 @@
 #include "../utils/StringTools.hpp"
 #include "../core/Cartogram.hpp"
 #include "../core/MapView.hpp"
+#include "../core/MapModel.hpp"
 #include "../core/MapController.hpp"
 #include "../core/VectorMapModel.hpp"
 #include "../core/VectorMapController.hpp"
@@ -43,17 +44,81 @@ extern "C" {
 
 using namespace GenGIS;
 
-Cartogram::Cartogram() :
-	m_mapController(App::Inst().GetLayerTreeController()->GetMapLayer(0)->GetMapController()),
-	xsize(App::Inst().GetLayerTreeController()->GetMapLayer(0)->GetMapController()->GetMapModel()->GetHeader()->nCols),
-	ysize(App::Inst().GetLayerTreeController()->GetMapLayer(0)->GetMapController()->GetMapModel()->GetHeader()->nRows),
-	buffer(0)
+template<class Archive> 
+void Cartogram::serialize(Archive & ar, const unsigned int version)
 {
+	// Serialize base class (View)
+//	ar & boost::serialization::base_object<View>(*this);
+
+	// General variables
+
+	ar & ysize;
+	ar & xsize;
+	ar & buffer;
+	ar & valFudge;
+	ar & areaFudge;
+	ar & m_measureLabel;
+	ar & m_locationSetLayerIndex;
+	ar & m_vectorMapIndex;
+	ar & m_mapController;
+
+	//	ar & m_originalGrid;
+	FileHeader* header = App::Inst().GetLayerTreeController()->GetMapLayer(0)->GetMapController()->GetMapModel()->GetHeader();
+	for(int i = 0; i < (header->nRows*header->nCols) ; i++) 
+	{	
+		ar & m_originalGrid[i];
+	}
+//	ar & m_originalLocations;
+	/* Save Location layers */
+	int load = App::Inst().GetLayerTreeController()->GetNumLocationSetLayers();
+	for( int i = 0; i < load; i++ )
+	{
+		LocationSetLayerPtr locationSetLayer = App::Inst().GetLayerTreeController()->GetLocationSetLayer(i);
+		std::vector<LocationLayerPtr> locationLayers = locationSetLayer->GetAllActiveLocationLayers();
+		for( uint l = 0; l < locationLayers.size() ; l++)
+		{
+			ar & m_originalLocations[i][l];
+		}
+		
+	}
+
+	load = App::Inst().GetLayerTreeController()->GetNumVectorMapLayers();
+	for( int i = 0; i < load; i++ )
+	{
+		VectorMapModelPtr vMapModel = App::Inst().GetVectorMapController(i)->GetVectorMapModel();
+		GeoVector* geoVector;
+		for( uint g = 0; g< vMapModel->GetNumberOfGeometries(); g++ )
+		{
+			geoVector = vMapModel->GetGeoVector(g);
+			m_originalVector[i][g] = new Point3D[geoVector->GetNumberOfPoints()];
+			for( uint p = 0; p < geoVector->GetNumberOfPoints(); p++ )
+			{
+				ar & m_originalVector[i][g][p];
+			}
+		}
+	}
+}
+template void Cartogram::serialize<boost::archive::text_woarchive>(boost::archive::text_woarchive& ar, const unsigned int version); 
+template void Cartogram::serialize<boost::archive::text_wiarchive>(boost::archive::text_wiarchive& ar, const unsigned int version);
+
+
+Cartogram::Cartogram()
+{
+	buffer = 0;		
 	valFudge=30;
 	areaFudge=5;
 
+}
+
+void Cartogram::InitCartogram(MapModelPtr mapModel)
+//void Cartogram::InitCartogram()
+{
 	// this is a soft copy, need a hard one!
-	FileHeader* header = App::Inst().GetLayerTreeController()->GetMapLayer(0)->GetMapController()->GetMapModel()->GetHeader();
+//	FileHeader* header = App::Inst().GetLayerTreeController()->GetMapLayer(0)->GetMapController()->GetMapModel()->GetHeader();
+	FileHeader* header = mapModel->GetHeader();	
+	m_mapController = App::Inst().GetLayerTreeController()->GetMapLayer(0)->GetMapController();
+	xsize = header->nCols;
+	ysize = header->nRows;
 	
 	// this needs to be adjusted... everything needs an extra dimension...
 	// set to the size of grid and location layer
@@ -67,6 +132,8 @@ Cartogram::Cartogram() :
 		m_originalVector = new Point3D**[App::Inst().GetLayerTreeController()->GetNumVectorMapLayers()];
 	SaveOriginalProjection();
 }
+
+	
 
 Cartogram::Cartogram(MapControllerPtr mapController) :
 	m_mapController(mapController),
