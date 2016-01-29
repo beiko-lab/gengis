@@ -175,7 +175,7 @@ float MapModel::GetExaggeratedElevation(float gridX, float gridZ) const
 	return m_verticalExaggeration*GetElevation(gridX, gridZ); 
 }
 
-void MapModel::SetCartogram(MapModelPtr mapModel)
+void MapModel::SetCartogram(MapModelPtr mapModel, MapControllerPtr mapController )
 {
-	m_cartogram->InitCartogram(mapModel);
+	m_cartogram->InitCartogram(mapModel, mapController);
 }

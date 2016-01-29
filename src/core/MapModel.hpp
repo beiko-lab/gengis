@@ -266,7 +266,7 @@ namespace GenGIS
 		/** Populate Cartogram Information. */
 //		void SetCartogram(FileHeader* header){ m_cartogram->InitCartogram(header); }
 //		void SetCartogram(FileHeader* header){ m_cartogram->GetAreaFudge(); }
-		void SetCartogram( MapModelPtr mapModel );
+		void SetCartogram( MapModelPtr mapModel, MapControllerPtr mapController );
 
 	private:
 		/** Serialization. */

@@ -53,7 +53,7 @@ namespace GenGIS
 		explicit Cartogram(MapControllerPtr mapController);
 		explicit Cartogram(int buff);
 		
-		void InitCartogram(MapModelPtr mapModel);
+		void InitCartogram(MapModelPtr mapModel, MapControllerPtr mapController);
 	//	void InitCartogram();
 		void MakeCartogram();
 		void UndoCartogram();
@@ -77,6 +77,9 @@ namespace GenGIS
 		int xsize;
 		int buffer;
 
+		// percent to reduce the map by for speedup
+		double m_resizePercent;
+
 		// fudge values for the area and value of a location
 		double valFudge;
 		int areaFudge;
@@ -92,6 +95,10 @@ namespace GenGIS
 		// save all vector layers
 		Point3D*** m_originalVector;
 
+		template< typename Matrix >
+		double Combine(Matrix mat,int xsize, int ysize, std::string method);
+	
+
 		/** Copied directly from MapView. See class for more information. */
 		MapControllerPtr m_mapController;
 		
@@ -99,12 +106,13 @@ namespace GenGIS
 		std::map<int,boost::array<double,4>> TranslateLocations();
 		
 		/** Create the density matrix for input into Cart. */
-		void MakeRho();
+	//	void MakeRho();
 		void MakeRho(double **rho);
 		
 		/** Function which creates the cartogram. */
 		void StdMain();
 		void StdMain(double **rho);
+		void StdMain(double **rho, int originXSize, int origYSize);
 
 		/** Template to write out some sort of generic matrix **/
 		template< typename Matrix >
@@ -123,19 +131,22 @@ namespace GenGIS
 
 		/** Populate the grid of density values.*/
 		void PopulateRho( double ** rho );
-		std::vector<std::vector<double>> PopulateRho( );
+	//	std::vector<std::vector<double>> PopulateRho( );
 		
 		/** Interpolate between standard Raster coordinates and the cartogram.*/
 		template< typename Matrix >
-		void Interpolate(Matrix gridx, Matrix gridy);
+		void InterpolateGrid(Matrix gridx, Matrix gridy);
+		void InterpolateGrid(double* gridx, double* gridy);
 
 		/** Interpolate locations from standard raster to cartogram coordinates. */
 		template< typename Matrix >
 		void InterpolateLocations(Matrix gridx, Matrix gridy, LocationSetLayerPtr locationSetLayer);
+		void InterpolateLocations(double* gridx, double* gridy, LocationSetLayerPtr locationSetLayer);
 		
 		/** Interpolate between standard Raster coordinates and the cartogram for all Vector layers.*/
 		template< typename Matrix >
 		void InterpolateVector(Matrix gridx, Matrix gridy, VectorMapControllerPtr vectorMap);
+		void InterpolateVector(double* gridx, double* gridy, VectorMapControllerPtr vectorMap);
 
 		/** Transform a 1D array to a 2D array in order to move between Cart and Interp steps. */
 		std::vector<std::vector<double>> ArrayTransform(double * grid);
@@ -148,10 +159,17 @@ namespace GenGIS
 		template< typename Matrix >
 		void TransposeMatrix(Matrix &original, Matrix &trans);
 
+
+		void SetResizePercent(int percent);
+
+		void ResizeRho(double **rho, double **newRho);
+		std::vector<std::vector<double>> RestoreGrid(std::vector<std::vector<double>> grid, int origX, int origY);
+
 		/* Serialization. */
 		friend class boost::serialization::access;
 		template<class Archive>
 		void serialize(Archive & ar, const unsigned int version);
+		
 	};
 }
 #endif

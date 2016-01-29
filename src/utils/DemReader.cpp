@@ -309,7 +309,7 @@ bool DemReader::Open(std::wstring fullPath, StudyControllerPtr studyController, 
 	}
 	
 	// MapModel information has been loaded, populate the cartogram with what it needs
-	mapModel->SetCartogram(mapModel);
+	mapModel->SetCartogram(mapModel, mapController);
 
 	// will free memory allocated to any GDALRasterBand objects		
 	if(elevations != NULL)

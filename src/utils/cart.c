@@ -269,15 +269,36 @@ void cart_vgrid(int s, int xsize, int ysize)
  * although we should never actually do this because function cart_twosteps()
  * contains code to prevent it) */
 
+void cart_velocity(const double rx,const  double ry,const  int s,const int xsize,const int ysize,
+		   double *vxp, double *vyp)
+{
+
+//	FILE *wrt = fopen("C:/Users/Admin/Desktop/velocities.txt","a");
+
+  int ix,iy;
+	ix = rx;
+	iy = ry;
+  // Perform the interpolation for x and y components of velocity 
+
+  *vxp = vxt[s][ix][iy];
+  *vyp = vyt[s][ix][iy];
+
+//  fprintf(wrt,"%f \t %f \t %f \t %f \n",rx,ry,*vxp,*vyp);
+//  fclose(wrt);
+}
+/*
 void cart_velocity(double rx, double ry, int s, int xsize, int ysize,
 		   double *vxp, double *vyp)
 {
+
+//	FILE *wrt = fopen("C:/Users/Admin/Desktop/velocities.txt","a");
+
   int ix,iy;
   double dx,dy;
   double dx1m,dy1m;
   double w11,w21,w12,w22;
 
-  /* Deal with the boundary conditions */
+  // Deal with the boundary conditions 
 
   ix = rx;
   if (ix<0) ix = 0;
@@ -287,7 +308,7 @@ void cart_velocity(double rx, double ry, int s, int xsize, int ysize,
   if (iy<0) iy = 0;
   else if (iy>=ysize) iy = ysize - 1;
 
-  /* Calculate the weights for the bilinear interpolation */
+  // Calculate the weights for the bilinear interpolation 
 
   dx = rx - ix;
   dy = ry - iy;
@@ -300,14 +321,17 @@ void cart_velocity(double rx, double ry, int s, int xsize, int ysize,
   w12 = dx1m*dy;
   w22 = dx*dy;
 
-  /* Perform the interpolation for x and y components of velocity */
+  // Perform the interpolation for x and y components of velocity 
 
   *vxp = w11*vxt[s][ix][iy] + w21*vxt[s][ix+1][iy] +
          w12*vxt[s][ix][iy+1] + w22*vxt[s][ix+1][iy+1];
   *vyp = w11*vyt[s][ix][iy] + w21*vyt[s][ix+1][iy] +
          w12*vyt[s][ix][iy+1] + w22*vyt[s][ix+1][iy+1];
-}
 
+//  fprintf(wrt,"%f \t %f \t %f \t %f \n",rx,ry,*vxp,*vyp);
+//  fclose(wrt);
+}
+*/
 
 /* Function to integrate 2h time into the future two different ways using
  * four-order Runge-Kutta and compare the differences for the purposes of

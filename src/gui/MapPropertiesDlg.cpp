@@ -46,7 +46,7 @@ MapPropertiesDlg::MapPropertiesDlg(wxWindow* parent, MapLayerPtr mapLayer) :
 	MapPropertiesLayout(parent),
 	m_mapLayer(mapLayer),
 //	m_cartogram(new Cartogram()),
-	m_cartogram(m_mapLayer->GetMapController()->GetMapModel()->GetCartogram()),
+//	m_cartogram(m_mapLayer->GetMapController()->GetMapModel()->GetCartogram()),
 	m_terrainMapWidget(new TerrainMapWidget(m_cboColourMap, m_scrolledWindowColourMap, &m_bColourMapChanged))
 {
 	SetIcon(wxIcon(App::Inst().GetExeDir() + wxT("images/CrazyEye.ico"), wxBITMAP_TYPE_ICO));
@@ -54,6 +54,8 @@ MapPropertiesDlg::MapPropertiesDlg(wxWindow* parent, MapLayerPtr mapLayer) :
 	// Limit the properties dialog to a single instance
 	m_mapLayer->SetPropertiesDialog( this );
 	
+	m_cartogram = m_mapLayer->GetMapController()->GetMapModel()->GetCartogram();
+
 	Init();
 	Fit();
 }
@@ -357,6 +359,7 @@ void MapPropertiesDlg::OnOK( wxCommandEvent& event )
 
 void MapPropertiesDlg::OnCartogram( wxCommandEvent& event)
 {
+//	m_cartogram = m_mapLayer->GetMapController()->GetMapModel()->GetCartogram();
 	m_cartogram->SetAreaFudge( m_spinAreaFudge->GetValue() );
 	m_cartogram->SetValueFudge( m_spinValueFudge->GetValue() );
 	m_cartogram->SetMeasureLabel( m_cboSelectMethod->GetStringSelection().c_str() );

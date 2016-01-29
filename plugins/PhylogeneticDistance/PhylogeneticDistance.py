@@ -5,6 +5,7 @@ import wx
 from scipy.spatial import Delaunay
 import dendropy
 
+
 class PhylogeneticDistance( PhylogeneticDistanceLayout ):
 	
 	combinationMethods = {"Average(Local)": "AVGLOCAL", "Average(Global)": "AVGGLOBAL", "Sum": "SUM"}
@@ -89,7 +90,8 @@ class PhylogeneticDistance( PhylogeneticDistanceLayout ):
 		elif comb == "AVGLOCAL":
 			for key in phyloWeights.keys():
 				sm = sum(phyloWeights[key])
-				leng = len(phyloWeights[key])
+			#	leng = len(phyloWeights[key])
+				leng = len(phyloWeights[key]) if len(phyloWeights[key])!=0 else 1
 				val = sm/leng
 				final[key]= val
 				
@@ -127,7 +129,11 @@ class PhylogeneticDistance( PhylogeneticDistanceLayout ):
 		name = "PhylogeneticDistance"
 		for i in range(0,GenGIS.layerTree.GetNumLocationLayers()):
 			if i in self.locWeights.keys():
-				val.append(str(self.locWeights[i]))
+				if isinstance(self.locWeights[i],float):
+					val.append("%0.15f" %self.locWeights[i])
+				else:
+					val.append(str(self.locWeights[i]))
+			#	val.append(""self.locWeights[i])
 			else:
 				val.append("0")
 		GenGIS.layerTree.GetLocationSetLayer(self.locSetIndex).GetController().AddMetadata( name , val )
@@ -192,9 +198,12 @@ class PhylogeneticDistance( PhylogeneticDistanceLayout ):
 		# total weight to divide pairwise weights by (0-1 metric)
 		totalWeight = tree.length()
 
+		max = 0
 		for pair in pairs:
 			a = pair[0]
 			b = pair[1]
+			dist = 0
+			'''
 			if (a,b) in PhyloDistance.keys():
 				weights = []
 				for t1 in treeLocationMap[a]:
@@ -208,6 +217,29 @@ class PhylogeneticDistance( PhylogeneticDistanceLayout ):
 						weights.append(1-pdm(t1, t2))
 				if len(weights) > 0:
 					PhyloDistance[a,b] = weights
+			'''
+			weights = []
+			for t1 in treeLocationMap[a]:
+				for t2 in treeLocationMap[b]:
+					dist = pdm(t1,t2)
+					weights.append(dist)
+					if dist > max:
+						max = dist
+			if (a,b) in PhyloDistance.keys():
+				PhyloDistance[a,b].extend(weights)
+			else:
+				PhyloDistance[a,b] = weights
+		flipWeights = True
+		if flipWeights:
+			# flip PD so that closely related things have the largest values
+			for key, val in PhyloDistance.iteritems():
+				weights = []
+				for wght in val:
+					wght = max - wght
+					weights.append(wght)
+			
+				PhyloDistance[key] = weights
 		phyloDistComb = self.CombineWeights(PhyloDistance, combinationMethod)
+	#	print phyloDistComb
 		locationWeights = self.WeightsToLocations(phyloDistComb)
 		return locationWeights
