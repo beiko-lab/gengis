@@ -1,14 +1,13 @@
 # -*- coding: utf-8 -*- 
 
 ###########################################################################
-## Python code generated with wxFormBuilder (version Oct  8 2012)
+## Python code generated with wxFormBuilder (version Sep  8 2010)
 ## http://www.wxformbuilder.org/
 ##
 ## PLEASE DO "NOT" EDIT THIS FILE!
 ###########################################################################
 
 import wx
-import wx.xrc
 import wx.grid
 
 ###########################################################################
@@ -20,7 +19,8 @@ class RCALayout ( wx.Frame ):
 	def __init__( self, parent ):
 		wx.Frame.__init__ ( self, parent, id = wx.ID_ANY, title = u"Reference Condition Analysis", pos = wx.DefaultPosition, size = wx.Size( 850,450 ), style = wx.DEFAULT_FRAME_STYLE|wx.TAB_TRAVERSAL )
 		
-		self.SetSizeHintsSz( wx.Size( 850,450 ), wx.DefaultSize )
+		self.SetSizeHintsSz( wx.Size( 850,450 ), wx.Size( 850,450 ) )
+		self.SetForegroundColour( wx.SystemSettings.GetColour( wx.SYS_COLOUR_WINDOW ) )
 		self.SetBackgroundColour( wx.SystemSettings.GetColour( wx.SYS_COLOUR_BTNFACE ) )
 		
 		bSizer1 = wx.BoxSizer( wx.VERTICAL )
@@ -38,16 +38,22 @@ class RCALayout ( wx.Frame ):
 		
 		self.m_staticText6 = wx.StaticText( self, wx.ID_ANY, u"RCA Model:", wx.DefaultPosition, wx.DefaultSize, 0 )
 		self.m_staticText6.Wrap( -1 )
+		self.m_staticText6.SetForegroundColour( wx.SystemSettings.GetColour( wx.SYS_COLOUR_INFOTEXT ) )
+		
 		fgSizer1.Add( self.m_staticText6, 0, wx.ALL, 5 )
 		
 		cboModelChoices = []
 		self.cboModel = wx.Choice( self, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, cboModelChoices, 0 )
 		self.cboModel.SetSelection( 0 )
+		self.cboModel.SetForegroundColour( wx.SystemSettings.GetColour( wx.SYS_COLOUR_WINDOW ) )
+		
 		fgSizer1.Add( self.cboModel, 0, wx.ALL, 5 )
 		
 		self.m_staticText2 = wx.StaticText( self, wx.ID_ANY, u"Taxon Names:", wx.DefaultPosition, wx.DefaultSize, 0 )
 		self.m_staticText2.Wrap( -1 )
-		fgSizer1.Add( self.m_staticText2, 0, wx.ALIGN_CENTER_VERTICAL|wx.ALL, 5 )
+		self.m_staticText2.SetForegroundColour( wx.SystemSettings.GetColour( wx.SYS_COLOUR_INFOTEXT ) )
+		
+		fgSizer1.Add( self.m_staticText2, 0, wx.ALL, 5 )
 		
 		cboDiversityChoices = []
 		self.cboDiversity = wx.Choice( self, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, cboDiversityChoices, 0 )
@@ -56,7 +62,9 @@ class RCALayout ( wx.Frame ):
 		
 		self.m_staticText3 = wx.StaticText( self, wx.ID_ANY, u"Taxon Counts:", wx.DefaultPosition, wx.DefaultSize, 0 )
 		self.m_staticText3.Wrap( -1 )
-		fgSizer1.Add( self.m_staticText3, 0, wx.ALIGN_CENTER_VERTICAL|wx.ALL, 5 )
+		self.m_staticText3.SetForegroundColour( wx.SystemSettings.GetColour( wx.SYS_COLOUR_INFOTEXT ) )
+		
+		fgSizer1.Add( self.m_staticText3, 0, wx.ALL, 5 )
 		
 		cboCountChoices = []
 		self.cboCount = wx.Choice( self, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, cboCountChoices, 0 )
@@ -67,19 +75,19 @@ class RCALayout ( wx.Frame ):
 		fgSizer1.AddSpacer( ( 0, 0), 1, wx.EXPAND, 5 )
 		
 		self.btnRun = wx.Button( self, wx.ID_ANY, u"Run", wx.DefaultPosition, wx.DefaultSize, 0 )
-		fgSizer1.Add( self.btnRun, 1, wx.ALL|wx.EXPAND, 5 )
-		
+		fgSizer1.Add( self.btnRun, 0, wx.ALL, 5 )
 		
 		fgSizer4.Add( fgSizer1, 1, wx.EXPAND, 5 )
 		
 		bSizer31 = wx.BoxSizer( wx.VERTICAL )
 		
-		self.table = wx.grid.Grid( self, wx.ID_ANY, wx.DefaultPosition, wx.Size( -1,-1 ), wx.HSCROLL|wx.VSCROLL )
+		self.table = wx.grid.Grid( self, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.HSCROLL|wx.VSCROLL )
 		
 		# Grid
 		self.table.CreateGrid( 5, 5 )
 		self.table.EnableEditing( False )
 		self.table.EnableGridLines( True )
+		self.table.SetGridLineColour( wx.SystemSettings.GetColour( wx.SYS_COLOUR_WINDOW ) )
 		self.table.EnableDragGridSize( False )
 		self.table.SetMargins( 0, 0 )
 		
@@ -100,14 +108,16 @@ class RCALayout ( wx.Frame ):
 		self.table.SetDefaultCellAlignment( wx.ALIGN_LEFT, wx.ALIGN_TOP )
 		self.table.SetMinSize( wx.Size( 550,300 ) )
 		
-		bSizer31.Add( self.table, 1, wx.ALL|wx.EXPAND, 5 )
+		bSizer31.Add( self.table, 0, wx.ALL|wx.EXPAND, 5 )
 		
 		gbSizer1 = wx.GridBagSizer( 0, 0 )
 		gbSizer1.SetFlexibleDirection( wx.BOTH )
 		gbSizer1.SetNonFlexibleGrowMode( wx.FLEX_GROWMODE_SPECIFIED )
 		
-		self.m_staticText51 = wx.StaticText( self, wx.ID_ANY, u"Bar plot scale factor:", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_staticText51 = wx.StaticText( self, wx.ID_ANY, u"Reference Condition Analysis", wx.DefaultPosition, wx.DefaultSize, 0 )
 		self.m_staticText51.Wrap( -1 )
+		self.m_staticText51.SetForegroundColour( wx.SystemSettings.GetColour( wx.SYS_COLOUR_INFOTEXT ) )
+		
 		gbSizer1.Add( self.m_staticText51, wx.GBPosition( 0, 0 ), wx.GBSpan( 1, 1 ), wx.ALL, 5 )
 		
 		self.userScaleFactor = wx.TextCtrl( self, wx.ID_ANY, u"1.0", wx.DefaultPosition, wx.Size( 45,-1 ), 0 )
@@ -119,7 +129,6 @@ class RCALayout ( wx.Frame ):
 		self.m_btnAdd = wx.Button( self, wx.ID_ANY, u"Add Selected To GenGIS", wx.DefaultPosition, wx.DefaultSize, 0 )
 		gbSizer1.Add( self.m_btnAdd, wx.GBPosition( 0, 3 ), wx.GBSpan( 1, 1 ), wx.ALL, 5 )
 		
-		
 		bSizer31.Add( gbSizer1, 0, wx.EXPAND, 5 )
 		
 		fgSizer3 = wx.FlexGridSizer( 0, 2, 0, 0 )
@@ -128,17 +137,16 @@ class RCALayout ( wx.Frame ):
 		
 		self.m_staticText5 = wx.StaticText( self, wx.ID_ANY, u"Save table of results to file:", wx.DefaultPosition, wx.DefaultSize, 0 )
 		self.m_staticText5.Wrap( -1 )
+		self.m_staticText5.SetForegroundColour( wx.SystemSettings.GetColour( wx.SYS_COLOUR_INFOTEXT ) )
+		
 		fgSizer3.Add( self.m_staticText5, 0, wx.ALL, 5 )
 		
-		self.filePicker = wx.FilePickerCtrl( self, wx.ID_ANY, u"rca_results.csv", u"Save file as", u"*.csv", wx.DefaultPosition, wx.DefaultSize, wx.FLP_OVERWRITE_PROMPT|wx.FLP_SAVE )
+		self.filePicker = wx.FilePickerCtrl( self, wx.ID_ANY, u"rca_results.csv", u"Select a file", u"*.csv", wx.DefaultPosition, wx.DefaultSize, wx.FLP_OVERWRITE_PROMPT|wx.FLP_SAVE )
 		fgSizer3.Add( self.filePicker, 0, wx.ALL, 5 )
-		
 		
 		bSizer31.Add( fgSizer3, 0, wx.EXPAND, 5 )
 		
-		
 		fgSizer4.Add( bSizer31, 1, wx.EXPAND, 5 )
-		
 		
 		bSizer1.Add( fgSizer4, 1, wx.EXPAND, 5 )
 		
@@ -153,9 +161,7 @@ class RCALayout ( wx.Frame ):
 		self.btOK = wx.Button( self, wx.ID_ANY, u"Close", wx.DefaultPosition, wx.DefaultSize, 0 )
 		bSizer3.Add( self.btOK, 0, wx.ALL, 5 )
 		
-		
 		bSizer1.Add( bSizer3, 0, wx.EXPAND, 5 )
-		
 		
 		self.SetSizer( bSizer1 )
 		self.Layout()
@@ -166,6 +172,7 @@ class RCALayout ( wx.Frame ):
 		self.Bind( wx.EVT_CLOSE, self.OnClose )
 		self.btnRun.Bind( wx.EVT_BUTTON, self.OnRun )
 		self.table.Bind( wx.grid.EVT_GRID_LABEL_LEFT_CLICK, self.OnLabelClick )
+		self.table.Bind( wx.grid.EVT_GRID_EDITOR_SHOWN, self.a )
 		self.table.Bind( wx.grid.EVT_GRID_RANGE_SELECT, self.OnSelectedRange )
 		self.table.Bind( wx.grid.EVT_GRID_SELECT_CELL, self.OnSelectedCell )
 		self.btnPlot.Bind( wx.EVT_BUTTON, self.OnPlot )
@@ -186,6 +193,9 @@ class RCALayout ( wx.Frame ):
 		event.Skip()
 	
 	def OnLabelClick( self, event ):
+		event.Skip()
+	
+	def a( self, event ):
 		event.Skip()
 	
 	def OnSelectedRange( self, event ):
