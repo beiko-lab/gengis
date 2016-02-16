@@ -173,7 +173,10 @@ Cartogram::Cartogram(int buff) :
 void Cartogram::MakeCartogram()
 {
 	bool timing = true;
-	bool resize = false;
+	bool resize = true;
+	//resize x and y size to the reduced vallues for StdMain
+	m_resizePercent = 0.5;
+
 
 	//		Log run times
 	std::clock_t start;
@@ -216,8 +219,8 @@ void Cartogram::MakeCartogram()
 		exaggerationChange = true;
 		m_mapController->GetMapModel()->SetVerticalExaggeration(1.5);
 	}
+
 	// Pre time
-	
 	if( timing) 
 	{
 		Log::Inst().Write( "Pre");
@@ -228,18 +231,19 @@ void Cartogram::MakeCartogram()
 	double **rho;
 	rho = cart_dmalloc(xsize,ysize);
 	MakeRho(rho);
-//	WriteMatrix(rho, xsize,ysize, "HaitiRho");
+
 	// MakeRho time
 	if (timing) 
 	{
-	duration = 	( std::clock() - start ) / (double) CLOCKS_PER_SEC;
-	Log::Inst().Write( StringTools::ToString(duration,4) );
+		duration = 	( std::clock() - start ) / (double) CLOCKS_PER_SEC;
+		Log::Inst().Write( "MakeRho");
+		Log::Inst().Write( StringTools::ToString(duration,4) );
 	}	
+
 	if(resize){
 		// Here is where I shrink the RHO. Also needs to reset xsize and ysize to the reduced sizes
 		double origXSize = xsize, origYSize = ysize;
-		//resize x and y size to the reduced vallues for StdMain
-		m_resizePercent = 0.5;
+		
 		xsize = xsize * m_resizePercent;
 		ysize = ysize * m_resizePercent;
 		// resized rho
@@ -247,12 +251,13 @@ void Cartogram::MakeCartogram()
 		newRho = cart_dmalloc(xsize, ysize);
 		// mallocs and fills newRho with reduced rho
 		ResizeRho(rho, newRho);
-	//	WriteMatrix(newRho,xsize,ysize,"NewRho.txt");
+		cart_dfree(rho);
 
 		StdMain(newRho,origXSize,origYSize);
 	}
 	else
 		StdMain(rho);
+	
 	// STDMain time
 	if(timing)
 	{
@@ -260,6 +265,7 @@ void Cartogram::MakeCartogram()
 		duration = 	( std::clock() - start ) / (double) CLOCKS_PER_SEC;
 		Log::Inst().Write( StringTools::ToString(duration,4) );
 	}
+	
 	/* Now redraw the map. */
 	// Need to do everything after loading terrain
 	m_mapController->GetMapView()->SetVertices(m_mapController);
@@ -424,6 +430,7 @@ void Cartogram::MakeRho(double **a)
 	double **b = cart_dmalloc(ysize,xsize);
 	PopulateRho(b);
 	TransposeMatrix(b,a);
+	cart_dfree(b);
 }
 
 double Cartogram::GetMapAverage(std::map<int,boost::array<double,4>> map)
@@ -505,7 +512,6 @@ void Cartogram::PopulateRho(double **rho)
 {
 	// Find grid squares with locations
 	std::map<int,boost::array<double,4>> locationCounts = TranslateLocations();
-//	std::vector<std::vector<double>> prime(ysize,std::vector<double>(xsize));
 	// Find average of these values (for empyt grid squares)
 	double average = GetMapAverage(locationCounts);
 	double avgVal = average + OFFSET*average;
@@ -539,12 +545,10 @@ void Cartogram::PopulateRho(double **rho)
 			// only assign val if it hasn't been visited by areaFudge
 			if(rho[j][i] == 0 )
 			{
-	//			prime[j][i] = avgVal;
 				rho[j][i] = avgVal;
 			}	
 		}
 	}
-//	return prime;
 }
 
 template< typename Matrix >
@@ -557,8 +561,6 @@ void Cartogram::InterpolateGrid(Matrix gridx, Matrix gridy)
 	int index=0;
 	Point3D gridTest;
 
-//	std::vector<Point3D> gridInv(header->nCols*header->nRows);
-	
 	// latitude
 	for(int m = 0; m < header->nRows ; m++) 
 	{	
@@ -572,54 +574,44 @@ void Cartogram::InterpolateGrid(Matrix gridx, Matrix gridy)
 			nZ = (1.0f + 2*((Z - (header->nRows-1)) / header->nRows))*aspect;
 
 			grid[index].x = nX ;
-			grid[index].z = nZ;
-	//		gridInv[index] = grid[index];		
+			grid[index].z = nZ;		
 			index++;
 		}
 	}
 
 }
+
 void Cartogram::InterpolateGrid(double* gridx, double* gridy)
 {
 	Point3D* grid = m_mapController->GetMapModel()->GetGrid();
 	FileHeader* header = App::Inst().GetLayerTreeController()->GetMapLayer(0)->GetMapController()->GetMapModel()->GetHeader();
 	double aspect = header->projExtents.Height() / header->projExtents.Width();
 	float X,Z,nX,nZ;
-	int mapIndex=0;
+	int index=0;
 	int distIndex = 0;
 	Point3D gridTest;
 	
-
-//	std::vector<Point3D> gridInv(header->nCols*header->nRows);
-	
-/*	for( int i =0; i <= ysize ; ++i)
-	{
-		for( int j = 0; j<= xsize ; ++j)
-		{	
-		*/
+	// latitude
 	for(int m = 0; m < header->nRows ; m++) 
 	{	
 		//longitude
 		for(int n = 0; n < header->nCols; n++) 
 		{
-		//	distIndex = j*ysize + i;
-			// ncols - nrows
-		//	Z = gridy[n][m];
-		//	X = gridx[n][m];
-			Z = gridy[mapIndex];
-			X = gridx[mapIndex];
+			distIndex = m*(header->nCols+1) + n;
+			Z = gridy[distIndex];
+			X = gridx[distIndex];
 
 			nX = -1.0f + 2*((X - 0) / header->nCols );
 			nZ = (1.0f + 2*((Z - (header->nRows-1)) / header->nRows))*aspect;
 
-			grid[mapIndex].x = nX ;
-			grid[mapIndex].z = nZ;
-	//		gridInv[index] = grid[index];		
-			mapIndex++;
+			grid[index].x = nX ;
+			grid[index].z = nZ;	
+			index++;
 		}
 	}
 
 }
+
 
 template< typename Matrix >
 void Cartogram::InterpolateVector(Matrix gridx, Matrix gridy, VectorMapControllerPtr vectorMap)
@@ -678,9 +670,10 @@ void Cartogram::InterpolateVector(double* gridx, double* gridy, VectorMapControl
 			Z = (geoVector->pointY[p] - minHeight) / height *ysize;
 			if( X < xsize && X >=0 && Z < ysize && Z >= 0 )
 			{	
-				index = X*ysize + Z;
+				index = floor(Z)*(xsize+1) + floor(X);
 				nX = gridx[index];
 				nZ = gridy[index];
+				
 				Xout  = nX/xsize*width + minWidth;
 				Zout = (nZ)/ysize*height + minHeight;
 				geoVector->pointX[p] = Xout;
@@ -692,10 +685,10 @@ void Cartogram::InterpolateVector(double* gridx, double* gridy, VectorMapControl
 
 
 template< typename Matrix >
-void Cartogram::InterpolateLocations(Matrix gridx, Matrix gridy, LocationSetLayerPtr locationSetLayer)
+void Cartogram::InterpolateLocations(Matrix gridx, Matrix gridy, LocationSetLayerPtr locationSetLayer, bool resize = false)
 {
-	
 //	grid -1,-1 = top left corner (max y, min x)
+	double resizePercent = 0.5;
 	int ix,iy;
 	double xin,yin;
 	double xout,yout,yCorrection;
@@ -734,9 +727,23 @@ void Cartogram::InterpolateLocations(Matrix gridx, Matrix gridy, LocationSetLaye
 			iy = yin;
 			dy = yin - iy;
 			int iyy = yin;
-
-			xout = gridx[ix][iy];
-			yout = gridy[ix][iy];
+			if(!resize)
+			{
+				xout = gridx[ix][iy];
+				yout = gridy[ix][iy];
+			}
+			else
+			{
+				double x1 = gridx[ix][iy];
+				double y1 = gridy[ix][iy];
+				double deltax = xin - x1;
+				double deltay = yin - y1;
+				
+		//		xout = gridx[ix][iy] + abs(xin - gridx[ix][iy])*resizePercent;
+		//		yout = gridy[ix][iy] + abs(yin - gridy[ix][iy])*resizePercent;
+				xout = x1 + deltax*resizePercent;
+				yout = y1 + deltay*resizePercent;
+			}
 		}
 		// Y direction shifts are occuring at the correct magnitude but in the wrong direction. Correct it!
 		yCorrection = (ysize) - yout;
@@ -790,8 +797,10 @@ void Cartogram::InterpolateLocations(double *gridx, double *gridy, LocationSetLa
 			dy = yin - iy;
 			int iyy = yin;
 			
-			index = ix*ysize + iy;
-
+		//	index = ix*ysize + iy;
+			
+			index = iy*(xsize+1) + ix;
+			
 			xout = gridx[index];
 			yout = gridy[index];
 		}
@@ -809,12 +818,12 @@ template< typename Matrix >
 void Cartogram::ArrayTransform(double * grid, Matrix &transGrid)
 {
 	int index = 0;
-	for( int i =0; i <= ysize ; ++i)
+	for( int y =0; y <= ysize ; ++y)
 	{
-		for( int j = 0; j<= xsize ; ++j)
+		for( int x = 0; x<= xsize ; ++x)
 		{
 		//	double blarg = grid[index];
-			transGrid[j][i] = grid[index];
+			transGrid[x][y] = grid[index];
 			index++;
 		}
 	}
@@ -943,39 +952,58 @@ void Cartogram::StdMain()
 
 void Cartogram::StdMain(double **rho)
 {
-	double *gridx,*gridy;  // Array for grid points
-	cart_makews(xsize,ysize);
 	int matrixSize = (xsize+1)*(ysize+1);
-	cart_transform(rho,xsize,ysize);
-	// doesn't work with reduced matrix for some reason. 
-	cart_dfree(rho);
-
+	double *gridx,*gridy;  // Array for grid points
 	/* Create the grid of points */
-//	gridx = (double*) malloc(matrixSize*sizeof(double));
-//	gridy = (double*) malloc(matrixSize*sizeof(double));
 	try{
 		gridx = new double[matrixSize];
-	}catch(std::bad_alloc){
-		Log::Inst().Write("Bad Memory 1");
+	}catch(std::bad_alloc &ba){
+		Log::Inst().Write("Could not allocate enough memory to create a cartogram. X dimension is too large." + StringTools::ToString(ba.what()));
 		return;
 	}
 	try{
 		gridy = new double[matrixSize];
-	}catch(std::bad_alloc){
-		Log::Inst().Write("Bad Memory 2");
+	}catch(std::bad_alloc &ba){
+		Log::Inst().Write("Could not allocate enough memory to create a cartogram. Y dimension is too large." + StringTools::ToString(ba.what()));
 		return;
 	}
-	CreateGrid(gridx,gridy,xsize,ysize);
 	
-	cart_makecart(gridx, gridy, matrixSize, xsize, ysize, 0.0);
-	/*
+	
+	
+	cart_makews(xsize,ysize);
+	cart_transform(rho,xsize,ysize);
+	cart_dfree(rho);
+
+	
+	CreateGrid(gridx,gridy,xsize,ysize);
+	try{
+		cart_makecart(gridx, gridy, matrixSize, xsize, ysize, 0.0);
+	}catch(std::bad_alloc &ba ){
+		Log::Inst().Write("Cartogram failed due to memory limitations. Using a smaller map is suggested." + StringTools::ToString(ba.what()));
+		return;
+	}
+	// free up the space used by cart
+	cart_freews(xsize, ysize);
+/*
 	std::vector<std::vector<double>> gridx2d(xsize+1,std::vector<double>(ysize+1));
 	std::vector<std::vector<double>> gridy2d(xsize+1,std::vector<double>(ysize+1));
 	ArrayTransform(gridx, gridx2d);
 	ArrayTransform(gridy, gridy2d);
+*/
+	// free up space again
+	/*
+	delete(gridx);
+	delete(gridy);
 	*/
+	/*
 	// update map points
-//	InterpolateGrid(gridx2d,gridy2d);
+	try{
+		InterpolateGrid(gridx2d,gridy2d);
+	}catch(std::bad_alloc &ba){
+		Log::Inst().Write("Bad Memory 4 " + StringTools::ToString(ba.what()));
+	}
+	
+	*/	
 	InterpolateGrid(gridx,gridy);
 
 	LocationSetLayerPtr locationSetLayer;
@@ -987,7 +1015,7 @@ void Cartogram::StdMain(double **rho)
 	//	InterpolateLocations(gridx2d, gridy2d, locationSetLayer);
 		InterpolateLocations(gridx, gridy, locationSetLayer);
 	}
-
+	WriteLocations(locationSetLayer,"DistortedLocations.txt");
 	// If there's a vector map, transform it!
 	VectorMapControllerPtr vectorController;
 	if( App::Inst().GetLayerTreeController()->GetNumVectorMapLayers() > 0 || boost::size(m_vectorMapIndex) > 0 )
@@ -999,9 +1027,7 @@ void Cartogram::StdMain(double **rho)
 			InterpolateVector(gridx, gridy, vectorController);
 		}
 	}
-
-	// free up space again
-	cart_freews(xsize, ysize);
+	
 	delete(gridx);
 	delete(gridy);
 }
@@ -1009,50 +1035,67 @@ void Cartogram::StdMain(double **rho)
 
 void Cartogram::StdMain(double **rho, int origXSize, int origYSize)
 {
-//	WriteMatrix(rho,xsize,ysize,"reducedRho");
-
 	double *gridx,*gridy;  // Array for grid points
-	cart_makews(xsize,ysize);
 	int matrixSize = (xsize+1)*(ysize+1);
+	// Create the grid of points 
+	try{
+		gridx = new double[matrixSize];
+	}catch(std::bad_alloc &ba){
+		Log::Inst().Write("Could not allocate enough memory to create a cartogram. X dimension is too large." + StringTools::ToString(ba.what()));
+		return;
+	}
+	try{
+		gridy = new double[matrixSize];
+	}catch(std::bad_alloc &ba){
+		Log::Inst().Write("Could not allocate enough memory to create a cartogram. Y dimension is too large." + StringTools::ToString(ba.what()));
+		return;
+	}
+	
+	cart_makews(xsize,ysize);
 	cart_transform(rho,xsize,ysize);
-	// doesn't work with reduced matrix for some reason. 
-  //  cart_dfree(rho);
+    cart_dfree(rho);
 
-	/* Create the grid of points */
-//	gridx = (double*) malloc(matrixSize*sizeof(double));
-//	gridy = (double*) malloc(matrixSize*sizeof(double));
-	gridx = new double[matrixSize];
-	gridy = new double[matrixSize];
+	
 
 	CreateGrid(gridx,gridy,xsize,ysize);
-	cart_makecart(gridx, gridy, matrixSize, xsize, ysize, 0.0);
+	try{
+		cart_makecart(gridx, gridy, matrixSize, xsize, ysize, 0.0);
+	}catch(std::bad_alloc &ba ){
+		Log::Inst().Write("Cartogram failed due to memory limitations. Using a smaller map is suggested." + StringTools::ToString(ba.what()));
+		return;
+	}
+	cart_freews(xsize, ysize);
+
 	std::vector<std::vector<double>> gridx2d(xsize+1,std::vector<double>(ysize+1));
 	std::vector<std::vector<double>> gridy2d(xsize+1,std::vector<double>(ysize+1));
 	ArrayTransform(gridx, gridx2d);
 	ArrayTransform(gridy, gridy2d);
+
+	// resize the grid
+	
+	std::vector<std::vector<double>> origXGrid = RestoreGrid(gridx2d,origXSize,origYSize);
+	std::vector<std::vector<double>> origYGrid = RestoreGrid(gridy2d,origXSize,origYSize);
+//	double* origXGrid = RestoreGrid(gridx, gridx2d, origXSize, origYSize);
+//	double* origYGrid = RestoreGrid(gridy, origXSize, origYSize);
+	xsize = origXSize;
+	ysize = origYSize;
+	
 	free(gridx);
 	free(gridy);
 
-	// resize the grid
-	std::vector<std::vector<double>> origXGrid = RestoreGrid(gridx2d,origXSize,origYSize);
-	std::vector<std::vector<double>> origYGrid = RestoreGrid(gridy2d,origXSize,origYSize);
-//	WriteMatrix(origXGrid,origXSize,origYSize,"enlargedXGrid");
-//	WriteMatrix(origYGrid,origXSize,origYSize,"enlargedYGrid");
-	xsize = origXSize;
-	ysize = origYSize;
-
 	// update map points
 	InterpolateGrid(origXGrid,origYGrid);
+
 
 	LocationSetLayerPtr locationSetLayer;
 
 	// Interpolate All location sets
 	for( int i = 0; i < boost::size(m_locationSetLayerIndex); i++ )
 	{
-		locationSetLayer = App::Inst().GetLayerTreeController()->GetLocationSetLayer( m_locationSetLayerIndex[i] );
-		InterpolateLocations(origXGrid, origYGrid, locationSetLayer);
+		locationSetLayer = App::Inst().GetLayerTreeController()->GetLocationSetLayer( m_locationSetLayerIndex[i] );	
+		InterpolateLocations(origXGrid, origYGrid, locationSetLayer,true);
 	}
-
+	WriteLocations(locationSetLayer,"FasterDistortedLocations.txt");
 	// If there's a vector map, transform it!
 	VectorMapControllerPtr vectorController;
 	if( App::Inst().GetLayerTreeController()->GetNumVectorMapLayers() > 0 || boost::size(m_vectorMapIndex) > 0 )
@@ -1065,9 +1108,8 @@ void Cartogram::StdMain(double **rho, int origXSize, int origYSize)
 	}
 
 	// free up space again
-//	cart_freews(xsize, ysize);
-//	free(gridx);
-//	free(gridy);
+//	free(origXGrid);
+//	free(origYGrid);
 }
 
 
@@ -1275,6 +1317,7 @@ double Cartogram::Combine(Matrix mat,int xsize, int ysize, std::string method)
 		}
 		return avg/(xsize*ysize);
 	}
+	return NULL;
 	
 }
 
@@ -1300,4 +1343,113 @@ std::vector<std::vector<double>> Cartogram::RestoreGrid(std::vector<std::vector<
 	}
 	return newGrid;
 
+}
+double* Cartogram::RestoreGrid(double* grid, std::vector<std::vector<double>> grid2, int origX, int origY)
+{
+	double* newGrid = new double[(origX+1)*(origY+1)];
+	
+	int xgap = origX / (origX*m_resizePercent );
+	int ygap = origY / (origY*m_resizePercent );
+	int xIndex=0;
+	int yIndex=0;
+	int gridIndex = 0;
+	int index = 0;
+
+	
+	for(int i = 0; i < origX; i++ )
+	{
+		for( int j = 0; j < origY; j++ )
+		{
+			// looks like I'm getting a left shift
+			xIndex = i / xgap;
+			yIndex = j / ygap;
+			gridIndex = yIndex*(xsize+1) + xIndex;	
+			// Divide by the resize percent otherwise the extents of the grid
+			// do not cover the extents of the original grid
+			double gridval1 = grid[gridIndex] / m_resizePercent;
+			double gridval2 = grid2[xIndex][yIndex] / m_resizePercent;
+			newGrid[index] = grid[gridIndex] / m_resizePercent;
+			index++;
+		}
+	}
+	return newGrid;
+
+}
+
+
+double* Cartogram::RestoreGrid(double* grid, int origX, int origY)
+{
+	double* newGrid = new double[(origX+1)*(origY+1)];
+	
+	int xgap = origX / (origX*m_resizePercent );
+	int ygap = origY / (origY*m_resizePercent );
+	int xIndex=0;
+	int yIndex=0;
+	int gridIndex = 0;
+	int index = 0;
+	for(int i = 0; i < origX; i++ )
+	{
+		for( int j = 0; j < origY; j++ )
+		{
+			// looks like I'm getting a left shift
+			xIndex = i / xgap;
+			yIndex = j / ygap;
+			gridIndex = yIndex*(xsize+1) + xIndex;
+			
+			// Divide by the resize percent otherwise the extents of the grid
+			// do not cover the extents of the original grid
+			newGrid[index] = grid[gridIndex] / m_resizePercent;
+			index++;
+		}
+	}
+	return  newGrid;
+
+}
+
+void Cartogram::WriteLocations(LocationSetLayerPtr locationSetLayer,std::string fh)
+{
+	std::ofstream myfile;
+	std::string fileName, temp;
+	
+	if(boost::starts_with(fh,"temp"))
+	{	
+		// Gets the working directory of the executable 
+		fileName = GenGIS::App::Inst().GetExeDir().mb_str();
+		fileName += fh;
+	}
+	else
+	{
+		fileName = "C:/Users/Admin/Desktop/" + fh + ".txt";
+	}
+	
+	try{
+	myfile.open(fileName.c_str(), std::ofstream::out);
+	}catch(std::ifstream::failure &writeErr){
+		Log::Inst().Warning("Could not open RHO file.");
+	}
+	if(!myfile)
+	{
+		Log::Inst().Warning("Could not open RHO file.");
+	}
+
+	std::vector<LocationLayerPtr> locationLayers = locationSetLayer->GetAllActiveLocationLayers();
+	LocationLayerPtr loc;
+	double easting;
+	double northing;
+	for( uint i = 0; i < locationLayers.size() ; i++)
+	{
+		loc = locationLayers[i];
+		easting = loc->GetLocationController()->GetEasting();
+		northing = loc->GetLocationController()->GetNorthing();
+		try{
+			myfile << boost::lexical_cast<std::string>(easting) + "\t"; 
+			myfile << boost::lexical_cast<std::string>(northing) + "\t"; 
+		}catch(std::ifstream::failure &writeErr){
+			Log::Inst().Warning("Writing to file failed.");
+		}
+		myfile << "\n";
+		myfile.flush();
+	}
+
+	myfile.close();	
 }

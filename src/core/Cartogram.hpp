@@ -121,6 +121,7 @@ namespace GenGIS
 		void writepoints(FILE *stream, double *gridx, double *gridy, int npoints);
 		template< typename Matrix >
 		int readpoints(FILE *stream, Matrix &gridx, Matrix &gridy, int xsize, int ysize);
+		void WriteLocations(LocationSetLayerPtr locationSetLayer, std::string fh);
 
 		/** Get the average density value for all locations.
 			This will be used to fill in empty spots in the grid*/
@@ -140,7 +141,7 @@ namespace GenGIS
 
 		/** Interpolate locations from standard raster to cartogram coordinates. */
 		template< typename Matrix >
-		void InterpolateLocations(Matrix gridx, Matrix gridy, LocationSetLayerPtr locationSetLayer);
+		void InterpolateLocations(Matrix gridx, Matrix gridy, LocationSetLayerPtr locationSetLayer,bool resize);
 		void InterpolateLocations(double* gridx, double* gridy, LocationSetLayerPtr locationSetLayer);
 		
 		/** Interpolate between standard Raster coordinates and the cartogram for all Vector layers.*/
@@ -164,6 +165,8 @@ namespace GenGIS
 
 		void ResizeRho(double **rho, double **newRho);
 		std::vector<std::vector<double>> RestoreGrid(std::vector<std::vector<double>> grid, int origX, int origY);
+		double* RestoreGrid(double* grid, int origX, int origY);
+		double* RestoreGrid(double* grid, std::vector<std::vector<double>> grid2, int origX, int origY);
 
 		/* Serialization. */
 		friend class boost::serialization::access;
