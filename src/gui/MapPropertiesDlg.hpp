@@ -125,6 +125,12 @@ namespace GenGIS
 		/** Select which measure should be used to distort the map. */
 		void OnCartogramSelectMethod( wxCommandEvent& event );
 
+		void OnResizeToggle( wxCommandEvent& event );
+
+		void OnCartValueToggle( wxCommandEvent& event );
+
+		void OnSetResizePercent( wxCommandEvent& event);
+
 		/** Cartogram object. */
 		CartogramPtr m_cartogram;
 

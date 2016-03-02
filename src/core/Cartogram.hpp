@@ -69,6 +69,11 @@ namespace GenGIS
 		void SetVectorMap( int *indexes, int max );
 		std::wstring GetMeasureLabel(){ return m_measureLabel;}
 		void SetMeasureLabel(std::wstring newLabel){ m_measureLabel = newLabel; }
+
+		void SetResizePercent(int percent);
+		void SetResize(boolean state);
+		void SetInvert(boolean state);
+
 	private:
 		// Can't be const due to serialization
 		// number of rows in map
@@ -79,6 +84,10 @@ namespace GenGIS
 
 		// percent to reduce the map by for speedup
 		double m_resizePercent;
+		boolean m_resize;
+
+		// flips the amplitude of all values of interest
+		boolean m_invert;
 
 		// fudge values for the area and value of a location
 		double valFudge;
@@ -157,11 +166,11 @@ namespace GenGIS
 		/** Store the original grid and and location coordiantes. */
 		void SaveOriginalProjection();
 
+		/** Traverses the selected data and returns the largest value for use in inversion. **/
+		double GetLargestDataValue();
+
 		template< typename Matrix >
 		void TransposeMatrix(Matrix &original, Matrix &trans);
-
-
-		void SetResizePercent(int percent);
 
 		void ResizeRho(double **rho, double **newRho);
 		std::vector<std::vector<double>> RestoreGrid(std::vector<std::vector<double>> grid, int origX, int origY);

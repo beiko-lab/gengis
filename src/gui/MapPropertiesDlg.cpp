@@ -205,7 +205,9 @@ void MapPropertiesDlg::InitCartogram()
 		m_cboSelectMethod->Append(fields[i].c_str());
 	}
 	m_cboSelectMethod->SetSelection(0);
-	
+	m_spinResizePercent->Enable(false);
+	m_lblResiizePercent->Enable(false);
+
 }
 
 void MapPropertiesDlg::OnNumEntriesChange() 
@@ -400,11 +402,50 @@ void MapPropertiesDlg::OnCartogram( wxCommandEvent& event)
 
 	m_cartogram->MakeCartogram();
 }
+// Set Map, Locations and Vector back to their original positions
 void MapPropertiesDlg::OnUndoCartogram( wxCommandEvent& event )
 {
 	m_cartogram->UndoCartogram();
 }
+// Toggle wether the density matrix is resized
+void MapPropertiesDlg::OnResizeToggle(wxCommandEvent& event)
+{
+	if( m_checkResize->GetValue() ){
+		m_spinResizePercent->Enable(true);
+		m_lblResiizePercent->Enable(true);
+		m_cartogram->SetResize(true);
+	//	int resPerc = m_spinResizePercent->GetValue();
+	//	m_cartogram->SetResizePercent( resPerc );
+		OnSetResizePercent(event);
+	}
+	else
+	{
+		m_spinResizePercent->Enable(false);
+		m_lblResiizePercent->Enable(false);
+		m_cartogram->SetResize(false);
+	}
+}
 
+void MapPropertiesDlg::OnSetResizePercent( wxCommandEvent& event )
+{
+	int resPerc = m_spinResizePercent->GetValue();
+	m_cartogram->SetResizePercent( resPerc );
+}
+// Toggle if the value of interest is used
+// as is or reversed
+void MapPropertiesDlg::OnCartValueToggle(wxCommandEvent& event)
+{
+	// if default value
+	if( m_radioOne->GetValue() )
+	{
+		m_cartogram->SetInvert(false);
+	}
+	// if inverted value
+	else
+	{
+		m_cartogram->SetInvert(true);
+	}
+}
 /** Apply button event handler. */
 void MapPropertiesDlg::OnApply( wxCommandEvent& event )
 {

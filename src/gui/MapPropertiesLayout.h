@@ -29,7 +29,7 @@
 #include <wx/checkbox.h>
 #include <wx/notebook.h>
 #include <wx/choice.h>
-#include <wx/gbsizer.h>
+#include <wx/radiobut.h>
 #include <wx/richtext/richtextctrl.h>
 #include <wx/dialog.h>
 
@@ -68,6 +68,8 @@ namespace GenGIS
 				ID_SLIDER_LEVEL_OF_DETAIL,
 				ID_SLIDER_TRANSPARENCY,
 				ID_CHECK_WIREFRAME,
+				wxID_VALUE_DEFAULT,
+				wxID_VALUE_INVERTED,
 				ID_PNL_METADATA,
 				ID_LBL_LAYER_SOURCE,
 				ID_TXT_LAYER_SOURCE,
@@ -118,6 +120,11 @@ namespace GenGIS
 			wxChoice* m_cboSelectVectorMap;
 			wxStaticText* m_lblSelectMethod;
 			wxChoice* m_cboSelectMethod;
+			wxRadioButton* m_radioOne;
+			wxRadioButton* m_radioTwo;
+			wxCheckBox* m_checkResize;
+			wxStaticText* m_lblResiizePercent;
+			wxSpinCtrl* m_spinResizePercent;
 			wxButton* m_btnMakeCartogram;
 			
 			wxButton* m_btnUndoCartogram;
@@ -138,6 +145,10 @@ namespace GenGIS
 			virtual void OnInterpolationChange( wxCommandEvent& event ) { event.Skip(); }
 			virtual void OnNumEntriesChange( wxSpinEvent& event ) { event.Skip(); }
 			virtual void OnEvenlySpace( wxCommandEvent& event ) { event.Skip(); }
+			virtual void OnCartValueToggle( wxCommandEvent& event ) { event.Skip(); }
+			virtual void OnResizeToggle( wxCommandEvent& event ) { event.Skip(); }
+			virtual void OnSetResizePercent( wxSpinEvent& event ) { event.Skip(); }
+			virtual void OnSetResizePercent( wxCommandEvent& event ) { event.Skip(); }
 			virtual void OnCartogram( wxCommandEvent& event ) { event.Skip(); }
 			virtual void OnUndoCartogram( wxCommandEvent& event ) { event.Skip(); }
 			virtual void OnHelp( wxCommandEvent& event ) { event.Skip(); }

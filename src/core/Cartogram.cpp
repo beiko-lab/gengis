@@ -64,6 +64,8 @@ void Cartogram::serialize(Archive & ar, const unsigned int version)
 	ar & m_vectorMapIndex;
 	ar & m_mapController;
 	
+//	ar & m_resize;
+//	ar & m_resizePercent;
 	//	QUAGMIRE
 	/*
 	//	ar & m_originalGrid;
@@ -120,6 +122,8 @@ Cartogram::Cartogram()
 	m_originalLocations = NULL;
 	m_originalVector = NULL;
 	m_resizePercent=0.50;
+	m_resize = false;
+	m_invert = false;
 }
 
 void Cartogram::InitCartogram(MapModelPtr mapModel, MapControllerPtr mapController)
@@ -173,11 +177,9 @@ Cartogram::Cartogram(int buff) :
 void Cartogram::MakeCartogram()
 {
 	bool timing = true;
-	bool resize = true;
 	//resize x and y size to the reduced vallues for StdMain
-	m_resizePercent = 0.5;
-
-
+//	m_resizePercent = 0.5;
+	
 	//		Log run times
 	std::clock_t start;
 	double duration;
@@ -240,12 +242,13 @@ void Cartogram::MakeCartogram()
 		Log::Inst().Write( StringTools::ToString(duration,4) );
 	}	
 
-	if(resize){
+	if( m_resize ){
 		// Here is where I shrink the RHO. Also needs to reset xsize and ysize to the reduced sizes
 		double origXSize = xsize, origYSize = ysize;
 		
 		xsize = xsize * m_resizePercent;
 		ysize = ysize * m_resizePercent;
+		
 		// resized rho
 		double ** newRho;
 		newRho = cart_dmalloc(xsize, ysize);
@@ -518,7 +521,11 @@ void Cartogram::PopulateRho(double **rho)
 	int index=0;
 	double val = 0;
 	int i,j;
-
+	double invertValue;
+	if(m_invert)
+	{
+		invertValue = GetLargestDataValue();
+	}
 	Point2D xy;	
 	for ( std::map<int,boost::array<double,4>>::iterator iter = locationCounts.begin(); iter != locationCounts.end();++iter ) 
 	{
@@ -531,8 +538,14 @@ void Cartogram::PopulateRho(double **rho)
 		{
 			for( int y = std::max(j-areaFudge,0); y <= std::min(j+areaFudge,ysize-1); y++)
 			{
-	//				prime[y][x] += val*valFudge;
+	//			prime[y][x] += val*valFudge;
+				if(m_invert)
+				{
+					rho[y][x] += abs( invertValue - val*valFudge );
+				}
+				else
 					rho[y][x] += val*valFudge;
+			
 			}
 		}
 	}
@@ -590,6 +603,7 @@ void Cartogram::InterpolateGrid(double* gridx, double* gridy)
 	int index=0;
 	int distIndex = 0;
 	Point3D gridTest;
+	double inv1, inv2;
 	
 	// latitude
 	for(int m = 0; m < header->nRows ; m++) 
@@ -602,8 +616,10 @@ void Cartogram::InterpolateGrid(double* gridx, double* gridy)
 			X = gridx[distIndex];
 
 			nX = -1.0f + 2*((X - 0) / header->nCols );
+		//	nZ = (1.0f + 2*((Z - (header->nRows)) / header->nRows))*aspect;
 			nZ = (1.0f + 2*((Z - (header->nRows-1)) / header->nRows))*aspect;
-
+			inv1 = grid[index].x;
+			inv2 = grid[index].z;
 			grid[index].x = nX ;
 			grid[index].z = nZ;	
 			index++;
@@ -734,21 +750,23 @@ void Cartogram::InterpolateLocations(Matrix gridx, Matrix gridy, LocationSetLaye
 			}
 			else
 			{
-				double x1 = gridx[ix][iy];
-				double y1 = gridy[ix][iy];
+	//			double x1 = gridx[ix][iy];
+	//			double y1 = gridy[ix][iy];
+				double x1 = (1-dx)*(1-dy)*gridx[ix][iy] + dx*(1-dy)*gridx[ix+1][iy] + (1-dx)*dy*gridx[ix][iy+1] + dx*dy*gridx[ix+1][iy+1];
+				double y1 = (1-dx)*(1-dy)*gridy[ix][iy] + dx*(1-dy)*gridy[ix+1][iy] + (1-dx)*dy*gridy[ix][iy+1] + dx*dy*gridy[ix+1][iy+1];
 				double deltax = xin - x1;
 				double deltay = yin - y1;
 				
 		//		xout = gridx[ix][iy] + abs(xin - gridx[ix][iy])*resizePercent;
 		//		yout = gridy[ix][iy] + abs(yin - gridy[ix][iy])*resizePercent;
-				xout = x1 + deltax*resizePercent;
-				yout = y1 + deltay*resizePercent;
+				xout = x1;// + deltax*resizePercent;
+				yout = y1;// + deltay*resizePercent;
 			}
 		}
 		// Y direction shifts are occuring at the correct magnitude but in the wrong direction. Correct it!
 		yCorrection = (ysize) - yout;
-		gridCell.x = ( xout ) / double(xsize) * (width) + minWidth-1;	
-		gridCell.z = (yCorrection) / double(ysize) * (height) + minHeight-1;
+		gridCell.x = ( xout ) / double(xsize) * (width) + minWidth;//-1;	
+		gridCell.z = (yCorrection) / double(ysize) * (height) + minHeight;//-1;
 		loc->GetLocationController()->GetLocationModel()->SetEasting(gridCell.x);
 		loc->GetLocationController()->GetLocationModel()->SetNorthing(gridCell.z);
 	}
@@ -759,6 +777,7 @@ void Cartogram::InterpolateLocations(double *gridx, double *gridy, LocationSetLa
 //	grid -1,-1 = top left corner (max y, min x)
 	int ix,iy;
 	int index = 0;
+	int ind1 =0, ind2=0,ind3=0;
 	double xin,yin;
 	double xout,yout,yCorrection;
 	double dx,dy;
@@ -795,19 +814,23 @@ void Cartogram::InterpolateLocations(double *gridx, double *gridy, LocationSetLa
 			dx = xin - ix;
 			iy = yin;
 			dy = yin - iy;
-			int iyy = yin;
-			
-		//	index = ix*ysize + iy;
-			
+		
 			index = iy*(xsize+1) + ix;
-			
-			xout = gridx[index];
-			yout = gridy[index];
+			ind1 = iy*(xsize+1) + ix+1;
+			ind2 = (iy+1)*(xsize+1) + ix;
+			ind3 = (iy+1)*(xsize+1) + ix+1;
+	//		xout = gridx[index];
+	//		yout = gridy[index];
+			// Interpolate the locations
+			xout = (1-dx)*(1-dy)*gridx[index] + dx*(1-dy)*gridx[ind1]
+             + (1-dx)*dy*gridx[ind2] + dx*dy*gridx[ind3];
+			yout = (1-dx)*(1-dy)*gridy[index] + dx*(1-dy)*gridy[ind1]
+             + (1-dx)*dy*gridy[ind2] + dx*dy*gridy[ind3];
 		}
 		// Y direction shifts are occuring at the correct magnitude but in the wrong direction. Correct it!
 		yCorrection = (ysize) - yout;
-		gridCell.x = ( xout ) / double(xsize) * (width) + minWidth-1;	
-		gridCell.z = (yCorrection) / double(ysize) * (height) + minHeight-1;
+		gridCell.x = ( xout ) / double(xsize) * (width) + minWidth;//-1;	
+		gridCell.z = (yCorrection) / double(ysize) * (height) + minHeight;//-1;
 		loc->GetLocationController()->GetLocationModel()->SetEasting(gridCell.x);
 		loc->GetLocationController()->GetLocationModel()->SetNorthing(gridCell.z);
 	}
@@ -1004,6 +1027,7 @@ void Cartogram::StdMain(double **rho)
 	}
 	
 	*/	
+//	InterpolateGrid(gridx2d,gridy2d);
 	InterpolateGrid(gridx,gridy);
 
 	LocationSetLayerPtr locationSetLayer;
@@ -1073,6 +1097,8 @@ void Cartogram::StdMain(double **rho, int origXSize, int origYSize)
 
 	// resize the grid
 	
+	// Fractions make a restoration back to the original size is troublesome
+	// Lets get them back to "close" to the original size
 	std::vector<std::vector<double>> origXGrid = RestoreGrid(gridx2d,origXSize,origYSize);
 	std::vector<std::vector<double>> origYGrid = RestoreGrid(gridy2d,origXSize,origYSize);
 //	double* origXGrid = RestoreGrid(gridx, gridx2d, origXSize, origYSize);
@@ -1231,12 +1257,70 @@ void Cartogram::SetVectorMap( int *indexes, int max )
 
 void Cartogram::SetResizePercent(int percent)
 {
-	m_resizePercent = 1-(percent/100);
+	double perc = double(percent)/100;
+	m_resizePercent = 1.00 - perc;
+}
+
+void Cartogram::SetResize(boolean state)
+{
+	m_resize = state;
+}
+
+void Cartogram::SetInvert(boolean state)
+{
+	m_invert = state;
 }
 
 void Cartogram::ResizeRho(double **rho, double **newRho)
 {
+	double xgap = (xsize/m_resizePercent )/ xsize;
+	double ygap = (ysize/m_resizePercent )/ ysize;
+	
+	int xlimit = xsize*xgap;
+	int ylimit = ysize*ygap;
 
+	int xindex = 0;
+	int yindex = 0;
+	
+
+	std::vector< std::vector<double> > subsection (floor(xgap), std::vector<double> (floor(ygap),0) );
+
+	int i = 0, j = 0,k=0,l=0;
+	int lastX=0,lastY=0;
+	double res = 0;
+	boolean test = false;
+
+	// rho rows
+	for( i =0; i < xsize/m_resizePercent; i++ )
+	{
+		for( j = 0; j < ysize/m_resizePercent; j++ )
+		{
+			k = floor(i/xgap);
+			l = floor(j/ygap);
+			// may need to normalize by xgap*ygap after the fact
+			if( k!=lastX && l!=lastY && k < xsize-1 && l < ysize-1 )
+			{
+				newRho[k+1][l+1] += rho[i][j];	
+			}
+			else if( k!=lastX && k < xsize-1 )
+			{
+				newRho[k+1][l] += rho[i][j];	
+			}
+			else if( l!=lastY && l < ysize-1 )
+			{
+				newRho[k][l+1] += rho[i][j];
+			}
+
+			newRho[k][l] += rho[i][j];		
+			test = false;
+		}
+	}
+
+}
+
+/*
+void Cartogram::ResizeRho(double **rho, double **newRho)
+{
 	int xgap = (xsize/m_resizePercent )/ xsize;
 	int ygap = (ysize/m_resizePercent )/ ysize;
 
@@ -1247,10 +1331,10 @@ void Cartogram::ResizeRho(double **rho, double **newRho)
 	double res = 0;
 	
 	// rho rows
-	while(i < xsize/m_resizePercent)
+	while(i < xsize*xgap )
 	{
 		//rho cols
-		while (j < ysize/m_resizePercent )
+		while (j < ysize*ygap)
 		{
 			for( k=0; k < xgap; k++ )
 			{
@@ -1271,37 +1355,9 @@ void Cartogram::ResizeRho(double **rho, double **newRho)
 		j=0;
 		i+=xgap;
 	}
-	
-	/*
-	int xgap = (origX*m_resizePercent )/ origX;
-	int ygap = (origY*m_resizePercent )/ origY;
-	int xIndex=0;
-	int yIndex=0;
-
-	for(int i = 0; i < origX; i++ )
-	{
-		for( int j = 0; j < origY; j++ )
-		{
-			xIndex = i / xgap;
-			yIndex = j / ygap;
-			//	newGrid[i][j] = grid[xIndex][yIndex];
-		//	subSection[xIndex][yIndex] = 
-			
-			newRho[xIndex][yIndex] += newGrid[i][j];
-
-		}
-	}
-	for( int i =0; i < origX*m_resizePercent; i++ )
-	{
-		for( int j = 0; j < origY*m_resizePercent; j++ )
-		{
-			newRho[i][j] = newRho[i][j] / (xgap*ygap);
-		}
-	}
-	*/
 
 }
-
+*/
 template< typename Matrix >
 double Cartogram::Combine(Matrix mat,int xsize, int ysize, std::string method)
 {
@@ -1324,26 +1380,40 @@ double Cartogram::Combine(Matrix mat,int xsize, int ysize, std::string method)
 std::vector<std::vector<double>> Cartogram::RestoreGrid(std::vector<std::vector<double>> grid, int origX, int origY)
 {
 	std::vector<std::vector<double>> newGrid(origX+1,std::vector<double>(origY+1));
-	
-	int xgap = origX / (origX*m_resizePercent );
-	int ygap = origY / (origY*m_resizePercent );
+	double xgap = (xsize/m_resizePercent )/ xsize;
+	double ygap = (ysize/m_resizePercent )/ ysize;
+	int maxReducedX = xsize * xgap;
+	int maxReducedY = ysize * ygap;
+
+	int maxOriginalX = xgap*(origX*m_resizePercent);
+	int maxOriginalY = ygap*(origY*m_resizePercent);
+	// Max index from the reduced grid base on fraction loss
+	int reducedMaxIndex = ysize*(xsize+1) + xsize;
+
 	int xIndex=0;
 	int yIndex=0;
 
-	for(int i = 0; i < origX; i++ )
+	int originalMaxIndex = ysize*(xsize+1) + xsize;
+//	for(int i = 0; i < origX; i++ )
+	for(int i = 0; i < maxOriginalX; i++ )
 	{
-		for( int j = 0; j < origY; j++ )
+//		for( int j = 0; j < origY; j++ )
+		for( int j = 0; j < maxOriginalY; j++ )
 		{
-			xIndex = i / xgap;
-			yIndex = j / ygap;
+			xIndex = floor(i / xgap);
+			yIndex = floor(j / ygap);
 			// Divide by the resize percent otherwise the extents of the grid
 			// do not cover the extents of the original grid
-			newGrid[i][j] = grid[xIndex][yIndex] / m_resizePercent;
+			if ( i < maxReducedX && j < maxReducedY )
+				newGrid[i][j] = grid[xIndex][yIndex] / m_resizePercent;
+			else
+				newGrid[i][j] = grid[(maxReducedX-1)/xgap][(maxReducedY-1)/ygap];
 		}
 	}
 	return newGrid;
 
 }
+
 double* Cartogram::RestoreGrid(double* grid, std::vector<std::vector<double>> grid2, int origX, int origY)
 {
 	double* newGrid = new double[(origX+1)*(origY+1)];
@@ -1380,7 +1450,7 @@ double* Cartogram::RestoreGrid(double* grid, std::vector<std::vector<double>> gr
 double* Cartogram::RestoreGrid(double* grid, int origX, int origY)
 {
 	double* newGrid = new double[(origX+1)*(origY+1)];
-	
+
 	int xgap = origX / (origX*m_resizePercent );
 	int ygap = origY / (origY*m_resizePercent );
 	int xIndex=0;
@@ -1452,4 +1522,34 @@ void Cartogram::WriteLocations(LocationSetLayerPtr locationSetLayer,std::string 
 	}
 
 	myfile.close();	
+}
+
+double Cartogram::GetLargestDataValue()
+{
+	double count;
+	double maxValue = 0;
+	LocationSetLayerPtr locationSetLayer;
+	std::vector<LocationLayerPtr> locationLayers;
+	for( int lSLIndex = 0; lSLIndex < boost::size(m_locationSetLayerIndex); lSLIndex++ )
+	{
+
+		locationSetLayer = App::Inst().GetLayerTreeController()->GetLocationSetLayer(m_locationSetLayerIndex[lSLIndex] );
+		locationLayers = locationSetLayer->GetAllActiveLocationLayers();
+		LocationLayerPtr loc;
+
+		for( uint i = 0; i < locationLayers.size() ; i++)
+		{
+			loc = locationLayers[i];
+		
+			//int count = (int)(loc->GetLocationController()->GetData()["PhylogeneticDiversity"]);
+			std::map<std::wstring,std::wstring> data = loc->GetLocationController()->GetData();
+			std::wstring weightStr = data[m_measureLabel];
+			count = StringTools::ToDouble(weightStr);
+		//	if( count > maxValue )
+		//		maxValue = count;
+			maxValue = (count > maxValue ) ? count : maxValue;
+
+		}
+	}
+	return maxValue;
 }
