@@ -70,11 +70,12 @@ namespace GenGIS
 			V2_30 = 12,
 			V2_40 = 13,
 			V2_41 = 14,
-			V2_5IRIDADemo = 15,
-			//V2_42 = 16,
+			V2_42 = 15,
+			V2_50 = 16,
+			//V2_51= 17
 			//
-			GENGIS_VERSION = V2_5IRIDADemo,
-			SAVE_VERSION   = V2_40 /* For serialization: The last version of GenGIS
+			GENGIS_VERSION = V2_50,
+			SAVE_VERSION   = V2_50 /* For serialization: The last version of GenGIS
 			                          whose session file is compatible with this release. */
 		};
 

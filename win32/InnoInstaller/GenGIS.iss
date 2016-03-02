@@ -5,7 +5,7 @@
 ; NOTE: The value of AppId uniquely identifies this application.
 ; Do not use the same AppId value in installers for other applications.
 ; (To generate a new GUID, click Tools | Generate GUID inside the IDE.)
-AppId={{9E614273-1D18-409E-90B8-1FBB7D777CD3}
+AppId={{DF26EC4F-7800-4CB5-94DC-83565D0CDC27}
 AppName=GenGIS
 AppVerName=GenGIS v2.5.0
 ; Remember to update the APP_VERSION::CURRENT enum in 'App.hpp' to match the AppVerName number
