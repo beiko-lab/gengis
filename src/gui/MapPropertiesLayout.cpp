@@ -317,11 +317,11 @@ MapPropertiesLayout::MapPropertiesLayout( wxWindow* parent, wxWindowID id, const
 	wxGridSizer* gSizer3;
 	gSizer3 = new wxGridSizer( 1, 2, 0, 0 );
 	
-	m_lblResiizePercent = new wxStaticText( m_pnlCartogram, wxID_ANY, wxT("Resize Percent"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_lblResiizePercent = new wxStaticText( m_pnlCartogram, wxID_ANY, wxT("Resize Percent (0-60)"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_lblResiizePercent->Wrap( -1 );
 	gSizer3->Add( m_lblResiizePercent, 0, wxALL, 5 );
 	
-	m_spinResizePercent = new wxSpinCtrl( m_pnlCartogram, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 100, 50 );
+	m_spinResizePercent = new wxSpinCtrl( m_pnlCartogram, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 60, 50 );
 	gSizer3->Add( m_spinResizePercent, 0, wxALL, 5 );
 	
 	sbSizer6->Add( gSizer3, 0, wxEXPAND, 5 );

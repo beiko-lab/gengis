@@ -52,7 +52,7 @@ namespace GenGIS
 	{
 	public:
 
-		enum DATA_COMBINE { AVERAGE, STDEV, GINI, SUM };
+		enum DATA_COMBINE { AVERAGE, STDEV, GINI, SUM, COUNT };
 		
 		bool operator >( const TileModelPtr t)
 		{
@@ -102,12 +102,7 @@ namespace GenGIS
 	
 		bool operator==( const Point2D loc )
 		{
-		/*	if ( ( abs(this->GetTopLeft().x - t.x) < 0.00001)
-				&& (abs(this->GetTopLeft().y - t.y) < 0.00001)
-				&& (abs(this->GetBottomRight().x - t.x) < 0.00001)
-				&& (abs(this->GetBottomRight().y - t.y) < 0.00001 ) )
-				return true;
-		*/	
+	
 			if( ( this->GetTopLeft().x <= loc.x 
 				&& loc.x <= this->GetBottomRight().x) 
 				&& ( this->GetBottomRight().y <= loc.y 
@@ -152,15 +147,6 @@ namespace GenGIS
 			return m_topLeft;
 		}
 
-		/**
-		* A function to find if a point is with a tile
-		* Returns <0 if point is smaller, 0 if contains point and >0 if point is larger.
-		*/
-		/*
-		int Compare(Point2D Location);
-
-		int Compare(TileModelPtr tile);
-		*/
 		/**
 		* @brief Set top left coordinate.
 		*/

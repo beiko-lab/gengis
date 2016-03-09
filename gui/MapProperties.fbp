@@ -2854,7 +2854,7 @@
                                                             <property name="font"></property>
                                                             <property name="hidden">0</property>
                                                             <property name="id">wxID_ANY</property>
-                                                            <property name="label">Resize Percent</property>
+                                                            <property name="label">Resize Percent (0-60)</property>
                                                             <property name="maximum_size"></property>
                                                             <property name="minimum_size"></property>
                                                             <property name="name">m_lblResiizePercent</property>
@@ -2911,7 +2911,7 @@
                                                             <property name="hidden">0</property>
                                                             <property name="id">wxID_ANY</property>
                                                             <property name="initial">50</property>
-                                                            <property name="max">100</property>
+                                                            <property name="max">60</property>
                                                             <property name="maximum_size"></property>
                                                             <property name="min">0</property>
                                                             <property name="minimum_size"></property>

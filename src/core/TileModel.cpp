@@ -57,6 +57,15 @@ template void TileModel::serialize<boost::archive::text_wiarchive>(boost::archiv
 
 void TileModel::UpdateData(std::map<std::wstring,std::wstring> newData)
 {
+	int count = 0;
+	const std::wstring countField = StringTools::ToStringW("Count");
+	// update the count
+	if( FindField(countField)==1)
+	{
+		count = StringTools::ToInt(GetData(countField));
+		AddData(countField,StringTools::ToStringW(count+1));
+	}
+	
 	std::map<std::wstring,std::wstring>::iterator dataIter;
 	for(dataIter = newData.begin(); dataIter != newData.end(); ++dataIter)
 	{
@@ -67,64 +76,19 @@ void TileModel::UpdateData(std::map<std::wstring,std::wstring> newData)
 		if( FindField(field) == 1 )
 		{
 			std::wstring curValue = GetData( field );
-//			if(StringTools::IsDecimalNumber( value ))
-//			{
-				//binding on nonsensical string
-				curValue = curValue + StringTools::ToStringW("|") + value;
-				AddData(field, curValue);
-//			}
+			//binding on nonsensical string
+			curValue = curValue + StringTools::ToStringW("|") + value;
+			AddData(field, curValue);				
 		}
 		else
 		{
 			AddData(field,value);
+			AddData(countField,StringTools::ToStringW(1));
 		}
 	}
 
 }
-/*
-int TileModel::Compare(Point2D loc)
-{
-	Point2D topLeft = GetTopLeft();
-	Point2D botRight = GetBottomRight();
-	// if loc is within tile
-	if( ( topLeft.x <= loc.x && loc.x <= botRight.x) && ( botRight.y <= loc.y && loc.y <= topLeft.y ) )
-	{
-		return 0;
-	}
-/*	// if less than
-	else if( ( loc.x < topLeft.x && loc.y > botRight.y ) || ( loc.x > topLeft.x && loc.y > topLeft.y ) )
-		return -1;
-	else if( (loc.x < botRight.x && loc.y < topLeft.y ) || (loc.x > botRight.x && loc.y < topLeft.y ) )
-		return 1;
-	// some error has happened
-	return 99;
-*//*
-	// if above the tile
 
-	else if( loc.y > topLeft.y )
-		return -1;
-	// if below the tile
-	else if( loc.y < botRight.y )
-		return 1;
-	// deal with if it's on the same row
-	else if( (loc.y < topLeft.y) && (loc.x < topLeft.x) )
-		return -1;
-	else if( (loc.y < topLeft.y) && (loc.x > botRight.x) )
-		return 1;
-
-}
-
-int TileModel::Compare(TileModelPtr tile)
-{
-	int tL = Compare( tile->GetTopLeft() );
-	int bR = Compare( tile->GetBottomRight() );
-	// Three cases exist, either tL == bR, in which case return either, or one point is inside( or borders ) a tile, and the other isn't
-	if( tL == 0 )
-		return bR;
-	else
-		return tL;
-}
-*/
 void TileModel::UpdateSequences(std::vector<SequenceLayerPtr> sequences)
 {
  	for(uint i = 0; i < sequences.size(); i++)
@@ -200,7 +164,6 @@ void TileModel::CombineData()
 				seperatedValue.resize(std::distance(seperatedValue.begin(),it) );
 				resultConverted = boost::algorithm::join( seperatedValue, "|" );
 			}
-			//	resultConverted = value;
 		}
 		// GINI index can handle String fields
 		if(m_combinationMethod == GINI )
@@ -326,15 +289,3 @@ double TileModel::GiniSimpson(std::vector<std::wstring> values)
 	return simpson;
 
 }
-/*
-bool TileModel::operator ==( const Point2D t )
-{
-	if ( (this->GetTopLeft().x == t.x)
-		&& (this->GetTopLeft().y == t.y)
-		&& (this->GetBottomRight().x == t.x)
-		&& (this->GetBottomRight().y == t.y ) )
-		return true;
-	else
-		return false;
-}
-*/	

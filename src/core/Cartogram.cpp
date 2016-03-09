@@ -53,9 +53,8 @@ void Cartogram::serialize(Archive & ar, const unsigned int version)
 
 	// General variables
 
-//	ar & ysize;
-//	ar & xsize;
-	ar & buffer;
+	ar & ysize;
+	ar & xsize;
 	ar & valFudge;
 	ar & areaFudge;
 	
@@ -64,12 +63,15 @@ void Cartogram::serialize(Archive & ar, const unsigned int version)
 	ar & m_vectorMapIndex;
 	ar & m_mapController;
 	
-//	ar & m_resize;
-//	ar & m_resizePercent;
-	//	QUAGMIRE
-	/*
-	//	ar & m_originalGrid;
+	ar & m_resizePercent;
+	ar & m_resize;
+	ar & m_invert;
+	ar & m_distorted;
 
+	//	QUAGMIRE
+	
+	//	ar & m_originalGrid;
+	/*
 	FileHeader* header = App::Inst().GetLayerTreeController()->GetMapLayer(0)->GetMapController()->GetMapModel()->GetHeader();
 	for(int i = 0; i < (header->nRows*header->nCols) ; i++) 
 	{	
@@ -79,7 +81,7 @@ void Cartogram::serialize(Archive & ar, const unsigned int version)
 	int load = 0;
 //	ar & m_originalLocations;
 	// Save Location layers 
-
+	
 	load = App::Inst().GetLayerTreeController()->GetNumLocationSetLayers();
 	for( int i = 0; i < load; i++ )
 	{
@@ -106,7 +108,7 @@ void Cartogram::serialize(Archive & ar, const unsigned int version)
 				ar & m_originalVector[i][g][p];
 			}
 		}
-	}	}
+	}	
 	*/
 }
 template void Cartogram::serialize<boost::archive::text_woarchive>(boost::archive::text_woarchive& ar, const unsigned int version); 
@@ -114,16 +116,18 @@ template void Cartogram::serialize<boost::archive::text_wiarchive>(boost::archiv
 
 
 Cartogram::Cartogram()
-{
-	buffer = 0;		
+{	
 	valFudge=30;
 	areaFudge=5;
 	m_originalGrid = NULL;
 	m_originalLocations = NULL;
 	m_originalVector = NULL;
+	m_distorted = false;
 	m_resizePercent=0.50;
 	m_resize = false;
 	m_invert = false;
+	xsize = 0;
+	ysize = 0;
 }
 
 void Cartogram::InitCartogram(MapModelPtr mapModel, MapControllerPtr mapController)
@@ -142,8 +146,7 @@ void Cartogram::InitCartogram(MapModelPtr mapModel, MapControllerPtr mapControll
 Cartogram::Cartogram(MapControllerPtr mapController) :
 	m_mapController(mapController),
 	xsize(mapController->GetMapModel()->GetHeader()->nCols),
-	ysize(mapController->GetMapModel()->GetHeader()->nRows),
-	buffer(0)
+	ysize(mapController->GetMapModel()->GetHeader()->nRows)
 {
 	valFudge=30;
 	areaFudge=5;
@@ -164,22 +167,10 @@ Cartogram::Cartogram(MapControllerPtr mapController) :
 	SaveOriginalProjection();
 }
 
-Cartogram::Cartogram(int buff) :
-	m_mapController(App::Inst().GetLayerTreeController()->GetMapLayer(0)->GetMapController()),
-	xsize(App::Inst().GetLayerTreeController()->GetMapLayer(0)->GetMapController()->GetMapModel()->GetHeader()->nCols+buff*2),
-	ysize(App::Inst().GetLayerTreeController()->GetMapLayer(0)->GetMapController()->GetMapModel()->GetHeader()->nRows+buff*2),
-	buffer(buff)
-{
-	valFudge=30;
-	areaFudge=5;
-}
-
 void Cartogram::MakeCartogram()
 {
-	bool timing = true;
-	//resize x and y size to the reduced vallues for StdMain
-//	m_resizePercent = 0.5;
-	
+	wxBeginBusyCursor();
+	bool timing = false;
 	//		Log run times
 	std::clock_t start;
 	double duration;
@@ -269,6 +260,9 @@ void Cartogram::MakeCartogram()
 		Log::Inst().Write( StringTools::ToString(duration,4) );
 	}
 	
+	// map is now distorted
+	m_distorted = true;
+
 	/* Now redraw the map. */
 	// Need to do everything after loading terrain
 	m_mapController->GetMapView()->SetVertices(m_mapController);
@@ -300,6 +294,7 @@ void Cartogram::MakeCartogram()
 		duration = 	( std::clock() - start ) / (double) CLOCKS_PER_SEC;
 		Log::Inst().Write( StringTools::ToString(duration,4) );
 	}
+	wxEndBusyCursor();
 }
 
 void Cartogram::UndoCartogram()
@@ -364,6 +359,9 @@ void Cartogram::UndoCartogram()
 		GeoTreeViewPtr geoTreeView = App::Inst().GetLayerTreeController()->GetTreeLayer(i)->GetGeoTreeView();
 		geoTreeView->ProjectTree(geoTreeView->GetLeafNames());
 	}
+
+	// map is no longer distorted
+	m_distorted = false;
 }
 
 std::map<int,boost::array<double,4>> Cartogram::TranslateLocations()

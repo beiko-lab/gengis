@@ -74,13 +74,17 @@ namespace GenGIS
 		void SetResize(boolean state);
 		void SetInvert(boolean state);
 
+		boolean GetMapCurrentlyDistorted(){return m_distorted;}
+
 	private:
 		// Can't be const due to serialization
 		// number of rows in map
 		int ysize;
 		// number of columns in map
 		int xsize;
-		int buffer;
+
+		// is the map currently distorted
+		boolean m_distorted;
 
 		// percent to reduce the map by for speedup
 		double m_resizePercent;

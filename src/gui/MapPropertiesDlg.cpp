@@ -45,8 +45,6 @@ const int MAX_ELEVATION = 10000;
 MapPropertiesDlg::MapPropertiesDlg(wxWindow* parent, MapLayerPtr mapLayer) :
 	MapPropertiesLayout(parent),
 	m_mapLayer(mapLayer),
-//	m_cartogram(new Cartogram()),
-//	m_cartogram(m_mapLayer->GetMapController()->GetMapModel()->GetCartogram()),
 	m_terrainMapWidget(new TerrainMapWidget(m_cboColourMap, m_scrolledWindowColourMap, &m_bColourMapChanged))
 {
 	SetIcon(wxIcon(App::Inst().GetExeDir() + wxT("images/CrazyEye.ico"), wxBITMAP_TYPE_ICO));

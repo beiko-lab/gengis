@@ -1216,12 +1216,40 @@ void GenGisFrame::OnFileSaveSession( wxCommandEvent& event )
 	// If the session has not yet been saved (empty file path),
 	// open the save dialog to specify a filename and location.
 	// Otherwise, save to current file.
+	
+	// warn user they may be about to save a distorted map, and that's a bad idea
+	int i = App::Inst().GetLayerTreeController()->GetNumMapLayers();
+	if( i > 0 )
+	{
+		CartogramPtr carto = App::Inst().GetLayerTreeController()->GetMapLayer(0)->GetMapController()->GetMapModel()->GetCartogram();
+		if( carto->GetMapCurrentlyDistorted() )
+		{
+			int answer = wxMessageBox(wxT("The current GenGIS projection has been distorted. Saving the map in its current state may result in errors in the projection when this session is restored."),
+				wxT("Saving Distorted Projection"), wxOK | wxCANCEL);
+			if( answer == wxCANCEL )
+				return;
+		}
+	}
 	SaveSession( App::Inst().GetSessionFullPath().IsEmpty() );
 }
 
 /** File->Save As (session) event handler. */
 void GenGisFrame::OnFileSaveSessionAs( wxCommandEvent& event )
 {
+	// warn user they may be about to save a distorted map, and that's a bad idea
+	int i = App::Inst().GetLayerTreeController()->GetNumMapLayers();
+	if( i > 0 )
+	{
+		CartogramPtr carto = App::Inst().GetLayerTreeController()->GetMapLayer(0)->GetMapController()->GetMapModel()->GetCartogram();
+		if( carto->GetMapCurrentlyDistorted() )
+		{
+			int answer = wxMessageBox(wxT("The current GenGIS projection has been distorted. Saving the map in its current state may result in errors in the projection when this session is restored."),
+				wxT("Saving Distorted Projection"), wxOK | wxCANCEL);
+			if( answer == wxCANCEL )
+				return;
+		}
+	}
+
 	// Always open the save dialog to specify a filename and location.
 	SaveSession( OPEN_DIALOG );
 }

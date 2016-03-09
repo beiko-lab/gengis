@@ -197,7 +197,7 @@ void LocationSetPropertiesDlg::InitLocationGridColour()
 	{
 		m_choiceGridFieldToChart->Append(wxString((*it).c_str()));
 	}
-
+	m_choiceGridFieldToChart->Append(_T("Count"));
 	// populate combo box with all fields associated with a sequence
 	if(App::Inst().GetLayerTreeController()->GetNumSequenceLayers() > 0)
 	{
