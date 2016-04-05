@@ -639,6 +639,16 @@ void Cartogram::InterpolateVector(Matrix gridx, Matrix gridy, VectorMapControlle
 	VectorMapModelPtr vMapModel = vectorMap->GetVectorMapModel();
 	GeoVector* geoVector;
 	
+	// code to write the vector points before and after the interpolation
+	int names = 0;
+	std::ofstream myfile;
+	std::string fileName = "C:/Users/Admin/Documents/GCPDPaper/Distance/252ReducedRunVectorPoints.csv";
+	try{
+	myfile.open(fileName.c_str(), std::ofstream::out);
+	}catch(std::ifstream::failure &writeErr){
+		Log::Inst().Warning("Could not open RHO file.");
+	}
+
 	// g for geometries
 	for( uint g = 0; g< vMapModel->GetNumberOfGeometries(); g++ )
 	{
@@ -654,11 +664,20 @@ void Cartogram::InterpolateVector(Matrix gridx, Matrix gridy, VectorMapControlle
 				nZ = gridy[X][Z];
 				Xout  = nX/xsize*width + minWidth;
 				Zout = (nZ)/ysize*height + minHeight;
+
+				myfile << names + "," +
+					boost::lexical_cast<std::string>(geoVector->pointX[p]) + "," +
+					boost::lexical_cast<std::string>(geoVector->pointY[p]) + "," +
+					boost::lexical_cast<std::string>(Xout) + "," +
+					boost::lexical_cast<std::string>(Zout) + "\n";
+
 				geoVector->pointX[p] = Xout;
 				geoVector->pointY[p] = Zout;
 			}
+			myfile.flush();
 		}
 	}
+	myfile.close();
 }
 
 void Cartogram::InterpolateVector(double* gridx, double* gridy, VectorMapControllerPtr vectorMap)
@@ -672,6 +691,15 @@ void Cartogram::InterpolateVector(double* gridx, double* gridy, VectorMapControl
 	VectorMapModelPtr vMapModel = vectorMap->GetVectorMapModel();
 	GeoVector* geoVector;
 	int index = 0;
+	// code to write the vector points before and after the interpolation
+	int names = 0;
+	std::ofstream myfile;
+	std::string fileName = "C:/Users/Admin/Documents/GCPDPaper/Distance/FullRunVectorPoints.csv";
+	try{
+	myfile.open(fileName.c_str(), std::ofstream::out);
+	}catch(std::ifstream::failure &writeErr){
+		Log::Inst().Warning("Could not open RHO file.");
+	}
 
 	// g for geometries
 	for( uint g = 0; g< vMapModel->GetNumberOfGeometries(); g++ )
@@ -690,11 +718,18 @@ void Cartogram::InterpolateVector(double* gridx, double* gridy, VectorMapControl
 				
 				Xout  = nX/xsize*width + minWidth;
 				Zout = (nZ)/ysize*height + minHeight;
+				myfile << names + "," +
+					boost::lexical_cast<std::string>(geoVector->pointX[p]) + "," +
+					boost::lexical_cast<std::string>(geoVector->pointY[p]) + "," +
+					boost::lexical_cast<std::string>(Xout) + "," +
+					boost::lexical_cast<std::string>(Zout) + "\n";
 				geoVector->pointX[p] = Xout;
 				geoVector->pointY[p] = Zout;
 			}
+			myfile.flush();
 		}
 	}
+	myfile.close();
 }
 
 
