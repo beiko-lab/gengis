@@ -108,7 +108,7 @@ App::App():
 	m_bCurrentlySerializing( false ),
 	m_bSaveIsUpToDate( true ),
 	m_bIsEmptySession( true ),
-	m_appVersion( wxT( "2.5.0" ) )
+	m_appVersion( wxT( "2.5.1" ) )
 
 {
 	m_colourMapManager.reset(new ColourMapManager());

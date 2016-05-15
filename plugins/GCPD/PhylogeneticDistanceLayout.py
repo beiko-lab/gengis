@@ -16,7 +16,7 @@ import wx
 class PhylogeneticDistanceLayout ( wx.Frame ):
 	
 	def __init__( self, parent ):
-		wx.Frame.__init__ ( self, parent, id = wx.ID_ANY, title = u"Phylogenetic Distance Calculator", pos = wx.DefaultPosition, size = wx.Size( 650,600 ), style = wx.DEFAULT_FRAME_STYLE|wx.TAB_TRAVERSAL )
+		wx.Frame.__init__ ( self, parent, id = wx.ID_ANY, title = u"Geographically Coupled Phylogenetic Distance Calculator", pos = wx.DefaultPosition, size = wx.Size( 650,600 ), style = wx.DEFAULT_FRAME_STYLE|wx.TAB_TRAVERSAL )
 		
 		self.SetSizeHintsSz( wx.DefaultSize, wx.DefaultSize )
 		self.SetBackgroundColour( wx.SystemSettings.GetColour( wx.SYS_COLOUR_BTNFACE ) )
@@ -60,6 +60,11 @@ class PhylogeneticDistanceLayout ( wx.Frame ):
 		fgSizer2.Add( self.m_cboTreeLayerField, 0, wx.ALL|wx.EXPAND, 5 )
 		
 		bSizer4.Add( fgSizer2, 0, wx.EXPAND, 5 )
+		
+		m_rboxPDStateChoices = [ u"PD", u"1-PD" ]
+		self.m_rboxPDState = wx.RadioBox( self, wx.ID_ANY, u"PD State", wx.DefaultPosition, wx.DefaultSize, m_rboxPDStateChoices, 2, wx.RA_SPECIFY_COLS )
+		self.m_rboxPDState.SetSelection( 1 )
+		bSizer4.Add( self.m_rboxPDState, 0, wx.ALL, 5 )
 		
 		bSizer5.Add( bSizer4, 0, wx.EXPAND, 5 )
 		

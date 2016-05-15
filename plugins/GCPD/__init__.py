@@ -1,11 +1,11 @@
 def name():
-	return "Phylogenetic Distance"
+	return "GCPD"
 
 def version():
-	return "Version 1.0"
+	return "Version 2.0"
 
 def description():
-	return "Perform phylogenetic distance calculation for use with cartograms."
+	return "Perform geographically coupled phylogenetic distance calculation for use with cartograms."
 
 def authors():
 	return "Alexander Keddy"

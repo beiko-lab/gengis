@@ -6,7 +6,7 @@ from scipy.spatial import Delaunay
 import dendropy
 
 
-class PhylogeneticDistance( PhylogeneticDistanceLayout ):
+class GCPD( PhylogeneticDistanceLayout ):
 	
 	combinationMethods = {"Average(Local)": "AVGLOCAL", "Average(Global)": "AVGGLOBAL", "Sum": "SUM"}
 	
@@ -32,6 +32,7 @@ class PhylogeneticDistance( PhylogeneticDistanceLayout ):
 			self.m_cboTreeLayerField.Append(tree.GetName())
 		self.m_cboTreeLayerField.SetSelection(0)
 		self.OnMeasureChanged("fake")
+		
 	
 	def OnOK(self, event):
 		self.Close()
@@ -59,8 +60,11 @@ class PhylogeneticDistance( PhylogeneticDistanceLayout ):
 		self.treeIndex = self.m_cboTreeLayerField.GetSelection()
 		# get selected combination method
 		selectedMethod = self.m_cboMeasure.GetStringSelection()
+		# get the state of the pd calculation (pd = 0, (1-pd)=1)
+		# GetSelection() -> returns index of selected colomn
+		state = self.m_rboxPDState.GetSelection()-1;
 		
-		self.locWeights = self.Main( self.locSetIndex, self.treeIndex, self.combinationMethods[selectedMethod] )
+		self.locWeights = self.Main( self.locSetIndex, self.treeIndex, self.combinationMethods[selectedMethod],state )
 		self.PrintWeights(self.locSetIndex, self.locWeights)
 	
 	def PrintWeights(self, locSetIndex, locWeights):
@@ -138,7 +142,7 @@ class PhylogeneticDistance( PhylogeneticDistanceLayout ):
 				val.append("0")
 		GenGIS.layerTree.GetLocationSetLayer(self.locSetIndex).GetController().AddMetadata( name , val )
 
-	def Main(self,locationLayer, treeLayer, combinationMethod):	
+	def Main(self,locationLayer, treeLayer, combinationMethod,flipWeights=False):	
 		#need at least location, and tree layers.
 		# check required data has been loaded		
 	#	treeLayer = 0
@@ -229,7 +233,7 @@ class PhylogeneticDistance( PhylogeneticDistanceLayout ):
 				PhyloDistance[a,b].extend(weights)
 			else:
 				PhyloDistance[a,b] = weights
-		flipWeights = True
+		#flipweights = True
 		if flipWeights:
 			# flip PD so that closely related things have the largest values
 			for key, val in PhyloDistance.iteritems():
@@ -243,3 +247,6 @@ class PhylogeneticDistance( PhylogeneticDistanceLayout ):
 	#	print phyloDistComb
 		locationWeights = self.WeightsToLocations(phyloDistComb)
 		return locationWeights
+	
+	def OnHelp( self, event ):
+		wx.LaunchDefaultBrowser( 'http://kiwi.cs.dal.ca/GenGIS/index.php/Description_of_GenGIS_plugins#Geographically_Coupled_Phylogenetic_Distance_.28GCPD.29' )

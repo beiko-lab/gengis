@@ -72,9 +72,10 @@ namespace GenGIS
 			V2_41 = 14,
 			V2_42 = 15,
 			V2_50 = 16,
-			//V2_51= 17
+			V2_51= 17,
+			//V2_52=18,
 			//
-			GENGIS_VERSION = V2_50,
+			GENGIS_VERSION = V2_51,
 			SAVE_VERSION   = V2_50 /* For serialization: The last version of GenGIS
 			                          whose session file is compatible with this release. */
 		};
