@@ -108,6 +108,8 @@ namespace GenGIS
 		// save all vector layers
 		Point3D*** m_originalVector;
 
+		std::vector<PolygonModelPtr> m_originalPolys; 
+
 		template< typename Matrix >
 		double Combine(Matrix mat,int xsize, int ysize, std::string method);
 	
@@ -161,6 +163,10 @@ namespace GenGIS
 		template< typename Matrix >
 		void InterpolateVector(Matrix gridx, Matrix gridy, VectorMapControllerPtr vectorMap);
 		void InterpolateVector(double* gridx, double* gridy, VectorMapControllerPtr vectorMap);
+
+		template< typename Matrix >
+		void InterpolatePolygons(Matrix gridx, Matrix gridy, LocationPolygonsPtr locationGons, bool resize);
+		void InterpolatePolygons(double * gridx, double* gridy, LocationPolygonsPtr locationGons, bool resize);
 
 		/** Transform a 1D array to a 2D array in order to move between Cart and Interp steps. */
 		std::vector<std::vector<double>> ArrayTransform(double * grid);

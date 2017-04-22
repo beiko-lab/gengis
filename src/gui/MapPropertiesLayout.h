@@ -112,6 +112,10 @@ namespace GenGIS
 			wxPanel* m_pnlCartogram;
 			wxStaticText* m_lblAreaFudge;
 			wxSpinCtrl* m_spinAreaFudge;
+			wxStaticText* m_lblAreaFudgeXLabel;
+			wxStaticText* m_lblAreaFudgeX;
+			wxStaticText* m_lblAreaFudgeYLabel;
+			wxStaticText* m_lblAreaFudgeY;
 			wxStaticText* m_lblValueFudge;
 			wxSpinCtrl* m_spinValueFudge;
 			wxStaticText* m_lblSelectLocation;
@@ -145,6 +149,8 @@ namespace GenGIS
 			virtual void OnInterpolationChange( wxCommandEvent& event ) { event.Skip(); }
 			virtual void OnNumEntriesChange( wxSpinEvent& event ) { event.Skip(); }
 			virtual void OnEvenlySpace( wxCommandEvent& event ) { event.Skip(); }
+			virtual void OnAreaFudge( wxSpinEvent& event ) { event.Skip(); }
+			virtual void OnAreaFudge( wxCommandEvent& event ) { event.Skip(); }
 			virtual void OnCartValueToggle( wxCommandEvent& event ) { event.Skip(); }
 			virtual void OnResizeToggle( wxCommandEvent& event ) { event.Skip(); }
 			virtual void OnSetResizePercent( wxSpinEvent& event ) { event.Skip(); }

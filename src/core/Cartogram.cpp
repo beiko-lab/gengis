@@ -31,6 +31,8 @@
 #include "../core/LocationLayer.hpp"
 #include "../core/TreeLayer.hpp"
 #include "../core/GeoTreeView.hpp"
+#include "../core/PolygonModel.hpp"
+#include "../core/LocationPolygons.hpp"
 
 #include <iostream>
 #include <fstream>
@@ -117,7 +119,7 @@ template void Cartogram::serialize<boost::archive::text_wiarchive>(boost::archiv
 
 Cartogram::Cartogram()
 {	
-	valFudge=30;
+	valFudge=10;
 	areaFudge=5;
 	m_originalGrid = NULL;
 	m_originalLocations = NULL;
@@ -190,6 +192,7 @@ void Cartogram::MakeCartogram()
 		int load = App::Inst().GetLayerTreeController()->GetNumLocationSetLayers();
 		if (load > 0)
 			m_originalLocations = new Point3D*[App::Inst().GetLayerTreeController()->GetNumLocationSetLayers()];
+		
 		// need to account for No vector map
 		load = App::Inst().GetLayerTreeController()->GetNumVectorMapLayers();
 		if ( load > 0 )
@@ -321,6 +324,10 @@ void Cartogram::UndoCartogram()
 		std::vector<LocationLayerPtr> locationLayers = locationSetLayer->GetAllActiveLocationLayers();
 		LocationLayerPtr loc;
 		
+		if( i == 0 )
+		{
+			locationSetLayer->GetLocationPolygons()->SetPolygons(m_originalPolys);
+		}
 		for( uint l = 0; l < locationLayers.size() ; l++)
 		{
 			loc = locationLayers[l];
@@ -539,7 +546,7 @@ void Cartogram::PopulateRho(double **rho)
 	//			prime[y][x] += val*valFudge;
 				if(m_invert)
 				{
-					rho[y][x] += abs( invertValue - val*valFudge );
+						rho[y][x] += abs( invertValue - val ) *valFudge ;
 				}
 				else
 					rho[y][x] += val*valFudge;
@@ -641,13 +648,13 @@ void Cartogram::InterpolateVector(Matrix gridx, Matrix gridy, VectorMapControlle
 	
 	// code to write the vector points before and after the interpolation
 	int names = 0;
-	std::ofstream myfile;
+//	std::ofstream myfile;
 	std::string fileName = "C:/Users/Admin/Documents/GCPDPaper/Distance/252ReducedRunVectorPoints.csv";
-	try{
-	myfile.open(fileName.c_str(), std::ofstream::out);
-	}catch(std::ifstream::failure &writeErr){
-		Log::Inst().Warning("Could not open RHO file.");
-	}
+//	try{
+//	myfile.open(fileName.c_str(), std::ofstream::out);
+//	}catch(std::ifstream::failure &writeErr){
+//		Log::Inst().Warning("Could not open RHO file.");
+//	}
 
 	// g for geometries
 	for( uint g = 0; g< vMapModel->GetNumberOfGeometries(); g++ )
@@ -665,19 +672,91 @@ void Cartogram::InterpolateVector(Matrix gridx, Matrix gridy, VectorMapControlle
 				Xout  = nX/xsize*width + minWidth;
 				Zout = (nZ)/ysize*height + minHeight;
 
-				myfile << names + "," +
+/*				myfile << names + "," +
 					boost::lexical_cast<std::string>(geoVector->pointX[p]) + "," +
 					boost::lexical_cast<std::string>(geoVector->pointY[p]) + "," +
 					boost::lexical_cast<std::string>(Xout) + "," +
 					boost::lexical_cast<std::string>(Zout) + "\n";
-
+*/
 				geoVector->pointX[p] = Xout;
 				geoVector->pointY[p] = Zout;
 			}
-			myfile.flush();
+//			myfile.flush();
 		}
 	}
-	myfile.close();
+//	myfile.close();
+}
+
+void Cartogram::InterpolatePolygons(double* gridx, double* gridy, LocationPolygonsPtr locationGons, bool resize = false)
+{
+	double width = m_mapController->GetMapModel()->GetWidth();
+	double height = m_mapController->GetMapModel()->GetHeight();
+	double minWidth = -1*width/2;
+	double minHeight = -1*height/2;
+	int index = 0;
+	float X,Z,nX,nZ,Xout,Zout;
+
+	std::vector<PolygonModelPtr> polys = locationGons->GetPolygons();
+	for(int i=0; i< boost::size(polys); i++)
+	{
+		std::vector<Point3D> verts = polys[i]->modifiedVertices;
+		for(int vert=0; vert < boost::size(verts); vert++)
+		{
+			//warp the modified vertices and we're golden!		
+			Point3D gridCell = verts[vert];
+		
+			X = (gridCell.x - minWidth) / width * xsize;
+			Z = (gridCell.z - minHeight) / height *ysize;
+			if( X < xsize && X >=0 && Z < ysize && Z >= 0 )
+			{	
+				index = floor(Z)*(xsize+1) + floor(X);
+				nX = gridx[index];
+				nZ = gridy[index];
+				Xout  = nX/xsize*width + minWidth;
+				Zout = (nZ)/ysize*height + minHeight;
+				verts[vert].x = Xout;
+				verts[vert].z = Zout;
+			}
+		}
+		polys[i]->modifiedVertices = verts;
+	}
+	locationGons->SetPolygons(polys);
+}
+
+template< typename Matrix >
+void Cartogram::InterpolatePolygons(Matrix gridx, Matrix gridy, LocationPolygonsPtr locationGons, bool resize = false)
+{
+	double width = m_mapController->GetMapModel()->GetWidth();
+	double height = m_mapController->GetMapModel()->GetHeight();
+	double minWidth = -1*width/2;
+	double minHeight = -1*height/2;
+
+	float X,Z,nX,nZ,Xout,Zout;
+
+	std::vector<PolygonModelPtr> polys = locationGons->GetPolygons();
+	for(int i=0; i< boost::size(polys); i++)
+	{
+		std::vector<Point3D> verts = polys[i]->modifiedVertices;
+		for(int vert=0; vert < boost::size(verts); vert++)
+		{
+			//warp the modified vertices and we're golden!		
+			Point3D gridCell = verts[vert];
+		
+			X = (gridCell.x - minWidth) / width * xsize;
+			Z = (gridCell.z - minHeight) / height *ysize;
+			if( X < xsize && X >=0 && Z < ysize && Z >= 0 )
+			{	
+				nX = gridx[X][Z];
+				nZ = gridy[X][Z];
+				Xout  = nX/xsize*width + minWidth;
+				Zout = (nZ)/ysize*height + minHeight;
+				verts[vert].x = Xout;
+				verts[vert].z = Zout;
+			}
+		}
+		polys[i]->modifiedVertices = verts;
+	}
+	locationGons->SetPolygons(polys);
 }
 
 void Cartogram::InterpolateVector(double* gridx, double* gridy, VectorMapControllerPtr vectorMap)
@@ -693,13 +772,13 @@ void Cartogram::InterpolateVector(double* gridx, double* gridy, VectorMapControl
 	int index = 0;
 	// code to write the vector points before and after the interpolation
 	int names = 0;
-	std::ofstream myfile;
-	std::string fileName = "C:/Users/Admin/Documents/GCPDPaper/Distance/FullRunVectorPoints.csv";
-	try{
-	myfile.open(fileName.c_str(), std::ofstream::out);
-	}catch(std::ifstream::failure &writeErr){
-		Log::Inst().Warning("Could not open RHO file.");
-	}
+//	std::ofstream myfile;
+//	std::string fileName = "C:/Users/Admin/Documents/GCPDPaper/Distance/FullRunVectorPoints.csv";
+//	try{
+//	myfile.open(fileName.c_str(), std::ofstream::out);
+//	}catch(std::ifstream::failure &writeErr){
+//		Log::Inst().Warning("Could not open RHO file.");
+//	}
 
 	// g for geometries
 	for( uint g = 0; g< vMapModel->GetNumberOfGeometries(); g++ )
@@ -718,18 +797,18 @@ void Cartogram::InterpolateVector(double* gridx, double* gridy, VectorMapControl
 				
 				Xout  = nX/xsize*width + minWidth;
 				Zout = (nZ)/ysize*height + minHeight;
-				myfile << names + "," +
+			/*	myfile << names + "," +
 					boost::lexical_cast<std::string>(geoVector->pointX[p]) + "," +
 					boost::lexical_cast<std::string>(geoVector->pointY[p]) + "," +
 					boost::lexical_cast<std::string>(Xout) + "," +
 					boost::lexical_cast<std::string>(Zout) + "\n";
-				geoVector->pointX[p] = Xout;
+			*/	geoVector->pointX[p] = Xout;
 				geoVector->pointY[p] = Zout;
 			}
-			myfile.flush();
+		//	myfile.flush();
 		}
 	}
-	myfile.close();
+//	myfile.close();
 }
 
 
@@ -914,17 +993,18 @@ void Cartogram::WriteMatrix(Matrix rho, int row, int col, std::string name)
 	{
 		fileName = "C:/Users/Admin/Desktop/" + name + ".txt";
 	}
-	
+	/*
 	try{
 	myfile.open(fileName.c_str(), std::ofstream::out);
 	}catch(std::ifstream::failure &writeErr){
 		Log::Inst().Warning("Could not open RHO file.");
 	}
+
 	if(!myfile)
 	{
 		Log::Inst().Warning("Could not open RHO file.");
 	}
-
+	*/
 	for(int i = 0; i < row; i++)
 	{
 		for( int j = 0; j < col; j++)
@@ -1070,9 +1150,14 @@ void Cartogram::StdMain(double **rho)
 	{
 		locationSetLayer = App::Inst().GetLayerTreeController()->GetLocationSetLayer( m_locationSetLayerIndex[i] );
 	//	InterpolateLocations(gridx2d, gridy2d, locationSetLayer);
+	//	WriteLocations(locationSetLayer, "preDistort.txt");
 		InterpolateLocations(gridx, gridy, locationSetLayer);
+	//	WriteLocations(locationSetLayer, "postDistort.txt");
+
+		LocationPolygonsPtr locationsGons = locationSetLayer->GetLocationPolygons();
+		InterpolatePolygons(gridx, gridy,locationsGons);
+		locationsGons->Render();
 	}
-	WriteLocations(locationSetLayer,"DistortedLocations.txt");
 	// If there's a vector map, transform it!
 	VectorMapControllerPtr vectorController;
 	if( App::Inst().GetLayerTreeController()->GetNumVectorMapLayers() > 0 || boost::size(m_vectorMapIndex) > 0 )
@@ -1153,8 +1238,13 @@ void Cartogram::StdMain(double **rho, int origXSize, int origYSize)
 	{
 		locationSetLayer = App::Inst().GetLayerTreeController()->GetLocationSetLayer( m_locationSetLayerIndex[i] );	
 		InterpolateLocations(origXGrid, origYGrid, locationSetLayer,true);
+
+		LocationPolygonsPtr locationsGons = locationSetLayer->GetLocationPolygons();
+		InterpolatePolygons(origXGrid, origYGrid,locationsGons);
+		locationsGons->Render();
+
 	}
-	WriteLocations(locationSetLayer,"FasterDistortedLocations.txt");
+
 	// If there's a vector map, transform it!
 	VectorMapControllerPtr vectorController;
 	if( App::Inst().GetLayerTreeController()->GetNumVectorMapLayers() > 0 || boost::size(m_vectorMapIndex) > 0 )
@@ -1165,7 +1255,7 @@ void Cartogram::StdMain(double **rho, int origXSize, int origYSize)
 			InterpolateVector(origXGrid, origYGrid, vectorController);
 		}
 	}
-
+	
 	// free up space again
 //	free(origXGrid);
 //	free(origYGrid);
@@ -1241,8 +1331,13 @@ void Cartogram::SaveOriginalProjection()
 		m_originalLocations[i] = new Point3D[App::Inst().GetLayerTreeController()->GetLocationSetLayer(0)->GetNumLocationLayers()];
 		LocationSetLayerPtr locationSetLayer = App::Inst().GetLayerTreeController()->GetLocationSetLayer(i);
 		std::vector<LocationLayerPtr> locationLayers = locationSetLayer->GetAllActiveLocationLayers();
-		LocationLayerPtr loc;
-		
+		LocationLayerPtr loc;	
+
+		if( i == 0 )
+		{
+			std::vector<PolygonModelPtr> polys = locationSetLayer->GetLocationPolygons()->GetPolygons();
+			m_originalPolys = polys;
+		}
 		for( uint l = 0; l < locationLayers.size() ; l++)
 		{
 			loc = locationLayers[l];
@@ -1524,7 +1619,7 @@ void Cartogram::WriteLocations(LocationSetLayerPtr locationSetLayer,std::string 
 	{
 		fileName = "C:/Users/Admin/Desktop/" + fh + ".txt";
 	}
-	
+	/*
 	try{
 	myfile.open(fileName.c_str(), std::ofstream::out);
 	}catch(std::ifstream::failure &writeErr){
@@ -1534,7 +1629,7 @@ void Cartogram::WriteLocations(LocationSetLayerPtr locationSetLayer,std::string 
 	{
 		Log::Inst().Warning("Could not open RHO file.");
 	}
-
+	*/
 	std::vector<LocationLayerPtr> locationLayers = locationSetLayer->GetAllActiveLocationLayers();
 	LocationLayerPtr loc;
 	double easting;

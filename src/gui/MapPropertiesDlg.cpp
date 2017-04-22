@@ -149,10 +149,22 @@ void MapPropertiesDlg::InitColourMap()
 }
 
 void MapPropertiesDlg::InitCartogram()
-{
+{	
 	m_spinAreaFudge->SetValue(_T("5"));
 	m_spinValueFudge->SetValue(_T("10"));
 	
+	// X/Y size stuff
+	FileHeader* header =  m_mapLayer->GetMapController()->GetMapModel()->GetHeader();	
+	int xsize = header->nCols;
+	int ysize = header->nRows;
+
+	int areaFudge = m_spinAreaFudge->GetValue();
+	
+	std::wstring xFudge = StringTools::ToStringW(areaFudge) + _T('/') + StringTools::ToStringW(xsize);
+	std::wstring yFudge = StringTools::ToStringW(areaFudge) + _T('/') + StringTools::ToStringW(ysize);
+	m_lblAreaFudgeX->SetLabel(xFudge.c_str());
+	m_lblAreaFudgeY->SetLabel(yFudge.c_str());
+
 	// set up location set selection
 	int numSelections = App::Inst().GetLayerTreeController()->GetNumLocationSetLayers(); 
 //	m_cboSelectLocation->Append(_T("None"));
@@ -405,6 +417,24 @@ void MapPropertiesDlg::OnUndoCartogram( wxCommandEvent& event )
 {
 	m_cartogram->UndoCartogram();
 }
+
+
+// Change the Value of Area Fudge
+void MapPropertiesDlg::OnAreaFudge( wxCommandEvent& event )
+{
+// X/Y size stuff
+	FileHeader* header =  m_mapLayer->GetMapController()->GetMapModel()->GetHeader();	
+	int xsize = header->nCols;
+	int ysize = header->nRows;
+	
+	int areaFudge = m_spinAreaFudge->GetValue();
+	
+	std::wstring xFudge = StringTools::ToStringW(areaFudge) + _T('/') + StringTools::ToStringW(xsize);
+	std::wstring yFudge = StringTools::ToStringW(areaFudge) + _T('/') + StringTools::ToStringW(ysize);
+	m_lblAreaFudgeX->SetLabel(xFudge.c_str());
+	m_lblAreaFudgeY->SetLabel(yFudge.c_str());
+}
+
 // Toggle wether the density matrix is resized
 void MapPropertiesDlg::OnResizeToggle(wxCommandEvent& event)
 {

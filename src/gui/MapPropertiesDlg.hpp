@@ -114,7 +114,7 @@ namespace GenGIS
 
 	//	void SetValueFudge( wxCommandEvent& event );
 		
-	//	void SetAreaFudge( wxCommandEvent& event );
+		void OnAreaFudge( wxCommandEvent& event );
 		
 		/** Select Which Location Set should be used for distortion. */
 		void OnCartogramSelectLocationSet( wxCommandEvent& event );

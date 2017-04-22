@@ -235,7 +235,7 @@ MapPropertiesLayout::MapPropertiesLayout( wxWindow* parent, wxWindowID id, const
 	m_pnlSymbology->SetSizer( bSizer22 );
 	m_pnlSymbology->Layout();
 	bSizer22->Fit( m_pnlSymbology );
-	m_notebook->AddPage( m_pnlSymbology, wxT("Symbology"), true );
+	m_notebook->AddPage( m_pnlSymbology, wxT("Symbology"), false );
 	m_pnlCartogram = new wxPanel( m_notebook, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
 	wxBoxSizer* bSizer23;
 	bSizer23 = new wxBoxSizer( wxVERTICAL );
@@ -244,14 +244,30 @@ MapPropertiesLayout::MapPropertiesLayout( wxWindow* parent, wxWindowID id, const
 	sbSizer5 = new wxStaticBoxSizer( new wxStaticBox( m_pnlCartogram, wxID_ANY, wxT("Location Properties") ), wxVERTICAL );
 	
 	wxGridSizer* gSizer1;
-	gSizer1 = new wxGridSizer( 2, 2, 0, 0 );
+	gSizer1 = new wxGridSizer( 4, 2, 0, 0 );
 	
-	m_lblAreaFudge = new wxStaticText( m_pnlCartogram, wxID_ANY, wxT("Location Radius"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_lblAreaFudge = new wxStaticText( m_pnlCartogram, wxID_ANY, wxT("Location Radius (UTM)"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_lblAreaFudge->Wrap( -1 );
 	gSizer1->Add( m_lblAreaFudge, 0, wxALL, 5 );
 	
-	m_spinAreaFudge = new wxSpinCtrl( m_pnlCartogram, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 10000, 4 );
+	m_spinAreaFudge = new wxSpinCtrl( m_pnlCartogram, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 10000, 5 );
 	gSizer1->Add( m_spinAreaFudge, 0, wxALL, 5 );
+	
+	m_lblAreaFudgeXLabel = new wxStaticText( m_pnlCartogram, wxID_ANY, wxT("X:"), wxDefaultPosition, wxDefaultSize, wxALIGN_RIGHT );
+	m_lblAreaFudgeXLabel->Wrap( -1 );
+	gSizer1->Add( m_lblAreaFudgeXLabel, 0, wxALL|wxALIGN_RIGHT, 5 );
+	
+	m_lblAreaFudgeX = new wxStaticText( m_pnlCartogram, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	m_lblAreaFudgeX->Wrap( -1 );
+	gSizer1->Add( m_lblAreaFudgeX, 0, wxALL|wxALIGN_CENTER_HORIZONTAL, 5 );
+	
+	m_lblAreaFudgeYLabel = new wxStaticText( m_pnlCartogram, wxID_ANY, wxT("Y:"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_lblAreaFudgeYLabel->Wrap( -1 );
+	gSizer1->Add( m_lblAreaFudgeYLabel, 0, wxALL|wxALIGN_RIGHT, 5 );
+	
+	m_lblAreaFudgeY = new wxStaticText( m_pnlCartogram, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	m_lblAreaFudgeY->Wrap( -1 );
+	gSizer1->Add( m_lblAreaFudgeY, 0, wxALL|wxALIGN_CENTER_HORIZONTAL, 5 );
 	
 	m_lblValueFudge = new wxStaticText( m_pnlCartogram, wxID_ANY, wxT("Variable Multiplier"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_lblValueFudge->Wrap( -1 );
@@ -345,7 +361,7 @@ MapPropertiesLayout::MapPropertiesLayout( wxWindow* parent, wxWindowID id, const
 	m_pnlCartogram->SetSizer( bSizer23 );
 	m_pnlCartogram->Layout();
 	bSizer23->Fit( m_pnlCartogram );
-	m_notebook->AddPage( m_pnlCartogram, wxT("Cartogram"), false );
+	m_notebook->AddPage( m_pnlCartogram, wxT("Cartogram"), true );
 	m_pnlMetadata = new wxPanel( m_notebook, ID_PNL_METADATA, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
 	wxBoxSizer* m_sizerMetadata;
 	m_sizerMetadata = new wxBoxSizer( wxVERTICAL );
@@ -412,6 +428,8 @@ MapPropertiesLayout::MapPropertiesLayout( wxWindow* parent, wxWindowID id, const
 	m_cboInterpolation->Connect( wxEVT_COMMAND_COMBOBOX_SELECTED, wxCommandEventHandler( MapPropertiesLayout::OnInterpolationChange ), NULL, this );
 	m_spinNumEntries->Connect( wxEVT_COMMAND_SPINCTRL_UPDATED, wxSpinEventHandler( MapPropertiesLayout::OnNumEntriesChange ), NULL, this );
 	m_btnEvenlySpace->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( MapPropertiesLayout::OnEvenlySpace ), NULL, this );
+	m_spinAreaFudge->Connect( wxEVT_COMMAND_SPINCTRL_UPDATED, wxSpinEventHandler( MapPropertiesLayout::OnAreaFudge ), NULL, this );
+	m_spinAreaFudge->Connect( wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler( MapPropertiesLayout::OnAreaFudge ), NULL, this );
 	m_radioOne->Connect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( MapPropertiesLayout::OnCartValueToggle ), NULL, this );
 	m_radioTwo->Connect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( MapPropertiesLayout::OnCartValueToggle ), NULL, this );
 	m_checkResize->Connect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( MapPropertiesLayout::OnResizeToggle ), NULL, this );
@@ -434,6 +452,8 @@ MapPropertiesLayout::~MapPropertiesLayout()
 	m_cboInterpolation->Disconnect( wxEVT_COMMAND_COMBOBOX_SELECTED, wxCommandEventHandler( MapPropertiesLayout::OnInterpolationChange ), NULL, this );
 	m_spinNumEntries->Disconnect( wxEVT_COMMAND_SPINCTRL_UPDATED, wxSpinEventHandler( MapPropertiesLayout::OnNumEntriesChange ), NULL, this );
 	m_btnEvenlySpace->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( MapPropertiesLayout::OnEvenlySpace ), NULL, this );
+	m_spinAreaFudge->Disconnect( wxEVT_COMMAND_SPINCTRL_UPDATED, wxSpinEventHandler( MapPropertiesLayout::OnAreaFudge ), NULL, this );
+	m_spinAreaFudge->Disconnect( wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler( MapPropertiesLayout::OnAreaFudge ), NULL, this );
 	m_radioOne->Disconnect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( MapPropertiesLayout::OnCartValueToggle ), NULL, this );
 	m_radioTwo->Disconnect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( MapPropertiesLayout::OnCartValueToggle ), NULL, this );
 	m_checkResize->Disconnect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( MapPropertiesLayout::OnResizeToggle ), NULL, this );

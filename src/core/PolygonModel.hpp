@@ -94,7 +94,11 @@ namespace GenGIS
 
 		//Draws a bezier curve using points p1 and p4 as anchor points and points p2 and p3 as control points
 		void DrawBezier(Point3D p1, Point3D p2, Point3D p3, Point3D p4, GLenum mode);
+		/*
+		std::vector<Point3D> getModifiedVertices(){return modifiedVertices;}
 
+		void setMoodifiedVerticies( std::vector<Point3D> mV ) { modifiedVertices = mV; }
+		*/
 	private:
 		/** Serialization. */
 		friend class boost::serialization::access;
