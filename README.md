@@ -8,7 +8,6 @@ Optional Downloads
 
 * [Datasets](http://kiwi.cs.dal.ca/GenGIS/Datasets)
 * [Tutorials](http://kiwi.cs.dal.ca/GenGIS/Documentation)
-* 
 
 PeerJ PrePrint
 --------------
